@@ -362,57 +362,103 @@ result = [1, 1, 0, 2, 1, 0]</div>
         </section>
 
         <section id="p6">
-            <h2 class="pattern-title">State Machine Backtracking</h2>
+            <h2 class="pattern-title">6. State Machine Backtracking</h2>
+            
             <div class="clues">
-                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Seeking complete collections of micro paths (permutations, power subsets, full path combs).<br>
-                   • Microscopic inputs constraints upper-bounds ($N \le 12$) scream exponential runtime tree generation.</p>
+                <h4>🧠 The Secret Clues to Spot This Pattern:</h4>
+                <p>• The problem explicitly asks you to generate <strong>"all subsets"</strong>, <strong>"all permutations"</strong>, <strong>"all distinct ways"</strong>, or <strong>"all valid paths"</strong>.<br>
+                   • The problem statement uses exhaustive search wording keywords like <em>"Return all possible combinations..."</em><br>
+                   • The input parameters have **tiny constraints** (e.g., $N \le 12$ or $N \le 15$), which mathematically hints at a brute-force exponential ($O(2^n)$ or $O(n!)$) state-space expansion tree.</p>
             </div>
+
             <div class="problem-grid">
                 <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Subsets (Power Set)</span><span class="badge easy">EASY</span></div>
+                    <div class="problem-header">
+                        <span class="problem-title">Subsets (Power Set)</span>
+                        <span class="badge easy">EASY</span>
+                    </div>
                     <div class="problem-body">
-                        <p class="description">"Generate all unique discrete combination tracking subsets without matching index repetitions."</p>
-                        <pre><code>fun subsets(nums: IntArray): List<List<Int>> {
-    val res = mutableListOf<List<Int>>()
-    fun generate(idx: Int, path: MutableList<Int>) {
-        if (idx == nums.size) { res.add(ArrayList(path)); return }
-        path.add(nums[idx]); generate(idx + 1, path) // Include Choice
-        path.removeAt(path.size - 1); generate(idx + 1, path) // Exclude Choice
-    }
-    generate(0, mutableListOf()); return res
-}</code></pre>
-                        <div class="walkthrough">
-                            <h5>📊 Power Set Traversal Frame Map:</h5>
-                            <div class="visual-box">Input Array Matrix: nums = [1, 2, 3]
-• Frame 1: index = 0 (Val: 1) ➔ Include '1' ➔ Path: [1]
-   • Frame 2: index = 1 (Val: 2) ➔ Include '2' ➔ Path: [1, 2]
-      • Frame 3: index = 2 (Val: 3) ➔ Include '3' ➔ Path: [1, 2, 3]
-         • Frame 4: Base Case Reached! ➔ Save Snapshot: [1, 2, 3]
-      • ↩️ Backtrack (Pop '3') ➔ Path drops to [1, 2] ➔ Exclude Choice Run
-         • Frame 4: Base Case Reached! ➔ Save Snapshot: [1, 2]
-   • ↩️ Backtrack (Pop '2') ➔ Path drops to [1] ... branches branch outwards dynamically.</div>
+                        <h5>📋 Problem Statement:</h5>
+                        <p class="description">Given an integer array <code>nums</code> of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets. You can return the answer in any order.</p>
+                        
+                        <h5>💡 Conceptual Explanation:</h5>
+                        <p class="spot">For every element in the array, the algorithm faces a binary choice: <strong>"To be or not to be."</strong> We can either include the current number in our bucket or exclude it. By repeating this choice recursively down the line, we map out every combination.</p>
+                        
+                        <div class="walkthrough" style="margin-bottom: 16px;">
+                            <strong>📦 Sample Input & Output:</strong>
+                            <div class="visual-box" style="color: #fbbc05;">Input: nums = [1, 2]
+Output: [[], [1], [2], [1, 2]]</div>
                         </div>
+
+                        <h5>📊 Tracing the Problem:</h5>
+                        <p class="spot">Starting with an empty path <code>[]</code> at <code>index = 0</code>, we process each number by branching into two recursive paths. When we reach the end of the array, we take a snapshot of the path.</p>
+                        <div class="visual-box">
+Execution Frame Map:
+• Frame 1: index = 0 (Value: 1)
+  ├── Choice 1: INCLUDE '1' ➔ path = [1]
+  │     └── Frame 2: index = 1 (Value: 2)
+  │           ├── Choice 1: INCLUDE '2' ➔ path = [1, 2]
+  │           │     └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: [1, 2]
+  │           └── ↩️ BACKTRACK (Pop '2') ➔ path resets to [1] ➔ Exclude Choice Run
+  │                 └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: [1]
+  │
+  └── ↩️ BACKTRACK (Pop '1') ➔ path resets to [] ➔ Exclude Choice Run
+        └── Frame 2: index = 1 (Value: 2)
+              ├── Choice 1: INCLUDE '2' ➔ path = [2]
+              │     └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: [2]
+              └── ↩️ BACKTRACK (Pop '2') ➔ path resets to [] ➔ Exclude Choice Run
+                    └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: []</div>
+
+                        <h5>💻 Kotlin Implementation:</h5>
+                        <pre><code>fun subsets(nums: IntArray): List<List<Int>> {
+    val finalResult = mutableListOf<List<Int>>()
+
+    fun generateSubsets(index: Int, currentPath: MutableList<Int>) {
+        // Base Case: Once decisions are completed for all elements, snapshot state
+        if (index == nums.size) {
+            finalResult.add(ArrayList(currentPath)) // Save deep copy copy
+            return
+        }
+
+        // Branch 1: INCLUDE the current number in the tracking bucket
+        currentPath.add(nums[index])
+        generateSubsets(index + 1, currentPath) // Explore downstream
+
+        // ↩️ THE BACKTRACK: Undo decision to dynamically restore previous state
+        currentPath.removeAt(currentPath.size - 1)
+
+        // Branch 2: EXCLUDE the current number from the tracking bucket
+        generateSubsets(index + 1, currentPath) // Explore downstream without it
+    }
+
+    generateSubsets(0, mutableListOf())
+    return finalResult
+}</code></pre>
                     </div>
                 </div>
+
                 <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Permutations Collection</span><span class="badge medium">MEDIUM</span></div>
+                    <div class="problem-header">
+                        <span class="problem-title">Permutations Collection</span>
+                        <span class="badge medium">MEDIUM</span>
+                    </div>
                     <div class="problem-body">
-                        <p class="description">"Re-arrange distinct items to compile all legal sequence order representations."</p>
-                        <pre><code>fun permute(nums: IntArray): List<List<Int>> {
-    val res = mutableListOf<List<Int>>()
-    fun backtrack(path: MutableList<Int>) {
-        if (path.size == nums.size) { res.add(ArrayList(path)); return }
-        for (num in nums) {
-            if (path.contains(num)) continue // Prune used paths
-            path.add(num); backtrack(path); path.removeAt(path.size - 1)
-        }
-    }
-    backtrack(mutableListOf()); return res
-}</code></pre>
-                        <div class="walkthrough">
-                            <h5>📊 State-Tree Recurse & Rollback Frame Map:</h5>
-                            <div class="visual-box">Input Array Vector: [1, 2, 3]
+                        <h5>📋 Problem Statement:</h5>
+                        <p class="description">Given an array <code>nums</code> of distinct integers, return all the possible permutations. You can return the answer in any order.</p>
+                        
+                        <h5>💡 Conceptual Explanation:</h5>
+                        <p class="spot">Unlike subsets where order doesn't matter, permutations scramble all positional arrangements. Every slot in our path loops through <strong>all available numbers</strong> from the beginning. If an item is already inside our current branch path, we prune it. If it is free, we claim it, explore deeper, and then discard it so other numbers can take a turn.</p>
+                        
+                        <div class="walkthrough" style="margin-bottom: 16px;">
+                            <strong>📦 Sample Input & Output:</strong>
+                            <div class="visual-box" style="color: #fbbc05;">Input: nums = [1, 2, 3]
+Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]</div>
+                        </div>
+
+                        <h5>📊 Tracing the Problem:</h5>
+                        <p class="spot">Watch the choice matrix expand horizontally and vertically as the recursive loops populate slots from left to right.</p>
+                        <div class="visual-box">
+Structural Choice Tree Layout:
                                      [ ]
                   /               |               \
                Take 1          Take 2          Take 3
@@ -425,13 +471,44 @@ result = [1, 1, 0, 2, 1, 0]</div>
          |         |        |         |       |         |
        [1,2,3]   [1,3,2]  [2,1,3]   [2,3,1] [3,1,2]   [3,2,1]
 
-Execution Stack:
-Level 1: Choose '1' ➔ Path: [1]
-  Level 2: Skip '1', Choose '2' ➔ Path: [1, 2]
-    Level 3: Skip '1','2', Choose '3' ➔ Path: [1, 2, 3] ➔ Save snapshot!
-  Level 3 ↩️ Backtrack (Evict '3') ➔ Path resets to [1, 2] ➔ Level terminates.
-Level 2 ↩️ Backtrack (Evict '2') ➔ Path resets to [1] ➔ Next loop option targets '3' ➔ Path: [1, 3]...</div>
-                        </div>
+Trace Breakdown for the Left Branch:
+• Loop Level 1: path is empty. Choose '1' ➔ path = [1]
+  • Loop Level 2: '1' is already in path ➔ Skip. Choose next item '2' ➔ path = [1, 2]
+    • Loop Level 3: '1' & '2' in path ➔ Skip. Choose next item '3' ➔ path = [1, 2, 3]
+      • Level 4: path.size == nums.size (Base Case!) ➔ Save Snapshot: [1, 2, 3]
+    • ↩️ BACKTRACK (Pop '3') ➔ path = [1, 2] ➔ Level 3 loop finishes.
+  • ↩️ BACKTRACK (Pop '2') ➔ path = [1] ➔ Next iteration targets '3' ➔ path = [1, 3]
+    • Loop Level 3: Choose '2' ➔ path = [1, 3, 2] ➔ Base Case! ➔ Save Snapshot: [1, 3, 2]</div>
+
+                        <h5>💻 Kotlin Implementation:</h5>
+                        <pre><code>fun permute(nums: IntArray): List<List<Int>> {
+    val finalResult = mutableListOf<List<Int>>()
+
+    fun backtrack(currentPath: MutableList<Int>) {
+        // Base Case: If our path length matches our input size, arrangement is complete
+        if (currentPath.size == nums.size) {
+            finalResult.add(ArrayList(currentPath)) // Save snapshot copy
+            return
+        }
+
+        for (num in nums) {
+            // Pruning: Skip elements that are already claimed in our current path branch
+            if (currentPath.contains(num)) continue
+
+            // 1. Take choice step
+            currentPath.add(num)
+
+            // 2. Explore deeper down this decision path recursively
+            backtrack(currentPath)
+
+            // 3. ↩️ Backtrack choice step to clear slot for alternative paths
+            currentPath.removeAt(currentPath.size - 1)
+        }
+    }
+
+    backtrack(mutableListOf())
+    return finalResult
+}</code></pre>
                     </div>
                 </div>
             </div>
