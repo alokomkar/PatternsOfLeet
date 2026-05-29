@@ -96,6 +96,7 @@
             <li><a onclick="showPattern('p4')" id="menu-p4">4. Fast & Slow</a></li>
             <li><a onclick="showPattern('p5')" id="menu-p5">5. Mono Stack</a></li>
             <li><a onclick="showPattern('p6')" id="menu-p6">6. Backtracking</a></li>
+            <li><a onclick="showPattern('p7')" id="menu-p7">7. Binary Search</a></li>
         </ul>
     </nav>
 
@@ -508,6 +509,144 @@ Trace Breakdown for the Left Branch:
 
     backtrack(mutableListOf())
     return finalResult
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="p7">
+            <h2 class="pattern-title">7. Modified Binary Search</h2>
+
+            <div class="clues">
+                <h4>🧠 The Secret Clues to Spot This Pattern:</h4>
+                <p>• The input array is explicitly <strong>fully sorted</strong>, <strong>partially rotated</strong>, or presents monotonic property structures.<br>
+                    • The goal requires you to find an optimal maximum-minimum or minimum-maximum threshold choice constraint.<br>
+                    • The problem calls out strict performance boundaries demanding a **logarithmic time efficiency layout ($O(\log n)$)**.</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-title">Classic Binary Search</span>
+                        <span class="badge easy">EASY</span>
+                    </div>
+                    <div class="problem-body">
+                        <h5>📋 Problem Statement:</h5>
+                        <p class="description">Given an array of integers <code>nums</code> which is sorted in ascending order, and an integer <code>target</code>, write a function to search <code>target</code> in <code>nums</code>. If <code>target</code> exists, then return its index. Otherwise, return <code>-1</code>.</p>
+
+                        <h5>💡 Conceptual Explanation:</h5>
+                        <p class="spot">Instead of scanning from left to right linearly ($O(n)$), we constantly check the absolute midpoint of our bounds. Since the items are sorted, if the midpoint value is smaller than our target, the answer *must* live in the right half. If it's larger, it *must* live in the left half. Every step cuts our search space completely in half.</p>
+
+                        <div class="walkthrough" style="margin-bottom: 16px;">
+                            <strong>📦 Sample Input & Output:</strong>
+                            <div class="visual-box" style="color: #fbbc05;">Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
+                                Output: 4</div>
+                        </div>
+
+                        <h5>📊 Tracing the Problem:</h5>
+                        <p class="spot">Let's trace looking for the value <code>9</code>. We start with <code>low = 0</code> and <code>high = 5</code>.</p>
+                        <div class="visual-box">
+                            Search State Map Transitions:
+                            • Round 1: low = 0, high = 5
+                            - mid = 0 + (5 - 0) / 2 = 2 ➔ nums[2] is 3
+                            - Verification: 3 < 9 ➔ Shift search space rightward!
+                            - New boundaries update to: low = mid + 1 = 3
+
+                            • Round 2: low = 3, high = 5
+                            - mid = 3 + (5 - 3) / 2 = 4 ➔ nums[4] is 9
+                            - Verification: nums[4] == 9 ➔ Target Matched successfully!
+                            - Return Index: 4</div>
+
+                        <h5>💻 Kotlin Implementation:</h5>
+                        <pre><code>fun search(nums: IntArray, target: Int): Int {
+    var low = 0
+    var high = nums.size - 1
+
+    while (low <= high) {
+        // Prevents potential integer sum overflow compared to (low + high) / 2
+        val mid = low + (high - low) / 2
+
+        if (nums[mid] == target) {
+            return mid // Index located
+        } else if (nums[mid] < target) {
+            low = mid + 1 // Discard left half
+        } else {
+            high = mid - 1 // Discard right half
+        }
+    }
+    return -1
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-title">Koko Eating Bananas</span>
+                        <span class="badge medium">MEDIUM</span>
+                    </div>
+                    <div class="problem-body">
+                        <h5>📋 Problem Statement:</h5>
+                        <p class="description">There are <code>piles</code> of bananas, where the i-th pile has <code>piles[i]</code> bananas. You have <code>h</code> hours to finish all piles. Koko can decide her hourly eating speed <code>k</code>. If a pile has fewer than <code>k</code> bananas, she finishes it and rests for the remainder of that hour. Return the minimum integer speed <code>k</code> such that she can eat all the bananas within <code>h</code> hours.</p>
+
+                        <h5>💡 Conceptual Explanation:</h5>
+                        <p class="spot">This is a **Search Space Optimization** problem. Instead of binary searching indices in an array, we run binary search over the range of **possible speeds**. The slowest possible speed is <code>1</code>, and the fastest speed needed is the size of the largest pile. If Koko can finish all bananas in time at a speed of <code>mid</code>, then <code>mid</code> becomes our tentative best answer, and we search the left half to see if she can go even slower. If she runs out of time, we search the right half to speed her up.</p>
+
+                        <div class="walkthrough" style="margin-bottom: 16px;">
+                            <strong>📦 Sample Input & Output:</strong>
+                            <div class="visual-box" style="color: #fbbc05;">Input: piles = [3, 6, 7, 11], h = 8
+                                Output: 4</div>
+                        </div>
+
+                        <h5>📊 Tracing the Problem:</h5>
+                        <p class="spot">Possible speed limits range from <code>low = 1</code> to <code>high = 11</code> (max pile size). We want to finish within <code>8 hours</code>.</p>
+                        <div class="visual-box">
+                            Search Space Transitions Log:
+                            • Round 1: low = 1, high = 11
+                            - midSpeed = 1 + (11 - 1) / 2 = 6 bananas/hour
+                            - Hours calculation: pile[3]/6 ➔ 1h | pile[6]/6 ➔ 1h | pile[7]/6 ➔ 2h | pile[11]/6 ➔ 2h
+                            - Total Hours needed: 1 + 1 + 2 + 2 = 6 hours.
+                            - Verification: 6 <= 8 hours ➔ Speed 6 works! Save it. Try slower: high = 6 - 1 = 5
+
+                            • Round 2: low = 1, high = 5
+                            - midSpeed = 1 + (5 - 1) / 2 = 3 bananas/hour
+                            - Hours calculation: pile[3]/3 ➔ 1h | pile[6]/3 ➔ 2h | pile[7]/3 ➔ 3h | pile[11]/3 ➔ 4h
+                            - Total Hours needed: 1 + 2 + 3 + 4 = 10 hours.
+                            - Verification: 10 > 8 hours ➔ Speed 3 is too slow! Try faster: low = 3 + 1 = 4
+
+                            • Round 3: low = 4, high = 5
+                            - midSpeed = 4 + (5 - 4) / 2 = 4 bananas/hour
+                            - Hours calculation: pile[3]/4 ➔ 1h | pile[6]/4 ➔ 2h | pile[7]/4 ➔ 2h | pile[11]/4 ➔ 3h
+                            - Total Hours needed: 1 + 2 + 2 + 3 = 8 hours.
+                            - Verification: 8 <= 8 hours ➔ Speed 4 works! Save it. Try slower: high = 4 - 1 = 3
+                            Loop Terminates (low > high). Minimum optimal eating speed is 4.</div>
+
+                        <h5>💻 Kotlin Implementation:</h5>
+                        <pre><code>fun minEatingSpeed(piles: IntArray, h: Int): Int {
+    var low = 1
+    var high = piles.maxOrNull() ?: 1000000000
+    var optimalSpeed = high
+
+    // Helper: Computes the actual total hours consumed at a target speed
+    fun totalHoursSpent(speed: Int): Long {
+        var runningHours = 0Long
+        for (pile in piles) {
+            // Evaluates mathematical ceiling division: ceil(pile.toDouble() / speed)
+            runningHours += (pile + speed - 1) / speed
+        }
+        return runningHours
+    }
+
+    while (low <= high) {
+        val midSpeed = low + (high - low) / 2
+
+        if (totalHoursSpent(midSpeed) <= h) {
+            optimalSpeed = midSpeed // midSpeed is achievable! Save snapshot
+            high = midSpeed - 1     // Attempt to contract search to find a lower speed
+        } else {
+            low = midSpeed + 1      // Too slow, failed constraint limit. Push lower bound up.
+        }
+    }
+    return optimalSpeed
 }</code></pre>
                     </div>
                 </div>
