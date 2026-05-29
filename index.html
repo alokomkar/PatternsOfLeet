@@ -305,7 +305,7 @@
 
             nav a {
                 padding: 12px 5px;
-                font-size: 0.82rem;
+                font-size: 0.78rem;
                 border-radius: 0;
                 height: 100%;
                 display: flex;
@@ -333,6 +333,7 @@
             <li><a href="#pattern2">2. Window</a></li>
             <li><a href="#pattern3">3. Prefix</a></li>
             <li><a href="#pattern4">4. Fast/Slow</a></li>
+            <li><a href="#pattern5">5. Stack</a></li>
         </ul>
     </nav>
 
@@ -614,6 +615,88 @@ Visual Graph Layout:
                             <p style="margin-top:8px;"><strong>Phase 2 Tracking (Entrance):</strong><br>
                             Reset pointer1 to <code>nums[0]</code> (2), move both at speed 1. They match immediately on value <strong>2</strong> without jumping, pinpointing the duplicate entry point.</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pattern5">
+            <h2 class="pattern-title">5. Monotonic Stack</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>• Seeking the relative <strong>"next greater element"</strong> or <strong>"previous smaller element"</strong> coordinates.<br>
+                   • Needs to trace historical information while keeping a strict, sorted structural hierarchy layout.</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-title">Next Greater Element I</span>
+                        <span class="badge easy">EASY</span>
+                    </div>
+                    <div class="problem-body">
+                        <p class="description">"Find the first greater element to the right for values mapped inside a subset array."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Elements wait inside a decreasing stack. When a larger number arrives, it forcefully pops all smaller elements and logs them as their next greater item.</p>
+                        <pre><code>import java.util.Stack
+
+fun nextGreaterElement(queryArray: IntArray, searchArray: IntArray): IntArray {
+    val answerMap = HashMap<Int, Int>() // [Value -> Its Next Greater Element]
+    val waitingRoom = Stack<Int>()
+
+    // Find answers for elements in the searchArray
+    for (currentNum in searchArray) {
+        while (waitingRoom.isNotEmpty() && waitingRoom.peek() < currentNum) {
+            val rescuedNum = waitingRoom.pop()
+            answerMap[rescuedNum] = currentNum
+        }
+        waitingRoom.push(currentNum)
+    }
+
+    // Extract answers for elements in the queryArray
+    val finalResult = IntArray(queryArray.size)
+    for (i in queryArray.indices) {
+        finalResult[i] = answerMap.getOrDefault(queryArray[i], -1)
+    }
+    return finalResult
+}</code></pre>
+
+                        <div class="walkthrough">
+                            <h5>📊 Waiting-Room Stack Trace</h5>
+                            <p>Inputs: <code>searchArray = [2, 1, 3, 4]</code>, <code>queryArray = [1, 3]</code></p>
+                            <div class="visual-box">
+• Step 1 (currentNum=2): waitingRoom is empty. Push 2.          ➔ Stack: [2]
+• Step 2 (currentNum=1): 1 < 2. No pop. Push 1.                 ➔ Stack: [2, 1]
+• Step 3 (currentNum=3): 3 > 1 ➔ answerMap[1]=3. Pop 1.
+                         3 > 2 ➔ answerMap[2]=3. Pop 2. Push 3. ➔ Stack: [3] | Map: {1➔3, 2➔3}
+• Step 4 (currentNum=4): 4 > 3 ➔ answerMap[3]=4. Pop 3. Push 4. ➔ Stack: [4] | Map: {1➔3, 2➔3, 3➔4}</div>
+                            <p>Finally, looping over <code>queryArray = [1, 3]</code> extracts results <strong>`[3, 4]`</strong> via instant map lookups.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-title">Daily Temperatures</span>
+                        <span class="badge medium">MEDIUM</span>
+                    </div>
+                    <div class="problem-body">
+                        <p class="description">"Calculate the day distance required to experience a warmer temperature reading."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Store indices instead of temperature integers directly. This allows computing linear distances ($i - \text{oldIndex}$) upon item eviction.</p>
+                        <pre><code>import java.util.Stack
+
+fun dailyTemperatures(temperatures: IntArray): IntArray {
+    val result = IntArray(temperatures.size)
+    val stack = Stack<Int>() // Stores indices
+
+    for (i in temperatures.indices) {
+        while (stack.isNotEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+            val historicalIndex = stack.pop()
+            result[historicalIndex] = i - historicalIndex
+        }
+        stack.push(i)
+    }
+    return result
+}</code></pre>
                     </div>
                 </div>
             </div>
