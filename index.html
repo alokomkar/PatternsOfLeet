@@ -685,8 +685,8 @@ fun nextGreaterElement(queryArray: IntArray, searchArray: IntArray): IntArray {
                         <pre><code>import java.util.Stack
 
 fun dailyTemperatures(temperatures: IntArray): IntArray {
-    val result = IntArray(temperatures.size)
-    val stack = Stack<Int>() // Stores indices
+    val result = IntArray(temperatures.size) // Initialized to 0s
+    val stack = Stack<Int>() // Stores indices of days
 
     for (i in temperatures.indices) {
         while (stack.isNotEmpty() && temperatures[stack.peek()] < temperatures[i]) {
@@ -697,6 +697,28 @@ fun dailyTemperatures(temperatures: IntArray): IntArray {
     }
     return result
 }</code></pre>
+
+                        <div class="walkthrough">
+                            <h5>📊 Structural Index Stack Trace</h5>
+                            <p>Input: <code>temperatures = [73, 74, 75, 71, 69, 72]</code></p>
+                            <div class="visual-box">
+• Day 0 (73): Stack empty. Push index 0.
+              ➔ Stack: [0]
+• Day 1 (74): 74 > temp[0](73). Pop 0 ➔ result[0] = 1 - 0 = 1. Push index 1.
+              ➔ Stack: [1]
+• Day 2 (75): 75 > temp[1](74). Pop 1 ➔ result[1] = 2 - 1 = 1. Push index 2.
+              ➔ Stack: [2]
+• Day 3 (71): 71 < temp[2](75). No pop. Push index 3.
+              ➔ Stack: [2, 3]
+• Day 4 (69): 69 < temp[3](71). No pop. Push index 4.
+              ➔ Stack: [2, 3, 4]
+• Day 5 (72): 72 > temp[4](69) ➔ Pop 4 ➔ result[4] = 5 - 4 = 1.
+              72 > temp[3](71) ➔ Pop 3 ➔ result[3] = 5 - 3 = 2.
+              72 < temp[2](75) ➔ Stop popping. Push index 5.
+              ➔ Stack: [2, 5]</div>
+                            <p><strong>Final Array Output:</strong> Elements remaining in the stack (`[2, 5]`) never encountered a warmer day and stay defaulted to `0` at their positions.</p>
+                            <div class="visual-box" style="color: #fbbc05;">result = [1, 1, 0, 2, 1, 0]</div>
+                        </div>
                     </div>
                 </div>
             </div>
