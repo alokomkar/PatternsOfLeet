@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Interview Prep Curriculum</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --sidebar-bg: #ffffff;
+            --text-color: #202124;
+            --accent-color: #1a73e8;
+            --border-color: #dadce0;
+            --code-bg: #f1f3f4;
+            --easy-color: #34a853;
+            --medium-color: #fbbc05;
+            --hard-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Styling */
+        nav {
+            width: 280px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        nav h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            margin-bottom: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #5f6368;
+            font-weight: 500;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover {
+            background-color: #f1f3f4;
+            color: var(--accent-color);
+        }
+
+        /* Main Content Styling */
+        main {
+            margin-left: 280px;
+            padding: 40px;
+            max-width: 1000px;
+            width: calc(100% - 280px);
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #1f2327;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #5f6368;
+            font-size: 1.1rem;
+        }
+
+        section {
+            margin-bottom: 60px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h2.pattern-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #1f2327;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .clues {
+            background-color: #e8f0fe;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 25px;
+        }
+
+        .clues h4 {
+            color: #1967d2;
+            margin-bottom: 5px;
+        }
+
+        .problem-card {
+            margin-top: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .problem-header {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .problem-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .badge.easy { background-color: var(--easy-color); }
+        .badge.medium { background-color: var(--medium-color); color: #202124;}
+
+        .problem-body {
+            padding: 20px;
+        }
+
+        .description {
+            font-style: italic;
+            color: #5f6368;
+            margin-bottom: 15px;
+        }
+
+        .spot {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background-color: #2d3142;
+            color: #eff5f6;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "Fira Code", Consolas, Monaco, monospace;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: inherit;
+        }
+
+        .visual-box {
+            background-color: #202124;
+            color: #34a853;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>Patterns</h2>
+        <ul>
+            <li><a href="#pattern1">1. Two Pointers</a></li>
+            <li><a href="#pattern2">2. Sliding Window</a></li>
+            <li><a href="#pattern3">3. Prefix Sum</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <header>
+            <h1>Google Interview Curriculum</h1>
+            <p>A structured pattern-matching approach to mastering algorithmic challenges using Kotlin.</p>
+        </header>
+
+        <section id="pattern1">
+            <h2 class="pattern-title">1. The Two Pointers Pattern</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>1. The data structure is linear (Array, String, Linked List).<br>
+                   2. The description says the data is <strong>Sorted</strong> or implies checking sorting yields optimization.<br>
+                   3. You are finding a Pair, Triplet, or comparing structural ends.</p>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-header">
+                    <span class="problem-title">Two Sum II - Input Array Is Sorted</span>
+                    <span class="badge easy">EASY</span>
+                </div>
+                <div class="problem-body">
+                    <p class="description">"Given a 1-indexed sorted array, find two numbers that add up to a target."</p>
+                    <p class="spot"><strong>How to recognize:</strong> Explicitly states "already sorted" and targets a distinct "pair".</p>
+                    <pre><code>fun twoSum(numbers: IntArray, target: Int): IntArray {
+    var left = 0
+    var right = numbers.size - 1
+
+    while (left < right) {
+        val currentSum = numbers[left] + numbers[right]
+        if (currentSum == target) {
+            return intArrayOf(left + 1, right + 1)
+        } else if (currentSum < target) {
+            left++
+        } else {
+            right--
+        }
+    }
+    return intArrayOf()
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-header">
+                    <span class="problem-title">Container With Most Water</span>
+                    <span class="badge medium">MEDIUM</span>
+                </div>
+                <div class="problem-body">
+                    <p class="description">"Find two lines that form a container storing the maximum amount of water."</p>
+                    <p class="spot"><strong>How to recognize:</strong> Requires maximizing dimensions across a wide window frame, iterating inwards from limits.</p>
+                    <pre><code>fun maxArea(height: IntArray): Int {
+    var left = 0
+    var right = height.size - 1
+    var maxWater = 0
+
+    while (left < right) {
+        val width = right - left
+        val currentHeight = minOf(height[left], height[right])
+        maxWater = maxOf(maxWater, width * currentHeight)
+
+        if (height[left] < height[right]) {
+            left++
+        } else {
+            right--
+        }
+    }
+    return maxWater
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="pattern2">
+            <h2 class="pattern-title">2. Sliding Window</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>1. Target involves contiguous subarrays or substrings.<br>
+                   2. Keywords include: <strong>"longest"</strong>, <strong>"shortest"</strong>, or dynamic constraints like <strong>"at most K characters"</strong>.</p>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-header">
+                    <span class="problem-title">Maximum Average Subarray I</span>
+                    <span class="badge easy">EASY</span>
+                </div>
+                <div class="problem-body">
+                    <p class="description">"Find a contiguous subarray of fixed length K with the maximum average value."</p>
+                    <p class="spot"><strong>How to recognize:</strong> "Contiguous" combined with a concrete length parameter "K" yields a fixed window.</p>
+                    <pre><code>fun findMaxAverage(nums: IntArray, k: Int): Double {
+    var runningSum = 0.0
+    for (i in 0 until k) runningSum += nums[i]
+    var maxSum = runningSum
+
+    for (i in k until nums.size) {
+        runningSum += nums[i] - nums[i - k]
+        maxSum = maxOf(maxSum, runningSum)
+    }
+    return maxSum / k
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-header">
+                    <span class="problem-title">Longest Substring Without Repeating Characters</span>
+                    <span class="badge medium">MEDIUM</span>
+                </div>
+                <div class="problem-body">
+                    <p class="description">"Find the length of the longest substring without repeating characters."</p>
+                    <p class="spot"><strong>How to recognize:</strong> Asks for a variable long subset bounded dynamically by duplicates constraint logic.</p>
+                    <pre><code>fun lengthOfLongestSubstring(s: String): Int {
+    var left = 0
+    var maxLength = 0
+    val uniqueChars = HashSet<Char>()
+
+    for (right in s.indices) {
+        val incomingChar = s[right]
+        while (uniqueChars.contains(incomingChar)) {
+            uniqueChars.remove(s[left])
+            left++
+        }
+        uniqueChars.add(incomingChar)
+        maxLength = maxOf(maxLength, right - left + 1)
+    }
+    return maxLength
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="pattern3">
+            <h2 class="pattern-title">3. Prefix Sum</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>1. Multiple queries are targeted over overlapping interior regions.<br>
+                   2. Solves array segmentation sums where dynamic windows fail due to negative values.</p>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-header">
+                    <span class="problem-title">Range Sum Query - Immutable</span>
+                    <span class="badge easy">EASY</span>
+                </div>
+                <div class="problem-body">
+                    <p class="description">"Calculate sum of elements of nums between indices left and right inclusive."</p>
+                    <p class="spot"><strong>How to recognize:</strong> Multiple overlapping interval query structures over static, unchanging content maps.</p>
+                    <pre><code>class NumArray(nums: IntArray) {
+    private val prefix = IntArray(nums.size + 1)
+
+    init {
+        for (i in nums.indices) {
+            prefix[i + 1] = prefix[i] + nums[i]
+        }
+    }
+
+    fun sumRange(left: Int, right: Int): Int {
+        return prefix[right + 1] - prefix[left]
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-header">
+                    <span class="problem-title">Subarray Sum Equals K</span>
+                    <span class="badge medium">MEDIUM</span>
+                </div>
+                <div class="problem-body">
+                    <p class="description">"Return total number of continuous subarrays whose sum equals K."</p>
+                    <p class="spot"><strong>How to recognize:</strong> Subarray targets containing negative values where standard sliding boundary tracking fails.</p>
+                    <pre><code>fun subarraySum(nums: IntArray, k: Int): Int {
+    var count = 0
+    var currentSum = 0
+    val prefixMap = HashMap<Int, Int>()
+    prefixMap[0] = 1
+
+    for (num in nums) {
+        currentSum += num
+        if (prefixMap.containsKey(currentSum - k)) {
+            count += prefixMap[currentSum - k]!!
+        }
+        prefixMap[currentSum] = prefixMap.getOrDefault(currentSum, 0) + 1
+    }
+    return count
+}</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
