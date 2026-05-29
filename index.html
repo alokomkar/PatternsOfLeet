@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Interview Prep Dashboard</title>
+    <title>Google Interview Prep Master Portfolio</title>
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -46,8 +46,8 @@
         header p { color: #5f6368; font-size: 1.1rem; }
         
         /* --- DYNAMIC VISIBILITY ENGINE --- */
-        section { display: none; } /* Hidden by default */
-        section.active-view { display: block; animation: fadeIn 0.3s ease-in-out; } /* Only show active pattern */
+        section { display: none; } 
+        section.active-view { display: block; animation: fadeIn 0.3s ease-in-out; } 
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -72,7 +72,7 @@
         .spot { margin-bottom: 16px; font-size: 0.95rem; color: #202124; }
         .walkthrough { background-color: #f1f3f4; padding: 16px; border-radius: 8px; margin-top: 20px; font-size: 0.9rem; border: 1px dashed var(--border-color); }
         .walkthrough h5 { font-size: 0.95rem; color: #1f2327; margin-bottom: 8px; }
-        pre { background-color: var(--code-bg); color: var(--code-text); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: "Fira Code", monospace; font-size: 0.88rem; border: 1px solid #1f2327; margin-top: 10px; }
+        pre { background-color: var(--code-bg); color: var(--code-text); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 0.88rem; border: 1px solid #1f2327; margin-top: 10px; }
         .visual-box { background-color: #202124; color: #34a853; padding: 14px; border-radius: 6px; font-family: monospace; white-space: pre; margin: 12px 0; overflow-x: auto; font-size: 0.85rem; line-height: 1.4; }
 
         @media (max-width: 768px) {
@@ -118,6 +118,7 @@
                     <div class="problem-header"><span class="problem-title">Two Sum II - Sorted Input</span><span class="badge easy">EASY</span></div>
                     <div class="problem-body">
                         <p class="description">"Find two numbers in a sorted array that sum up to a target."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Converge pointers inward from both ends to scan elements without extra memory allocation.</p>
                         <pre><code>fun twoSum(numbers: IntArray, target: Int): IntArray {
     var left = 0; var right = numbers.size - 1
     while (left < right) {
@@ -133,6 +134,7 @@
                     <div class="problem-header"><span class="problem-title">Container With Most Water</span><span class="badge medium">MEDIUM</span></div>
                     <div class="problem-body">
                         <p class="description">"Find two lines that form a container holding the most water."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Start with maximum horizontal width at indices margins, then sacrifice the shorter line barrier to find a better peak.</p>
                         <pre><code>fun maxArea(height: IntArray): Int {
     var left = 0; var right = height.size - 1; var maxWater = 0
     while (left < right) {
@@ -152,14 +154,15 @@
             <h2 class="pattern-title">The Sliding Window Mechanism</h2>
             <div class="clues">
                 <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Requires continuous segments (subarrays or substrings).<br>
-                   • Seeks boundaries defining phrases like <strong>"longest"</strong>, <strong>"shortest"</strong>, or <strong>"size K"</strong>.</p>
+                <p>• Demands contiguous subarrays or subsegments.<br>
+                   • Bounded by wording keywords like <strong>"longest"</strong>, <strong>"shortest"</strong>, or <strong>"window of size K"</strong>.</p>
             </div>
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Maximum Average Subarray I</span><span class="badge easy">EASY</span></div>
                     <div class="problem-body">
-                        <p class="description">"Find a contiguous subarray of fixed size K with the highest average."</p>
+                        <p class="description">"Find a contiguous subarray of fixed size K with the highest average value."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Maintain a fixed framework window box. Subtract the element exiting left and add the new element entering right in $O(1)$ time.</p>
                         <pre><code>fun findMaxAverage(nums: IntArray, k: Int): Double {
     var sum = 0.0; for (i in 0 until k) sum += nums[i]
     var maxSum = sum
@@ -174,6 +177,8 @@
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Longest Substring Without Repeating Chars</span><span class="badge medium">MEDIUM</span></div>
                     <div class="problem-body">
+                        <p class="description">"Find the longest dynamic window frame housing entirely unique letters."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Expand right step-by-step. Whenever a character matches a duplicated asset, violently shift the left margin up to repair validity constraints.</p>
                         <pre><code>fun lengthOfLongestSubstring(s: String): Int {
     var left = 0; var maxLength = 0; val seen = HashSet<Char>()
     for (right in s.indices) {
@@ -191,13 +196,14 @@
             <h2 class="pattern-title">The Prefix Sum Optimization</h2>
             <div class="clues">
                 <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Multiple range total queries over an immutable array.<br>
-                   • Subarray summation checks where sliding windows fail due to negative values.</p>
+                <p>• Requires frequent range total assessments across a static vector array.<br>
+                   • Resolves slice summaries containing negative values where a traditional sliding window cannot safely decide bounds.</p>
             </div>
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Range Sum Query - Immutable</span><span class="badge easy">EASY</span></div>
                     <div class="problem-body">
+                        <p class="description">"Return the total sum value inside arbitrary bounding ranges in O(1) time."</p>
                         <pre><code>class NumArray(nums: IntArray) {
     private val prefix = IntArray(nums.size + 1)
     init { for (i in nums.indices) prefix[i + 1] = prefix[i] + nums[i] }
@@ -208,6 +214,8 @@
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Subarray Sum Equals K</span><span class="badge medium">MEDIUM</span></div>
                     <div class="problem-body">
+                        <p class="description">"Find total continuous segments summing precisely to target K."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Keep track of a running sum and match it against historical entries stored inside a lookup map (`currentSum - k`).</p>
                         <pre><code>fun subarraySum(nums: IntArray, k: Int): Int {
     var count = 0; var currentSum = 0; val prefixMap = HashMap<Int, Int>(); prefixMap[0] = 1
     for (num in nums) {
@@ -224,9 +232,14 @@
 
         <section id="p4">
             <h2 class="pattern-title">Cycle Detection Framework</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>• Linked structures or index-jumping vectors where items point downstream.<br>
+                   • Demands loop classification or midpoint evaluations while keeping memory at <strong>O(1) Auxiliary Space</strong>.</p>
+            </div>
             <div class="warning-box">
                 <h5>⚠️ Google Edge-Case Constraint:</h5>
-                <p>Array implementations require a guaranteed duplicate entry. Without a loop trap, pointers will overrun array indices and throw a runtime exception.</p>
+                <p>Array loop trapping relies entirely on a guaranteed duplicated element to anchor the cycle. If you execute this layout over completely unique elements, indicators will run off bounds and raise an index exception error.</p>
             </div>
             <div class="problem-grid">
                 <div class="problem-card">
@@ -245,6 +258,7 @@
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Find the Duplicate Number</span><span class="badge medium">MEDIUM</span></div>
                     <div class="problem-body">
+                        <p class="description">"Track the repeated asset within an unchanging linear sequence space using O(1) space."</p>
                         <pre><code>fun findDuplicate(nums: IntArray): Int {
     var slow = nums[0]; var fast = nums[0]
     do { slow = nums[slow]; fast = nums[nums[fast]] } while (slow != fast)
@@ -252,6 +266,25 @@
     while (p1 != p2) { p1 = nums[p1]; p2 = nums[p2] }
     return p1
 }</code></pre>
+                        <div class="walkthrough">
+                            <h5>📊 Structural Execution Dry-Run Logs:</h5>
+                            <p>Input Array mapping index pointers: <code>nums = [2, 5, 1, 4, 3, 2]</code></p>
+                            <div class="visual-box">Graph Layout Trajectory Map:
+Index 0 ➔ Node(2) ➔ Node(1) ➔ Node(5) ➔ Node(2) [Cycle Bound Entrypoint Trap!]
+
+Visual Core Matrix:
+(Start) 0 ──> 2 ──> 1 ──> 5 
+              ▲           │
+              └───────────┘
+• Phase 1 Collision Intersection:
+  - Round 1: slow = nums[2] (1) | fast = nums[nums[2]] ➔ nums[1] (5)
+  - Round 2: slow = nums[1] (5) | fast = nums[nums[5]] ➔ nums[2] (1)
+  - Round 3: slow = nums[5] (2) | fast = nums[nums[1]] ➔ nums[5] (2) ➔ Matches!
+
+• Phase 2 Entrance Alignment:
+  Reset pointer1 to nums[0] (2). Match pointer2 at 2. They immediately equal 2.
+  Output Duplicate Identified: 2</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -259,11 +292,19 @@
 
         <section id="p5">
             <h2 class="pattern-title">The Monotonic Stack Engine</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>• Seeking the relative coordinates of the <strong>"next greater element"</strong> or <strong>"previous smaller element"</strong>.<br>
+                   • Traces custom historical layouts while aggressively purging items out of sync with a sorted hierarchy chain.</p>
+            </div>
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Next Greater Element I</span><span class="badge easy">EASY</span></div>
                     <div class="problem-body">
-                        <pre><code>fun nextGreaterElement(queryArray: IntArray, searchArray: IntArray): IntArray {
+                        <p class="description">"Extract matching next-greater element horizons from a targeted sub-query layout map."</p>
+                        <pre><code>import java.util.Stack
+
+fun nextGreaterElement(queryArray: IntArray, searchArray: IntArray): IntArray {
     val answerMap = HashMap<Int, Int>(); val waitingRoom = Stack<Int>()
     for (num in searchArray) {
         while (waitingRoom.isNotEmpty() && waitingRoom.peek() < num) answerMap[waitingRoom.pop()] = num
@@ -271,12 +312,26 @@
     }
     return IntArray(queryArray.size) { answerMap.getOrDefault(queryArray[it], -1) }
 }</code></pre>
+                        <div class="walkthrough">
+                            <h5>📊 Waiting Room Registry Snapshot:</h5>
+                            <p>Inputs: <code>searchArray = [2, 1, 3, 4]</code>, <code>queryArray = [1, 3]</code></p>
+                            <div class="visual-box">• Step 1 (num=2): waitingRoom empty. Push 2.    ➔ Stack: [2]
+• Step 2 (num=1): 1 < 2. No eviction. Push 1.    ➔ Stack: [2, 1]
+• Step 3 (num=3): 3 > 1 ➔ answerMap[1]=3. Pop 1.
+                  3 > 2 ➔ answerMap[2]=3. Pop 2. ➔ Push 3 ➔ Stack: [3] | Map: {1➔3, 2➔3}
+• Step 4 (num=4): 4 > 3 ➔ answerMap[3]=4. Pop 3. ➔ Push 4 ➔ Stack: [4] | Map: {1➔3, 2➔3, 3➔4}
+
+Final Query Mapping Outputs Array: [3, 4]</div>
+                        </div>
                     </div>
                 </div>
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Daily Temperatures</span><span class="badge medium">MEDIUM</span></div>
                     <div class="problem-body">
-                        <pre><code>fun dailyTemperatures(temperatures: IntArray): IntArray {
+                        <p class="description">"Track the index distances required to spot a warmer scalar temperature index row."</p>
+                        <pre><code>import java.util.Stack
+
+fun dailyTemperatures(temperatures: IntArray): IntArray {
     val result = IntArray(temperatures.size); val stack = Stack<Int>()
     for (i in temperatures.indices) {
         while (stack.isNotEmpty() && temperatures[stack.peek()] < temperatures[i]) {
@@ -287,16 +342,18 @@
     return result
 }</code></pre>
                         <div class="walkthrough">
-                            <h5>📊 Index Stack Execution Log:</h5>
-                            <div class="visual-box">Input: temps = [73, 74, 75, 71, 69, 72]
-• Day 0 (73) ➔ Stack: [0]
-• Day 1 (74) ➔ 74 > 73 ➔ pop 0 ➔ res[0] = 1-0 = 1 ➔ Stack: [1]
-• Day 2 (75) ➔ 75 > 74 ➔ pop 1 ➔ res[1] = 2-1 = 1 ➔ Stack: [2]
-• Day 3 (71) ➔ 71 < 75 ➔ Push index 3 ➔ Stack: [2, 3]
-• Day 4 (69) ➔ 69 < 71 ➔ Push index 4 ➔ Stack: [2, 3, 4]
-• Day 5 (72) ➔ 72 > 69 ➔ pop 4 ➔ res[4] = 5-4 = 1
-              72 > 71 ➔ pop 3 ➔ res[3] = 5-3 = 2 ➔ Stop: [2, 5]
+                            <h5>📊 Index Stack Warmer Vector Mapping Logs:</h5>
+                            <div class="visual-box">Input Data: temps = [73, 74, 75, 71, 69, 72]
+• Day 0 (73) ➔ Stack empty ➔ Push index 0 ➔ Stack: [0]
+• Day 1 (74) ➔ 74 > temp[0](73) ➔ Pop 0 ➔ result[0] = 1-0 = 1 ➔ Push index 1 ➔ Stack: [1]
+• Day 2 (75) ➔ 75 > temp[1](74) ➔ Pop 1 ➔ result[1] = 2-1 = 1 ➔ Push index 2 ➔ Stack: [2]
+• Day 3 (71) ➔ 71 < temp[2](75) ➔ No eviction ➔ Push index 3 ➔ Stack: [2, 3]
+• Day 4 (69) ➔ 69 < temp[3](71) ➔ No eviction ➔ Push index 4 ➔ Stack: [2, 3, 4]
+• Day 5 (72) ➔ 72 > temp[4](69) ➔ Pop 4 ➔ result[4] = 5-4 = 1
+              72 > temp[3](71) ➔ Pop 3 ➔ result[3] = 5-3 = 2
+              72 < temp[2](75) ➔ Stop processing pops ➔ Push index 5 ➔ Stack: [2, 5]
 
+Final Output Mapped Vector Content Array:
 result = [1, 1, 0, 2, 1, 0]</div>
                         </div>
                     </div>
@@ -306,30 +363,48 @@ result = [1, 1, 0, 2, 1, 0]</div>
 
         <section id="p6">
             <h2 class="pattern-title">State Machine Backtracking</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>• Seeking complete collections of micro paths (permutations, power subsets, full path combs).<br>
+                   • Microscopic inputs constraints upper-bounds ($N \le 12$) scream exponential runtime tree generation.</p>
+            </div>
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Subsets (Power Set)</span><span class="badge easy">EASY</span></div>
                     <div class="problem-body">
+                        <p class="description">"Generate all unique discrete combination tracking subsets without matching index repetitions."</p>
                         <pre><code>fun subsets(nums: IntArray): List<List<Int>> {
     val res = mutableListOf<List<Int>>()
     fun generate(idx: Int, path: MutableList<Int>) {
         if (idx == nums.size) { res.add(ArrayList(path)); return }
-        path.add(nums[idx]); generate(idx + 1, path) // Include
-        path.removeAt(path.size - 1); generate(idx + 1, path) // Exclude
+        path.add(nums[idx]); generate(idx + 1, path) // Include Choice
+        path.removeAt(path.size - 1); generate(idx + 1, path) // Exclude Choice
     }
     generate(0, mutableListOf()); return res
 }</code></pre>
+                        <div class="walkthrough">
+                            <h5>📊 Power Set Traversal Frame Map:</h5>
+                            <div class="visual-box">Input Array Matrix: nums = [1, 2, 3]
+• Frame 1: index = 0 (Val: 1) ➔ Include '1' ➔ Path: [1]
+   • Frame 2: index = 1 (Val: 2) ➔ Include '2' ➔ Path: [1, 2]
+      • Frame 3: index = 2 (Val: 3) ➔ Include '3' ➔ Path: [1, 2, 3]
+         • Frame 4: Base Case Reached! ➔ Save Snapshot: [1, 2, 3]
+      • ↩️ Backtrack (Pop '3') ➔ Path drops to [1, 2] ➔ Exclude Choice Run
+         • Frame 4: Base Case Reached! ➔ Save Snapshot: [1, 2]
+   • ↩️ Backtrack (Pop '2') ➔ Path drops to [1] ... branches branch outwards dynamically.</div>
+                        </div>
                     </div>
                 </div>
                 <div class="problem-card">
                     <div class="problem-header"><span class="problem-title">Permutations Collection</span><span class="badge medium">MEDIUM</span></div>
                     <div class="problem-body">
+                        <p class="description">"Re-arrange distinct items to compile all legal sequence order representations."</p>
                         <pre><code>fun permute(nums: IntArray): List<List<Int>> {
     val res = mutableListOf<List<Int>>()
     fun backtrack(path: MutableList<Int>) {
         if (path.size == nums.size) { res.add(ArrayList(path)); return }
         for (num in nums) {
-            if (path.contains(num)) continue
+            if (path.contains(num)) continue // Prune used paths
             path.add(num); backtrack(path); path.removeAt(path.size - 1)
         }
     }
@@ -337,12 +412,25 @@ result = [1, 1, 0, 2, 1, 0]</div>
 }</code></pre>
                         <div class="walkthrough">
                             <h5>📊 State-Tree Recurse & Rollback Frame Map:</h5>
-                            <div class="visual-box">Input: [1, 2, 3]
-Level 1: Choose '1' -> Path: [1]
-  Level 2: Skip '1', Choose '2' -> Path: [1, 2]
-    Level 3: Skip '1','2', Choose '3' -> Path: [1, 2, 3] -> Save Match!
-  Level 3 ↩️ Backtrack (Pop '3') -> Path: [1, 2] -> Level terminates.
-Level 2 ↩️ Backtrack (Pop '2') -> Path: [1] -> Choose '3' -> Path: [1, 3]...</div>
+                            <div class="visual-box">Input Array Vector: [1, 2, 3]
+                                     [ ]
+                  /               |               \
+               Take 1          Take 2          Take 3
+                /                |                \
+             [1]                [2]               [3]
+            /   \              /   \             /   \
+        Take 2 Take 3      Take 1 Take 3     Take 1 Take 2
+          /       \          /       \         /       \
+       [1,2]     [1,3]    [2,1]     [2,3]   [3,1]     [3,2]
+         |         |        |         |       |         |
+       [1,2,3]   [1,3,2]  [2,1,3]   [2,3,1] [3,1,2]   [3,2,1]
+
+Execution Stack:
+Level 1: Choose '1' ➔ Path: [1]
+  Level 2: Skip '1', Choose '2' ➔ Path: [1, 2]
+    Level 3: Skip '1','2', Choose '3' ➔ Path: [1, 2, 3] ➔ Save snapshot!
+  Level 3 ↩️ Backtrack (Evict '3') ➔ Path resets to [1, 2] ➔ Level terminates.
+Level 2 ↩️ Backtrack (Evict '2') ➔ Path resets to [1] ➔ Next loop option targets '3' ➔ Path: [1, 3]...</div>
                         </div>
                     </div>
                 </div>
@@ -351,29 +439,16 @@ Level 2 ↩️ Backtrack (Pop '2') -> Path: [1] -> Choose '3' -> Path: [1, 3]...
     </main>
 
     <script>
-        // SPA Visibility Engine
         function showPattern(id) {
-            // Hide all sections
-            document.querySelectorAll('section').forEach(sec => {
-                sec.classList.remove('active-view');
-            });
-            // Remove all active navigation link highlights
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-            });
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active-view'));
+            document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
 
-            // Show target section
             const targetSection = document.getElementById(id);
             targetSection.classList.add('active-view');
-
-            // Highlight target navigation link
             document.getElementById(`menu-${id}`).classList.add('active');
 
-            // Dynamic Header Updates
             const menuText = document.getElementById(`menu-${id}`).innerText;
             document.getElementById('main-title').innerText = `Pattern ${menuText}`;
-            
-            // Scroll back to top smoothly on switch
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
