@@ -16,6 +16,8 @@
             --easy-color: #34a853;
             --medium-color: #fbbc05;
             --card-bg: #ffffff;
+            --warning-bg: #fce8e6;
+            --warning-text: #c5221f;
         }
 
         * {
@@ -142,6 +144,22 @@
             color: #3c4043;
         }
 
+        .warning-box {
+            background-color: var(--warning-bg);
+            border-left: 4px solid var(--warning-text);
+            color: var(--warning-text);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .warning-box h5 {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+
         /* --- PROBLEM LAYOUT --- */
         .problem-grid {
             display: flex;
@@ -202,7 +220,22 @@
             color: #202124;
         }
 
-        /* --- CODE FORMATTING (MOBILE SCROLLABLE) --- */
+        .walkthrough {
+            background-color: #f1f3f4;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            border: 1px dashed var(--border-color);
+        }
+
+        .walkthrough h5 {
+            font-size: 0.95rem;
+            color: #1f2327;
+            margin-bottom: 8px;
+        }
+
+        /* --- CODE FORMATTING --- */
         pre {
             background-color: var(--code-bg);
             color: var(--code-text);
@@ -211,7 +244,7 @@
             overflow-x: auto;
             font-family: "Fira Code", Consolas, Monaco, monospace;
             font-size: 0.88rem;
-            -webkit-overflow-scrolling: touch; /* Smooth mobile momentum scroll */
+            -webkit-overflow-scrolling: touch;
             border: 1px solid #1f2327;
         }
 
@@ -220,13 +253,24 @@
             white-space: pre;
         }
 
+        .visual-box {
+            background-color: #202124;
+            color: #34a853;
+            padding: 14px;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre;
+            margin: 12px 0;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+
         /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
             }
 
-            /* Convert sidebar into a sticky mobile app tab-bar at the bottom */
             nav {
                 width: 100%;
                 height: 60px;
@@ -243,9 +287,7 @@
                 box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             }
 
-            nav h2 {
-                display: none; /* Hide header text on mobile menu */
-            }
+            nav h2 { display: none; }
 
             nav ul {
                 display: flex;
@@ -263,7 +305,7 @@
 
             nav a {
                 padding: 12px 5px;
-                font-size: 0.85rem;
+                font-size: 0.82rem;
                 border-radius: 0;
                 height: 100%;
                 display: flex;
@@ -271,21 +313,14 @@
                 justify-content: center;
             }
 
-            /* Content adjusts to full width on mobile devices */
             main {
                 margin-left: 0;
                 width: 100%;
-                padding: 20px 16px 80px 16px; /* Extra bottom padding prevents text cutoff behind navbar */
+                padding: 20px 16px 80px 16px;
             }
 
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            section {
-                padding: 20px 16px;
-                border-radius: 8px;
-            }
+            header h1 { font-size: 1.8rem; }
+            section { padding: 20px 16px; border-radius: 8px; }
         }
     </style>
 </head>
@@ -297,6 +332,7 @@
             <li><a href="#pattern1" class="active">1. Pointers</a></li>
             <li><a href="#pattern2">2. Window</a></li>
             <li><a href="#pattern3">3. Prefix</a></li>
+            <li><a href="#pattern4">4. Fast/Slow</a></li>
         </ul>
     </nav>
 
@@ -494,10 +530,97 @@
                 </div>
             </div>
         </section>
+
+        <section id="pattern4">
+            <h2 class="pattern-title">4. Fast & Slow Pointers</h2>
+            <div class="clues">
+                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
+                <p>• Involves linked sequences or arrays whose elements reference other index locations directly.<br>
+                   • Tasks require finding midpoints or identifying cycles/loops using <strong>O(1) Auxiliary Space</strong>.</p>
+            </div>
+
+            <div class="warning-box">
+                <h5>⚠️ Google-Tier Edge Case Warning:</h5>
+                <p>This array cycle algorithm relies on a strict mathematical constraint: the input array <strong>must contain at least one duplicate</strong>. If you pass an array with completely unique elements, the pointers will run in a straight line and crash with an <code>IndexOutOfBoundsException</code> once they run off the end.</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-title">Linked List Cycle</span>
+                        <span class="badge easy">EASY</span>
+                    </div>
+                    <div class="problem-body">
+                        <p class="description">"Determine if a linked list contains a loop cycle structure."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Fast pointer takes 2 steps while slow takes 1 step. If a loop exists, they are mathematically guaranteed to crash into each other.</p>
+                        <pre><code>fun hasCycle(head: ListNode?): Boolean {
+    var slow = head
+    var fast = head
+
+    while (fast != null && fast.next != null) {
+        slow = slow?.next
+        fast = fast.next?.next
+        if (slow == fast) return true
+    }
+    return false
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-header">
+                        <span class="problem-title">Find the Duplicate Number</span>
+                        <span class="badge medium">MEDIUM</span>
+                    </div>
+                    <div class="problem-body">
+                        <p class="description">"Find the single repeated number in an array of size n+1 without modifying it and using O(1) space."</p>
+                        <p class="spot"><strong>Pattern Hack:</strong> Map values to node targets (<code>index ➔ nums[index]</code>). The duplicate number naturally serves as the entrance to an infinite loop trap.</p>
+                        <pre><code>fun findDuplicate(nums: IntArray): Int {
+    var slow = nums[0]
+    var fast = nums[0]
+
+    // Phase 1: Establish intersection collision point
+    do {
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+    } while (slow != fast)
+
+    // Phase 2: Find loop entrance point
+    var pointer1 = nums[0]
+    var pointer2 = slow
+    while (pointer1 != pointer2) {
+        pointer1 = nums[pointer1]
+        pointer2 = nums[pointer2]
+    }
+    return pointer1
+}</code></pre>
+
+                        <div class="walkthrough">
+                            <h5>📊 Structural Execution Dry-Run</h5>
+                            <p>Input: <code>nums = [2, 5, 1, 4, 3, 2]</code></p>
+                            <div class="visual-box">
+Graph Traversal Path:
+Index 0 ➔ Node(2) ➔ Node(1) ➔ Node(5) ➔ Node(2) [Trapped in Cycle!]
+
+Visual Graph Layout:
+(Start) 0 ──> 2 ──> 1 ──> 5 
+              ▲           │
+              └───────────┘</div>
+                            <p><strong>Phase 1 Tracking (Collision):</strong><br>
+                            • Round 1: slow = nums[2] (1) | fast = nums[nums[2]] ➔ nums[1] (5)<br>
+                            • Round 2: slow = nums[1] (5) | fast = nums[nums[5]] ➔ nums[2] (1)<br>
+                            • Round 3: slow = nums[5] (2) | fast = nums[nums[1]] ➔ nums[5] (2) <span style="color:var(--easy-color); font-weight:bold;">➔ Match!</span></p>
+                            
+                            <p style="margin-top:8px;"><strong>Phase 2 Tracking (Entrance):</strong><br>
+                            Reset pointer1 to <code>nums[0]</code> (2), move both at speed 1. They match immediately on value <strong>2</strong> without jumping, pinpointing the duplicate entry point.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
-        // Simple interactive script to track and highlight visible panels in navigation menu
         const sections = document.querySelectorAll('section');
         const navLinks = document.querySelectorAll('nav a');
 
