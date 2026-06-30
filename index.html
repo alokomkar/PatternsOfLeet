@@ -1,672 +1,576 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Interview Prep Master Portfolio</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Intent — AI Personal Decision Intelligence</title>
+
+    <meta name="description"
+          content="Intent helps you overcome decision paralysis by connecting long-term goals, research, planning and daily execution." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-color: #f8f9fa;
-            --sidebar-bg: #ffffff;
-            --text-color: #202124;
-            --accent-color: #1a73e8;
-            --border-color: #dadce0;
-            --code-bg: #2d3142;
-            --code-text: #eff5f6;
-            --easy-color: #34a853;
-            --medium-color: #fbbc05;
-            --card-bg: #ffffff;
-            --warning-bg: #fce8e6;
-            --warning-text: #c5221f;
+
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color); color: var(--text-color);
-            display: flex; min-height: 100vh; line-height: 1.6;
+        body{
+        font-family:'Inter',sans-serif;
+        background:#fafafa;
+        color:#111827;
+        line-height:1.7;
         }
 
-        /* --- SIDEBAR NAV --- */
-        nav {
-            width: 260px; height: 100vh; background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color); position: fixed;
-            top: 0; left: 0; overflow-y: auto; padding: 30px 20px; z-index: 100;
-        }
-        nav h2 { font-size: 1.1rem; margin-bottom: 20px; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1px; }
-        nav ul { list-style: none; }
-        nav li { margin-bottom: 8px; }
-        nav a { text-decoration: none; color: #5f6368; font-weight: 500; display: block; padding: 10px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
-        nav a:hover, nav a.active { background-color: #e8f0fe; color: var(--accent-color); }
-
-        /* --- MAIN VIEWPORT --- */
-        main { margin-left: 260px; padding: 40px; width: calc(100% - 260px); max-width: 1000px; }
-        header { margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        header h1 { font-size: 2.2rem; color: #1f2327; margin-bottom: 8px; font-weight: 700; }
-        header p { color: #5f6368; font-size: 1.1rem; }
-        
-        /* --- DYNAMIC VISIBILITY ENGINE --- */
-        section { display: none; } 
-        section.active-view { display: block; animation: fadeIn 0.3s ease-in-out; } 
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .container{
+        width:min(1100px,92%);
+        margin:auto;
         }
 
-        h2.pattern-title { font-size: 1.8rem; margin-bottom: 16px; color: #1f2327; border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; display: inline-block;}
-        .clues { background-color: #e8f0fe; border-left: 4px solid var(--accent-color); padding: 16px; border-radius: 0 8px 8px 0; margin: 20px 0 30px 0; }
-        .clues h4 { color: #1967d2; margin-bottom: 6px; font-size: 1rem; }
-        .warning-box { background-color: var(--warning-bg); border-left: 4px solid var(--warning-text); color: var(--warning-text); padding: 16px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.95rem; }
-        .warning-box h5 { font-weight: bold; margin-bottom: 4px; }
-
-        .problem-grid { display: flex; flex-direction: column; gap: 30px; }
-        .problem-card { border: 1px solid var(--border-color); border-radius: 12px; background-color: #ffffff; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .problem-header { background-color: #f8f9fa; padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .problem-title { font-weight: 600; font-size: 1.1rem; color: #1f2327; }
-        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: white; letter-spacing: 0.5px;}
-        .badge.easy { background-color: var(--easy-color); }
-        .badge.medium { background-color: var(--medium-color); color: #202124; }
-        .problem-body { padding: 25px; }
-        .description { font-style: italic; color: #5f6368; margin-bottom: 12px; font-size: 0.95rem; }
-        .spot { margin-bottom: 16px; font-size: 0.95rem; color: #202124; }
-        .walkthrough { background-color: #f1f3f4; padding: 16px; border-radius: 8px; margin-top: 20px; font-size: 0.9rem; border: 1px dashed var(--border-color); }
-        .walkthrough h5 { font-size: 0.95rem; color: #1f2327; margin-bottom: 8px; }
-        pre { background-color: var(--code-bg); color: var(--code-text); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 0.88rem; border: 1px solid #1f2327; margin-top: 10px; }
-        .visual-box { background-color: #202124; color: #34a853; padding: 14px; border-radius: 6px; font-family: monospace; white-space: pre; margin: 12px 0; overflow-x: auto; font-size: 0.85rem; line-height: 1.4; }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            nav { width: 100%; height: 60px; position: fixed; top: auto; bottom: 0; left: 0; border-right: none; border-top: 1px solid var(--border-color); padding: 0; display: flex; }
-            nav h2 { display: none; }
-            nav ul { display: flex; width: 100%; justify-content: space-around; align-items: center; }
-            nav a { padding: 8px 4px; font-size: 0.75rem; border-radius: 0; text-align: center;}
-            main { margin-left: 0; width: 100%; padding: 20px 16px 80px 16px; }
+        nav{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:28px 0;
         }
+
+        .logo{
+        font-size:24px;
+        font-weight:700;
+        }
+
+        .logo span{
+        color:#4F46E5;
+        }
+
+        nav a{
+        text-decoration:none;
+        color:#374151;
+        margin-left:32px;
+        font-weight:500;
+        }
+
+        .hero{
+
+        padding:90px 0 80px;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:80px;
+        align-items:center;
+        }
+
+        .badge{
+
+        display:inline-block;
+        padding:8px 16px;
+        border-radius:100px;
+        background:#EEF2FF;
+        color:#4338CA;
+        font-weight:600;
+        font-size:14px;
+        margin-bottom:22px;
+
+        }
+
+        .hero h1{
+
+        font-size:56px;
+        line-height:1.05;
+        margin-bottom:24px;
+
+        }
+
+        .hero p{
+
+        font-size:20px;
+        color:#4B5563;
+        margin-bottom:40px;
+
+        }
+
+        .buttons{
+
+        display:flex;
+        gap:18px;
+
+        }
+
+        .primary{
+
+        background:#4F46E5;
+        color:white;
+        padding:16px 28px;
+        border-radius:12px;
+        text-decoration:none;
+        font-weight:600;
+
+        }
+
+        .secondary{
+
+        border:1px solid #ddd;
+        padding:16px 28px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#111827;
+        font-weight:600;
+
+        }
+
+        .mockup{
+
+        background:white;
+        border-radius:24px;
+        padding:28px;
+        box-shadow:0 25px 60px rgba(0,0,0,.08);
+
+        }
+
+        .mockup h3{
+
+        margin-bottom:24px;
+
+        }
+
+        .card{
+
+        padding:18px;
+        border-radius:14px;
+        background:#F9FAFB;
+        margin-bottom:18px;
+
+        }
+
+        .card strong{
+
+        display:block;
+        margin-bottom:6px;
+
+        }
+
+        section{
+
+        padding:110px 0;
+
+        }
+
+        .section-title{
+
+        font-size:40px;
+        margin-bottom:18px;
+
+        }
+
+        .section-text{
+
+        font-size:19px;
+        color:#6B7280;
+        max-width:700px;
+        margin-bottom:60px;
+
+        }
+
+        .grid{
+
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+        gap:28px;
+
+        }
+
+        .feature{
+
+        background:white;
+        padding:32px;
+        border-radius:18px;
+        box-shadow:0 10px 30px rgba(0,0,0,.05);
+
+        }
+
+        .feature h3{
+
+        margin-bottom:16px;
+
+        }
+
+        .feature p{
+
+        color:#6B7280;
+
+        }
+
+        .timeline{
+
+        display:flex;
+        justify-content:space-between;
+        gap:20px;
+        flex-wrap:wrap;
+
+        }
+
+        .step{
+
+        flex:1;
+        min-width:220px;
+
+        }
+
+        .circle{
+
+        width:60px;
+        height:60px;
+        background:#4F46E5;
+        border-radius:50%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        color:white;
+        font-weight:700;
+        margin-bottom:20px;
+
+        }
+
+        footer{
+
+        padding:80px 0;
+        text-align:center;
+        color:#6B7280;
+
+        }
+
+        footer h2{
+
+        margin-bottom:20px;
+
+        }
+
+        .email{
+
+        margin-top:25px;
+        font-weight:600;
+
+        }
+
+        @media(max-width:900px){
+
+        .hero{
+
+        grid-template-columns:1fr;
+
+        }
+
+        .hero h1{
+
+        font-size:42px;
+
+        }
+
+        }
+
     </style>
+
 </head>
+
 <body>
 
+<div class="container">
+
     <nav>
-        <h2>Core Templates</h2>
-        <ul>
-            <li><a onclick="showPattern('p1')" id="menu-p1" class="active">1. Two Pointers</a></li>
-            <li><a onclick="showPattern('p2')" id="menu-p2">2. Sliding Window</a></li>
-            <li><a onclick="showPattern('p3')" id="menu-p3">3. Prefix Sum</a></li>
-            <li><a onclick="showPattern('p4')" id="menu-p4">4. Fast & Slow</a></li>
-            <li><a onclick="showPattern('p5')" id="menu-p5">5. Mono Stack</a></li>
-            <li><a onclick="showPattern('p6')" id="menu-p6">6. Backtracking</a></li>
-            <li><a onclick="showPattern('p7')" id="menu-p7">7. Binary Search</a></li>
-        </ul>
+
+        <div class="logo">Intent<span>.</span></div>
+
+        <div>
+
+            <a href="#problem">Problem</a>
+            <a href="#features">Features</a>
+            <a href="#how">How it Works</a>
+
+        </div>
+
     </nav>
 
-    <main>
-        <header>
-            <h1 id="main-title">Pattern 1: Two Pointers</h1>
-            <p>Targeted conceptual mastery for your Google technical loop.</p>
-        </header>
+    <section class="hero">
 
-        <section id="p1" class="active-view">
-            <h2 class="pattern-title">The Two Pointers Mechanism</h2>
-            <div class="clues">
-                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Input is a linear array/string.<br>
-                   • The elements are explicitly <strong>Sorted</strong>, or sorting them optimizes space to $O(1)$.<br>
-                   • You are searching for a pair or comparison boundaries from both ends.</p>
-            </div>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Two Sum II - Sorted Input</span><span class="badge easy">EASY</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Find two numbers in a sorted array that sum up to a target."</p>
-                        <p class="spot"><strong>Pattern Hack:</strong> Converge pointers inward from both ends to scan elements without extra memory allocation.</p>
-                        <pre><code>fun twoSum(numbers: IntArray, target: Int): IntArray {
-    var left = 0; var right = numbers.size - 1
-    while (left < right) {
-        val sum = numbers[left] + numbers[right]
-        if (sum == target) return intArrayOf(left + 1, right + 1)
-        else if (sum < target) left++ else right--
-    }
-    return intArrayOf()
-}</code></pre>
-                    </div>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Container With Most Water</span><span class="badge medium">MEDIUM</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Find two lines that form a container holding the most water."</p>
-                        <p class="spot"><strong>Pattern Hack:</strong> Start with maximum horizontal width at indices margins, then sacrifice the shorter line barrier to find a better peak.</p>
-                        <pre><code>fun maxArea(height: IntArray): Int {
-    var left = 0; var right = height.size - 1; var maxWater = 0
-    while (left < right) {
-        val width = right - left
-        val currentHeight = minOf(height[left], height[right])
-        maxWater = maxOf(maxWater, width * currentHeight)
-        if (height[left] < height[right]) left++ else right--
-    }
-    return maxWater
-}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div>
 
-        <section id="p2">
-            <h2 class="pattern-title">The Sliding Window Mechanism</h2>
-            <div class="clues">
-                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Demands contiguous subarrays or subsegments.<br>
-                   • Bounded by wording keywords like <strong>"longest"</strong>, <strong>"shortest"</strong>, or <strong>"window of size K"</strong>.</p>
-            </div>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Maximum Average Subarray I</span><span class="badge easy">EASY</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Find a contiguous subarray of fixed size K with the highest average value."</p>
-                        <p class="spot"><strong>Pattern Hack:</strong> Maintain a fixed framework window box. Subtract the element exiting left and add the new element entering right in $O(1)$ time.</p>
-                        <pre><code>fun findMaxAverage(nums: IntArray, k: Int): Double {
-    var sum = 0.0; for (i in 0 until k) sum += nums[i]
-    var maxSum = sum
-    for (i in k until nums.size) {
-        sum += nums[i] - nums[i - k]
-        maxSum = maxOf(maxSum, sum)
-    }
-    return maxSum / k
-}</code></pre>
-                    </div>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Longest Substring Without Repeating Chars</span><span class="badge medium">MEDIUM</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Find the longest dynamic window frame housing entirely unique letters."</p>
-                        <p class="spot"><strong>Pattern Hack:</strong> Expand right step-by-step. Whenever a character matches a duplicated asset, violently shift the left margin up to repair validity constraints.</p>
-                        <pre><code>fun lengthOfLongestSubstring(s: String): Int {
-    var left = 0; var maxLength = 0; val seen = HashSet<Char>()
-    for (right in s.indices) {
-        while (seen.contains(s[right])) { seen.remove(s[left]); left++ }
-        seen.add(s[right]); maxLength = maxOf(maxLength, right - left + 1)
-    }
-    return maxLength
-}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="p3">
-            <h2 class="pattern-title">The Prefix Sum Optimization</h2>
-            <div class="clues">
-                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Requires frequent range total assessments across a static vector array.<br>
-                   • Resolves slice summaries containing negative values where a traditional sliding window cannot safely decide bounds.</p>
-            </div>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Range Sum Query - Immutable</span><span class="badge easy">EASY</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Return the total sum value inside arbitrary bounding ranges in O(1) time."</p>
-                        <pre><code>class NumArray(nums: IntArray) {
-    private val prefix = IntArray(nums.size + 1)
-    init { for (i in nums.indices) prefix[i + 1] = prefix[i] + nums[i] }
-    fun sumRange(left: Int, right: Int) = prefix[right + 1] - prefix[left]
-}</code></pre>
-                    </div>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Subarray Sum Equals K</span><span class="badge medium">MEDIUM</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Find total continuous segments summing precisely to target K."</p>
-                        <p class="spot"><strong>Pattern Hack:</strong> Keep track of a running sum and match it against historical entries stored inside a lookup map (`currentSum - k`).</p>
-                        <pre><code>fun subarraySum(nums: IntArray, k: Int): Int {
-    var count = 0; var currentSum = 0; val prefixMap = HashMap<Int, Int>(); prefixMap[0] = 1
-    for (num in nums) {
-        currentSum += num
-        if (prefixMap.containsKey(currentSum - k)) count += prefixMap[currentSum - k]!!
-        prefixMap[currentSum] = prefixMap.getOrDefault(currentSum, 0) + 1
-    }
-    return count
-}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="p4">
-            <h2 class="pattern-title">Cycle Detection Framework</h2>
-            <div class="clues">
-                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Linked structures or index-jumping vectors where items point downstream.<br>
-                   • Demands loop classification or midpoint evaluations while keeping memory at <strong>O(1) Auxiliary Space</strong>.</p>
-            </div>
-            <div class="warning-box">
-                <h5>⚠️ Google Edge-Case Constraint:</h5>
-                <p>Array loop trapping relies entirely on a guaranteed duplicated element to anchor the cycle. If you execute this layout over completely unique elements, indicators will run off bounds and raise an index exception error.</p>
-            </div>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Linked List Cycle Check</span><span class="badge easy">EASY</span></div>
-                    <div class="problem-body">
-                        <pre><code>fun hasCycle(head: ListNode?): Boolean {
-    var slow = head; var fast = head
-    while (fast?.next != null) {
-        slow = slow?.next; fast = fast.next?.next
-        if (slow == fast) return true
-    }
-    return false
-}</code></pre>
-                    </div>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Find the Duplicate Number</span><span class="badge medium">MEDIUM</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Track the repeated asset within an unchanging linear sequence space using O(1) space."</p>
-                        <pre><code>fun findDuplicate(nums: IntArray): Int {
-    var slow = nums[0]; var fast = nums[0]
-    do { slow = nums[slow]; fast = nums[nums[fast]] } while (slow != fast)
-    var p1 = nums[0]; var p2 = slow
-    while (p1 != p2) { p1 = nums[p1]; p2 = nums[p2] }
-    return p1
-}</code></pre>
-                        <div class="walkthrough">
-                            <h5>📊 Structural Execution Dry-Run Logs:</h5>
-                            <p>Input Array mapping index pointers: <code>nums = [2, 5, 1, 4, 3, 2]</code></p>
-                            <div class="visual-box">Graph Layout Trajectory Map:
-Index 0 ➔ Node(2) ➔ Node(1) ➔ Node(5) ➔ Node(2) [Cycle Bound Entrypoint Trap!]
-
-Visual Core Matrix:
-(Start) 0 ──> 2 ──> 1 ──> 5 
-              ▲           │
-              └───────────┘
-• Phase 1 Collision Intersection:
-  - Round 1: slow = nums[2] (1) | fast = nums[nums[2]] ➔ nums[1] (5)
-  - Round 2: slow = nums[1] (5) | fast = nums[nums[5]] ➔ nums[2] (1)
-  - Round 3: slow = nums[5] (2) | fast = nums[nums[1]] ➔ nums[5] (2) ➔ Matches!
-
-• Phase 2 Entrance Alignment:
-  Reset pointer1 to nums[0] (2). Match pointer2 at 2. They immediately equal 2.
-  Output Duplicate Identified: 2</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="p5">
-            <h2 class="pattern-title">The Monotonic Stack Engine</h2>
-            <div class="clues">
-                <h4>🧠 Secret Clues to Spot This Pattern:</h4>
-                <p>• Seeking the relative coordinates of the <strong>"next greater element"</strong> or <strong>"previous smaller element"</strong>.<br>
-                   • Traces custom historical layouts while aggressively purging items out of sync with a sorted hierarchy chain.</p>
-            </div>
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Next Greater Element I</span><span class="badge easy">EASY</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Extract matching next-greater element horizons from a targeted sub-query layout map."</p>
-                        <pre><code>import java.util.Stack
-
-fun nextGreaterElement(queryArray: IntArray, searchArray: IntArray): IntArray {
-    val answerMap = HashMap<Int, Int>(); val waitingRoom = Stack<Int>()
-    for (num in searchArray) {
-        while (waitingRoom.isNotEmpty() && waitingRoom.peek() < num) answerMap[waitingRoom.pop()] = num
-        waitingRoom.push(num)
-    }
-    return IntArray(queryArray.size) { answerMap.getOrDefault(queryArray[it], -1) }
-}</code></pre>
-                        <div class="walkthrough">
-                            <h5>📊 Waiting Room Registry Snapshot:</h5>
-                            <p>Inputs: <code>searchArray = [2, 1, 3, 4]</code>, <code>queryArray = [1, 3]</code></p>
-                            <div class="visual-box">• Step 1 (num=2): waitingRoom empty. Push 2.    ➔ Stack: [2]
-• Step 2 (num=1): 1 < 2. No eviction. Push 1.    ➔ Stack: [2, 1]
-• Step 3 (num=3): 3 > 1 ➔ answerMap[1]=3. Pop 1.
-                  3 > 2 ➔ answerMap[2]=3. Pop 2. ➔ Push 3 ➔ Stack: [3] | Map: {1➔3, 2➔3}
-• Step 4 (num=4): 4 > 3 ➔ answerMap[3]=4. Pop 3. ➔ Push 4 ➔ Stack: [4] | Map: {1➔3, 2➔3, 3➔4}
-
-Final Query Mapping Outputs Array: [3, 4]</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-header"><span class="problem-title">Daily Temperatures</span><span class="badge medium">MEDIUM</span></div>
-                    <div class="problem-body">
-                        <p class="description">"Track the index distances required to spot a warmer scalar temperature index row."</p>
-                        <pre><code>import java.util.Stack
-
-fun dailyTemperatures(temperatures: IntArray): IntArray {
-    val result = IntArray(temperatures.size); val stack = Stack<Int>()
-    for (i in temperatures.indices) {
-        while (stack.isNotEmpty() && temperatures[stack.peek()] < temperatures[i]) {
-            val oldIdx = stack.pop(); result[oldIdx] = i - oldIdx
-        }
-        stack.push(i)
-    }
-    return result
-}</code></pre>
-                        <div class="walkthrough">
-                            <h5>📊 Index Stack Warmer Vector Mapping Logs:</h5>
-                            <div class="visual-box">Input Data: temps = [73, 74, 75, 71, 69, 72]
-• Day 0 (73) ➔ Stack empty ➔ Push index 0 ➔ Stack: [0]
-• Day 1 (74) ➔ 74 > temp[0](73) ➔ Pop 0 ➔ result[0] = 1-0 = 1 ➔ Push index 1 ➔ Stack: [1]
-• Day 2 (75) ➔ 75 > temp[1](74) ➔ Pop 1 ➔ result[1] = 2-1 = 1 ➔ Push index 2 ➔ Stack: [2]
-• Day 3 (71) ➔ 71 < temp[2](75) ➔ No eviction ➔ Push index 3 ➔ Stack: [2, 3]
-• Day 4 (69) ➔ 69 < temp[3](71) ➔ No eviction ➔ Push index 4 ➔ Stack: [2, 3, 4]
-• Day 5 (72) ➔ 72 > temp[4](69) ➔ Pop 4 ➔ result[4] = 5-4 = 1
-              72 > temp[3](71) ➔ Pop 3 ➔ result[3] = 5-3 = 2
-              72 < temp[2](75) ➔ Stop processing pops ➔ Push index 5 ➔ Stack: [2, 5]
-
-Final Output Mapped Vector Content Array:
-result = [1, 1, 0, 2, 1, 0]</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="p6">
-            <h2 class="pattern-title">6. State Machine Backtracking</h2>
-            
-            <div class="clues">
-                <h4>🧠 The Secret Clues to Spot This Pattern:</h4>
-                <p>• The problem explicitly asks you to generate <strong>"all subsets"</strong>, <strong>"all permutations"</strong>, <strong>"all distinct ways"</strong>, or <strong>"all valid paths"</strong>.<br>
-                   • The problem statement uses exhaustive search wording keywords like <em>"Return all possible combinations..."</em><br>
-                   • The input parameters have **tiny constraints** (e.g., $N \le 12$ or $N \le 15$), which mathematically hints at a brute-force exponential ($O(2^n)$ or $O(n!)$) state-space expansion tree.</p>
+            <div class="badge">
+                AI Personal Decision Intelligence
             </div>
 
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header">
-                        <span class="problem-title">Subsets (Power Set)</span>
-                        <span class="badge easy">EASY</span>
-                    </div>
-                    <div class="problem-body">
-                        <h5>📋 Problem Statement:</h5>
-                        <p class="description">Given an integer array <code>nums</code> of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets. You can return the answer in any order.</p>
-                        
-                        <h5>💡 Conceptual Explanation:</h5>
-                        <p class="spot">For every element in the array, the algorithm faces a binary choice: <strong>"To be or not to be."</strong> We can either include the current number in our bucket or exclude it. By repeating this choice recursively down the line, we map out every combination.</p>
-                        
-                        <div class="walkthrough" style="margin-bottom: 16px;">
-                            <strong>📦 Sample Input & Output:</strong>
-                            <div class="visual-box" style="color: #fbbc05;">Input: nums = [1, 2]
-Output: [[], [1], [2], [1, 2]]</div>
-                        </div>
+            <h1>
+                Know what deserves your attention today.
+            </h1>
 
-                        <h5>📊 Tracing the Problem:</h5>
-                        <p class="spot">Starting with an empty path <code>[]</code> at <code>index = 0</code>, we process each number by branching into two recursive paths. When we reach the end of the array, we take a snapshot of the path.</p>
-                        <div class="visual-box">
-Execution Frame Map:
-• Frame 1: index = 0 (Value: 1)
-  ├── Choice 1: INCLUDE '1' ➔ path = [1]
-  │     └── Frame 2: index = 1 (Value: 2)
-  │           ├── Choice 1: INCLUDE '2' ➔ path = [1, 2]
-  │           │     └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: [1, 2]
-  │           └── ↩️ BACKTRACK (Pop '2') ➔ path resets to [1] ➔ Exclude Choice Run
-  │                 └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: [1]
-  │
-  └── ↩️ BACKTRACK (Pop '1') ➔ path resets to [] ➔ Exclude Choice Run
-        └── Frame 2: index = 1 (Value: 2)
-              ├── Choice 1: INCLUDE '2' ➔ path = [2]
-              │     └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: [2]
-              └── ↩️ BACKTRACK (Pop '2') ➔ path resets to [] ➔ Exclude Choice Run
-                    └── Frame 3: index == 2 (Base Case Reached!) ➔ Save Snapshot: []</div>
+            <p>
 
-                        <h5>💻 Kotlin Implementation:</h5>
-                        <pre><code>fun subsets(nums: IntArray): List<List<Int>> {
-    val finalResult = mutableListOf<List<Int>>()
+                Intent helps you overcome decision paralysis by connecting long-term goals, research, planning and daily execution into one continuous system.
 
-    fun generateSubsets(index: Int, currentPath: MutableList<Int>) {
-        // Base Case: Once decisions are completed for all elements, snapshot state
-        if (index == nums.size) {
-            finalResult.add(ArrayList(currentPath)) // Save deep copy copy
-            return
-        }
+            </p>
 
-        // Branch 1: INCLUDE the current number in the tracking bucket
-        currentPath.add(nums[index])
-        generateSubsets(index + 1, currentPath) // Explore downstream
+            <div class="buttons">
 
-        // ↩️ THE BACKTRACK: Undo decision to dynamically restore previous state
-        currentPath.removeAt(currentPath.size - 1)
+                <a href="#" class="primary">
+                    Join Early Access
+                </a>
 
-        // Branch 2: EXCLUDE the current number from the tracking bucket
-        generateSubsets(index + 1, currentPath) // Explore downstream without it
-    }
+                <a href="#features" class="secondary">
+                    Learn More
+                </a>
 
-    generateSubsets(0, mutableListOf())
-    return finalResult
-}</code></pre>
-                    </div>
-                </div>
-
-                <div class="problem-card">
-                    <div class="problem-header">
-                        <span class="problem-title">Permutations Collection</span>
-                        <span class="badge medium">MEDIUM</span>
-                    </div>
-                    <div class="problem-body">
-                        <h5>📋 Problem Statement:</h5>
-                        <p class="description">Given an array <code>nums</code> of distinct integers, return all the possible permutations. You can return the answer in any order.</p>
-                        
-                        <h5>💡 Conceptual Explanation:</h5>
-                        <p class="spot">Unlike subsets where order doesn't matter, permutations scramble all positional arrangements. Every slot in our path loops through <strong>all available numbers</strong> from the beginning. If an item is already inside our current branch path, we prune it. If it is free, we claim it, explore deeper, and then discard it so other numbers can take a turn.</p>
-                        
-                        <div class="walkthrough" style="margin-bottom: 16px;">
-                            <strong>📦 Sample Input & Output:</strong>
-                            <div class="visual-box" style="color: #fbbc05;">Input: nums = [1, 2, 3]
-Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]</div>
-                        </div>
-
-                        <h5>📊 Tracing the Problem:</h5>
-                        <p class="spot">Watch the choice matrix expand horizontally and vertically as the recursive loops populate slots from left to right.</p>
-                        <div class="visual-box">
-Structural Choice Tree Layout:
-                                     [ ]
-                  /               |               \
-               Take 1          Take 2          Take 3
-                /                |                \
-             [1]                [2]               [3]
-            /   \              /   \             /   \
-        Take 2 Take 3      Take 1 Take 3     Take 1 Take 2
-          /       \          /       \         /       \
-       [1,2]     [1,3]    [2,1]     [2,3]   [3,1]     [3,2]
-         |         |        |         |       |         |
-       [1,2,3]   [1,3,2]  [2,1,3]   [2,3,1] [3,1,2]   [3,2,1]
-
-Trace Breakdown for the Left Branch:
-• Loop Level 1: path is empty. Choose '1' ➔ path = [1]
-  • Loop Level 2: '1' is already in path ➔ Skip. Choose next item '2' ➔ path = [1, 2]
-    • Loop Level 3: '1' & '2' in path ➔ Skip. Choose next item '3' ➔ path = [1, 2, 3]
-      • Level 4: path.size == nums.size (Base Case!) ➔ Save Snapshot: [1, 2, 3]
-    • ↩️ BACKTRACK (Pop '3') ➔ path = [1, 2] ➔ Level 3 loop finishes.
-  • ↩️ BACKTRACK (Pop '2') ➔ path = [1] ➔ Next iteration targets '3' ➔ path = [1, 3]
-    • Loop Level 3: Choose '2' ➔ path = [1, 3, 2] ➔ Base Case! ➔ Save Snapshot: [1, 3, 2]</div>
-
-                        <h5>💻 Kotlin Implementation:</h5>
-                        <pre><code>fun permute(nums: IntArray): List<List<Int>> {
-    val finalResult = mutableListOf<List<Int>>()
-
-    fun backtrack(currentPath: MutableList<Int>) {
-        // Base Case: If our path length matches our input size, arrangement is complete
-        if (currentPath.size == nums.size) {
-            finalResult.add(ArrayList(currentPath)) // Save snapshot copy
-            return
-        }
-
-        for (num in nums) {
-            // Pruning: Skip elements that are already claimed in our current path branch
-            if (currentPath.contains(num)) continue
-
-            // 1. Take choice step
-            currentPath.add(num)
-
-            // 2. Explore deeper down this decision path recursively
-            backtrack(currentPath)
-
-            // 3. ↩️ Backtrack choice step to clear slot for alternative paths
-            currentPath.removeAt(currentPath.size - 1)
-        }
-    }
-
-    backtrack(mutableListOf())
-    return finalResult
-}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="p7">
-            <h2 class="pattern-title">7. Modified Binary Search</h2>
-
-            <div class="clues">
-                <h4>🧠 The Secret Clues to Spot This Pattern:</h4>
-                <p>• The input array is explicitly <strong>fully sorted</strong>, <strong>partially rotated</strong>, or presents monotonic property structures.<br>
-                    • The goal requires you to find an optimal maximum-minimum or minimum-maximum threshold choice constraint.<br>
-                    • The problem calls out strict performance boundaries demanding a **logarithmic time efficiency layout ($O(\log n)$)**.</p>
             </div>
 
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-header">
-                        <span class="problem-title">Classic Binary Search</span>
-                        <span class="badge easy">EASY</span>
-                    </div>
-                    <div class="problem-body">
-                        <h5>📋 Problem Statement:</h5>
-                        <p class="description">Given an array of integers <code>nums</code> which is sorted in ascending order, and an integer <code>target</code>, write a function to search <code>target</code> in <code>nums</code>. If <code>target</code> exists, then return its index. Otherwise, return <code>-1</code>.</p>
+        </div>
 
-                        <h5>💡 Conceptual Explanation:</h5>
-                        <p class="spot">Instead of scanning from left to right linearly ($O(n)$), we constantly check the absolute midpoint of our bounds. Since the items are sorted, if the midpoint value is smaller than our target, the answer *must* live in the right half. If it's larger, it *must* live in the left half. Every step cuts our search space completely in half.</p>
+        <div class="mockup">
 
-                        <div class="walkthrough" style="margin-bottom: 16px;">
-                            <strong>📦 Sample Input & Output:</strong>
-                            <div class="visual-box" style="color: #fbbc05;">Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
-                                Output: 4</div>
-                        </div>
+            <h3>Today's Focus</h3>
 
-                        <h5>📊 Tracing the Problem:</h5>
-                        <p class="spot">Let's trace looking for the value <code>9</code>. We start with <code>low = 0</code> and <code>high = 5</code>.</p>
-                        <div class="visual-box">
-                            Search State Map Transitions:
-                            • Round 1: low = 0, high = 5
-                            - mid = 0 + (5 - 0) / 2 = 2 ➔ nums[2] is 3
-                            - Verification: 3 < 9 ➔ Shift search space rightward!
-                            - New boundaries update to: low = mid + 1 = 3
+            <div class="card">
 
-                            • Round 2: low = 3, high = 5
-                            - mid = 3 + (5 - 3) / 2 = 4 ➔ nums[4] is 9
-                            - Verification: nums[4] == 9 ➔ Target Matched successfully!
-                            - Return Index: 4</div>
+                <strong>🎯 Become Staff Engineer</strong>
 
-                        <h5>💻 Kotlin Implementation:</h5>
-                        <pre><code>fun search(nums: IntArray, target: Int): Int {
-    var low = 0
-    var high = nums.size - 1
+                2 priorities today
 
-    while (low <= high) {
-        // Prevents potential integer sum overflow compared to (low + high) / 2
-        val mid = low + (high - low) / 2
-
-        if (nums[mid] == target) {
-            return mid // Index located
-        } else if (nums[mid] < target) {
-            low = mid + 1 // Discard left half
-        } else {
-            high = mid - 1 // Discard right half
-        }
-    }
-    return -1
-}</code></pre>
-                    </div>
-                </div>
-
-                <div class="problem-card">
-                    <div class="problem-header">
-                        <span class="problem-title">Koko Eating Bananas</span>
-                        <span class="badge medium">MEDIUM</span>
-                    </div>
-                    <div class="problem-body">
-                        <h5>📋 Problem Statement:</h5>
-                        <p class="description">There are <code>piles</code> of bananas, where the i-th pile has <code>piles[i]</code> bananas. You have <code>h</code> hours to finish all piles. Koko can decide her hourly eating speed <code>k</code>. If a pile has fewer than <code>k</code> bananas, she finishes it and rests for the remainder of that hour. Return the minimum integer speed <code>k</code> such that she can eat all the bananas within <code>h</code> hours.</p>
-
-                        <h5>💡 Conceptual Explanation:</h5>
-                        <p class="spot">This is a **Search Space Optimization** problem. Instead of binary searching indices in an array, we run binary search over the range of **possible speeds**. The slowest possible speed is <code>1</code>, and the fastest speed needed is the size of the largest pile. If Koko can finish all bananas in time at a speed of <code>mid</code>, then <code>mid</code> becomes our tentative best answer, and we search the left half to see if she can go even slower. If she runs out of time, we search the right half to speed her up.</p>
-
-                        <div class="walkthrough" style="margin-bottom: 16px;">
-                            <strong>📦 Sample Input & Output:</strong>
-                            <div class="visual-box" style="color: #fbbc05;">Input: piles = [3, 6, 7, 11], h = 8
-                                Output: 4</div>
-                        </div>
-
-                        <h5>📊 Tracing the Problem:</h5>
-                        <p class="spot">Possible speed limits range from <code>low = 1</code> to <code>high = 11</code> (max pile size). We want to finish within <code>8 hours</code>.</p>
-                        <div class="visual-box">
-                            Search Space Transitions Log:
-                            • Round 1: low = 1, high = 11
-                            - midSpeed = 1 + (11 - 1) / 2 = 6 bananas/hour
-                            - Hours calculation: pile[3]/6 ➔ 1h | pile[6]/6 ➔ 1h | pile[7]/6 ➔ 2h | pile[11]/6 ➔ 2h
-                            - Total Hours needed: 1 + 1 + 2 + 2 = 6 hours.
-                            - Verification: 6 <= 8 hours ➔ Speed 6 works! Save it. Try slower: high = 6 - 1 = 5
-
-                            • Round 2: low = 1, high = 5
-                            - midSpeed = 1 + (5 - 1) / 2 = 3 bananas/hour
-                            - Hours calculation: pile[3]/3 ➔ 1h | pile[6]/3 ➔ 2h | pile[7]/3 ➔ 3h | pile[11]/3 ➔ 4h
-                            - Total Hours needed: 1 + 2 + 3 + 4 = 10 hours.
-                            - Verification: 10 > 8 hours ➔ Speed 3 is too slow! Try faster: low = 3 + 1 = 4
-
-                            • Round 3: low = 4, high = 5
-                            - midSpeed = 4 + (5 - 4) / 2 = 4 bananas/hour
-                            - Hours calculation: pile[3]/4 ➔ 1h | pile[6]/4 ➔ 2h | pile[7]/4 ➔ 2h | pile[11]/4 ➔ 3h
-                            - Total Hours needed: 1 + 2 + 2 + 3 = 8 hours.
-                            - Verification: 8 <= 8 hours ➔ Speed 4 works! Save it. Try slower: high = 4 - 1 = 3
-                            Loop Terminates (low > high). Minimum optimal eating speed is 4.</div>
-
-                        <h5>💻 Kotlin Implementation:</h5>
-                        <pre><code>fun minEatingSpeed(piles: IntArray, h: Int): Int {
-    var low = 1
-    var high = piles.maxOrNull() ?: 1000000000
-    var optimalSpeed = high
-
-    // Helper: Computes the actual total hours consumed at a target speed
-    fun totalHoursSpent(speed: Int): Long {
-        var runningHours = 0Long
-        for (pile in piles) {
-            // Evaluates mathematical ceiling division: ceil(pile.toDouble() / speed)
-            runningHours += (pile + speed - 1) / speed
-        }
-        return runningHours
-    }
-
-    while (low <= high) {
-        val midSpeed = low + (high - low) / 2
-
-        if (totalHoursSpent(midSpeed) <= h) {
-            optimalSpeed = midSpeed // midSpeed is achievable! Save snapshot
-            high = midSpeed - 1     // Attempt to contract search to find a lower speed
-        } else {
-            low = midSpeed + 1      // Too slow, failed constraint limit. Push lower bound up.
-        }
-    }
-    return optimalSpeed
-}</code></pre>
-                    </div>
-                </div>
             </div>
-        </section>
-    </main>
 
-    <script>
-        function showPattern(id) {
-            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active-view'));
-            document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
+            <div class="card">
 
-            const targetSection = document.getElementById(id);
-            targetSection.classList.add('active-view');
-            document.getElementById(`menu-${id}`).classList.add('active');
+                <strong>🧠 Research</strong>
 
-            const menuText = document.getElementById(`menu-${id}`).innerText;
-            document.getElementById('main-title').innerText = `Pattern ${menuText}`;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+                3 new insights ready
+
+            </div>
+
+            <div class="card">
+
+                <strong>📅 Capacity</strong>
+
+                4 hours available
+
+            </div>
+
+            <div class="card">
+
+                <strong>✨ Sia</strong>
+
+                "I've adjusted today's plan based on your available capacity."
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<section id="problem">
+
+    <div class="container">
+
+        <h2 class="section-title">
+
+            The Problem
+
+        </h2>
+
+        <p class="section-text">
+
+            Modern professionals have access to unlimited information, AI assistants and productivity tools.
+
+            Yet deciding what deserves attention today is becoming harder than ever.
+
+            Goals, research and decisions become fragmented over time, leading to decision paralysis and lost momentum.
+
+        </p>
+
+    </div>
+
+</section>
+
+<section id="features">
+
+    <div class="container">
+
+        <h2 class="section-title">
+
+            Built for meaningful long-term goals
+
+        </h2>
+
+        <div class="grid">
+
+            <div class="feature">
+
+                <h3>🎯 Goal-first planning</h3>
+
+                <p>
+
+                    Everything begins with a meaningful goal. Notes, research, tasks and plans exist only to help achieve it.
+
+                </p>
+
+            </div>
+
+            <div class="feature">
+
+                <h3>🧠 AI Decision Support</h3>
+
+                <p>
+
+                    Sia helps organize research, preserve important decisions and adapt plans as life changes.
+
+                </p>
+
+            </div>
+
+            <div class="feature">
+
+                <h3>📚 Research Cards</h3>
+
+                <p>
+
+                    Capture insights from articles without building another note-taking system.
+
+                </p>
+
+            </div>
+
+            <div class="feature">
+
+                <h3>⚡ Capacity-based Planning</h3>
+
+                <p>
+
+                    Plan according to the time and energy you actually have today—not an idealized schedule.
+
+                </p>
+
+            </div>
+
+            <div class="feature">
+
+                <h3>🔄 Living Plans</h3>
+
+                <p>
+
+                    Goals evolve as priorities, knowledge and circumstances change.
+
+                </p>
+
+            </div>
+
+            <div class="feature">
+
+                <h3>🚀 Daily Momentum</h3>
+
+                <p>
+
+                    Intent connects long-term vision with everyday action so meaningful progress never gets lost.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section id="how">
+
+    <div class="container">
+
+        <h2 class="section-title">
+
+            How it works
+
+        </h2>
+
+        <div class="timeline">
+
+            <div class="step">
+
+                <div class="circle">1</div>
+
+                <h3>Create a Goal</h3>
+
+                <p>
+
+                    Career, business, education, agriculture, finance or health.
+
+                </p>
+
+            </div>
+
+            <div class="step">
+
+                <div class="circle">2</div>
+
+                <h3>Plan with Sia</h3>
+
+                <p>
+
+                    Research, organize and make informed decisions with AI.
+
+                </p>
+
+            </div>
+
+            <div class="step">
+
+                <div class="circle">3</div>
+
+                <h3>Focus Daily</h3>
+
+                <p>
+
+                    Intent continuously adapts your daily plan based on your priorities and available capacity.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+
+    <div class="container">
+
+        <h2>
+
+            Building the future of Personal Decision Intelligence.
+
+        </h2>
+
+        <p>
+
+            Currently in prototype.
+
+            We're looking for early adopters and thoughtful feedback.
+
+        </p>
+
+        <div class="email">
+
+            alokomkar.gudikote@gmail.com
+
+        </div>
+
+    </div>
+
+</footer>
+
 </body>
 </html>
