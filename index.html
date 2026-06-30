@@ -4,573 +4,564 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Intent — AI Personal Decision Intelligence</title>
+    <title>Intent - AI Personal Decision Intelligence</title>
 
-    <meta name="description"
-          content="Intent helps you overcome decision paralysis by connecting long-term goals, research, planning and daily execution." />
+    <meta
+            name="description"
+            content="Intent helps you overcome decision paralysis by connecting long term goals, research, planning and daily execution."
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+    >
 
     <style>
-
-        *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
 
-        body{
-        font-family:'Inter',sans-serif;
-        background:#fafafa;
-        color:#111827;
-        line-height:1.7;
+        html {
+          scroll-behavior: smooth;
         }
 
-        .container{
-        width:min(1100px,92%);
-        margin:auto;
+        body {
+          font-family: "Inter", sans-serif;
+          background: #fafafa;
+          color: #111827;
+          line-height: 1.7;
         }
 
-        nav{
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        padding:28px 0;
+        .container {
+          width: min(100% - 32px, 1100px);
+          margin: auto;
         }
 
-        .logo{
-        font-size:24px;
-        font-weight:700;
+        nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 22px 0;
         }
 
-        .logo span{
-        color:#4F46E5;
+        .logo {
+          font-size: 24px;
+          font-weight: 800;
+          letter-spacing: -0.04em;
         }
 
-        nav a{
-        text-decoration:none;
-        color:#374151;
-        margin-left:32px;
-        font-weight:500;
+        .logo span {
+          color: #4f46e5;
         }
 
-        .hero{
-
-        padding:90px 0 80px;
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:80px;
-        align-items:center;
+        .nav-cta {
+          text-decoration: none;
+          background: #111827;
+          color: white;
+          padding: 10px 16px;
+          border-radius: 999px;
+          font-size: 14px;
+          font-weight: 600;
         }
 
-        .badge{
-
-        display:inline-block;
-        padding:8px 16px;
-        border-radius:100px;
-        background:#EEF2FF;
-        color:#4338CA;
-        font-weight:600;
-        font-size:14px;
-        margin-bottom:22px;
-
+        .hero {
+          padding: 56px 0 72px;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 42px;
+          text-align: center;
+          align-items: center;
         }
 
-        .hero h1{
-
-        font-size:56px;
-        line-height:1.05;
-        margin-bottom:24px;
-
+        .badge {
+          display: inline-block;
+          padding: 8px 16px;
+          border-radius: 999px;
+          background: #eef2ff;
+          color: #4338ca;
+          font-weight: 700;
+          font-size: 13px;
+          margin-bottom: 22px;
         }
 
-        .hero p{
-
-        font-size:20px;
-        color:#4B5563;
-        margin-bottom:40px;
-
+        .hero h1 {
+          font-size: clamp(38px, 9vw, 72px);
+          line-height: 1.04;
+          letter-spacing: -0.06em;
+          margin-bottom: 22px;
         }
 
-        .buttons{
-
-        display:flex;
-        gap:18px;
-
+        .hero p {
+          font-size: clamp(17px, 4vw, 21px);
+          color: #4b5563;
+          max-width: 720px;
+          margin: 0 auto 34px;
         }
 
-        .primary{
-
-        background:#4F46E5;
-        color:white;
-        padding:16px 28px;
-        border-radius:12px;
-        text-decoration:none;
-        font-weight:600;
-
+        .buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 100%;
+          max-width: 420px;
+          margin: 0 auto;
         }
 
-        .secondary{
-
-        border:1px solid #ddd;
-        padding:16px 28px;
-        border-radius:12px;
-        text-decoration:none;
-        color:#111827;
-        font-weight:600;
-
+        .primary,
+        .secondary {
+          width: 100%;
+          text-align: center;
+          padding: 16px 24px;
+          border-radius: 14px;
+          text-decoration: none;
+          font-weight: 700;
         }
 
-        .mockup{
-
-        background:white;
-        border-radius:24px;
-        padding:28px;
-        box-shadow:0 25px 60px rgba(0,0,0,.08);
-
+        .primary {
+          background: #4f46e5;
+          color: white;
         }
 
-        .mockup h3{
-
-        margin-bottom:24px;
-
+        .secondary {
+          border: 1px solid #e5e7eb;
+          color: #111827;
+          background: white;
         }
 
-        .card{
-
-        padding:18px;
-        border-radius:14px;
-        background:#F9FAFB;
-        margin-bottom:18px;
-
+        .mockup {
+          background: white;
+          border-radius: 28px;
+          padding: 22px;
+          box-shadow: 0 25px 70px rgba(0, 0, 0, 0.09);
+          text-align: left;
+          max-width: 430px;
+          margin: 0 auto;
+          border: 1px solid #f1f1f1;
         }
 
-        .card strong{
-
-        display:block;
-        margin-bottom:6px;
-
+        .mockup-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 22px;
         }
 
-        section{
-
-        padding:110px 0;
-
+        .mockup h3 {
+          font-size: 20px;
+          letter-spacing: -0.03em;
         }
 
-        .section-title{
-
-        font-size:40px;
-        margin-bottom:18px;
-
+        .pill {
+          font-size: 12px;
+          font-weight: 700;
+          color: #4f46e5;
+          background: #eef2ff;
+          padding: 6px 10px;
+          border-radius: 999px;
         }
 
-        .section-text{
-
-        font-size:19px;
-        color:#6B7280;
-        max-width:700px;
-        margin-bottom:60px;
-
+        .capacity {
+          background: #111827;
+          color: white;
+          padding: 20px;
+          border-radius: 18px;
+          margin-bottom: 16px;
         }
 
-        .grid{
-
-        display:grid;
-        grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-        gap:28px;
-
+        .capacity small {
+          color: #d1d5db;
         }
 
-        .feature{
-
-        background:white;
-        padding:32px;
-        border-radius:18px;
-        box-shadow:0 10px 30px rgba(0,0,0,.05);
-
+        .capacity strong {
+          display: block;
+          font-size: 26px;
+          margin-top: 6px;
+          letter-spacing: -0.04em;
         }
 
-        .feature h3{
-
-        margin-bottom:16px;
-
+        .card {
+          padding: 18px;
+          border-radius: 16px;
+          background: #f9fafb;
+          margin-bottom: 14px;
+          border: 1px solid #f0f0f0;
         }
 
-        .feature p{
-
-        color:#6B7280;
-
+        .card strong {
+          display: block;
+          margin-bottom: 5px;
+          font-size: 15px;
         }
 
-        .timeline{
-
-        display:flex;
-        justify-content:space-between;
-        gap:20px;
-        flex-wrap:wrap;
-
+        .card span {
+          color: #6b7280;
+          font-size: 14px;
         }
 
-        .step{
-
-        flex:1;
-        min-width:220px;
-
+        section {
+          padding: 78px 0;
         }
 
-        .circle{
-
-        width:60px;
-        height:60px;
-        background:#4F46E5;
-        border-radius:50%;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        color:white;
-        font-weight:700;
-        margin-bottom:20px;
-
+        .section-title {
+          font-size: clamp(32px, 7vw, 48px);
+          line-height: 1.1;
+          letter-spacing: -0.05em;
+          margin-bottom: 18px;
         }
 
-        footer{
-
-        padding:80px 0;
-        text-align:center;
-        color:#6B7280;
-
+        .section-text {
+          font-size: 18px;
+          color: #6b7280;
+          max-width: 760px;
+          margin-bottom: 42px;
         }
 
-        footer h2{
-
-        margin-bottom:20px;
-
+        .grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 18px;
         }
 
-        .email{
-
-        margin-top:25px;
-        font-weight:600;
-
+        .feature {
+          background: white;
+          padding: 26px;
+          border-radius: 20px;
+          box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+          border: 1px solid #f2f2f2;
         }
 
-        @media(max-width:900px){
-
-        .hero{
-
-        grid-template-columns:1fr;
-
+        .feature h3 {
+          margin-bottom: 12px;
+          font-size: 19px;
+          letter-spacing: -0.03em;
         }
 
-        .hero h1{
-
-        font-size:42px;
-
+        .feature p {
+          color: #6b7280;
+          font-size: 15px;
         }
 
+        .timeline {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 18px;
         }
 
+        .step {
+          background: white;
+          border-radius: 20px;
+          padding: 26px;
+          border: 1px solid #f2f2f2;
+        }
+
+        .circle {
+          width: 48px;
+          height: 48px;
+          background: #4f46e5;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-weight: 800;
+          margin-bottom: 18px;
+        }
+
+        .step h3 {
+          margin-bottom: 10px;
+          letter-spacing: -0.03em;
+        }
+
+        .step p {
+          color: #6b7280;
+          font-size: 15px;
+        }
+
+        .quote {
+          background: #111827;
+          color: white;
+          border-radius: 28px;
+          padding: 34px 26px;
+          text-align: center;
+        }
+
+        .quote h2 {
+          font-size: clamp(28px, 7vw, 44px);
+          line-height: 1.12;
+          letter-spacing: -0.05em;
+          margin-bottom: 18px;
+        }
+
+        .quote p {
+          color: #d1d5db;
+          font-size: 17px;
+          max-width: 680px;
+          margin: auto;
+        }
+
+        footer {
+          padding: 72px 0;
+          text-align: center;
+          color: #6b7280;
+        }
+
+        footer h2 {
+          color: #111827;
+          font-size: clamp(28px, 7vw, 42px);
+          line-height: 1.15;
+          letter-spacing: -0.05em;
+          margin-bottom: 18px;
+        }
+
+        .email {
+          margin-top: 26px;
+          font-weight: 700;
+          color: #111827;
+        }
+
+        @media (min-width: 768px) {
+          .buttons {
+            flex-direction: row;
+          }
+
+          .primary,
+          .secondary {
+            width: auto;
+          }
+
+          .grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .timeline {
+            grid-template-columns: repeat(3, 1fr);
+          }
+
+          .quote {
+            padding: 60px;
+          }
+        }
+
+        @media (min-width: 960px) {
+          nav {
+            padding: 30px 0;
+          }
+
+          .hero {
+            grid-template-columns: 1fr 0.85fr;
+            text-align: left;
+            gap: 80px;
+            padding: 96px 0 96px;
+          }
+
+          .hero p {
+            margin-left: 0;
+          }
+
+          .buttons {
+            margin-left: 0;
+          }
+
+          .mockup {
+            margin-right: 0;
+          }
+
+          section {
+            padding: 110px 0;
+          }
+
+          .grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+          }
+        }
     </style>
-
 </head>
 
 <body>
-
 <div class="container">
-
     <nav>
-
         <div class="logo">Intent<span>.</span></div>
-
-        <div>
-
-            <a href="#problem">Problem</a>
-            <a href="#features">Features</a>
-            <a href="#how">How it Works</a>
-
-        </div>
-
+        <a href="mailto:alokomkar.gudikote@gmail.com" class="nav-cta">Join Beta</a>
     </nav>
 
     <section class="hero">
-
         <div>
+            <div class="badge">AI Personal Decision Intelligence</div>
 
-            <div class="badge">
-                AI Personal Decision Intelligence
-            </div>
-
-            <h1>
-                Know what deserves your attention today.
-            </h1>
+            <h1>Know what deserves your attention today.</h1>
 
             <p>
-
-                Intent helps you overcome decision paralysis by connecting long-term goals, research, planning and daily execution into one continuous system.
-
+                Intent helps you overcome decision paralysis by connecting long term goals,
+                research, planning and daily execution into one continuous system.
             </p>
 
             <div class="buttons">
-
-                <a href="#" class="primary">
-                    Join Early Access
-                </a>
-
-                <a href="#features" class="secondary">
-                    Learn More
-                </a>
-
+                <a href="mailto:hello@sortedqueue.com" class="primary">Join Early Access</a>
+                <a href="#how" class="secondary">See How It Works</a>
             </div>
-
         </div>
 
         <div class="mockup">
+            <div class="mockup-header">
+                <h3>Today</h3>
+                <span class="pill">Prototype</span>
+            </div>
 
-            <h3>Today's Focus</h3>
+            <div class="capacity">
+                <small>Today's capacity</small>
+                <strong>4h available</strong>
+            </div>
 
             <div class="card">
-
                 <strong>🎯 Become Staff Engineer</strong>
-
-                2 priorities today
-
+                <span>2 priorities planned for today</span>
             </div>
 
             <div class="card">
-
-                <strong>🧠 Research</strong>
-
-                3 new insights ready
-
+                <strong>🧠 Research ready</strong>
+                <span>3 insights linked to your goal</span>
             </div>
 
             <div class="card">
-
-                <strong>📅 Capacity</strong>
-
-                4 hours available
-
+                <strong>✨ Sia suggests</strong>
+                <span>Focus on system design before adding more research.</span>
             </div>
-
-            <div class="card">
-
-                <strong>✨ Sia</strong>
-
-                "I've adjusted today's plan based on your available capacity."
-
-            </div>
-
         </div>
-
     </section>
-
 </div>
 
 <section id="problem">
-
     <div class="container">
-
-        <h2 class="section-title">
-
-            The Problem
-
-        </h2>
+        <h2 class="section-title">Too many goals. Too much information. Not enough clarity.</h2>
 
         <p class="section-text">
-
-            Modern professionals have access to unlimited information, AI assistants and productivity tools.
-
-            Yet deciding what deserves attention today is becoming harder than ever.
-
-            Goals, research and decisions become fragmented over time, leading to decision paralysis and lost momentum.
-
+            Modern professionals have access to AI assistants, productivity apps,
+            calendars and notes. Yet long term goals still become fragmented.
+            Intent exists to help people maintain continuity and decide what deserves
+            attention today.
         </p>
-
     </div>
-
 </section>
 
 <section id="features">
-
     <div class="container">
+        <h2 class="section-title">Built around meaningful goals.</h2>
 
-        <h2 class="section-title">
-
-            Built for meaningful long-term goals
-
-        </h2>
+        <p class="section-text">
+            Intent is not a note taking app or a task manager. Everything in Intent
+            exists in the context of a goal.
+        </p>
 
         <div class="grid">
-
             <div class="feature">
-
                 <h3>🎯 Goal-first planning</h3>
-
                 <p>
-
-                    Everything begins with a meaningful goal. Notes, research, tasks and plans exist only to help achieve it.
-
+                    Create meaningful goals across career, business, education, finance,
+                    health or personal growth.
                 </p>
-
             </div>
 
             <div class="feature">
-
-                <h3>🧠 AI Decision Support</h3>
-
+                <h3>🧠 Sia AI assistant</h3>
                 <p>
-
-                    Sia helps organize research, preserve important decisions and adapt plans as life changes.
-
+                    Clarify goals, organize research, generate plans and adapt when
+                    priorities change.
                 </p>
-
             </div>
 
             <div class="feature">
-
-                <h3>📚 Research Cards</h3>
-
+                <h3>📚 Research cards</h3>
                 <p>
-
-                    Capture insights from articles without building another note-taking system.
-
+                    Save lightweight summaries and source links without creating another
+                    knowledge base.
                 </p>
-
             </div>
 
             <div class="feature">
-
-                <h3>⚡ Capacity-based Planning</h3>
-
+                <h3>⚡ Capacity planning</h3>
                 <p>
-
-                    Plan according to the time and energy you actually have today—not an idealized schedule.
-
+                    Plan based on the time and energy you actually have today.
                 </p>
-
             </div>
 
             <div class="feature">
-
-                <h3>🔄 Living Plans</h3>
-
+                <h3>🔄 Living plans</h3>
                 <p>
-
-                    Goals evolve as priorities, knowledge and circumstances change.
-
+                    Goals evolve as your circumstances, research and decisions change.
                 </p>
-
             </div>
 
             <div class="feature">
-
-                <h3>🚀 Daily Momentum</h3>
-
+                <h3>🏆 Meaningful progress</h3>
                 <p>
-
-                    Intent connects long-term vision with everyday action so meaningful progress never gets lost.
-
+                    Connect daily action to long term achievement instead of chasing
+                    empty streaks.
                 </p>
-
             </div>
-
         </div>
-
     </div>
-
 </section>
 
 <section id="how">
-
     <div class="container">
-
-        <h2 class="section-title">
-
-            How it works
-
-        </h2>
+        <h2 class="section-title">How it works</h2>
 
         <div class="timeline">
-
             <div class="step">
-
                 <div class="circle">1</div>
-
-                <h3>Create a Goal</h3>
-
+                <h3>Choose a goal</h3>
                 <p>
-
-                    Career, business, education, agriculture, finance or health.
-
+                    Start with something meaningful, from career growth to starting a
+                    small business.
                 </p>
-
             </div>
 
             <div class="step">
-
                 <div class="circle">2</div>
-
-                <h3>Plan with Sia</h3>
-
+                <h3>Research and plan</h3>
                 <p>
-
-                    Research, organize and make informed decisions with AI.
-
+                    Sia helps organize research, clarify decisions and create an
+                    adaptive plan.
                 </p>
-
             </div>
 
             <div class="step">
-
                 <div class="circle">3</div>
-
-                <h3>Focus Daily</h3>
-
+                <h3>Focus daily</h3>
                 <p>
-
-                    Intent continuously adapts your daily plan based on your priorities and available capacity.
-
+                    Intent helps you decide what deserves attention based on goals,
+                    context and capacity.
                 </p>
-
             </div>
-
         </div>
-
     </div>
+</section>
 
+<section>
+    <div class="container">
+        <div class="quote">
+            <h2>Intent is for people pursuing meaningful long term goals.</h2>
+            <p>
+                Whether you are preparing for a promotion, learning AI, researching
+                agriculture, starting a dairy farm, planning financial independence or
+                building a startup, Intent helps you keep your thinking connected to
+                action.
+            </p>
+        </div>
+    </div>
 </section>
 
 <footer>
-
     <div class="container">
-
-        <h2>
-
-            Building the future of Personal Decision Intelligence.
-
-        </h2>
-
-        <p>
-
-            Currently in prototype.
-
-            We're looking for early adopters and thoughtful feedback.
-
-        </p>
-
-        <div class="email">
-
-            alokomkar.gudikote@gmail.com
-
-        </div>
-
+        <h2>Building the future of Personal Decision Intelligence.</h2>
+        <p>Currently in prototype. Looking for early users and thoughtful feedback.</p>
+        <div class="email">alokomkar.gudikote@gmail.com</div>
     </div>
-
 </footer>
-
 </body>
 </html>
