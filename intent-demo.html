@@ -216,7 +216,14 @@
   .logo-word { font-size: 2.6rem; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
   .tagline { color: var(--muted); font-size: 1.05rem; font-weight: 600; margin-top: 10px; text-align: center; }
   .platforms { color: var(--muted); font-size: 0.85rem; font-weight: 700; margin-top: 18px; letter-spacing: 0.04em; }
-  .cta-placeholder { margin-top: 26px; color: var(--accent); font-size: 0.95rem; font-weight: 800; border: 1px solid var(--rule); padding: 10px 22px; border-radius: 999px; }
+  .join-beta-btn {
+    margin-top: 26px; display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 28px; border-radius: 999px; background: var(--accent); color: #04222E;
+    font-weight: 800; font-size: 0.92rem; text-decoration: none; cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .join-beta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgba(56,189,248,0.5); }
+  .site-caption { margin-top: 14px; color: var(--muted); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; }
 
   @media (prefers-reduced-motion: reduce) {
     .beat, .caption, .pill, .dot, .msg, .msg-chip-row, .toast-pop { transition: none !important; animation: none !important; }
@@ -350,7 +357,8 @@
         <div class="beat" data-seq="main" data-beat="7" style="align-items:center; justify-content:center; text-align:center;">
           <div class="logo-mark"><span class="spark-big">&#10022;</span><span class="logo-word">Intent</span></div>
           <div class="platforms">ANDROID &#183; WEB</div>
-          <div class="cta-placeholder">sortedqueue.com/intent</div>
+          <a class="join-beta-btn" href="mailto:alokomkar.gudikote@gmail.com?subject=Join%20the%20Intent%20beta&amp;body=Hi%20Alok%2C%0A%0AI%27d%20love%20to%20join%20the%20Intent%20beta.">Join the beta</a>
+          <div class="site-caption">sortedqueue.com/intent</div>
         </div>
 
         <!-- ============================================================ -->
