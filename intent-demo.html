@@ -4,6 +4,7 @@
   :root {
     --paper: #071A23; --ink: #E7F8FB; --muted: #A3C9D5; --rule: #1F4B5B;
     --field: #102F3D; --surface: #0D2732; --accent: #38BDF8; --suggest: #AFA0F4;
+    --done: #3B8C6E; --nudge-bg: #F3E6CC; --nudge-ink: #3B2A12;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
   }
   * { box-sizing: border-box; }
@@ -91,7 +92,7 @@
     border: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem;
   }
 
-  /* ================= Real-app component styles (mirrors CalmSiaComponents/ConfirmGoalScreen) ================= */
+  /* ================= Real-app component styles (mirrors CalmSiaComponents/ConfirmGoalScreen/CalmTodayContent) ================= */
   .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 0.76rem; font-weight: 700; margin-bottom: 14px; }
   .eyebrow .spark { color: var(--accent); }
   h2.headline { color: var(--ink); font-size: 1.28rem; font-weight: 800; line-height: 1.25; margin: 0 0 8px; }
@@ -150,6 +151,64 @@
   .shape-card { background: var(--field); border: 1px solid var(--rule); border-radius: 12px; padding: 13px; display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
   .shape-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--surface); color: var(--suggest); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
 
+  /* ---- Hub (choose-a-path) ---- */
+  .hub-card { display: flex; align-items: center; gap: 12px; padding: 13px 12px; border: 1px solid var(--rule);
+    border-radius: 12px; background: var(--paper); margin-bottom: 10px; cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease; }
+  .hub-card:hover { border-color: var(--accent); background: rgba(56,189,248,0.06); }
+  .hub-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface); color: var(--suggest);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .hub-title { font-size: 0.86rem; font-weight: 700; color: var(--ink); }
+  .hub-sub { font-size: 0.71rem; color: var(--muted); margin-top: 1px; }
+  .back-row { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.72rem; font-weight: 700;
+    margin-bottom: 16px; cursor: pointer; }
+  .back-row:hover { color: var(--ink); }
+
+  /* ---- Today screen bits (mirrors CalmTodayContent, States A/B/C) ---- */
+  .today-title { font-size: 1.3rem; font-weight: 800; margin: 0; }
+  .today-date { color: var(--muted); font-size: 0.76rem; font-weight: 600; margin: 2px 0 16px; }
+  .greeting { font-size: 1.02rem; font-weight: 700; margin: 8px 0 6px; }
+  .invite { color: var(--muted); font-size: 0.78rem; line-height: 1.5; font-weight: 600; max-width: 200px; }
+  .pill-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border-radius: 10px;
+    background: var(--surface); font-size: 0.78rem; font-weight: 700; margin-bottom: 11px; }
+  .pill-row .chev { color: var(--muted); }
+  .focus-line { color: var(--muted); font-size: 0.7rem; font-weight: 600; margin-bottom: 11px; }
+  .sia-read { display: flex; align-items: center; gap: 7px; margin-bottom: 11px; }
+  .sia-read .spark { color: var(--accent); font-size: 0.95rem; }
+  .sia-read span.txt { font-style: italic; color: var(--ink); font-size: 0.8rem; line-height: 1.35; }
+  .task-card { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; background: var(--surface); margin-bottom: 8px; }
+  .task-card.lead { background: var(--field); border: 1px solid rgba(56,189,248,0.28); }
+  .task-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--rule); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 900; color: #04231A; }
+  .task-dot.done { background: var(--done); }
+  .task-title { font-size: 0.78rem; font-weight: 700; color: var(--ink); }
+  .task-title.strike { text-decoration: line-through; color: var(--muted); }
+  .task-sub { font-size: 0.65rem; color: var(--muted); margin-top: 1px; }
+  .nudge-amber { display: flex; align-items: flex-start; gap: 9px; border-radius: 11px; background: var(--nudge-bg); color: var(--nudge-ink); padding: 11px 12px; margin-bottom: 8px; }
+  .nudge-amber .ndot { width: 7px; height: 7px; border-radius: 50%; background: #C4892B; margin-top: 5px; flex-shrink: 0; }
+  .nudge-amber .txt { flex: 1; font-size: 0.7rem; line-height: 1.4; font-weight: 600; }
+  .nudge-amber .review { color: var(--accent); font-size: 0.66rem; font-weight: 800; white-space: nowrap; }
+  .streak-row { display: flex; align-items: center; gap: 7px; margin: 12px 0 6px; }
+  .streak-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; font-weight: 800; color: var(--muted); border: 1.5px solid var(--rule); transition: all 0.3s ease; }
+  .streak-dot.done { background: var(--done); border-color: var(--done); color: #04231A; }
+  .streak-dot.today { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 3px rgba(56,189,248,0.16); }
+  .streak-label { color: var(--muted); font-size: 0.7rem; font-weight: 600; }
+  .toast-pop { position: absolute; left: 20px; right: 20px; bottom: 78px; background: var(--done); color: #04231A;
+    border-radius: 11px; padding: 11px 13px; font-size: 0.76rem; font-weight: 800; display: flex; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .toast-pop.show { opacity: 1; transform: translateY(0); }
+
+  /* ---- Chat transcript (Ask Sia) ---- */
+  .chat-col { display: flex; flex-direction: column; gap: 9px; flex: 1; overflow: hidden; margin-top: 2px; }
+  .msg { max-width: 84%; font-size: 0.76rem; line-height: 1.4; font-weight: 600; padding: 10px 12px; border-radius: 13px;
+    opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .msg.show { opacity: 1; transform: translateY(0); }
+  .msg.sia { align-self: flex-start; background: var(--field); color: var(--ink); border: 1px solid var(--rule); border-bottom-left-radius: 4px; }
+  .msg.user { align-self: flex-end; background: rgba(56,189,248,0.18); color: var(--ink); border-bottom-right-radius: 4px; }
+  .msg-chip-row { display: flex; gap: 7px; margin-top: 4px; opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .msg-chip-row.show { opacity: 1; transform: translateY(0); }
+  .msg-chip { font-size: 0.66rem; font-weight: 800; color: var(--accent); border: 1px solid var(--rule); border-radius: 999px; padding: 5px 11px; }
+
   /* ---- Title / closing cards ---- */
   .logo-mark { display: flex; align-items: center; gap: 12px; }
   .logo-mark .spark-big { color: var(--accent); font-size: 2.2rem; }
@@ -159,7 +218,7 @@
   .cta-placeholder { margin-top: 26px; color: var(--accent); font-size: 0.95rem; font-weight: 800; border: 1px solid var(--rule); padding: 10px 22px; border-radius: 999px; }
 
   @media (prefers-reduced-motion: reduce) {
-    .beat, .caption, .pill, .dot { transition: none !important; animation: none !important; }
+    .beat, .caption, .pill, .dot, .msg, .msg-chip-row, .toast-pop { transition: none !important; animation: none !important; }
   }
 </style>
 
@@ -169,21 +228,25 @@
       <div class="notch"></div>
       <div class="screen" id="screen">
 
+        <!-- ============================================================ -->
+        <!-- MAIN sequence: title -> Sia -> doors -> typed goal -> confirm -> shape -> hub -> closing -->
+        <!-- ============================================================ -->
+
         <!-- Beat 0: Title -->
-        <div class="beat" data-beat="0" style="align-items:center; justify-content:center; text-align:center;">
+        <div class="beat" data-seq="main" data-beat="0" style="align-items:center; justify-content:center; text-align:center;">
           <div class="logo-mark"><span class="spark-big">&#10022;</span><span class="logo-word">Intent</span></div>
-          <p class="tagline">The mindful way to achieve<br/>what matters.</p>
+          <p class="tagline">A calmer way to reach<br/>what matters.</p>
         </div>
 
         <!-- Beat 1: Sia button prompt -->
-        <div class="beat" data-beat="1" style="align-items:center; justify-content:flex-end; padding-bottom:64px;">
+        <div class="beat" data-seq="main" data-beat="1" style="align-items:center; justify-content:flex-end; padding-bottom:64px;">
           <div id="siaButtonPulse" style="width:64px;height:64px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(231,248,251,0.35);">
             <span style="color:var(--paper); font-size:1.5rem;">&#10022;</span>
           </div>
         </div>
 
         <!-- Beat 2: 3-door sheet -->
-        <div class="beat" data-beat="2">
+        <div class="beat" data-seq="main" data-beat="2">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; let&#8217;s begin</div>
           <h2 class="headline">What do you want to make progress on?</h2>
           <p class="helper">Tell me in a sentence &#8212; I&#8217;ll shape the plan around it.</p>
@@ -194,7 +257,7 @@
         </div>
 
         <!-- Beat 3: typed goal -->
-        <div class="beat" data-beat="3">
+        <div class="beat" data-seq="main" data-beat="3">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; type it</div>
           <h2 class="headline">What&#8217;s the goal?</h2>
           <div class="field-input"><span id="typeText"></span><span id="caret" style="color:var(--accent);">|</span></div>
@@ -204,7 +267,7 @@
         </div>
 
         <!-- Beat 4: Confirm Goal Details -->
-        <div class="beat" data-beat="4" style="padding-top:34px;">
+        <div class="beat" data-seq="main" data-beat="4" style="padding-top:34px;">
           <h1 class="confirm-title">Confirm goal details</h1>
           <div class="card">
             <div>
@@ -251,20 +314,175 @@
         </div>
 
         <!-- Beat 5: Shape moment -->
-        <div class="beat" data-beat="5">
+        <div class="beat" data-seq="main" data-beat="5">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; nice, that&#8217;s in</div>
           <h2 class="headline" style="font-size:1.1rem;">Created just now</h2>
           <p class="helper">Want me to break it into weekly steps?</p>
-          <div class="shape-card"><div class="shape-icon">&#9703;</div><div><div class="action-title">Break it into steps</div><div class="action-sub">Weekly steps</div></div></div>
+          <div class="shape-card"><div class="shape-icon">&#9703;</div><div><div class="action-title">Break it into steps</div><div class="action-sub">A gentle, weekly build</div></div></div>
           <div class="shape-card"><div class="shape-icon">&#8226;</div><div><div class="action-title">Just today&#8217;s step</div></div></div>
           <div class="shape-card"><div class="shape-icon">&#8211;</div><div><div class="action-title">Leave it for now</div></div></div>
         </div>
 
-        <!-- Beat 6: Closing -->
-        <div class="beat" data-beat="6" style="align-items:center; justify-content:center; text-align:center;">
+        <!-- Beat 6: Hub — choose a path -->
+        <div class="beat" data-seq="main" data-beat="6" style="padding-top:40px;">
+          <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; a few more moments</div>
+          <h2 class="headline">See how Intent handles&#8230;</h2>
+          <p class="helper">Tap one to preview it.</p>
+          <div class="hub-card" onclick="enterScene('scene1')">
+            <div class="hub-icon">&#10068;</div>
+            <div><div class="hub-title">Starting from zero</div><div class="hub-sub">Not sure what you want to do yet</div></div>
+            <div class="chevron">&#8250;</div>
+          </div>
+          <div class="hub-card" onclick="enterScene('scene2')">
+            <div class="hub-icon">&#10003;</div>
+            <div><div class="hub-title">Two days in</div><div class="hub-sub">Day three is waiting</div></div>
+            <div class="chevron">&#8250;</div>
+          </div>
+          <div class="hub-card" onclick="enterScene('scene3')">
+            <div class="hub-icon">&#9776;</div>
+            <div><div class="hub-title">Multiple goals</div><div class="hub-sub">What should I focus on?</div></div>
+            <div class="chevron">&#8250;</div>
+          </div>
+        </div>
+
+        <!-- Beat 7: Closing -->
+        <div class="beat" data-seq="main" data-beat="7" style="align-items:center; justify-content:center; text-align:center;">
           <div class="logo-mark"><span class="spark-big">&#10022;</span><span class="logo-word">Intent</span></div>
           <div class="platforms">ANDROID &#183; WEB</div>
           <div class="cta-placeholder">sortedqueue.com/intent</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SCENE 1: Starting from zero — not sure what I want to do yet -->
+        <!-- ============================================================ -->
+
+        <div class="beat" data-seq="scene1" data-beat="0" style="padding-top:44px;">
+          <div class="back-row" onclick="exitToHub()">&#8249; Back</div>
+          <div class="today-title">Today</div>
+          <div class="today-date">Sat, Jul 18</div>
+          <div class="greeting">Good morning.</div>
+          <div class="invite">A calm place for the plans that take time. Start one when you&#8217;re ready.</div>
+        </div>
+
+        <div class="beat" data-seq="scene1" data-beat="1">
+          <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; let&#8217;s begin</div>
+          <h2 class="headline">What do you want to make progress on?</h2>
+          <p class="helper">Tell me in a sentence &#8212; I&#8217;ll shape the plan around it.</p>
+          <div class="action-row"><div class="action-icon">&#9998;</div><div><div class="action-title">Describe a goal</div><div class="action-sub">Type it out</div></div><div class="chevron">&#8250;</div></div>
+          <div class="action-row"><div class="action-icon">&#9679;</div><div><div class="action-title">Speak a goal</div><div class="action-sub">Say it out loud</div></div><div class="chevron">&#8250;</div></div>
+          <div class="action-row" style="border-color:var(--accent); background:rgba(56,189,248,0.08);"><div class="action-icon">&#10022;</div><div><div class="action-title">Explore with Sia</div><div class="action-sub">Not sure yet? Let&#8217;s figure it out</div></div><div class="chevron">&#8250;</div></div>
+        </div>
+
+        <div class="beat" data-seq="scene1" data-beat="2">
+          <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; exploring</div>
+          <div class="chat-col" id="s1chat">
+            <div class="msg sia">No wrong answers here &#8212; what&#8217;s been on your mind lately?</div>
+            <div class="msg user">I keep saying I&#8217;ll get in shape but never actually start.</div>
+            <div class="msg sia">That&#8217;s a good place to begin. Want something concrete to aim for, like a 5K &#8212; or keep it open for now?</div>
+            <div class="msg user">Let&#8217;s do the 5K.</div>
+            <div class="msg sia">Running a 5K it is. I&#8217;ll shape three easy runs a week around it.</div>
+          </div>
+        </div>
+
+        <div class="beat" data-seq="scene1" data-beat="3" style="padding-top:34px;">
+          <h1 class="confirm-title">Confirm goal details</h1>
+          <div class="card">
+            <div>
+              <div class="row-top"><div class="lbl-group"><span class="lbl">Goal</span><span class="prov suggest">Sia drafted</span></div><span class="act">Edit</span></div>
+              <div class="val">Run a 5K</div>
+            </div>
+            <div class="divider"></div>
+            <div>
+              <div class="row-top"><div class="lbl-group"><span class="lbl">Why it matters</span><span class="prov suggest">Sia drafted</span></div><span class="act">Edit</span></div>
+              <div class="val italic">Three easy runs a week builds fitness without overwhelming your schedule.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div>
+              <div class="row-top"><div class="lbl-group"><span class="lbl">Target</span></div></div>
+              <div class="val">in 10 weeks</div>
+            </div>
+            <div class="divider"></div>
+            <div>
+              <div class="row-top"><div class="lbl-group"><span class="lbl">End date</span><span class="prov suggest">Sia calculated</span></div></div>
+              <div class="val">Fri, Oct 2</div>
+            </div>
+          </div>
+          <div class="cta-row"><div class="btn primary">Create goal</div><div class="btn ghost">Adjust</div></div>
+        </div>
+
+        <div class="beat" data-seq="scene1" data-beat="4">
+          <div class="today-title">Today</div>
+          <div class="today-date">Sat, Jul 18</div>
+          <div class="pill-row">Run a 5K <span class="chev">&#8250;</span></div>
+          <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Today&#8217;s step is ready.</span></div>
+          <div class="task-card lead"><div class="task-dot"></div><div><div class="task-title">Easy 10-minute walk/jog</div><div class="task-sub">Today&#8217;s intent &#183; tap for details</div></div></div>
+          <div class="streak-row">
+            <div class="streak-dot today">M</div><div class="streak-dot">T</div><div class="streak-dot">W</div><div class="streak-dot">T</div><div class="streak-dot">F</div><div class="streak-dot">S</div><div class="streak-dot">S</div>
+          </div>
+          <div class="streak-label">Day 1 &#183; let&#8217;s go</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SCENE 2: Two days in — day three is waiting -->
+        <!-- ============================================================ -->
+
+        <div class="beat" data-seq="scene2" data-beat="0" style="padding-top:44px;">
+          <div class="back-row" onclick="exitToHub()">&#8249; Back</div>
+          <div class="today-title">Today</div>
+          <div class="today-date">Wed, Jul 22</div>
+          <div class="pill-row">Run a half marathon <span class="chev">&#8250;</span></div>
+          <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Today&#8217;s step is ready.</span></div>
+          <div class="task-card lead"><div class="task-dot"></div><div><div class="task-title">Run 5km easy pace</div><div class="task-sub">Today&#8217;s intent &#183; tap for details</div></div></div>
+          <div class="streak-row">
+            <div class="streak-dot done">&#10003;</div><div class="streak-dot done">&#10003;</div><div class="streak-dot today">W</div><div class="streak-dot">T</div><div class="streak-dot">F</div><div class="streak-dot">S</div><div class="streak-dot">S</div>
+          </div>
+          <div class="streak-label">2 days done</div>
+        </div>
+
+        <div class="beat" data-seq="scene2" data-beat="1" style="padding-top:44px;">
+          <div class="today-title">Today</div>
+          <div class="today-date">Wed, Jul 22</div>
+          <div class="pill-row">Run a half marathon <span class="chev">&#8250;</span></div>
+          <div class="task-card"><div class="task-dot done">&#10003;</div><div><div class="task-title strike">Run 5km easy pace</div><div class="task-sub">Nice pace today</div></div></div>
+          <div class="streak-row">
+            <div class="streak-dot done">&#10003;</div><div class="streak-dot done">&#10003;</div><div class="streak-dot done">&#10003;</div><div class="streak-dot">T</div><div class="streak-dot">F</div><div class="streak-dot">S</div><div class="streak-dot">S</div>
+          </div>
+          <div class="streak-label">3 days done</div>
+          <div class="toast-pop" id="s2toast"><span>&#10022;</span>Three in a row &#8212; steady pace.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- SCENE 3: Multiple goals — what should I focus on? -->
+        <!-- ============================================================ -->
+
+        <div class="beat" data-seq="scene3" data-beat="0" style="padding-top:44px;">
+          <div class="back-row" onclick="exitToHub()">&#8249; Back</div>
+          <div class="today-title">Today</div>
+          <div class="today-date">Sat, Jul 18</div>
+          <div class="pill-row">All Goals <span class="chev">&#8250;</span></div>
+          <div class="focus-line">3 things today &#183; ~1 hr 10 min &#183; 3 goals</div>
+          <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Here&#8217;s what&#8217;s on for today.</span></div>
+          <div class="task-card"><div class="task-dot"></div><div><div class="task-title">Practice Spanish vocabulary</div><div class="task-sub">Learn Spanish</div></div></div>
+          <div class="task-card"><div class="task-dot"></div><div><div class="task-title">Run 5km easy pace</div><div class="task-sub">Run a half marathon</div></div></div>
+          <div class="task-card"><div class="task-dot"></div><div><div class="task-title">Sketch homepage wireframe</div><div class="task-sub">Website redesign</div></div></div>
+          <div class="nudge-amber"><div class="ndot"></div><div class="txt">Confidence dipped on &#8220;Run a half marathon&#8221;</div><div class="review">Review</div></div>
+        </div>
+
+        <div class="beat" data-seq="scene3" data-beat="1" style="padding-top:44px;">
+          <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; on Today</div>
+          <div class="chat-col" id="s3chatQ">
+            <div class="msg user">What should I focus on today?</div>
+          </div>
+        </div>
+
+        <div class="beat" data-seq="scene3" data-beat="2" style="padding-top:44px;">
+          <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; on Today</div>
+          <div class="chat-col" id="s3chatA">
+            <div class="msg user show">What should I focus on today?</div>
+            <div class="msg sia">Start with Spanish &#8212; it&#8217;s quick and keeps your streak alive. Then check in on the marathon: confidence dipped after missing last week&#8217;s long run, worth a look before you run. Website redesign can wait &#8212; you&#8217;re ahead there.</div>
+            <div class="msg-chip-row"><div class="msg-chip">Open Spanish</div><div class="msg-chip">Review marathon</div></div>
+          </div>
         </div>
 
       </div>
@@ -284,36 +502,69 @@
 </div>
 
 <script>
-  const beats = [
-    { duration: 4200, caption: 'Meet <b>Intent</b>.' },
-    { duration: 3400, caption: 'Tap Sia to start anything.' },
-    { duration: 5200, caption: 'Describe it, say it out loud, or think it through with Sia.' },
-    { duration: 5200, caption: 'Sia reads what you type and finds the goal inside it.', onEnter: startTyping, onLeave: resetTyping },
-    { duration: 7000, caption: 'Review everything &#8212; even the exact end date, calculated for you.' },
-    { duration: 4600, caption: 'However deep you want to go &#8212; today.' },
-    { duration: 4200, caption: 'The mindful way to reach what matters.' },
-  ];
+  // Each named sequence is its own mini-reel of beats sharing the one phone frame.
+  // "main" is the linear autoplay pass; scene1/2/3 are the branch-out paths reachable
+  // only by clicking a hub card (main's beat 6), and they return to the hub on exit.
+  const sequences = {
+    main: [
+      { duration: 4200, caption: 'Meet <b>Intent</b>.' },
+      { duration: 3400, caption: 'Tap Sia to start anything.' },
+      { duration: 5200, caption: 'Describe it, say it out loud, or think it through with Sia.' },
+      { duration: 5200, caption: 'Sia reads what you type and finds the goal inside it.', onEnter: startTyping, onLeave: resetTyping },
+      { duration: 7000, caption: 'Review everything &#8212; even the exact end date, calculated for you.' },
+      { duration: 4600, caption: 'However deep you want to go &#8212; today.' },
+      { duration: 5200, caption: 'A few more moments worth seeing.' },
+      { duration: 4200, caption: 'A calmer way to reach what matters.' },
+    ],
+    scene1: [
+      { duration: 3600, caption: 'No goals yet? Sia meets you here too.' },
+      { duration: 3800, caption: 'Not sure what you want yet? Just explore it.' },
+      { duration: 7400, caption: 'Sia turns a vague feeling into a real goal.', onEnter: () => revealChat('s1chat'), onLeave: () => resetChat('s1chat') },
+      { duration: 5600, caption: 'Same review screen, however you got here.' },
+      { duration: 4200, caption: 'First step, ready to go.' },
+    ],
+    scene2: [
+      { duration: 4000, caption: 'No pressure, no catch-up &#8212; just today&#8217;s step.' },
+      { duration: 4400, caption: 'Three days, steady pace.', onEnter: () => showToast('s2toast'), onLeave: () => hideToast('s2toast') },
+    ],
+    scene3: [
+      { duration: 3600, caption: 'More than one goal running? Nothing gets lost.' },
+      { duration: 2600, caption: 'Just ask Sia what needs you today.' },
+      { duration: 6800, caption: 'A specific answer, not a generic summary.', onEnter: () => revealAnswer('s3chatA'), onLeave: () => resetAnswer('s3chatA') },
+    ],
+  };
 
+  let currentSeq = 'main';
   let idx = 0, playing = true, timer = null, startedAt = 0, remaining = 0;
-  const screen = document.getElementById('screen');
+  let lastSeqForDots = null;
+
   const captionEl = document.getElementById('captionEl');
   const dotsEl = document.getElementById('dots');
   const beatEls = [...document.querySelectorAll('.beat')];
   const controls = document.getElementById('controls');
   const playBtn = document.getElementById('playBtn');
 
-  beats.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot';
-    dotsEl.appendChild(d);
-  });
+  function beatsArr() { return sequences[currentSeq]; }
+
+  function updateDots() {
+    if (lastSeqForDots !== currentSeq) {
+      dotsEl.innerHTML = '';
+      beatsArr().forEach(() => {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        dotsEl.appendChild(d);
+      });
+      lastSeqForDots = currentSeq;
+    }
+    [...dotsEl.children].forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
 
   function render() {
-    beatEls.forEach(el => el.classList.toggle('active', +el.dataset.beat === idx));
-    [...dotsEl.children].forEach((d, i) => d.classList.toggle('active', i === idx));
+    beatEls.forEach(el => el.classList.toggle('active', el.dataset.seq === currentSeq && +el.dataset.beat === idx));
+    updateDots();
     captionEl.classList.remove('show');
-    setTimeout(() => { captionEl.innerHTML = beats[idx].caption; captionEl.classList.add('show'); }, 120);
-    if (beats[idx].onEnter) beats[idx].onEnter();
+    setTimeout(() => { captionEl.innerHTML = beatsArr()[idx].caption; captionEl.classList.add('show'); }, 120);
+    if (beatsArr()[idx].onEnter) beatsArr()[idx].onEnter();
   }
 
   function scheduleNext(ms) {
@@ -324,24 +575,56 @@
   }
 
   function advance(dir) {
-    if (beats[idx].onLeave) beats[idx].onLeave();
-    idx = (idx + dir + beats.length) % beats.length;
+    const arr = beatsArr();
+    if (arr[idx].onLeave) arr[idx].onLeave();
+    const next = idx + dir;
+    if (currentSeq !== 'main' && (next < 0 || next >= arr.length)) {
+      exitToHub();
+      return;
+    }
+    idx = ((next % arr.length) + arr.length) % arr.length;
     render();
-    if (playing) scheduleNext(beats[idx].duration);
+    if (playing) scheduleNext(beatsArr()[idx].duration);
   }
 
   function goTo(i) {
-    if (beats[idx].onLeave) beats[idx].onLeave();
-    idx = ((i % beats.length) + beats.length) % beats.length;
+    const arr = beatsArr();
+    if (arr[idx].onLeave) arr[idx].onLeave();
+    idx = ((i % arr.length) + arr.length) % arr.length;
     render();
-    if (playing) scheduleNext(beats[idx].duration);
+    if (playing) scheduleNext(beatsArr()[idx].duration);
+  }
+
+  // Hub index 6 is where every scene returns to.
+  const HUB_INDEX = 6;
+
+  function enterScene(name) {
+    clearTimeout(timer);
+    if (beatsArr()[idx].onLeave) beatsArr()[idx].onLeave();
+    currentSeq = name;
+    idx = 0;
+    playing = true;
+    playBtn.textContent = '⏸';
+    render();
+    scheduleNext(beatsArr()[idx].duration);
+  }
+
+  function exitToHub() {
+    clearTimeout(timer);
+    const arr = beatsArr();
+    if (arr[idx].onLeave) arr[idx].onLeave();
+    currentSeq = 'main';
+    idx = HUB_INDEX;
+    playing = false; // land on the hub and wait — the viewer chose to branch out, so hand control back
+    playBtn.textContent = '▶';
+    render();
   }
 
   function setPlaying(p) {
     playing = p;
     playBtn.textContent = playing ? '⏸' : '▶';
-    if (playing) scheduleNext(remaining > 0 ? remaining : beats[idx].duration);
-    else { clearTimeout(timer); remaining = Math.max(0, beats[idx].duration - (Date.now() - startedAt)); }
+    if (playing) scheduleNext(remaining > 0 ? remaining : beatsArr()[idx].duration);
+    else { clearTimeout(timer); remaining = Math.max(0, beatsArr()[idx].duration - (Date.now() - startedAt)); }
   }
 
   document.getElementById('prevBtn').onclick = () => advance(-1);
@@ -356,9 +639,10 @@
     else if (e.key === ' ') { e.preventDefault(); setPlaying(!playing); }
     else if (e.key.toLowerCase() === 'r') goTo(0);
     else if (e.key.toLowerCase() === 'h') controls.classList.toggle('hidden');
+    else if (e.key === 'Escape' && currentSeq !== 'main') exitToHub();
   });
 
-  // Beat 3 typewriter effect
+  // Beat 3 (main) typewriter effect
   let typeTimer = null;
   function startTyping() {
     const full = 'Learn Spanish so I can order food';
@@ -383,6 +667,32 @@
     document.getElementById('typeText').textContent = '';
   }
 
+  // Scene 1: progressive chat reveal
+  function revealChat(id) {
+    [...document.querySelectorAll(`#${id} .msg`)].forEach((m, i) => setTimeout(() => m.classList.add('show'), 300 + i * 650));
+  }
+  function resetChat(id) {
+    document.querySelectorAll(`#${id} .msg`).forEach(m => m.classList.remove('show'));
+  }
+
+  // Scene 2: "done" toast
+  function showToast(id) { setTimeout(() => { const el = document.getElementById(id); if (el) el.classList.add('show'); }, 500); }
+  function hideToast(id) { const el = document.getElementById(id); if (el) el.classList.remove('show'); }
+
+  // Scene 3: Sia's answer + follow-up chips reveal after the question is already on screen
+  function revealAnswer(id) {
+    const sia = document.querySelector(`#${id} .msg.sia`);
+    const chips = document.querySelector(`#${id} .msg-chip-row`);
+    setTimeout(() => sia && sia.classList.add('show'), 350);
+    setTimeout(() => chips && chips.classList.add('show'), 1250);
+  }
+  function resetAnswer(id) {
+    const sia = document.querySelector(`#${id} .msg.sia`);
+    const chips = document.querySelector(`#${id} .msg-chip-row`);
+    if (sia) sia.classList.remove('show');
+    if (chips) chips.classList.remove('show');
+  }
+
   render();
-  scheduleNext(beats[0].duration);
+  scheduleNext(beatsArr()[idx].duration);
 </script>
