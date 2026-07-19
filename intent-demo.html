@@ -97,6 +97,7 @@
   .eyebrow .spark { color: var(--accent); }
   h2.headline { color: var(--ink); font-size: 1.28rem; font-weight: 800; line-height: 1.25; margin: 0 0 8px; }
   p.helper { color: var(--muted); font-size: 0.82rem; line-height: 1.4; font-weight: 600; margin: 0 0 16px; }
+  p.hub-prompt { color: var(--accent); font-size: 0.84rem; line-height: 1.4; font-weight: 700; margin: 0 0 16px; }
 
   .action-row {
     display: flex; align-items: center; gap: 10px; padding: 11px 12px;
@@ -327,7 +328,7 @@
         <div class="beat" data-seq="main" data-beat="6" style="padding-top:40px;">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; a few more moments</div>
           <h2 class="headline">See how Intent handles&#8230;</h2>
-          <p class="helper">Tap one to preview it.</p>
+          <p class="hub-prompt">Explore a path &#8212; click on any of these.</p>
           <div class="hub-card" onclick="enterScene('scene1')">
             <div class="hub-icon">&#10068;</div>
             <div><div class="hub-title">Starting from zero</div><div class="hub-sub">Not sure what you want to do yet</div></div>
@@ -513,7 +514,7 @@
       { duration: 5200, caption: 'Sia reads what you type and finds the goal inside it.', onEnter: startTyping, onLeave: resetTyping },
       { duration: 7000, caption: 'Review everything &#8212; even the exact end date, calculated for you.' },
       { duration: 4600, caption: 'However deep you want to go &#8212; today.' },
-      { duration: 5200, caption: 'A few more moments worth seeing.' },
+      { duration: 5200, caption: 'Pick a path to see it play out.' },
       { duration: 4200, caption: 'A mindful way to reach what matters.' },
     ],
     scene1: [
@@ -567,11 +568,25 @@
     if (beatsArr()[idx].onEnter) beatsArr()[idx].onEnter();
   }
 
+  // Hub index 6 is a decision point — every scene returns to it, and autoplay
+  // pauses there so the viewer actually picks a path instead of it scrolling by.
+  const HUB_INDEX = 6;
+
   function scheduleNext(ms) {
     clearTimeout(timer);
     startedAt = Date.now();
     remaining = ms;
     timer = setTimeout(() => { advance(1); }, ms);
+  }
+
+  function scheduleOrPause() {
+    if (currentSeq === 'main' && idx === HUB_INDEX) {
+      clearTimeout(timer);
+      playing = false;
+      playBtn.textContent = '▶';
+    } else if (playing) {
+      scheduleNext(beatsArr()[idx].duration);
+    }
   }
 
   function advance(dir) {
@@ -584,7 +599,7 @@
     }
     idx = ((next % arr.length) + arr.length) % arr.length;
     render();
-    if (playing) scheduleNext(beatsArr()[idx].duration);
+    scheduleOrPause();
   }
 
   function goTo(i) {
@@ -592,11 +607,8 @@
     if (arr[idx].onLeave) arr[idx].onLeave();
     idx = ((i % arr.length) + arr.length) % arr.length;
     render();
-    if (playing) scheduleNext(beatsArr()[idx].duration);
+    scheduleOrPause();
   }
-
-  // Hub index 6 is where every scene returns to.
-  const HUB_INDEX = 6;
 
   function enterScene(name) {
     clearTimeout(timer);
