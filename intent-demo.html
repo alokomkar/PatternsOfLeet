@@ -152,6 +152,23 @@
   .shape-card { background: var(--field); border: 1px solid var(--rule); border-radius: 12px; padding: 13px; display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
   .shape-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--surface); color: var(--suggest); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
 
+  /* ---- Goal-step card (Today, States B/C) + "ask Sia to decide" nudge ---- */
+  .goalstep-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 11px; padding: 12px 13px; margin-bottom: 9px; display: flex; flex-direction: column; gap: 6px; }
+  .goalstep-card.lead { border-color: rgba(56,189,248,0.45); background: var(--field); }
+  .goalstep-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .goalstep-desc { font-size: 0.76rem; line-height: 1.4; font-weight: 600; color: var(--ink); }
+  .goalstep-cta { font-size: 0.68rem; font-weight: 800; color: var(--accent); }
+  .goalstep-drafting { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 0.72rem; font-weight: 600; }
+  .gs-spin { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--rule); border-top-color: var(--accent); animation: gsspin 0.8s linear infinite; flex-shrink: 0; }
+  @keyframes gsspin { to { transform: rotate(360deg); } }
+
+  .decide-card { display: flex; align-items: center; gap: 9px; border: 1px dashed var(--rule); border-radius: 11px; background: var(--surface); padding: 11px 12px; margin-bottom: 8px; }
+  .decide-card .spark { color: var(--accent); font-size: 0.9rem; flex-shrink: 0; }
+  .decide-txt { flex: 1; }
+  .decide-title { font-size: 0.74rem; font-weight: 800; color: var(--ink); }
+  .decide-sub { font-size: 0.66rem; color: var(--muted); font-weight: 600; margin-top: 1px; }
+  .decide-cta { font-size: 0.66rem; font-weight: 800; color: var(--accent); white-space: nowrap; }
+
   /* ---- Hub (choose-a-path) ---- */
   .hub-card { display: flex; align-items: center; gap: 12px; padding: 13px 12px; border: 1px solid var(--rule);
     border-radius: 12px; background: var(--paper); margin-bottom: 10px; cursor: pointer;
@@ -261,7 +278,7 @@
           <div class="action-row"><div class="action-icon">&#9998;</div><div><div class="action-title">Describe a goal</div><div class="action-sub">Type it out</div></div><div class="chevron">&#8250;</div></div>
           <div class="action-row"><div class="action-icon">&#9679;</div><div><div class="action-title">Speak a goal</div><div class="action-sub">Say it out loud</div></div><div class="chevron">&#8250;</div></div>
           <div class="action-row"><div class="action-icon">&#10022;</div><div><div class="action-title">Explore with Sia</div><div class="action-sub">Not sure yet? Let&#8217;s figure it out</div></div><div class="chevron">&#8250;</div></div>
-          <div class="examples">e.g. &#8220;Run a half marathon&#8221; &#183; &#8220;Learn Spanish this year&#8221;</div>
+          <div class="examples">e.g. &#8220;Work on my SaaS startup&#8221; &#183; &#8220;Run a 5K&#8221; &#183; &#8220;Build a house&#8221;</div>
         </div>
 
         <!-- Beat 3: typed goal -->
@@ -270,7 +287,7 @@
           <h2 class="headline">What&#8217;s the goal?</h2>
           <div class="field-input"><span id="typeText"></span><span id="caret" style="color:var(--accent);">|</span></div>
           <div class="pill-note">Sia reads the sentence and pulls out:</div>
-          <div class="pill" id="typedPill">Learn Spanish so I can order food</div>
+          <div class="pill" id="typedPill">Work on my SaaS startup</div>
           <div class="primary-btn">Shape the goal</div>
         </div>
 
@@ -280,12 +297,12 @@
           <div class="card">
             <div>
               <div class="row-top"><div class="lbl-group"><span class="lbl">Goal</span><span class="prov">from your words</span></div><span class="act">Edit</span></div>
-              <div class="val">Learn Spanish to order food</div>
+              <div class="val">Work on my SaaS startup</div>
             </div>
             <div class="divider"></div>
             <div>
               <div class="row-top"><div class="lbl-group"><span class="lbl">Why it matters</span><span class="prov suggest">Sia drafted</span></div><span class="act">Edit</span></div>
-              <div class="val italic">Learning Spanish will let you confidently order food and connect with local culture.</div>
+              <div class="val italic">Building your SaaS will validate the idea and put you on a path to your first paying customers.</div>
             </div>
           </div>
           <div class="card">
@@ -321,14 +338,19 @@
           <div class="cta-row"><div class="btn primary">Create goal</div><div class="btn ghost">Adjust</div></div>
         </div>
 
-        <!-- Beat 5: Shape moment -->
+        <!-- Beat 5: Shape moment — first-week cascade guaranteed, single reveal card (no more 3-way choice) -->
         <div class="beat" data-seq="main" data-beat="5">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; nice, that&#8217;s in</div>
-          <h2 class="headline" style="font-size:1.1rem;">Created just now</h2>
-          <p class="helper">Want me to break it into weekly steps?</p>
-          <div class="shape-card"><div class="shape-icon">&#9703;</div><div><div class="action-title">Break it into steps</div><div class="action-sub">Your weekly path</div></div></div>
-          <div class="shape-card"><div class="shape-icon">&#8226;</div><div><div class="action-title">Just today&#8217;s step</div></div></div>
-          <div class="shape-card"><div class="shape-icon">&#8211;</div><div><div class="action-title">Leave it for now</div></div></div>
+          <h2 class="headline" style="font-size:1.05rem;">I&#8217;ve mapped out your first week. Here&#8217;s today&#8217;s step.</h2>
+          <div class="streak-row" style="margin:6px 0 14px;">
+            <div class="streak-dot today">1</div><div class="streak-dot">2</div><div class="streak-dot">3</div><div class="streak-dot">4</div><div class="streak-dot">5</div><div class="streak-dot">6</div><div class="streak-dot">7</div>
+          </div>
+          <div class="goalstep-card lead">
+            <div class="goalstep-label">TODAY&#8217;S STEP</div>
+            <div class="goalstep-desc" style="font-weight:800; font-size:0.84rem;">Sat, Jul 25</div>
+            <div class="goalstep-desc">Sketch your MVP&#8217;s core feature list and write down the single problem you&#8217;re solving for your first customer.</div>
+          </div>
+          <div class="primary-btn">Got it</div>
         </div>
 
         <!-- Beat 6: Hub — choose a path -->
@@ -425,7 +447,11 @@
           <div class="today-date">Sat, Jul 18</div>
           <div class="pill-row">Run a 5K <span class="chev">&#8250;</span></div>
           <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Today&#8217;s step is ready.</span></div>
-          <div class="task-card lead"><div class="task-dot"></div><div><div class="task-title">Easy 10-minute walk/jog</div><div class="task-sub">Today&#8217;s intent &#183; tap for details</div></div></div>
+          <div class="goalstep-card lead">
+            <div class="goalstep-label">RUN A 5K</div>
+            <div class="goalstep-desc">Easy 10-minute walk/jog at a conversational pace &#8212; just get your legs moving today.</div>
+            <div class="goalstep-cta">Open goal &#8250;</div>
+          </div>
           <div class="streak-row">
             <div class="streak-dot today">M</div><div class="streak-dot">T</div><div class="streak-dot">W</div><div class="streak-dot">T</div><div class="streak-dot">F</div><div class="streak-dot">S</div><div class="streak-dot">S</div>
           </div>
@@ -440,9 +466,13 @@
           <div class="back-row" onclick="exitToHub()">&#8249; Back</div>
           <div class="today-title">Today</div>
           <div class="today-date">Wed, Jul 22</div>
-          <div class="pill-row">Run a half marathon <span class="chev">&#8250;</span></div>
+          <div class="pill-row">Run a 5K <span class="chev">&#8250;</span></div>
           <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Today&#8217;s step is ready.</span></div>
-          <div class="task-card lead"><div class="task-dot"></div><div><div class="task-title">Run 5km easy pace</div><div class="task-sub">Today&#8217;s intent &#183; tap for details</div></div></div>
+          <div class="goalstep-card lead">
+            <div class="goalstep-label">RUN A 5K</div>
+            <div class="goalstep-desc">Run 3km at an easy, conversational pace &#8212; building the base for race day.</div>
+            <div class="goalstep-cta">Open goal &#8250;</div>
+          </div>
           <div class="streak-row">
             <div class="streak-dot done">&#10003;</div><div class="streak-dot done">&#10003;</div><div class="streak-dot today">W</div><div class="streak-dot">T</div><div class="streak-dot">F</div><div class="streak-dot">S</div><div class="streak-dot">S</div>
           </div>
@@ -452,8 +482,8 @@
         <div class="beat" data-seq="scene2" data-beat="1" style="padding-top:44px;">
           <div class="today-title">Today</div>
           <div class="today-date">Wed, Jul 22</div>
-          <div class="pill-row">Run a half marathon <span class="chev">&#8250;</span></div>
-          <div class="task-card"><div class="task-dot done">&#10003;</div><div><div class="task-title strike">Run 5km easy pace</div><div class="task-sub">Nice pace today</div></div></div>
+          <div class="pill-row">Run a 5K <span class="chev">&#8250;</span></div>
+          <div class="task-card"><div class="task-dot done">&#10003;</div><div><div class="task-title strike">Run 3km easy pace</div><div class="task-sub">Nice pace today</div></div></div>
           <div class="streak-row">
             <div class="streak-dot done">&#10003;</div><div class="streak-dot done">&#10003;</div><div class="streak-dot done">&#10003;</div><div class="streak-dot">T</div><div class="streak-dot">F</div><div class="streak-dot">S</div><div class="streak-dot">S</div>
           </div>
@@ -471,26 +501,42 @@
           <div class="today-date">Sat, Jul 18</div>
           <div class="pill-row">All Goals <span class="chev">&#8250;</span></div>
           <div class="focus-line">3 things today &#183; ~1 hr 10 min &#183; 3 goals</div>
-          <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Here&#8217;s what&#8217;s on for today.</span></div>
-          <div class="task-card"><div class="task-dot"></div><div><div class="task-title">Practice Spanish vocabulary</div><div class="task-sub">Learn Spanish</div></div></div>
-          <div class="task-card"><div class="task-dot"></div><div><div class="task-title">Run 5km easy pace</div><div class="task-sub">Run a half marathon</div></div></div>
-          <div class="task-card"><div class="task-dot"></div><div><div class="task-title">Sketch homepage wireframe</div><div class="task-sub">Website redesign</div></div></div>
-          <div class="nudge-amber"><div class="ndot"></div><div class="txt">Confidence dipped on &#8220;Run a half marathon&#8221;</div><div class="review">Review</div></div>
+          <div class="sia-read"><span class="spark">&#10022;</span><span class="txt">Start with your SaaS startup.</span></div>
+          <div class="goalstep-card lead">
+            <div class="goalstep-label">WORK ON MY SAAS STARTUP</div>
+            <div class="goalstep-desc">Sketch your MVP&#8217;s core feature list.</div>
+            <div class="goalstep-cta">Open goal &#8250;</div>
+          </div>
+          <div class="goalstep-card">
+            <div class="goalstep-label">RUN A 5K</div>
+            <div class="goalstep-desc">Run 3km at an easy, conversational pace.</div>
+            <div class="goalstep-cta">Open goal &#8250;</div>
+          </div>
+          <div class="goalstep-card">
+            <div class="goalstep-label">BUILD A HOUSE</div>
+            <div class="goalstep-desc">Shortlist three contractors for the build.</div>
+            <div class="goalstep-cta">Open goal &#8250;</div>
+          </div>
+          <div class="decide-card">
+            <span class="spark">&#10022;</span>
+            <div class="decide-txt"><div class="decide-title">Not sure where to start?</div><div class="decide-sub">Ask Sia to help you decide.</div></div>
+            <div class="decide-cta">Ask</div>
+          </div>
         </div>
 
         <div class="beat" data-seq="scene3" data-beat="1" style="padding-top:44px;">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; on Today</div>
           <div class="chat-col" id="s3chatQ">
-            <div class="msg user">What should I focus on today?</div>
+            <div class="msg user">Help me decide what to focus on today.</div>
           </div>
         </div>
 
         <div class="beat" data-seq="scene3" data-beat="2" style="padding-top:44px;">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; on Today</div>
           <div class="chat-col" id="s3chatA">
-            <div class="msg user show">What should I focus on today?</div>
-            <div class="msg sia">Start with Spanish &#8212; it&#8217;s quick and keeps your streak alive. Then check in on the marathon: confidence dipped after missing last week&#8217;s long run, worth a look before you run. Website redesign can wait &#8212; you&#8217;re ahead there.</div>
-            <div class="msg-chip-row"><div class="msg-chip">Open Spanish</div><div class="msg-chip">Review marathon</div></div>
+            <div class="msg user show">Help me decide what to focus on today.</div>
+            <div class="msg sia">Start with the 5K run &#8212; it&#8217;s quick and keeps your streak alive. Then check in on the SaaS startup: confidence dipped after a quiet week, worth a look before you dive in. House research can wait &#8212; you&#8217;re ahead there.</div>
+            <div class="msg-chip-row"><div class="msg-chip">Open 5K run</div><div class="msg-chip">Review SaaS startup</div></div>
           </div>
         </div>
 
@@ -521,7 +567,7 @@
       { duration: 5200, caption: 'Describe it, say it out loud, or think it through with Sia.' },
       { duration: 5200, caption: 'Sia reads what you type and finds the goal inside it.', onEnter: startTyping, onLeave: resetTyping },
       { duration: 7000, caption: 'Review everything &#8212; even the exact end date, calculated for you.' },
-      { duration: 4600, caption: 'However deep you want to go &#8212; today.' },
+      { duration: 4600, caption: 'Your whole first week, mapped &#8212; today&#8217;s step, ready.' },
       { duration: 5200, caption: 'Pick a path to see it play out.' },
       { duration: 4200, caption: 'A mindful way to reach what matters.' },
     ],
@@ -538,7 +584,7 @@
     ],
     scene3: [
       { duration: 3600, caption: 'More than one goal running? Nothing gets lost.' },
-      { duration: 2600, caption: 'Just ask Sia what needs you today.' },
+      { duration: 2600, caption: 'Not sure? Tap &#8220;Ask&#8221; &#8212; Sia decides with you.' },
       { duration: 6800, caption: 'A specific answer, not a generic summary.', onEnter: () => revealAnswer('s3chatA'), onLeave: () => resetAnswer('s3chatA') },
     ],
   };
@@ -665,7 +711,7 @@
   // Beat 3 (main) typewriter effect
   let typeTimer = null;
   function startTyping() {
-    const full = 'Learn Spanish so I can order food';
+    const full = 'I want to work on my SaaS startup';
     const el = document.getElementById('typeText');
     const pill = document.getElementById('typedPill');
     el.textContent = '';
