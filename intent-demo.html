@@ -251,6 +251,13 @@
   }
   .persistent-join-beta:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgba(56,189,248,0.5); }
 
+  /* ---- Problem / value-prop intro pages (beats 0-1, ahead of the app itself) ---- */
+  .problem-q { display: flex; align-items: flex-start; gap: 11px; padding: 13px 0; border-bottom: 1px solid var(--rule); }
+  .problem-q:last-child { border-bottom: none; }
+  .problem-q .qmark { color: var(--accent); font-size: 1rem; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+  .problem-q .qtext { font-size: 0.86rem; font-weight: 700; color: var(--ink); line-height: 1.42; }
+  .lead-out { margin-top: auto; color: var(--accent); font-size: 0.86rem; font-weight: 800; }
+
   @media (prefers-reduced-motion: reduce) {
     .beat, .caption, .pill, .dot, .msg, .msg-chip-row, .toast-pop { transition: none !important; animation: none !important; }
   }
@@ -263,24 +270,44 @@
       <div class="screen" id="screen">
 
         <!-- ============================================================ -->
-        <!-- MAIN sequence: title -> Sia -> doors -> typed goal -> confirm -> shape -> hub -> closing -->
+        <!-- MAIN sequence: problem -> solution -> title -> Sia -> doors -> typed goal -> confirm -> shape -> hub -> closing -->
         <!-- ============================================================ -->
 
-        <!-- Beat 0: Title -->
-        <div class="beat" data-seq="main" data-beat="0" style="align-items:center; justify-content:center; text-align:center;">
+        <!-- Beat 0: The problem, framed as 3 questions -->
+        <div class="beat" data-seq="main" data-beat="0" style="padding-top:56px;">
+          <div class="eyebrow"><span class="spark">&#10022;</span>Before Intent</div>
+          <h2 class="headline">Sound familiar?</h2>
+          <div class="problem-q"><span class="qmark">?</span><span class="qtext">Putting off getting started on an idea, or a skill you keep meaning to learn?</span></div>
+          <div class="problem-q"><span class="qmark">?</span><span class="qtext">Trouble planning it out and actually tracking your progress?</span></div>
+          <div class="problem-q"><span class="qmark">?</span><span class="qtext">Resources scattered across a dozen apps and browser tabs?</span></div>
+          <p class="lead-out">If you said yes to any of these&#8230;</p>
+        </div>
+
+        <!-- Beat 1: Here's Intent -->
+        <div class="beat" data-seq="main" data-beat="1" style="padding-top:44px;">
+          <div class="eyebrow"><span class="spark">&#10022;</span>Here&#8217;s Intent</div>
+          <h2 class="headline">Everything you need to actually follow through.</h2>
+          <div class="action-row"><div class="action-icon">&#128640;</div><div><div class="action-title">Hit the ground running</div><div class="action-sub">A custom roadmap, based on your preference</div></div></div>
+          <div class="action-row"><div class="action-icon">&#10022;</div><div><div class="action-title">Sia breaks it down</div><div class="action-sub">Your goal, split into daily &amp; weekly actions</div></div></div>
+          <div class="action-row"><div class="action-icon">&#9776;</div><div><div class="action-title">Track every goal at once</div><div class="action-sub">Stay focused across multiple goals, nothing lost</div></div></div>
+          <p class="lead-out">Let&#8217;s see it in action&#8230;</p>
+        </div>
+
+        <!-- Beat 2: Title -->
+        <div class="beat" data-seq="main" data-beat="2" style="align-items:center; justify-content:center; text-align:center;">
           <div class="logo-mark"><span class="spark-big">&#10022;</span><span class="logo-word">Intent</span></div>
           <p class="tagline">The mindful way to reach<br/>what matters.</p>
         </div>
 
-        <!-- Beat 1: Sia button prompt -->
-        <div class="beat" data-seq="main" data-beat="1" style="align-items:center; justify-content:flex-end; padding-bottom:64px;">
+        <!-- Beat 3: Sia button prompt -->
+        <div class="beat" data-seq="main" data-beat="3" style="align-items:center; justify-content:flex-end; padding-bottom:64px;">
           <div id="siaButtonPulse" style="width:64px;height:64px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(231,248,251,0.35);">
             <span style="color:var(--paper); font-size:1.5rem;">&#10022;</span>
           </div>
         </div>
 
-        <!-- Beat 2: 3-door sheet -->
-        <div class="beat" data-seq="main" data-beat="2">
+        <!-- Beat 4: 3-door sheet -->
+        <div class="beat" data-seq="main" data-beat="4">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; let&#8217;s begin</div>
           <h2 class="headline">What do you want to make progress on?</h2>
           <p class="helper">Tell me in a sentence &#8212; I&#8217;ll shape the plan around it.</p>
@@ -290,8 +317,8 @@
           <div class="examples">e.g. &#8220;Work on my SaaS startup&#8221; &#183; &#8220;Run a 5K&#8221; &#183; &#8220;Build a house&#8221;</div>
         </div>
 
-        <!-- Beat 3: typed goal -->
-        <div class="beat" data-seq="main" data-beat="3">
+        <!-- Beat 5: typed goal -->
+        <div class="beat" data-seq="main" data-beat="5">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; type it</div>
           <h2 class="headline">What&#8217;s the goal?</h2>
           <div class="field-input"><span id="typeText"></span><span id="caret" style="color:var(--accent);">|</span></div>
@@ -300,8 +327,8 @@
           <div class="primary-btn">Shape the goal</div>
         </div>
 
-        <!-- Beat 4: Confirm Goal Details -->
-        <div class="beat" data-seq="main" data-beat="4" style="padding-top:34px;">
+        <!-- Beat 6: Confirm Goal Details -->
+        <div class="beat" data-seq="main" data-beat="6" style="padding-top:34px;">
           <h1 class="confirm-title">Confirm goal details</h1>
           <div class="card">
             <div>
@@ -347,8 +374,8 @@
           <div class="cta-row"><div class="btn primary">Create goal</div><div class="btn ghost">Adjust</div></div>
         </div>
 
-        <!-- Beat 5: Shape moment — first-week cascade guaranteed, single reveal card (no more 3-way choice) -->
-        <div class="beat" data-seq="main" data-beat="5">
+        <!-- Beat 7: Shape moment — first-week cascade guaranteed, single reveal card (no more 3-way choice) -->
+        <div class="beat" data-seq="main" data-beat="7">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; nice, that&#8217;s in</div>
           <h2 class="headline" style="font-size:1.05rem;">I&#8217;ve mapped out your first week. Here&#8217;s today&#8217;s step.</h2>
           <div class="streak-row" style="margin:6px 0 14px;">
@@ -362,8 +389,8 @@
           <div class="primary-btn">Got it</div>
         </div>
 
-        <!-- Beat 6: Hub — choose a path -->
-        <div class="beat" data-seq="main" data-beat="6" style="padding-top:40px;">
+        <!-- Beat 8: Hub — choose a path -->
+        <div class="beat" data-seq="main" data-beat="8" style="padding-top:40px;">
           <div class="eyebrow"><span class="spark">&#10022;&#10022;</span>Sia &#183; a few more moments</div>
           <h2 class="headline">See how Intent handles&#8230;</h2>
           <p class="hub-prompt">Explore a path &#8212; click on any of these.</p>
@@ -384,8 +411,8 @@
           </div>
         </div>
 
-        <!-- Beat 7: Closing -->
-        <div class="beat" data-seq="main" data-beat="7" style="align-items:center; justify-content:center; text-align:center;">
+        <!-- Beat 9: Closing -->
+        <div class="beat" data-seq="main" data-beat="9" style="align-items:center; justify-content:center; text-align:center;">
           <div class="logo-mark"><span class="spark-big">&#10022;</span><span class="logo-word">Intent</span></div>
           <div class="platforms">ANDROID &#183; WEB</div>
           <a class="join-beta-btn" href="mailto:sortedqueue@gmail.com?subject=Join%20the%20Intent%20beta&amp;body=Hi%20Team%2C%0A%0AI%27d%20love%20to%20join%20the%20Intent%20beta.">Join the beta</a>
@@ -562,7 +589,7 @@
 <button class="hide-toggle" id="hideToggle" title="Hide controls (for recording)">&#128065;</button>
 <div class="controls" id="controls">
   <button class="ctrl-btn" id="prevBtn" title="Previous (&#8592;)">&#8249;</button>
-  <button class="ctrl-btn" id="playBtn" title="Play/Pause (space)">&#9208;</button>
+  <button class="ctrl-btn" id="playBtn" title="Play/Pause (space)">&#9654;</button>
   <button class="ctrl-btn" id="nextBtn" title="Next (&#8594;)">&#8250;</button>
   <button class="ctrl-btn" id="restartBtn" title="Restart (r)">&#8634;</button>
 </div>
@@ -573,6 +600,8 @@
   // only by clicking a hub card (main's beat 6), and they return to the hub on exit.
   const sequences = {
     main: [
+      { duration: 4600, caption: 'Ever put off getting started?' },
+      { duration: 4800, caption: 'Here&#8217;s <b>Intent</b> &#8212; built to fix exactly that.' },
       { duration: 4200, caption: 'Meet <b>Intent</b>.' },
       { duration: 3400, caption: 'Tap Sia to start anything.' },
       { duration: 5200, caption: 'Describe it, say it out loud, or think it through with Sia.' },
@@ -601,7 +630,7 @@
   };
 
   let currentSeq = 'main';
-  let idx = 0, playing = true, timer = null, startedAt = 0, remaining = 0;
+  let idx = 0, playing = false, timer = null, startedAt = 0, remaining = 0;
   let lastSeqForDots = null;
 
   const captionEl = document.getElementById('captionEl');
@@ -633,9 +662,9 @@
     if (beatsArr()[idx].onEnter) beatsArr()[idx].onEnter();
   }
 
-  // Hub index 6 is a decision point — every scene returns to it, and autoplay
+  // Hub index 8 is a decision point — every scene returns to it, and autoplay
   // pauses there so the viewer actually picks a path instead of it scrolling by.
-  const HUB_INDEX = 6;
+  const HUB_INDEX = 8;
 
   function scheduleNext(ms) {
     clearTimeout(timer);
@@ -771,6 +800,5 @@
   }
 
   render();
-  scheduleNext(beatsArr()[idx].duration);
+  // Starts paused — press play (or space) to begin; was autoplaying by default, which felt rushed.
 </script>
-
