@@ -23,6 +23,7 @@
     .journey{border:1px solid var(--line);border-radius:22px;background:var(--card);padding:25px;box-shadow:var(--shadow)}.journey-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line)}.journey-head span{font:750 10px/1 ui-monospace,monospace;background:var(--green-soft);color:var(--green);padding:7px 9px;border-radius:999px}.step{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #ebeee9}.step:last-child{border-bottom:0}.step>b{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--green-soft);color:var(--green);font-size:11px}.step strong,.step small{display:block}.step small{font-size:11px;color:var(--muted);margin-top:3px}.step>span:last-child{font:750 10px/1 ui-monospace,monospace;color:var(--green)}
     .pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:stretch;margin-top:25px}.pipe{position:relative;padding:20px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);text-align:center}.pipe:not(:last-child):after{content:"→";position:absolute;right:-17px;top:45%;z-index:2;color:#849089;font-weight:850}.pipe b{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 12px;border-radius:11px;background:var(--green-soft);color:var(--green)}.pipe strong,.pipe small{display:block}.pipe strong{font-size:13px}.pipe small{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.4}
     .platform-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:24px}.platform{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.platform-head{padding:13px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.platform-head b{text-transform:capitalize}.status{font:800 9px/1 ui-monospace,monospace;color:var(--green);background:var(--green-soft);padding:6px 8px;border-radius:999px}.screen{height:210px;background:linear-gradient(145deg,#edf1ed,#fff);padding:17px}.phone{height:180px;max-width:126px;border:5px solid #27332e;border-radius:22px;margin:auto;background:white;padding:13px}.browser{height:175px;background:white;border:1px solid #bdc7c0;border-radius:10px;overflow:hidden;padding:15px}.bar{height:16px;background:#e7ebe7;margin:-15px -15px 13px}.line{height:7px;background:#dce2de;border-radius:5px;margin:8px 0}.line.short{width:63%}.fab{width:36px;height:36px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;margin:30px 0 0 auto;font-size:9px;font-weight:800}.platform-foot{padding:12px 15px;font-size:10px;color:var(--muted)}
+    .readiness{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;align-items:center}.readiness-claim{padding:28px;border-left:5px solid var(--orange);background:var(--orange-soft)}.readiness-claim strong{display:block;font-size:30px;line-height:1.1;margin-bottom:12px}.readiness-list{display:grid;gap:2px}.ready-row{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}.ready-row:last-child{border-bottom:0}.ready-row b{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--green-soft);color:var(--green)}.ready-row strong,.ready-row small{display:block}.ready-row small{color:var(--muted);margin-top:3px}
     .case-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.case{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:19px;box-shadow:var(--shadow)}.case-label{display:inline-block;margin-bottom:12px;padding:6px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);font:800 9px/1 ui-monospace,monospace}.case h3{margin-bottom:7px}.case p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
     .variant-contract{display:grid;grid-template-columns:.7fr 1.3fr;gap:18px}.intent-card{padding:22px;border-radius:19px;background:var(--dark);color:#f7faf8}.intent-card .mono{color:#ef935c;font-size:11px}.intent-card p{color:#b7c3bd}.variant-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.variant{padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}.variant strong,.variant small{display:block}.variant small{margin-top:6px;color:var(--muted);line-height:1.4}.decision-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}.decision{padding:13px;border-radius:13px;background:var(--green-soft);color:var(--green);font-size:11px}.decision.warn{background:var(--orange-soft);color:#965020}.decision.bad{background:var(--red-soft);color:var(--red)}
     .checkpoint{display:grid;grid-template-columns:180px repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:24px}.checkpoint>*{background:var(--card);padding:14px}.checkpoint .head{font:800 10px/1 ui-monospace,monospace;color:var(--muted);text-transform:uppercase}.checkpoint .ok{color:var(--green);font-weight:800}.checkpoint .warn{color:var(--red);font-weight:800;background:var(--red-soft)}
@@ -47,7 +48,7 @@
 <main id="deck" class="deck" aria-live="polite">
   <section class="slide dark active" data-title="Parity">
     <div class="frame">
-      <span class="slide-no">01 / 14</span>
+      <span class="slide-no">01 / 15</span>
       <div class="hero-mark"><b>P</b> Parity</div>
       <p class="eyebrow">Cross-platform experience assurance</p>
       <h1>One journey.<br><span class="accent">Every surface.</span></h1>
@@ -58,7 +59,7 @@
 
   <section class="slide" data-title="The problem">
     <div class="frame">
-      <span class="slide-no">02 / 14</span><p class="eyebrow">Before Parity</p>
+      <span class="slide-no">02 / 15</span><p class="eyebrow">Before Parity</p>
       <h2>The journey is shared.<br>The tests are not.</h2>
       <div class="split">
         <div class="before-stack">
@@ -77,7 +78,7 @@
 
   <section class="slide" data-title="Existing approaches">
     <div class="frame">
-      <span class="slide-no">03 / 14</span><p class="eyebrow">A precise comparison</p>
+      <span class="slide-no">03 / 15</span><p class="eyebrow">A precise comparison</p>
       <h2>Useful tools.<br>Different responsibility.</h2>
       <div class="comparison">
         <div class="compare-row"><div>Appium, Espresso, XCTest, Playwright</div><div><p>Excellent execution engines, but the same journey is often rewritten and maintained for each platform.</p></div></div>
@@ -92,7 +93,7 @@
 
   <section class="slide" data-title="The contract">
     <div class="frame">
-      <span class="slide-no">04 / 14</span><p class="eyebrow">After: one experience contract</p>
+      <span class="slide-no">04 / 15</span><p class="eyebrow">After: one experience contract</p>
       <h2>Describe what the customer should experience.</h2>
       <div class="split">
         <div>
@@ -114,9 +115,29 @@
     </div>
   </section>
 
+  <section class="slide" data-title="Application readiness">
+    <div class="frame">
+      <span class="slide-no">05 / 15</span><p class="eyebrow">Prerequisite: make the application testable</p>
+      <h2>Artifact-first does not mean zero-integration.</h2>
+      <div class="readiness">
+        <div class="readiness-claim">
+          <strong>Parity reduces duplicated journey work. It does not remove testability requirements.</strong>
+          <p class="small">Source access is optional. Runtime replay is mandatory before a discovered mapping is trusted.</p>
+        </div>
+        <div class="readiness-list">
+          <div class="ready-row"><b>1</b><div><strong>Runnable surfaces</strong><small>APK or installed Android app, simulator .app or signed iOS build, and reachable mWeb/Web URLs.</small></div></div>
+          <div class="ready-row"><b>2</b><div><strong>Stable semantics</strong><small>Resource IDs, accessibility identifiers, test IDs, roles, names, and labels—not coordinates.</small></div></div>
+          <div class="ready-row"><b>3</b><div><strong>Reproducible state</strong><small>Controlled fixtures, environment, feature flags, locale, and safe credential profiles.</small></div></div>
+          <div class="ready-row"><b>4</b><div><strong>Compatible workers</strong><small>Android device/emulator, Playwright browser, and macOS/Xcode infrastructure for iOS.</small></div></div>
+        </div>
+      </div>
+      <p class="small" style="margin-top:16px"><strong>First-run onboarding:</strong> configure launch details → discover targets incrementally → review ambiguity → replay → save verified mappings with build provenance.</p>
+    </div>
+  </section>
+
   <section class="slide" data-title="How it works">
     <div class="frame">
-      <span class="slide-no">05 / 14</span><p class="eyebrow">The assurance pipeline</p>
+      <span class="slide-no">06 / 15</span><p class="eyebrow">The assurance pipeline</p>
       <h2>From human intent to evidence-backed finding.</h2>
       <div class="pipeline">
         <div class="pipe"><b>1</b><strong>Author</strong><small>Text, voice, import</small></div>
@@ -136,7 +157,7 @@
 
   <section class="slide" data-title="Four platforms">
     <div class="frame">
-      <span class="slide-no">06 / 14</span><p class="eyebrow">Same checkpoint, four surfaces</p>
+      <span class="slide-no">07 / 15</span><p class="eyebrow">Same checkpoint, four surfaces</p>
       <h2>Parity verifies meaning before pixels.</h2>
       <div class="platform-grid">
         <article class="platform"><div class="platform-head"><b>Android</b><span class="status">ready</span></div><div class="screen"><div class="phone"><div class="line"></div><div class="line short"></div><div class="fab">Ask</div></div></div><div class="platform-foot">UiAutomator semantics · screenshot</div></article>
@@ -150,7 +171,7 @@
 
   <section class="slide" data-title="Practical test cases">
     <div class="frame">
-      <span class="slide-no">07 / 14</span><p class="eyebrow">More than button visibility</p>
+      <span class="slide-no">08 / 15</span><p class="eyebrow">More than button visibility</p>
       <h2>Test the experience—not just the element.</h2>
       <div class="case-grid">
         <article class="case"><span class="case-label">OUTCOME + CONTENT</span><h3>Coupon and checkout</h3><p>Was the coupon applied? Do discount, total, currency, and success copy agree?</p></article>
@@ -166,7 +187,7 @@
 
   <section class="slide" data-title="Intentional differences">
     <div class="frame">
-      <span class="slide-no">08 / 14</span><p class="eyebrow">Platform-native does not mean inconsistent</p>
+      <span class="slide-no">09 / 15</span><p class="eyebrow">Platform-native does not mean inconsistent</p>
       <h2>Same outcome.<br>Approved native expression.</h2>
       <div class="variant-contract">
         <article class="intent-card">
@@ -191,7 +212,7 @@
 
   <section class="slide" data-title="State-aware comparison">
     <div class="frame">
-      <span class="slide-no">09 / 14</span><p class="eyebrow">Why state synchronization matters</p>
+      <span class="slide-no">10 / 15</span><p class="eyebrow">Why state synchronization matters</p>
       <h2>Compare like with like—or say “incomparable.”</h2>
       <div class="checkpoint">
         <div class="head">Checkpoint</div><div class="head">Android</div><div class="head">iOS</div><div class="head">mWeb</div><div class="head">Web</div>
@@ -207,7 +228,7 @@
 
   <section class="slide" data-title="Actionable result">
     <div class="frame">
-      <span class="slide-no">10 / 14</span><p class="eyebrow">After: conscious difference table</p>
+      <span class="slide-no">11 / 15</span><p class="eyebrow">After: conscious difference table</p>
       <h2>Every finding carries its proof.</h2>
       <div class="finding">
         <article class="evidence-card">
@@ -230,7 +251,7 @@
 
   <section class="slide" data-title="Multilingual voice">
     <div class="frame">
-      <span class="slide-no">11 / 14</span><p class="eyebrow">Hackathon: speak naturally</p>
+      <span class="slide-no">12 / 15</span><p class="eyebrow">Hackathon: speak naturally</p>
       <h2>Local language in.<br>Reviewable test plan out.</h2>
       <div class="voice-flow">
         <div class="voice-stage"><b>1</b><strong>Record</strong><small>Chrome captures a temporary ≤30-second WebM clip.</small></div>
@@ -245,7 +266,7 @@
 
   <section class="slide" data-title="Feedback loop">
     <div class="frame">
-      <span class="slide-no">12 / 14</span><p class="eyebrow">Not just a report</p>
+      <span class="slide-no">13 / 15</span><p class="eyebrow">Not just a report</p>
       <h2>A governed feedback loop.</h2>
       <div class="loop">
         <div class="loop-item"><div><strong>Detect</strong><small>Evidence-backed difference</small></div></div>
@@ -260,7 +281,7 @@
 
   <section class="slide" data-title="Live demo">
     <div class="frame">
-      <span class="slide-no">13 / 14</span><p class="eyebrow">Sunday demo script</p>
+      <span class="slide-no">14 / 15</span><p class="eyebrow">Sunday demo script</p>
       <h2>Show the complete trust boundary.</h2>
       <div class="demo">
         <div class="demo-script">
@@ -285,7 +306,7 @@
 
   <section class="slide dark" data-title="Close">
     <div class="frame">
-      <span class="slide-no">14 / 14</span>
+      <span class="slide-no">15 / 15</span>
       <div class="closing">
         <div>
           <p class="eyebrow">Parity</p>
@@ -300,7 +321,7 @@
 <div class="hint">← → navigate · O overview · F fullscreen · Home restart</div>
 <nav class="controls" aria-label="Presentation controls">
   <button id="prev" aria-label="Previous slide">←</button>
-  <output id="counter">1 / 14</output>
+  <output id="counter">1 / 15</output>
   <button id="overview" aria-label="Toggle overview">O</button>
   <button id="fullscreen" aria-label="Toggle fullscreen">⛶</button>
   <button id="next" aria-label="Next slide">→</button>
