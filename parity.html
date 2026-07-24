@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111a17">
+  <title>Parity — Hackathon story</title>
+  <style>
+    :root{
+      --ink:#17201c;--muted:#647069;--paper:#f3f1ea;--card:#fffef9;--line:#d8ddd6;
+      --green:#11634a;--green-soft:#dff3e9;--orange:#ec7b37;--orange-soft:#fff0e5;
+      --red:#b83e3a;--red-soft:#fbe9e7;--blue:#315ec2;--blue-soft:#e8eefc;
+      --dark:#14201b;--dark-2:#22312a;--shadow:0 24px 70px rgba(24,34,29,.12);
+    }
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#0e1713;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    button{font:inherit}.deck{min-height:100vh}.slide{display:none;min-height:100vh;background:var(--paper);position:relative;overflow:hidden}.slide.active{display:grid}.frame{width:min(1500px,100%);min-height:100vh;margin:auto;padding:clamp(34px,5vw,76px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
+    .slide-no{position:absolute;top:28px;right:34px;font:750 11px/1 ui-monospace,monospace;color:var(--muted);letter-spacing:.12em}.eyebrow{margin:0 0 14px;text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:850;color:var(--green)}h1,h2,h3,p{margin-top:0}h1{font-size:clamp(48px,7vw,106px);line-height:.92;letter-spacing:-.06em;margin-bottom:24px;max-width:1250px}h2{font-size:clamp(36px,5vw,74px);line-height:.98;letter-spacing:-.05em;margin-bottom:22px;max-width:1200px}h3{font-size:19px;letter-spacing:-.02em}.lede{max-width:900px;font-size:clamp(18px,2vw,28px);line-height:1.45;color:var(--muted)}.small{font-size:13px;line-height:1.55;color:var(--muted)}.accent{color:var(--orange)}.green{color:var(--green)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .dark{background:var(--dark);color:#f7faf8}.dark .eyebrow{color:#ef935c}.dark .lede,.dark .small{color:#aebbb5}.dark .slide-no{color:#829088}.dark:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;right:-180px;top:-230px;background:radial-gradient(circle at 35% 35%,rgba(236,123,55,.38),rgba(236,123,55,0) 68%)}.dark:after{content:"";position:absolute;width:520px;height:520px;border:1px solid #314039;border-radius:50%;left:-280px;bottom:-300px;box-shadow:0 0 0 70px rgba(255,255,255,.015),0 0 0 140px rgba(255,255,255,.012)}
+    .hero-mark{display:flex;align-items:center;gap:14px;margin-bottom:42px;font-size:20px;font-weight:850}.hero-mark b{width:43px;height:43px;border-radius:13px;background:var(--orange);display:grid;place-items:center;color:var(--dark)}.hero-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}.hero-tags span{padding:8px 12px;border:1px solid #3b4943;border-radius:999px;color:#c9d2cd;font-size:12px}
+    .grid{display:grid;gap:18px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);min-width:0}.card p{margin-bottom:0}.card .num{font:850 12px/1 ui-monospace,monospace;color:var(--orange);margin-bottom:24px}.card.before{border-top:5px solid var(--red)}.card.after{border-top:5px solid var(--green)}.card.blue{border-top:5px solid var(--blue)}
+    .comparison{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:var(--shadow)}.compare-row{display:grid;grid-template-columns:.8fr 1.2fr;border-top:1px solid var(--line)}.compare-row:first-child{border-top:0}.compare-row>div{padding:17px 20px}.compare-row>div:first-child{font-weight:800;border-right:1px solid var(--line)}.compare-row p{margin:3px 0;color:var(--muted);font-size:14px;line-height:1.45}.compare-row.parity{background:var(--green-soft)}.compare-row.parity>div:first-child{color:var(--green)}
+    .split{display:grid;grid-template-columns:.9fr 1.1fr;gap:26px;align-items:center}.before-stack{display:grid;gap:12px}.tool{display:grid;grid-template-columns:46px 1fr auto;gap:13px;align-items:center;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.tool b:first-child{width:42px;height:42px;border-radius:12px;background:#edf0ed;display:grid;place-items:center}.tool strong,.tool small{display:block}.tool small{color:var(--muted);margin-top:3px}.tool em{font-style:normal;font:750 10px/1 ui-monospace,monospace;color:var(--red);background:var(--red-soft);padding:7px;border-radius:999px}
+    .journey{border:1px solid var(--line);border-radius:22px;background:var(--card);padding:25px;box-shadow:var(--shadow)}.journey-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line)}.journey-head span{font:750 10px/1 ui-monospace,monospace;background:var(--green-soft);color:var(--green);padding:7px 9px;border-radius:999px}.step{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #ebeee9}.step:last-child{border-bottom:0}.step>b{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--green-soft);color:var(--green);font-size:11px}.step strong,.step small{display:block}.step small{font-size:11px;color:var(--muted);margin-top:3px}.step>span:last-child{font:750 10px/1 ui-monospace,monospace;color:var(--green)}
+    .pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:stretch;margin-top:25px}.pipe{position:relative;padding:20px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);text-align:center}.pipe:not(:last-child):after{content:"→";position:absolute;right:-17px;top:45%;z-index:2;color:#849089;font-weight:850}.pipe b{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 12px;border-radius:11px;background:var(--green-soft);color:var(--green)}.pipe strong,.pipe small{display:block}.pipe strong{font-size:13px}.pipe small{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.4}
+    .platform-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:24px}.platform{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.platform-head{padding:13px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.platform-head b{text-transform:capitalize}.status{font:800 9px/1 ui-monospace,monospace;color:var(--green);background:var(--green-soft);padding:6px 8px;border-radius:999px}.screen{height:210px;background:linear-gradient(145deg,#edf1ed,#fff);padding:17px}.phone{height:180px;max-width:126px;border:5px solid #27332e;border-radius:22px;margin:auto;background:white;padding:13px}.browser{height:175px;background:white;border:1px solid #bdc7c0;border-radius:10px;overflow:hidden;padding:15px}.bar{height:16px;background:#e7ebe7;margin:-15px -15px 13px}.line{height:7px;background:#dce2de;border-radius:5px;margin:8px 0}.line.short{width:63%}.fab{width:36px;height:36px;border-radius:50%;background:var(--green);color:white;display:grid;place-items:center;margin:30px 0 0 auto;font-size:9px;font-weight:800}.platform-foot{padding:12px 15px;font-size:10px;color:var(--muted)}
+    .case-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.case{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:19px;box-shadow:var(--shadow)}.case-label{display:inline-block;margin-bottom:12px;padding:6px 8px;border-radius:8px;background:var(--green-soft);color:var(--green);font:800 9px/1 ui-monospace,monospace}.case h3{margin-bottom:7px}.case p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .variant-contract{display:grid;grid-template-columns:.7fr 1.3fr;gap:18px}.intent-card{padding:22px;border-radius:19px;background:var(--dark);color:#f7faf8}.intent-card .mono{color:#ef935c;font-size:11px}.intent-card p{color:#b7c3bd}.variant-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.variant{padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}.variant strong,.variant small{display:block}.variant small{margin-top:6px;color:var(--muted);line-height:1.4}.decision-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}.decision{padding:13px;border-radius:13px;background:var(--green-soft);color:var(--green);font-size:11px}.decision.warn{background:var(--orange-soft);color:#965020}.decision.bad{background:var(--red-soft);color:var(--red)}
+    .checkpoint{display:grid;grid-template-columns:180px repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:24px}.checkpoint>*{background:var(--card);padding:14px}.checkpoint .head{font:800 10px/1 ui-monospace,monospace;color:var(--muted);text-transform:uppercase}.checkpoint .ok{color:var(--green);font-weight:800}.checkpoint .warn{color:var(--red);font-weight:800;background:var(--red-soft)}
+    .finding{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.evidence-card{border-radius:20px;background:var(--card);border:1px solid var(--line);padding:21px;box-shadow:var(--shadow)}.evidence-head{display:flex;justify-content:space-between;gap:12px}.severity{font:800 10px/1 ui-monospace,monospace;color:var(--red);background:var(--red-soft);border-radius:999px;padding:7px 9px}.proofs{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0}.proofs span{font-size:10px;background:#edf0ed;border-radius:8px;padding:7px 9px}.fix{border-left:4px solid var(--green);background:var(--green-soft);padding:15px;border-radius:0 12px 12px 0;font-size:13px;color:var(--green)}
+    .voice-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:25px}.voice-stage{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:20px;min-height:180px}.voice-stage b{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:var(--blue-soft);color:var(--blue);margin-bottom:24px}.voice-stage strong,.voice-stage small{display:block}.voice-stage small{font-size:11px;color:var(--muted);line-height:1.5;margin-top:7px}.voice-stage.approval{border-color:var(--orange);background:var(--orange-soft)}.voice-stage.approval b{background:white;color:var(--orange)}
+    .loop{display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:18px;margin:34px 0}.loop-item{position:relative;aspect-ratio:1;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:20px;box-shadow:var(--shadow)}.loop-item:not(:last-child):after{content:"→";position:absolute;right:-24px;font-size:25px;color:var(--orange)}.loop-item strong,.loop-item small{display:block}.loop-item small{font-size:10px;color:var(--muted);margin-top:5px}
+    .demo{display:grid;grid-template-columns:.75fr 1.25fr;gap:22px}.demo-script{background:var(--dark);color:white;border-radius:22px;padding:25px}.demo-script p{color:#b5c0ba}.demo-script blockquote{margin:22px 0;padding:17px;border-left:4px solid var(--orange);background:var(--dark-2);font-size:19px;line-height:1.6}.language-options{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.language-options span{padding:7px 9px;border:1px solid #46554e;border-radius:9px;color:#d4ddd8;font:700 9px/1.2 ui-monospace,monospace}.checklist{display:grid;gap:9px}.check-item{display:grid;grid-template-columns:28px 1fr;gap:11px;align-items:start;padding:13px;border:1px solid var(--line);background:var(--card);border-radius:12px}.check-item b{width:25px;height:25px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center}.check-item strong,.check-item small{display:block}.check-item small{color:var(--muted);margin-top:3px;font-size:10px}
+    .quote{font-size:clamp(32px,5vw,70px);line-height:1.12;letter-spacing:-.045em;max-width:1200px}.quote span{color:var(--orange)}.closing{display:flex;justify-content:space-between;align-items:end;gap:30px}.qr-placeholder{width:190px;height:190px;border:1px solid #435149;border-radius:20px;display:grid;place-items:center;color:#aebbb5;text-align:center;padding:20px;font-size:12px}
+    .controls{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:7px;align-items:center;padding:7px;border-radius:999px;background:rgba(17,27,23,.92);z-index:30;box-shadow:0 10px 35px rgba(0,0,0,.28);backdrop-filter:blur(12px)}.controls button{border:0;background:#2b3933;color:#eaf0ed;border-radius:999px;min-width:34px;height:34px;padding:0 11px;cursor:pointer;font-weight:800}.controls button:hover,.controls button:focus{background:var(--orange);color:var(--dark)}.controls output{color:#aebbb5;font:700 10px/1 ui-monospace,monospace;padding:0 4px}.hint{position:fixed;left:20px;bottom:22px;color:#89968f;font:650 10px/1.4 ui-monospace,monospace;z-index:20}
+    .overview{padding:20px;background:#0e1713;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}.overview .frame{transform:none!important;min-height:0;width:100%;padding:25px;justify-content:flex-start;overflow:hidden}.overview.slide{display:grid;min-height:310px;border-radius:16px;cursor:pointer}.deck.overview-mode{padding:20px;background:#0e1713;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.deck.overview-mode .slide{display:grid;min-height:310px;border-radius:16px;cursor:pointer}.deck.overview-mode .slide .frame{min-height:310px;padding:28px;justify-content:flex-start}.deck.overview-mode h1,.deck.overview-mode h2{font-size:30px}.deck.overview-mode .lede{font-size:14px}.deck.overview-mode .grid,.deck.overview-mode .split,.deck.overview-mode .demo,.deck.overview-mode .finding{display:none}.deck.overview-mode .pipeline,.deck.overview-mode .platform-grid,.deck.overview-mode .checkpoint,.deck.overview-mode .voice-flow,.deck.overview-mode .loop{display:none}
+    @media(max-height:800px) and (min-width:981px){
+      .frame{padding:32px 52px 58px}.slide-no{top:20px}.eyebrow{margin-bottom:9px}h1{font-size:clamp(50px,6.2vw,82px);margin-bottom:16px}h2{font-size:clamp(34px,4vw,54px);margin-bottom:15px}.lede{font-size:clamp(17px,1.65vw,23px)}
+      .hero-mark{margin-bottom:24px}.hero-tags{margin-top:18px}.card{padding:18px}.card .num{margin-bottom:15px}.comparison .compare-row>div{padding:11px 16px}.comparison .compare-row p{font-size:12px}.tool{padding:10px}.tool b:first-child{width:36px;height:36px}.journey{padding:18px}.journey-head{padding-bottom:11px}.step{padding:10px 0}
+      .pipeline{margin-top:16px}.pipe{padding:14px 9px}.pipe b{margin-bottom:8px}.platform-grid{margin-top:14px}.platform-head{padding:9px 12px}.screen{height:158px;padding:12px}.phone{height:138px}.browser{height:134px;padding:12px}.bar{margin:-12px -12px 10px}.fab{margin-top:20px}.platform-foot{padding:9px 12px}.checkpoint{margin-top:14px}.checkpoint>*{padding:10px}.finding{margin-top:14px}.evidence-card{padding:16px}.proofs{margin:12px 0}.voice-flow{margin-top:15px}.voice-stage{min-height:142px;padding:15px}.voice-stage b{margin-bottom:14px}.loop{margin:18px 0;gap:14px}.loop-item{padding:14px}.demo-script{padding:18px}.demo-script blockquote{margin:14px 0;padding:12px;font-size:16px}.checklist{gap:6px}.check-item{padding:8px}.quote{font-size:clamp(32px,4.5vw,58px)}
+    }
+    @media(max-width:980px){.two,.three,.four,.split,.demo,.finding,.variant-contract{grid-template-columns:1fr}.pipeline,.case-grid{grid-template-columns:repeat(3,1fr)}.pipe:nth-child(3):after{display:none}.platform-grid{grid-template-columns:repeat(2,1fr)}.voice-flow{grid-template-columns:1fr 1fr}.checkpoint{grid-template-columns:130px repeat(4,minmax(100px,1fr));overflow-x:auto}.loop{grid-template-columns:repeat(3,1fr)}.loop-item:nth-child(3):after{display:none}.deck.overview-mode{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.frame{padding:64px 20px 84px}.pipeline,.platform-grid,.voice-flow,.loop,.case-grid,.variant-grid,.decision-strip{grid-template-columns:1fr}.pipe:not(:last-child):after,.loop-item:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-22px}.compare-row{grid-template-columns:1fr}.compare-row>div:first-child{border-right:0;border-bottom:1px solid var(--line)}.deck.overview-mode{grid-template-columns:1fr}.hint{display:none}.controls{bottom:10px}.closing{align-items:flex-start;flex-direction:column}.qr-placeholder{display:none}}
+    @media(prefers-reduced-motion:no-preference){.slide.active .frame{animation:enter .35s ease-out}@keyframes enter{from{opacity:.35;transform:translateY(12px)}to{opacity:1;transform:none}}}
+  </style>
+</head>
+<body>
+<main id="deck" class="deck" aria-live="polite">
+  <section class="slide dark active" data-title="Parity">
+    <div class="frame">
+      <span class="slide-no">01 / 14</span>
+      <div class="hero-mark"><b>P</b> Parity</div>
+      <p class="eyebrow">Cross-platform experience assurance</p>
+      <h1>One journey.<br><span class="accent">Every surface.</span></h1>
+      <p class="lede">Verify that Android, iOS, mobile Web, and desktop Web deliver the same intended customer experience—with synchronized evidence developers can act on.</p>
+      <div class="hero-tags"><span>Shared intent</span><span>State-aware comparison</span><span>Screenshot proof</span><span>Human approval</span></div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="The problem">
+    <div class="frame">
+      <span class="slide-no">02 / 14</span><p class="eyebrow">Before Parity</p>
+      <h2>The journey is shared.<br>The tests are not.</h2>
+      <div class="split">
+        <div class="before-stack">
+          <div class="tool"><b>A</b><div><strong>Android test</strong><small>Espresso / Appium implementation</small></div><em>maintain</em></div>
+          <div class="tool"><b>i</b><div><strong>iOS test</strong><small>XCTest / Appium implementation</small></div><em>rewrite</em></div>
+          <div class="tool"><b>m</b><div><strong>mWeb test</strong><small>Responsive Playwright journey</small></div><em>duplicate</em></div>
+          <div class="tool"><b>W</b><div><strong>Web test</strong><small>Desktop Playwright journey</small></div><em>drift</em></div>
+        </div>
+        <div>
+          <p class="lede">Four capable test stacks can all pass independently—and still deliver four subtly different experiences.</p>
+          <div class="card before"><div class="num">THE GAP</div><h3>No shared product-state contract</h3><p class="small">Execution tools know how to operate a platform. They do not automatically prove that every platform reached an equivalent business state with equivalent controls, content, and accessibility.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Existing approaches">
+    <div class="frame">
+      <span class="slide-no">03 / 14</span><p class="eyebrow">A precise comparison</p>
+      <h2>Useful tools.<br>Different responsibility.</h2>
+      <div class="comparison">
+        <div class="compare-row"><div>Appium, Espresso, XCTest, Playwright</div><div><p>Excellent execution engines, but the same journey is often rewritten and maintained for each platform.</p></div></div>
+        <div class="compare-row"><div>Screenshot-diff tools</div><div><p>Detect visual change, but may not know whether platforms reached equivalent product states or intentionally different layouts.</p></div></div>
+        <div class="compare-row"><div>Manual QA</div><div><p>Essential for exploratory judgment, but expensive and difficult to repeat consistently across every build and surface.</p></div></div>
+        <div class="compare-row"><div>AI test generators</div><div><p>Accelerate authoring, but commonly produce tests for one platform or repository without a durable cross-platform experience contract.</p></div></div>
+        <div class="compare-row parity"><div>Parity</div><div><p><strong>Models one product journey, delegates execution to platform adapters, and verifies equivalent implementation with synchronized evidence.</strong></p></div></div>
+      </div>
+      <p class="small" style="margin-top:14px">Parity complements existing automation and human QA; it adds the cross-platform assurance layer between product intent and platform execution.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="The contract">
+    <div class="frame">
+      <span class="slide-no">04 / 14</span><p class="eyebrow">After: one experience contract</p>
+      <h2>Describe what the customer should experience.</h2>
+      <div class="split">
+        <div>
+          <p class="lede">Parity stores logical intent—not duplicated selectors or coordinates.</p>
+          <div class="grid two">
+            <div class="card after"><div class="num">INTENT</div><h3>Open application</h3><p class="small">A platform adapter decides how.</p></div>
+            <div class="card after"><div class="num">CHECKPOINT</div><h3>Application ready</h3><p class="small">Workers synchronize on business state.</p></div>
+            <div class="card after"><div class="num">ASSERTION</div><h3>Ask Sia is visible</h3><p class="small">Controls and accessibility are required.</p></div>
+            <div class="card after"><div class="num">VARIANCE</div><h3>Reasoned exceptions</h3><p class="small">Platform differences are explicit, governed, and expirable.</p></div>
+          </div>
+        </div>
+        <div class="journey">
+          <div class="journey-head"><strong>intent.verify-floating-action</strong><span>Valid contract</span></div>
+          <div class="step"><b>1</b><div><strong>Launch the application</strong><small>intent: open_application</small></div><span>98%</span></div>
+          <div class="step"><b>2</b><div><strong>Wait for application ready</strong><small>checkpoint: app_ready</small></div><span>96%</span></div>
+          <div class="step"><b>3</b><div><strong>Verify Ask Sia is visible</strong><small>compare: outcome · controls · accessibility</small></div><span>94%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="How it works">
+    <div class="frame">
+      <span class="slide-no">05 / 14</span><p class="eyebrow">The assurance pipeline</p>
+      <h2>From human intent to evidence-backed finding.</h2>
+      <div class="pipeline">
+        <div class="pipe"><b>1</b><strong>Author</strong><small>Text, voice, import</small></div>
+        <div class="pipe"><b>2</b><strong>Validate</strong><small>Schema, assumptions, safety</small></div>
+        <div class="pipe"><b>3</b><strong>Execute</strong><small>Only selected workers</small></div>
+        <div class="pipe"><b>4</b><strong>Normalize</strong><small>DOM + native UI → canonical model</small></div>
+        <div class="pipe"><b>5</b><strong>Compare</strong><small>Equivalent checkpoint state</small></div>
+        <div class="pipe"><b>6</b><strong>Decide</strong><small>Fix, accept, rerun</small></div>
+      </div>
+      <div class="grid three" style="margin-top:26px">
+        <div class="card"><div class="num">ONE PLATFORM</div><h3>Functional test</h3><p class="small">Assertions run and evidence is saved for later.</p></div>
+        <div class="card"><div class="num">TWO OR MORE</div><h3>Consistency test</h3><p class="small">Compatible states unlock cross-platform findings.</p></div>
+        <div class="card"><div class="num">ADD LATER</div><h3>Historical comparison</h3><p class="small">Reuse compatible prior evidence with visible provenance.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Four platforms">
+    <div class="frame">
+      <span class="slide-no">06 / 14</span><p class="eyebrow">Same checkpoint, four surfaces</p>
+      <h2>Parity verifies meaning before pixels.</h2>
+      <div class="platform-grid">
+        <article class="platform"><div class="platform-head"><b>Android</b><span class="status">ready</span></div><div class="screen"><div class="phone"><div class="line"></div><div class="line short"></div><div class="fab">Ask</div></div></div><div class="platform-foot">UiAutomator semantics · screenshot</div></article>
+        <article class="platform"><div class="platform-head"><b>iOS</b><span class="status">ready</span></div><div class="screen"><div class="phone"><div class="line"></div><div class="line short"></div><div class="fab">Ask</div></div></div><div class="platform-foot">XCUI semantics · screenshot</div></article>
+        <article class="platform"><div class="platform-head"><b>mWeb</b><span class="status">ready</span></div><div class="screen"><div class="browser"><div class="bar"></div><div class="line"></div><div class="line short"></div><div class="fab">Ask</div></div></div><div class="platform-foot">390×844 DOM/a11y · screenshot</div></article>
+        <article class="platform"><div class="platform-head"><b>Web</b><span class="status">ready</span></div><div class="screen"><div class="browser"><div class="bar"></div><div class="line"></div><div class="line short"></div><div class="fab">Ask</div></div></div><div class="platform-foot">1440×900 DOM/a11y · screenshot</div></article>
+      </div>
+      <p class="small" style="margin-top:16px">Native trees and browser accessibility trees become a canonical UI model: roles, labels, states, actions, hierarchy, and relative geometry. Visual layout remains advisory unless the contract makes it required.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Practical test cases">
+    <div class="frame">
+      <span class="slide-no">07 / 14</span><p class="eyebrow">More than button visibility</p>
+      <h2>Test the experience—not just the element.</h2>
+      <div class="case-grid">
+        <article class="case"><span class="case-label">OUTCOME + CONTENT</span><h3>Coupon and checkout</h3><p>Was the coupon applied? Do discount, total, currency, and success copy agree?</p></article>
+        <article class="case"><span class="case-label">JOURNEY + STRUCTURE</span><h3>Login and onboarding</h3><p>Did every platform reach the intended destination with the same required choices and next actions?</p></article>
+        <article class="case"><span class="case-label">STATE + CONTROL</span><h3>Form validation</h3><p>Are required errors equivalent? Is Submit enabled only when the form becomes valid?</p></article>
+        <article class="case"><span class="case-label">NAVIGATION + ACTIONS</span><h3>Search and navigation</h3><p>Do equivalent queries, filters, tabs, and back actions lead to the same product state?</p></article>
+        <article class="case"><span class="case-label">CONTENT + RECOVERY</span><h3>Loading, empty, and error states</h3><p>Are status messages, retry actions, and fallback paths present and meaningfully equivalent?</p></article>
+        <article class="case"><span class="case-label">ACCESSIBILITY</span><h3>Inclusive interaction</h3><p>Compare roles, labels, focusability, order, target size, and success or error announcements.</p></article>
+      </div>
+      <p class="small" style="margin-top:15px"><strong>One platform:</strong> functional assertions and saved proof. <strong>Two or more:</strong> compatible-state consistency findings. Deep performance/network parity and unrestricted pixel equality remain outside the current MVP.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Intentional differences">
+    <div class="frame">
+      <span class="slide-no">08 / 14</span><p class="eyebrow">Platform-native does not mean inconsistent</p>
+      <h2>Same outcome.<br>Approved native expression.</h2>
+      <div class="variant-contract">
+        <article class="intent-card">
+          <p class="mono">INTENT · share_item</p>
+          <h3>Customer can share the selected item</h3>
+          <p class="small">The contract requires the outcome and an accessible action—not one identical component everywhere.</p>
+        </article>
+        <div class="variant-grid">
+          <article class="variant"><strong>Android</strong><small>Native system share sheet</small></article>
+          <article class="variant"><strong>iOS</strong><small>Activity view controller</small></article>
+          <article class="variant"><strong>Web</strong><small>Web Share API or approved Copy link fallback</small></article>
+        </div>
+      </div>
+      <div class="decision-strip">
+        <div class="decision"><strong>Conformant variant</strong><br>Different UI, approved equivalent outcome.</div>
+        <div class="decision warn"><strong>Accepted variance</strong><br>Restriction has reason, owner, alternative, and expiry.</div>
+        <div class="decision bad"><strong>Finding</strong><br>No outcome, no approved alternative, or inaccessible fallback.</div>
+      </div>
+      <p class="small" style="margin-top:15px"><strong>No majority vote:</strong> Android, iOS, or Web is never automatically “truth.” The experience contract and recorded product decision define what is acceptable.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="State-aware comparison">
+    <div class="frame">
+      <span class="slide-no">09 / 14</span><p class="eyebrow">Why state synchronization matters</p>
+      <h2>Compare like with like—or say “incomparable.”</h2>
+      <div class="checkpoint">
+        <div class="head">Checkpoint</div><div class="head">Android</div><div class="head">iOS</div><div class="head">mWeb</div><div class="head">Web</div>
+        <div><strong>app_ready</strong></div><div class="ok">✓ ready</div><div class="ok">✓ ready</div><div class="ok">✓ ready</div><div class="ok">✓ ready</div>
+        <div><strong>control_verified</strong></div><div class="ok">✓ Ask Sia</div><div class="ok">✓ Ask Sia</div><div class="ok">✓ Ask Sia</div><div class="warn">✕ missing</div>
+      </div>
+      <div class="grid two" style="margin-top:22px">
+        <div class="card after"><div class="num">COMPARABLE</div><h3>Equivalent fixture, environment, build policy, and business state</h3><p class="small">A missing Web control becomes a confirmed implementation difference.</p></div>
+        <div class="card blue"><div class="num">INCOMPARABLE</div><h3>Login failed, stale fixture, wrong experiment, or incompatible build</h3><p class="small">Parity reports an evidence problem—not a product inconsistency.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Actionable result">
+    <div class="frame">
+      <span class="slide-no">10 / 14</span><p class="eyebrow">After: conscious difference table</p>
+      <h2>Every finding carries its proof.</h2>
+      <div class="finding">
+        <article class="evidence-card">
+          <div class="evidence-head"><div><p class="eyebrow">Finding UI-CONTROL-001</p><h3>Ask Sia is missing on Web</h3></div><span class="severity">HIGH</span></div>
+          <p class="small">Android, iOS, and mWeb expose the required floating action at <span class="mono">control_verified</span>. Web reached the same product state but has no equivalent accessible control.</p>
+          <div class="proofs"><span>4 screenshots</span><span>4 semantic trees</span><span>12 action events</span><span>state compatible</span></div>
+          <div class="fix"><strong>Suggested fix:</strong> restore the Web floating action or document an accessible platform alternative with a reason and expiry.</div>
+        </article>
+        <article class="evidence-card">
+          <p class="eyebrow">Difference table</p>
+          <div class="compare-row"><div>Outcome</div><div><p>All platforms reached application ready.</p></div></div>
+          <div class="compare-row"><div>Control</div><div><p>Missing on Web; present elsewhere.</p></div></div>
+          <div class="compare-row"><div>Accessibility</div><div><p>No equivalent Web role or label found.</p></div></div>
+          <div class="compare-row"><div>Layout</div><div><p>Advisory only; native and responsive layouts may differ.</p></div></div>
+          <div class="compare-row"><div>Confidence</div><div><p>High—semantic and screenshot evidence agree.</p></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Multilingual voice">
+    <div class="frame">
+      <span class="slide-no">11 / 14</span><p class="eyebrow">Hackathon: speak naturally</p>
+      <h2>Local language in.<br>Reviewable test plan out.</h2>
+      <div class="voice-flow">
+        <div class="voice-stage"><b>1</b><strong>Record</strong><small>Chrome captures a temporary ≤30-second WebM clip.</small></div>
+        <div class="voice-stage"><b>2</b><strong>Detect + translate</strong><small>Saaras v3 auto-detects among 23 supported languages and translates speech to English.</small></div>
+        <div class="voice-stage approval"><b>3</b><strong>Review detection</strong><small>Hindi · 95%. Confirm or override uncertain language, then correct “Ask Sia.”</small></div>
+        <div class="voice-stage"><b>4</b><strong>Generate</strong><small>The existing compiler produces deterministic steps and provenance.</small></div>
+        <div class="voice-stage approval"><b>5</b><strong>Approve & run</strong><small>Audio never executes directly. Human approval remains mandatory.</small></div>
+      </div>
+      <p class="small" style="margin-top:18px"><strong>Auto detect is the default.</strong> Hindi demo: “एप्लिकेशन खोलें। जाँच करें कि आस्क सिया दिखाई दे रहा है।” → <span class="mono">hi-IN · 95%</span> → “Open the application. Verify that Ask Sia is visible.”</p>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Feedback loop">
+    <div class="frame">
+      <span class="slide-no">12 / 14</span><p class="eyebrow">Not just a report</p>
+      <h2>A governed feedback loop.</h2>
+      <div class="loop">
+        <div class="loop-item"><div><strong>Detect</strong><small>Evidence-backed difference</small></div></div>
+        <div class="loop-item"><div><strong>Explain</strong><small>Measured vs inferred</small></div></div>
+        <div class="loop-item"><div><strong>Decide</strong><small>Fix, accept, defer</small></div></div>
+        <div class="loop-item"><div><strong>Apply</strong><small>Human-approved change</small></div></div>
+        <div class="loop-item"><div><strong>Replay</strong><small>Before/after proof</small></div></div>
+      </div>
+      <div class="card blue"><h3>Accepted differences are first-class decisions.</h3><p class="small">A platform restriction can be documented with reason, owner, scope, and expiry—so intentional variance does not become permanent accidental drift.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" data-title="Live demo">
+    <div class="frame">
+      <span class="slide-no">13 / 14</span><p class="eyebrow">Sunday demo script</p>
+      <h2>Show the complete trust boundary.</h2>
+      <div class="demo">
+        <div class="demo-script">
+          <h3>Speak in Hindi</h3>
+          <blockquote>एप्लिकेशन खोलें।<br>जाँच करें कि आस्क सिया दिखाई दे रहा है।</blockquote>
+          <p class="small">Expected English: Open the application. Verify that Ask Sia is visible.</p>
+          <div class="language-options" aria-label="Additional demo languages">
+            <span>ಕನ್ನಡ · kn-IN</span><span>தமிழ் · ta-IN</span><span>తెలుగు · te-IN</span><span>മലയാളം · ml-IN</span>
+          </div>
+        </div>
+        <div class="checklist">
+          <div class="check-item"><b>1</b><div><strong>Record and stop</strong><small>Show permission, timer, provider disclosure, and temporary audio.</small></div></div>
+          <div class="check-item"><b>2</b><div><strong>Review detection + translation</strong><small>Show language and probability; correct a product term to demonstrate human control.</small></div></div>
+          <div class="check-item"><b>3</b><div><strong>Generate steps</strong><small>Show source phrase, action, intent, target, and confidence.</small></div></div>
+          <div class="check-item"><b>4</b><div><strong>Approve and run</strong><small>Start with Web; add Android and mWeb when available.</small></div></div>
+          <div class="check-item"><b>5</b><div><strong>Show proof</strong><small>Screenshots, exact actions, difference table, and suggested alternative.</small></div></div>
+          <div class="check-item"><b>6</b><div><strong>Trigger safeguards</strong><small>Show low-confidence override, then provider failure returning safely to typed authoring.</small></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide dark" data-title="Close">
+    <div class="frame">
+      <span class="slide-no">14 / 14</span>
+      <div class="closing">
+        <div>
+          <p class="eyebrow">Parity</p>
+          <p class="quote">Stop asking whether every test passed.<br><span>Ask whether every customer received the intended experience.</span></p>
+          <p class="lede">One journey · selected platforms · synchronized proof · conscious decisions</p>
+        </div>
+        <div class="qr-placeholder">Presentation<br><span class="mono">sortedqueue.com/parity.html</span><br><br>Repository<br><span class="mono">alokomkar/Parity</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="hint">← → navigate · O overview · F fullscreen · Home restart</div>
+<nav class="controls" aria-label="Presentation controls">
+  <button id="prev" aria-label="Previous slide">←</button>
+  <output id="counter">1 / 14</output>
+  <button id="overview" aria-label="Toggle overview">O</button>
+  <button id="fullscreen" aria-label="Toggle fullscreen">⛶</button>
+  <button id="next" aria-label="Next slide">→</button>
+</nav>
+<script>
+  const deck=document.querySelector("#deck"),slides=[...document.querySelectorAll(".slide")],counter=document.querySelector("#counter");
+  let index=Math.max(0,Math.min(slides.length-1,Number(location.hash.slice(1)||1)-1)),overview=false,touchX=0;
+  function show(next){
+    index=Math.max(0,Math.min(slides.length-1,next));
+    slides.forEach((slide,i)=>slide.classList.toggle("active",i===index));
+    counter.value=`${index+1} / ${slides.length}`;
+    history.replaceState(null,"",`#${index+1}`);
+    document.title=`${slides[index].dataset.title} — Parity`;
+  }
+  function toggleOverview(){
+    overview=!overview;deck.classList.toggle("overview-mode",overview);
+    if(!overview)show(index);
+  }
+  document.querySelector("#prev").onclick=()=>show(index-1);
+  document.querySelector("#next").onclick=()=>show(index+1);
+  document.querySelector("#overview").onclick=toggleOverview;
+  document.querySelector("#fullscreen").onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+  slides.forEach((slide,i)=>slide.onclick=()=>{if(overview){overview=false;deck.classList.remove("overview-mode");show(i)}});
+  addEventListener("keydown",event=>{
+    if(["ArrowRight","PageDown"," "].includes(event.key)){event.preventDefault();show(index+1)}
+    if(["ArrowLeft","PageUp"].includes(event.key)){event.preventDefault();show(index-1)}
+    if(event.key==="Home")show(0);if(event.key==="End")show(slides.length-1);
+    if(event.key.toLowerCase()==="o")toggleOverview();
+    if(event.key.toLowerCase()==="f")document.querySelector("#fullscreen").click();
+  });
+  addEventListener("touchstart",event=>touchX=event.changedTouches[0].clientX,{passive:true});
+  addEventListener("touchend",event=>{const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>60)show(index+(delta<0?1:-1))},{passive:true});
+  addEventListener("hashchange",()=>show(Number(location.hash.slice(1)||1)-1));
+  show(index);
+</script>
+</body>
+</html>
