@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#14201b">
+  <meta name="description" content="Parity cross-platform testing success and inconsistency demonstrations.">
+  <title>Parity — Demo recordings</title>
+  <style>
+    :root{
+      --ink:#17201c;--muted:#647069;--paper:#f3f1ea;--card:#fffef9;--line:#d8ddd6;
+      --green:#11634a;--green-soft:#dff3e9;--orange:#ec7b37;--red:#b83e3a;
+      --red-soft:#fbe9e7;--dark:#14201b;--shadow:0 24px 70px rgba(24,34,29,.12);
+    }
+    *{box-sizing:border-box}
+    html{color-scheme:light}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{color:inherit}
+    .hero{position:relative;overflow:hidden;background:var(--dark);color:#f7faf8;padding:56px max(24px,calc((100vw - 1180px)/2)) 68px}
+    .hero:after{content:"";position:absolute;width:520px;height:520px;right:-170px;top:-300px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(236,123,55,.42),rgba(236,123,55,0) 68%)}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:850}.brand b{width:40px;height:40px;border-radius:12px;background:var(--orange);display:grid;place-items:center;color:var(--dark)}
+    .eyebrow{margin:38px 0 12px;color:#ef935c;text-transform:uppercase;letter-spacing:.16em;font-size:11px;font-weight:850}
+    h1{position:relative;z-index:1;max-width:900px;margin:0;font-size:clamp(48px,8vw,94px);line-height:.92;letter-spacing:-.06em}
+    .lede{position:relative;z-index:1;max-width:800px;margin:24px 0 0;color:#b7c3bd;font-size:clamp(17px,2vw,24px);line-height:1.5}
+    main{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:48px 0 70px}
+    .notice{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:25px;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+    .notice p{margin:0;color:var(--muted);line-height:1.5}.notice a{white-space:nowrap;font-weight:800;color:var(--green)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+    article{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:var(--shadow)}
+    .media{background:#0e1713;aspect-ratio:1440/1000;display:grid;place-items:center}
+    video{display:block;width:100%;height:100%;object-fit:contain}
+    .content{padding:24px}.label{display:inline-block;padding:7px 9px;border-radius:999px;background:var(--green-soft);color:var(--green);font:850 10px/1 ui-monospace,monospace}.failure .label{background:var(--red-soft);color:var(--red)}
+    h2{margin:16px 0 10px;font-size:clamp(25px,3vw,36px);letter-spacing:-.04em}.content p{margin:0;color:var(--muted);line-height:1.55}
+    .facts{display:flex;flex-wrap:wrap;gap:7px;margin:20px 0}.facts span{padding:7px 9px;border-radius:8px;background:#edf0ed;color:var(--muted);font-size:10px}
+    .download{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--green);text-decoration:none}.failure .download{color:var(--red)}
+    footer{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:0 0 40px;color:var(--muted);font-size:12px}
+    @media(max-width:760px){.hero{padding-top:34px}.grid{grid-template-columns:1fr}.notice{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="brand"><b>P</b> Parity</div>
+    <p class="eyebrow">Recorded cross-platform proof</p>
+    <h1>Same journey.<br>Two outcomes.</h1>
+    <p class="lede">Watch Parity turn one natural-language instruction into Android, mobile Web, and desktop Web evidence—first with a consistent experience, then with a deliberate implementation gap.</p>
+  </header>
+
+  <main>
+    <div class="notice">
+      <p>Both recordings use the same journey: open Intent and verify that <strong>Ask Sia</strong> is visible. iOS was explicitly omitted from these local runs.</p>
+      <a href="parity.html">View the presentation →</a>
+    </div>
+
+    <section class="grid" aria-label="Parity demonstration recordings">
+      <article>
+        <div class="media">
+          <video controls preload="metadata" playsinline aria-label="Successful Parity test run">
+            <source src="assets/parity/natural-language-success.webm" type="video/webm">
+            Your browser cannot play WebM video. Use the download link below.
+          </video>
+        </div>
+        <div class="content">
+          <span class="label">SUCCESS</span>
+          <h2>Consistent on every selected platform</h2>
+          <p>Parity compiles the natural-language journey, runs Android, mWeb, and Web, then confirms that the floating action is present across all three compatible results.</p>
+          <div class="facts"><span>Android</span><span>mWeb</span><span>Web</span><span>23 seconds</span><span>Screenshot proof</span></div>
+          <a class="download" href="assets/parity/natural-language-success.webm" download>Download success recording ↓</a>
+        </div>
+      </article>
+
+      <article class="failure">
+        <div class="media">
+          <video controls preload="metadata" playsinline aria-label="Parity test run detecting a deliberate inconsistency">
+            <source src="assets/parity/natural-language-failure.webm" type="video/webm">
+            Your browser cannot play WebM video. Use the download link below.
+          </video>
+        </div>
+        <div class="content">
+          <span class="label">DELIBERATE FAILURE</span>
+          <h2>Implementation gap detected</h2>
+          <p>The same journey reaches a compatible state, but Ask Sia is intentionally hidden on Web and mWeb. Parity reports the difference while Android remains conformant.</p>
+          <div class="facts"><span>Android passes</span><span>mWeb differs</span><span>Web differs</span><span>23 seconds</span><span>Evidence attached</span></div>
+          <a class="download" href="assets/parity/natural-language-failure.webm" download>Download failure recording ↓</a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>Recorded from the local Parity pilot on 23 July 2026. The deliberate failure seed was removed immediately after capture.</footer>
+</body>
+</html>
