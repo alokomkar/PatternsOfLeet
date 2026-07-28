@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d1713">
+  <meta name="description" content="Omkara is a local-first deployment memory and verification layer for Forward Deployed Engineers and AI delivery teams.">
+  <meta property="og:title" content="Omkara — From customer intent to verified deployment">
+  <meta property="og:description" content="Preserve customer discovery, approved intent, agent work, exact-commit evidence, and deployment outcomes in one traceable delivery record.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sortedqueue.com/omkara.html">
+  <title>Omkara — From customer intent to verified deployment</title>
+  <style>
+    :root{
+      --ink:#17201c;
+      --muted:#66716b;
+      --paper:#f3f1e9;
+      --card:#fffef9;
+      --dark:#0d1713;
+      --dark-2:#17241e;
+      --line:#d9ddd6;
+      --green:#176349;
+      --green-soft:#dcefe6;
+      --orange:#ef7d3b;
+      --orange-soft:#fff0e5;
+      --blue:#2f6491;
+      --shadow:0 24px 70px rgba(23,32,28,.11);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    a{color:inherit}
+    .shell{width:min(1160px,calc(100% - 40px));margin:0 auto}
+    nav{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{text-decoration:none;font-weight:850;letter-spacing:-.03em}
+    .brand span{color:var(--orange)}
+    .back{display:inline-flex;align-items:center;gap:8px;color:#b9c6c0;text-decoration:none;font-size:13px;font-weight:750}
+    .back:hover{color:white}
+    .hero-wrap{background:var(--dark);color:white;position:relative;overflow:hidden}
+    .hero-wrap:before{content:"";position:absolute;width:650px;height:650px;border-radius:50%;right:-250px;top:-310px;background:radial-gradient(circle,rgba(239,125,59,.42),rgba(239,125,59,0) 67%)}
+    .hero-wrap:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(255,255,255,.09);border-radius:50%;left:-310px;bottom:-350px;box-shadow:0 0 0 70px rgba(255,255,255,.018),0 0 0 140px rgba(255,255,255,.012)}
+    .hero{position:relative;z-index:1;padding:92px 0 110px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(310px,.65fr);gap:70px;align-items:end}
+    .eyebrow{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.17em;text-transform:uppercase}
+    .hero .eyebrow{color:#f39a69}
+    h1{max-width:900px;margin:17px 0 27px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(54px,7.6vw,98px);font-weight:500;line-height:.94;letter-spacing:-.06em}
+    .hero-copy{max-width:800px;margin:0;color:#b9c6c0;font-size:clamp(18px,2vw,23px);line-height:1.55}
+    .hero-copy strong{color:white}
+    .actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:34px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 17px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none;font-size:13px;font-weight:800}
+    .button.primary{background:var(--orange);border-color:var(--orange);color:var(--dark)}
+    .button.ghost{border-color:#3a4942;background:transparent;color:white}
+    .signal{padding:26px;border:1px solid #314039;border-radius:22px;background:rgba(255,255,255,.035);backdrop-filter:blur(12px)}
+    .signal-label{color:#7f9188;font:800 10px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.12em}
+    .signal h2{margin:25px 0 10px;font-family:Georgia,serif;font-size:29px;font-weight:500;line-height:1.12;letter-spacing:-.04em}
+    .signal p{margin:0;color:#aebbb5;font-size:13px}
+    .signal-list{display:grid;gap:12px;margin-top:25px;padding-top:20px;border-top:1px solid #314039}
+    .signal-item{display:grid;grid-template-columns:28px 1fr;gap:11px;align-items:start;color:#d7dfdb;font-size:12px}
+    .signal-item b{width:25px;height:25px;border-radius:8px;background:#26362f;color:#f39a69;display:grid;place-items:center;font-size:10px}
+    section{padding:94px 0;border-top:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:180px 1fr;gap:34px;margin-bottom:44px}
+    .section-head h2{max-width:850px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,5vw,62px);font-weight:500;line-height:1.06;letter-spacing:-.05em}
+    .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .problem{padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+    .problem.before{border-top:5px solid var(--orange)}
+    .problem.after{border-top:5px solid var(--green)}
+    .problem h3{margin:20px 0 12px;font-size:23px;letter-spacing:-.035em}
+    .problem p{margin:0;color:var(--muted)}
+    .problem ul{margin:22px 0 0;padding:0;list-style:none;display:grid;gap:11px}
+    .problem li{display:grid;grid-template-columns:20px 1fr;gap:9px;color:var(--muted);font-size:14px}
+    .problem li:before{content:"—";color:var(--orange);font-weight:900}
+    .problem.after li:before{content:"✓";color:var(--green)}
+    .flow-section{background:#e8ebe6}
+    .flow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px}
+    .stage{position:relative;min-height:170px;padding:18px 14px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+    .stage:not(:last-child):after{content:"→";position:absolute;z-index:2;right:-13px;top:50%;transform:translateY(-50%);color:var(--orange);font-weight:900}
+    .stage b{display:grid;place-items:center;width:34px;height:34px;margin-bottom:26px;border-radius:11px;background:var(--green-soft);color:var(--green);font-size:11px}
+    .stage strong,.stage small{display:block}
+    .stage strong{font-size:13px;letter-spacing:-.015em}
+    .stage small{margin-top:7px;color:var(--muted);font-size:10px;line-height:1.45}
+    .contract{margin-top:22px;padding:22px 25px;border-radius:16px;background:var(--dark);color:white;display:flex;justify-content:space-between;gap:24px;align-items:center}
+    .contract p{margin:0;color:#b9c6c0;font-size:14px}
+    .contract code{color:#f39a69;font-size:12px;white-space:nowrap}
+    .capabilities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .capability{min-height:265px;padding:26px;border:1px solid var(--line);border-radius:19px;background:var(--card)}
+    .capability .num{color:var(--green);font:850 11px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}
+    .capability h3{margin:38px 0 10px;font-family:Georgia,serif;font-size:29px;font-weight:500;line-height:1.05;letter-spacing:-.04em}
+    .capability p{margin:0;color:var(--muted);font-size:14px}
+    .roles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .role{padding:21px;border-radius:16px;background:var(--dark);color:white}
+    .role span{display:grid;place-items:center;width:32px;height:32px;margin-bottom:33px;border-radius:10px;background:var(--orange);color:var(--dark);font-weight:900;font-size:11px}
+    .role h3{margin:0 0 8px;font-size:17px}
+    .role p{margin:0;color:#aebbb5;font-size:12px}
+    .boundary{display:grid;grid-template-columns:1fr .85fr;gap:22px;align-items:stretch}
+    .boundary-main{padding:34px;border-radius:22px;background:var(--green);color:white}
+    .boundary-main h3{max-width:600px;margin:13px 0 18px;font-family:Georgia,serif;font-size:clamp(34px,4vw,50px);font-weight:500;line-height:1.05;letter-spacing:-.045em}
+    .boundary-main p{max-width:650px;margin:0;color:#d3e9df}
+    .boundary-list{display:grid;gap:1px;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--line)}
+    .boundary-list div{padding:17px 20px;background:var(--card);display:grid;grid-template-columns:25px 1fr;gap:12px;font-size:13px;font-weight:750}
+    .boundary-list b{color:var(--green)}
+    .who{display:grid;grid-template-columns:.8fr 1.2fr;gap:50px;align-items:start}
+    .who-copy h2{margin:14px 0 20px;font-family:Georgia,serif;font-size:clamp(38px,5vw,62px);font-weight:500;line-height:1.05;letter-spacing:-.05em}
+    .who-copy p{margin:0;color:var(--muted);font-size:17px}
+    .audiences{display:grid;gap:12px}
+    .audience{padding:20px 22px;border:1px solid var(--line);border-radius:15px;background:var(--card);display:grid;grid-template-columns:45px 1fr;gap:15px;align-items:start}
+    .audience b:first-child{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--orange-soft);color:#9a5125;font-size:11px}
+    .audience strong,.audience small{display:block}
+    .audience small{margin-top:4px;color:var(--muted);line-height:1.45}
+    .closing{margin:0 auto 90px;padding:58px;border:0;border-radius:27px;background:var(--dark);color:white;display:grid;grid-template-columns:1fr auto;gap:35px;align-items:end}
+    .closing .eyebrow{color:#f39a69}
+    .closing h2{max-width:780px;margin:14px 0 0;font-family:Georgia,serif;font-size:clamp(39px,5vw,64px);font-weight:500;line-height:1.03;letter-spacing:-.05em}
+    footer{padding:0 0 38px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:12px}
+    footer div{display:flex;gap:17px}
+    footer a{text-decoration:none}
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr;gap:44px}
+      .flow{grid-template-columns:repeat(4,1fr)}
+      .stage:nth-child(4):after{display:none}
+      .capabilities{grid-template-columns:repeat(2,1fr)}
+      .roles{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:760px){
+      .section-head,.problem-grid,.boundary,.who{grid-template-columns:1fr}
+      .section-head{gap:14px}
+      .flow{grid-template-columns:repeat(2,1fr)}
+      .stage:nth-child(even):after{display:none}
+      .contract{align-items:flex-start;flex-direction:column}
+      .contract code{white-space:normal}
+      .closing{grid-template-columns:1fr;padding:38px}
+    }
+    @media(max-width:560px){
+      .shell{width:min(100% - 28px,1160px)}
+      nav{height:70px}.brand{font-size:14px}
+      .hero{padding:62px 0 78px}
+      h1{font-size:52px}
+      section{padding:70px 0}
+      .flow,.capabilities,.roles{grid-template-columns:1fr}
+      .stage{min-height:145px}.stage:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-19px;transform:none}
+      .capability{min-height:235px}
+      footer{flex-direction:column}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <div class="hero-wrap">
+    <header class="shell">
+      <nav aria-label="Product navigation">
+        <a class="brand" href="founder.html">SortedQueue<span>.</span></a>
+        <a class="back" href="founder.html"><span aria-hidden="true">←</span> Back to Alok’s work</a>
+      </nav>
+    </header>
+    <div class="shell hero">
+      <div>
+        <div class="eyebrow">Omkara · Agentic delivery with a memory</div>
+        <h1>From customer intent to verified deployment.</h1>
+        <p class="hero-copy"><strong>Omkara is a local-first delivery workspace for Forward Deployed Engineers and AI implementation teams.</strong> It keeps discovery, stakeholder approval, coding-agent work, technical decisions, exact-commit evidence, and production outcomes connected.</p>
+        <div class="actions">
+          <a class="button primary" href="#how">See how it works <span aria-hidden="true">↓</span></a>
+          <a class="button ghost" href="mailto:alokomkar.gudikote@gmail.com?subject=Omkara">Discuss Omkara <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <aside class="signal" aria-label="Omkara product position">
+        <div class="signal-label">OMKARA OWNS THE DELIVERY RECORD</div>
+        <h2>The agents can change. Product truth should not.</h2>
+        <p>Claude Code, Codex, Gemini, and future agents remain replaceable workers. Omkara preserves the approved intent and proof independently of any one session or vendor.</p>
+        <div class="signal-list">
+          <div class="signal-item"><b>01</b><span>Customer evidence stays linked to the solution.</span></div>
+          <div class="signal-item"><b>02</b><span>Visual approval becomes an enforceable contract.</span></div>
+          <div class="signal-item"><b>03</b><span>Verification stays tied to the exact change tested.</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <main>
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">The delivery gap</div>
+          <h2>Code generation is getting faster. Maintaining shared truth is not.</h2>
+        </div>
+        <div class="problem-grid">
+          <article class="problem before">
+            <div class="eyebrow">Without Omkara</div>
+            <h3>Every handoff quietly rewrites the problem.</h3>
+            <p>Customer interviews, decisions, mockups, agent chats, code, and test reports live in separate places.</p>
+            <ul>
+              <li>The requested technology replaces the underlying workflow problem.</li>
+              <li>Agents inherit summaries instead of original approved intent.</li>
+              <li>A late change makes earlier testing stale without making it obvious.</li>
+              <li>Teams ship activity, but struggle to prove adoption or impact.</li>
+            </ul>
+          </article>
+          <article class="problem after">
+            <div class="eyebrow">With Omkara</div>
+            <h3>One traceable record follows the work.</h3>
+            <p>Every delivery artifact points back to customer evidence and forward to measured production outcome.</p>
+            <ul>
+              <li>Discovery distinguishes observation, stakeholder claims, and inference.</li>
+              <li>Customers approve an interactive Intent Proof before implementation.</li>
+              <li>Parity evidence and PR evaluation reference the exact tested commit.</li>
+              <li>Deployment ownership, adoption, and outcome remain visible.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="flow-section" id="how">
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Intent-to-evidence graph</div>
+          <h2>A continuous chain of custody for AI-assisted delivery.</h2>
+        </div>
+        <div class="flow" aria-label="Omkara delivery lifecycle">
+          <div class="stage"><b>01</b><strong>Discover</strong><small>Capture stakeholders, workflow evidence, constraints, and baseline metrics.</small></div>
+          <div class="stage"><b>02</b><strong>Prove intent</strong><small>Clarify ambiguity and approve a visual, versioned solution contract.</small></div>
+          <div class="stage"><b>03</b><strong>Plan</strong><small>Give a Planner bounded context and map approved screens to implementation.</small></div>
+          <div class="stage"><b>04</b><strong>Build</strong><small>Executors work through replaceable coding agents in isolated worktrees.</small></div>
+          <div class="stage"><b>05</b><strong>Verify</strong><small>Parity attaches functional, semantic, visual, and localized evidence.</small></div>
+          <div class="stage"><b>06</b><strong>Evaluate</strong><small>An Integrator reviews the exact tested commit and delivery risk.</small></div>
+          <div class="stage"><b>07</b><strong>Deploy</strong><small>Record rollout, ownership, adoption, reliability, and workflow impact.</small></div>
+        </div>
+        <div class="contract">
+          <p><strong>The durable product is not another chat transcript.</strong> It is the verified relationship between what a customer meant and what reached production.</p>
+          <code>intent → change → evidence → outcome</code>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Core system</div>
+          <h2>Purpose-built around the difficult parts of forward deployment.</h2>
+        </div>
+        <div class="capabilities">
+          <article class="capability">
+            <div class="num">01 · DISCOVERY RECORD</div>
+            <h3>Preserve the problem before proposing the system.</h3>
+            <p>Keep stakeholder evidence, current workflows, constraints, open hypotheses, baseline metrics, and approval authority together—with observed facts visibly separate from AI inference.</p>
+          </article>
+          <article class="capability">
+            <div class="num">02 · INTENT PROOF</div>
+            <h3>Let customers approve something they can inspect.</h3>
+            <p>Turn clarified requirements into local interactive mockups, journeys, acceptance criteria, and localized baselines. Approval creates an immutable version rather than editable prompt context.</p>
+          </article>
+          <article class="capability">
+            <div class="num">03 · CONTEXT PACKETS</div>
+            <h3>Give every agent the right truth for its role.</h3>
+            <p>Planner, Executor, Tester, and Integrator receive bounded, versioned context. Agent sessions can be replaced without asking the user to reconstruct project history.</p>
+          </article>
+          <article class="capability">
+            <div class="num">04 · VISUAL CONTRACT</div>
+            <h3>Prevent silent reinterpretation during implementation.</h3>
+            <p>Approved screens, tokens, journeys, states, permitted variations, and screen-to-file mappings become a delivery constraint. Drift requires a fix or an approved new version.</p>
+          </article>
+          <article class="capability">
+            <div class="num">05 · VERIFIED CHANGE</div>
+            <h3>Evidence before agent confidence.</h3>
+            <p>Parity supplies deterministic evidence. The Integrator evaluates the exact commit tested, and a subsequent change automatically makes the earlier verdict stale.</p>
+          </article>
+          <article class="capability">
+            <div class="num">06 · DEPLOYMENT RECORD</div>
+            <h3>Follow the work through rollout and outcome.</h3>
+            <p>Track environments, versions, rollout plans, operational ownership, incidents, adoption, and agreed workflow metrics without pretending code completion equals customer value.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Role integrity</div>
+          <h2>Multiple agents, clear responsibilities, human authority.</h2>
+        </div>
+        <div class="roles">
+          <article class="role"><span>P</span><h3>Planner</h3><p>Scopes the work, acknowledges approved intent, and maps the solution to the repository.</p></article>
+          <article class="role"><span>E</span><h3>Executor</h3><p>Implements only the assigned scope inside an isolated branch and worktree.</p></article>
+          <article class="role"><span>T</span><h3>Tester</h3><p>Receives the original baseline and verifies behavior without inheriting the implementer’s interpretation.</p></article>
+          <article class="role"><span>I</span><h3>Integrator</h3><p>Evaluates alignment, evidence, quality, and integration risk before a human merge decision.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell boundary">
+        <div class="boundary-main">
+          <div class="eyebrow" style="color:#bfe6d6">Local-first by design</div>
+          <h3>Customer code and delivery memory remain under customer control.</h3>
+          <p>Omkara coordinates installed coding agents, repositories, Git worktrees, project memory, and local Parity evidence without requiring an Omkara cloud account. External language or model providers are explicit choices, not invisible dependencies.</p>
+        </div>
+        <div class="boundary-list" aria-label="Local-first guarantees">
+          <div><b>✓</b><span>Canonical project memory stored locally</span></div>
+          <div><b>✓</b><span>Agent vendors remain replaceable</span></div>
+          <div><b>✓</b><span>Source upload is never automatic</span></div>
+          <div><b>✓</b><span>Customer engagement boundaries stay explicit</span></div>
+          <div><b>✓</b><span>Reusable patterns require privacy review</span></div>
+          <div><b>✓</b><span>Human approval gates intent and integration</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell who">
+        <div class="who-copy">
+          <div class="eyebrow">Built first for</div>
+          <h2>Teams living between the customer and the code.</h2>
+          <p>Omkara’s first wedge is not every developer. It is the delivery team that must repeatedly turn ambiguity into production outcomes without losing trust along the way.</p>
+        </div>
+        <div class="audiences">
+          <div class="audience"><b>01</b><div><strong>Forward Deployed Engineers</strong><small>Owning discovery, technical delivery, rollout, and adoption alongside customer teams.</small></div></div>
+          <div class="audience"><b>02</b><div><strong>AI implementation teams</strong><small>Small teams delivering several customer projects with multiple coding agents and sensitive context.</small></div></div>
+          <div class="audience"><b>03</b><div><strong>Customer-embedded product engineers</strong><small>Working inside existing systems, constraints, languages, and approval structures.</small></div></div>
+          <div class="audience"><b>04</b><div><strong>Technical delivery leads</strong><small>Needing a clear view of what was approved, built, tested, deployed, and learned.</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell closing" aria-labelledby="closing-title">
+      <div>
+        <div class="eyebrow">Currently in product development</div>
+        <h2 id="closing-title">The agents write code. Omkara preserves what the delivery means.</h2>
+      </div>
+      <a class="button primary" href="mailto:alokomkar.gudikote@gmail.com?subject=Omkara">Start a conversation →</a>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <span>Omkara · A SortedQueue product by Alok Gudikote</span>
+    <div><a href="founder.html">Founder</a><a href="mailto:alokomkar.gudikote@gmail.com?subject=Omkara">Contact</a></div>
+  </footer>
+</body>
+</html>
