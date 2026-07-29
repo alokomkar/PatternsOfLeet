@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "chaitra-customer-emulated-rehearsal-2026-07-29",
+  "classification": "automated_rehearsal",
+  "countsTowardHumanGate": false,
+  "projectId": "chaitra",
+  "roleEmulated": "rental_customer",
+  "testedSourceCommit": "1f2bab16e1c3e84565180b6e8cbdbcf31c49502d",
+  "journey": [
+    {
+      "task": "Find an available jewellery set and understand its rental",
+      "observed": "Availability, rental amount, deposit, and current custody were visible after selecting the set.",
+      "result": "completed",
+      "agentInferredEase": 5,
+      "wrongTurns": 0
+    },
+    {
+      "task": "Use the virtual preview to evaluate the selected set",
+      "observed": "The preview clearly disclosed that it was conceptual, but showed a generic jewellery symbol rather than the selected set.",
+      "result": "failed_expectation",
+      "agentInferredEase": 3,
+      "wrongTurns": 0
+    },
+    {
+      "task": "Try unsupported delivery and then reserve in a supported district",
+      "observed": "Mysuru was blocked with a clear message; Bengaluru Urban completed and reserved the exact asset.",
+      "result": "critical_failure",
+      "agentInferredEase": 3,
+      "wrongTurns": 0,
+      "failureReason": "The booking collected no rental end date, customer contact, or delivery address and returned no durable customer booking reference."
+    }
+  ],
+  "findings": [
+    {
+      "id": "CHAITRA-USAB-001",
+      "severity": "critical",
+      "source": "agent_inference_from_observed_ui",
+      "finding": "The delivery booking is not operationally fulfillable because it lacks rental duration, contact details, and delivery address.",
+      "recommendation": "Collect start/end dates, contact, full supported address, fulfilment window, consent, price/deposit summary, and confirmation before reserving the unique asset."
+    },
+    {
+      "id": "CHAITRA-USAB-002",
+      "severity": "high",
+      "source": "agent_inference_from_observed_ui",
+      "finding": "After reservation the customer receives only a temporary toast and no booking reference or confirmation view.",
+      "recommendation": "Show and persist a confirmation page containing booking ID, exact asset, dates, fulfilment, price, deposit, next step, and cancellation/contact path."
+    },
+    {
+      "id": "CHAITRA-USAB-003",
+      "severity": "medium",
+      "source": "agent_inference_from_observed_ui",
+      "finding": "The conceptual try-on does not visually represent the selected jewellery.",
+      "recommendation": "Use an asset-specific preview or rename the action to Style preview until real try-on exists."
+    }
+  ],
+  "summary": {
+    "status": "blocked",
+    "criticalTasksCompleted": 1,
+    "criticalTasksTotal": 2,
+    "humanParticipantCount": 0,
+    "videoCaptured": false,
+    "reason": "Automated rehearsal found an operationally incomplete booking journey."
+  }
+}

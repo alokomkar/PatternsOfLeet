@@ -1,0 +1,13 @@
+file 'shakti-01-dispatcher.png'
+duration 4
+file 'shakti-02-job-created.png'
+duration 4
+file 'shakti-03-assigned.png'
+duration 4
+file 'shakti-04-accepted-offline.png'
+duration 4
+file 'shakti-05-placeholder-evidence.png'
+duration 6
+file 'shakti-06-synchronized.png'
+duration 4
+file 'shakti-06-synchronized.png'

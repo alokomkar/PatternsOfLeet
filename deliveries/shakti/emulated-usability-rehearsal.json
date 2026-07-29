@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "shakti-technician-emulated-rehearsal-2026-07-29",
+  "classification": "automated_rehearsal",
+  "countsTowardHumanGate": false,
+  "projectId": "shakti",
+  "roleEmulated": "technician",
+  "testedSourceCommit": "1f2bab16e1c3e84565180b6e8cbdbcf31c49502d",
+  "journey": [
+    {
+      "task": "Find and accept the newly assigned air-conditioner job",
+      "observed": "The SENT job appeared first with a clear Accept job action.",
+      "result": "completed",
+      "agentInferredEase": 6,
+      "wrongTurns": 0
+    },
+    {
+      "task": "Complete the job offline and add required evidence",
+      "observed": "The offline state and queued operations were clear, but Add completion evidence immediately created placeholder evidence without allowing photo, confirmation, or service-note entry.",
+      "result": "critical_failure",
+      "agentInferredEase": 2,
+      "wrongTurns": 0
+    },
+    {
+      "task": "Reconnect and confirm synchronization",
+      "observed": "Switch device online cleared two queued operations and displayed Everything synchronized.",
+      "result": "completed",
+      "agentInferredEase": 6,
+      "wrongTurns": 0
+    }
+  ],
+  "findings": [
+    {
+      "id": "SHAKTI-USAB-001",
+      "severity": "critical",
+      "source": "agent_inference_from_observed_ui",
+      "finding": "The technician cannot actually supply the required completion evidence even though the interface reports that evidence was saved.",
+      "recommendation": "Add a completion form with photo attachment, explicit customer confirmation, service note, offline draft state, review, and final save."
+    },
+    {
+      "id": "SHAKTI-USAB-002",
+      "severity": "medium",
+      "source": "agent_inference_from_observed_ui",
+      "finding": "The technician queue mixes completed and actionable work without filtering or a clear next-job priority.",
+      "recommendation": "Default to actionable work and provide an explicit completed-history filter."
+    }
+  ],
+  "summary": {
+    "status": "blocked",
+    "criticalTasksCompleted": 2,
+    "criticalTasksTotal": 3,
+    "humanParticipantCount": 0,
+    "videoCaptured": false,
+    "reason": "Automated rehearsal found a critical completion-evidence gap."
+  }
+}

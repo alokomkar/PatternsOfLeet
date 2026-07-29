@@ -1,0 +1,11 @@
+file 'chaitra-01-storefront.png'
+duration 4
+file 'chaitra-02-generic-preview.png'
+duration 5
+file 'chaitra-03-booking-form.png'
+duration 5
+file 'chaitra-04-unsupported-district.png'
+duration 5
+file 'chaitra-05-reserved-no-confirmation.png'
+duration 7
+file 'chaitra-05-reserved-no-confirmation.png'

@@ -1,0 +1,1 @@
+{"id":"chaitra-rental-jewellery","name":"Chaitra Rental Jewellery MVP","version":"0.1.0","storage":"browser-localStorage","run":"npm run mvp:chaitra","test":"node --test reference-products/chaitra/model.test.mjs","visualContract":"../../chaitra-rental-jewellery-product-mockup.html","offline":true}

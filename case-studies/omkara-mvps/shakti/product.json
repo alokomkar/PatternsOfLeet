@@ -1,0 +1,1 @@
+{"id":"shakti-field-services","name":"Shakti Field Services MVP","version":"0.1.0","storage":"browser-localStorage","run":"npm run mvp:shakti","test":"node --test reference-products/shakti/model.test.mjs","visualContract":"../../shakti-field-service-product-mockup.html","offline":true}
