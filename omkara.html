@@ -106,6 +106,19 @@
     .audience b:first-child{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--orange-soft);color:#9a5125;font-size:11px}
     .audience strong,.audience small{display:block}
     .audience small{margin-top:4px;color:var(--muted);line-height:1.45}
+    .case-studies{background:#e8ebe6}
+    .case-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .case-study{display:flex;flex-direction:column;min-height:430px;padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 35px rgba(23,32,28,.06)}
+    .case-study .case-tag{align-self:flex-start;padding:6px 9px;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .case-study h3{margin:26px 0 12px;font-family:Georgia,serif;font-size:35px;font-weight:500;line-height:1.05;letter-spacing:-.04em}
+    .case-study>p{margin:0;color:var(--muted);font-size:14px}
+    .case-details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:25px 0}
+    .case-details div{padding:12px;border-radius:11px;background:var(--paper)}
+    .case-details small,.case-details strong{display:block}
+    .case-details small{color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase}
+    .case-details strong{margin-top:5px;font-size:11px}
+    .case-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:auto}
+    .case-actions .button.secondary{background:transparent;color:var(--green);border-color:#b7ccc2}
     .closing{margin:0 auto 90px;padding:58px;border:0;border-radius:27px;background:var(--dark);color:white;display:grid;grid-template-columns:1fr auto;gap:35px;align-items:end}
     .closing .eyebrow{color:#f39a69}
     .closing h2{max-width:780px;margin:14px 0 0;font-family:Georgia,serif;font-size:clamp(39px,5vw,64px);font-weight:500;line-height:1.03;letter-spacing:-.05em}
@@ -121,6 +134,7 @@
     }
     @media(max-width:760px){
       .section-head,.problem-grid,.boundary,.who{grid-template-columns:1fr}
+      .case-grid{grid-template-columns:1fr}
       .section-head{gap:14px}
       .flow{grid-template-columns:repeat(2,1fr)}
       .stage:nth-child(even):after{display:none}
@@ -315,6 +329,45 @@
           <div class="audience"><b>02</b><div><strong>AI implementation teams</strong><small>Small teams delivering several customer projects with multiple coding agents and sensitive context.</small></div></div>
           <div class="audience"><b>03</b><div><strong>Customer-embedded product engineers</strong><small>Working inside existing systems, constraints, languages, and approval structures.</small></div></div>
           <div class="audience"><b>04</b><div><strong>Technical delivery leads</strong><small>Needing a clear view of what was approved, built, tested, deployed, and learned.</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-studies" id="case-studies">
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Interactive case studies</div>
+          <h2>See Omkara protect customer intent through real delivery journeys.</h2>
+        </div>
+        <div class="case-grid">
+          <article class="case-study">
+            <span class="case-tag">Field operations</span>
+            <h3>Shakti Field Services</h3>
+            <p>A request for an “AI dispatch app” becomes an offline-first assignment and accountability system—without introducing continuous worker tracking or losing the actual workflow problem.</p>
+            <div class="case-details">
+              <div><small>Users</small><strong>60 technicians</strong></div>
+              <div><small>Surfaces</small><strong>Android + Web</strong></div>
+              <div><small>Languages</small><strong>3 localized</strong></div>
+            </div>
+            <div class="case-actions">
+              <a class="button primary" href="case-studies/omkara-end-to-end-example.html">Explore delivery record →</a>
+              <a class="button secondary" href="case-studies/shakti-field-service-product-mockup.html">Open product mockup ↗</a>
+            </div>
+          </article>
+          <article class="case-study">
+            <span class="case-tag">Rental commerce</span>
+            <h3>Chaitra Rental Jewellery</h3>
+            <p>A virtual try-on storefront stays connected to unique-asset availability, restricted delivery districts, jewellery custody, accountant-ready records, and a future multi-shop operating model.</p>
+            <div class="case-details">
+              <div><small>Pilot</small><strong>One shop</strong></div>
+              <div><small>Surfaces</small><strong>Store + Ops</strong></div>
+              <div><small>Languages</small><strong>Kannada + English</strong></div>
+            </div>
+            <div class="case-actions">
+              <a class="button primary" href="case-studies/omkara-chaitra-end-to-end-example.html">Explore delivery record →</a>
+              <a class="button secondary" href="case-studies/chaitra-rental-jewellery-product-mockup.html">Open product mockup ↗</a>
+            </div>
+          </article>
         </div>
       </div>
     </section>
