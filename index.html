@@ -1,568 +1,356 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Intent - AI Personal Decision Intelligence</title>
-
-    <meta
-            name="description"
-            content="Intent helps you overcome decision paralysis by connecting long term goals, research, planning and daily execution."
-    />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-            rel="stylesheet"
-    >
-
-    <style>
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        html {
-          scroll-behavior: smooth;
-        }
-
-        body {
-          font-family: "Inter", sans-serif;
-          background: #fafafa;
-          color: #111827;
-          line-height: 1.7;
-        }
-
-        .container {
-          width: min(100% - 32px, 1100px);
-          margin: auto;
-        }
-
-        nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 22px 0;
-        }
-
-        .logo {
-          font-size: 24px;
-          font-weight: 800;
-          letter-spacing: -0.04em;
-        }
-
-        .logo span {
-          color: #4f46e5;
-        }
-
-        .nav-cta {
-          text-decoration: none;
-          background: #111827;
-          color: white;
-          padding: 10px 16px;
-          border-radius: 999px;
-          font-size: 14px;
-          font-weight: 600;
-        }
-
-        .hero {
-          padding: 56px 0 72px;
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 42px;
-          text-align: center;
-          align-items: center;
-        }
-
-        .badge {
-          display: inline-block;
-          padding: 8px 16px;
-          border-radius: 999px;
-          background: #eef2ff;
-          color: #4338ca;
-          font-weight: 700;
-          font-size: 13px;
-          margin-bottom: 22px;
-        }
-
-        .hero h1 {
-          font-size: clamp(38px, 9vw, 72px);
-          line-height: 1.04;
-          letter-spacing: -0.06em;
-          margin-bottom: 22px;
-        }
-
-        .hero p {
-          font-size: clamp(17px, 4vw, 21px);
-          color: #4b5563;
-          max-width: 720px;
-          margin: 0 auto 34px;
-        }
-
-        .buttons {
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-          width: 100%;
-          max-width: 420px;
-          margin: 0 auto;
-        }
-
-        .primary,
-        .secondary {
-          width: 100%;
-          text-align: center;
-          padding: 16px 24px;
-          border-radius: 14px;
-          text-decoration: none;
-          font-weight: 700;
-        }
-
-        .primary {
-          background: #4f46e5;
-          color: white;
-        }
-
-        .secondary {
-          border: 1px solid #e5e7eb;
-          color: #111827;
-          background: white;
-        }
-
-        .mockup {
-          background: white;
-          border-radius: 28px;
-          padding: 22px;
-          box-shadow: 0 25px 70px rgba(0, 0, 0, 0.09);
-          text-align: left;
-          max-width: 430px;
-          margin: 0 auto;
-          border: 1px solid #f1f1f1;
-        }
-
-        .mockup-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 22px;
-        }
-
-        .mockup h3 {
-          font-size: 20px;
-          letter-spacing: -0.03em;
-        }
-
-        .pill {
-          font-size: 12px;
-          font-weight: 700;
-          color: #4f46e5;
-          background: #eef2ff;
-          padding: 6px 10px;
-          border-radius: 999px;
-        }
-
-        .capacity {
-          background: #111827;
-          color: white;
-          padding: 20px;
-          border-radius: 18px;
-          margin-bottom: 16px;
-        }
-
-        .capacity small {
-          color: #d1d5db;
-        }
-
-        .capacity strong {
-          display: block;
-          font-size: 26px;
-          margin-top: 6px;
-          letter-spacing: -0.04em;
-        }
-
-        .card {
-          padding: 18px;
-          border-radius: 16px;
-          background: #f9fafb;
-          margin-bottom: 14px;
-          border: 1px solid #f0f0f0;
-        }
-
-        .card strong {
-          display: block;
-          margin-bottom: 5px;
-          font-size: 15px;
-        }
-
-        .card span {
-          color: #6b7280;
-          font-size: 14px;
-        }
-
-        section {
-          padding: 78px 0;
-        }
-
-        .section-title {
-          font-size: clamp(32px, 7vw, 48px);
-          line-height: 1.1;
-          letter-spacing: -0.05em;
-          margin-bottom: 18px;
-        }
-
-        .section-text {
-          font-size: 18px;
-          color: #6b7280;
-          max-width: 760px;
-          margin-bottom: 42px;
-        }
-
-        .grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 18px;
-        }
-
-        .feature {
-          background: white;
-          padding: 26px;
-          border-radius: 20px;
-          box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
-          border: 1px solid #f2f2f2;
-        }
-
-        .feature h3 {
-          margin-bottom: 12px;
-          font-size: 19px;
-          letter-spacing: -0.03em;
-        }
-
-        .feature p {
-          color: #6b7280;
-          font-size: 15px;
-        }
-
-        .timeline {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 18px;
-        }
-
-        .step {
-          background: white;
-          border-radius: 20px;
-          padding: 26px;
-          border: 1px solid #f2f2f2;
-        }
-
-        .circle {
-          width: 48px;
-          height: 48px;
-          background: #4f46e5;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: white;
-          font-weight: 800;
-          margin-bottom: 18px;
-        }
-
-        .step h3 {
-          margin-bottom: 10px;
-          letter-spacing: -0.03em;
-        }
-
-        .step p {
-          color: #6b7280;
-          font-size: 15px;
-        }
-
-        .quote {
-          background: #111827;
-          color: white;
-          border-radius: 28px;
-          padding: 34px 26px;
-          text-align: center;
-        }
-
-        .quote h2 {
-          font-size: clamp(28px, 7vw, 44px);
-          line-height: 1.12;
-          letter-spacing: -0.05em;
-          margin-bottom: 18px;
-        }
-
-        .quote p {
-          color: #d1d5db;
-          font-size: 17px;
-          max-width: 680px;
-          margin: auto;
-        }
-
-        footer {
-          padding: 72px 0;
-          text-align: center;
-          color: #6b7280;
-        }
-
-        footer h2 {
-          color: #111827;
-          font-size: clamp(28px, 7vw, 42px);
-          line-height: 1.15;
-          letter-spacing: -0.05em;
-          margin-bottom: 18px;
-        }
-
-        .email {
-          margin-top: 26px;
-          font-weight: 700;
-          color: #111827;
-        }
-
-        @media (min-width: 768px) {
-          .buttons {
-            flex-direction: row;
-          }
-
-          .primary,
-          .secondary {
-            width: auto;
-          }
-
-          .grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .timeline {
-            grid-template-columns: repeat(3, 1fr);
-          }
-
-          .quote {
-            padding: 60px;
-          }
-        }
-
-        @media (min-width: 960px) {
-          nav {
-            padding: 30px 0;
-          }
-
-          .hero {
-            grid-template-columns: 1fr 0.85fr;
-            text-align: left;
-            gap: 80px;
-            padding: 96px 0 96px;
-          }
-
-          .hero p {
-            margin-left: 0;
-          }
-
-          .buttons {
-            margin-left: 0;
-          }
-
-          .mockup {
-            margin-right: 0;
-          }
-
-          section {
-            padding: 110px 0;
-          }
-
-          .grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-          }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101814">
+  <meta name="description" content="SortedQueue is a software development and AI product consulting company that turns ambiguous workflows into usable, evidence-backed products.">
+  <meta property="og:title" content="SortedQueue — Software development and AI product consulting">
+  <meta property="og:description" content="Product strategy, UX, architecture, implementation, AI workflows, and verification for teams building useful software.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sortedqueue.com/">
+  <title>SortedQueue — Software Development & AI Product Consulting</title>
+  <style>
+    :root {
+      --ink:#17201c;
+      --muted:#66716b;
+      --paper:#f3f1e9;
+      --card:#fffef9;
+      --dark:#101814;
+      --dark-2:#18251f;
+      --line:#d9ddd6;
+      --green:#176349;
+      --green-soft:#dcefe6;
+      --orange:#ef7d3b;
+      --orange-soft:#fff0e5;
+      --blue:#2f6491;
+      --blue-soft:#e3edf4;
+      --shadow:0 24px 70px rgba(23,32,28,.10);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    a{color:inherit}
+    .shell{width:min(1160px,calc(100% - 40px));margin:0 auto}
+    .hero-wrap{position:relative;overflow:hidden;background:var(--dark);color:white}
+    .hero-wrap:before{content:"";position:absolute;width:720px;height:720px;border-radius:50%;right:-260px;top:-350px;background:radial-gradient(circle,rgba(239,125,59,.38),rgba(239,125,59,0) 67%)}
+    .hero-wrap:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(255,255,255,.08);border-radius:50%;left:-300px;bottom:-340px;box-shadow:0 0 0 70px rgba(255,255,255,.018),0 0 0 140px rgba(255,255,255,.012)}
+    header{position:relative;z-index:1}
+    nav{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{text-decoration:none;font-weight:850;letter-spacing:-.03em}
+    .brand span{color:var(--orange)}
+    .nav-links{display:flex;align-items:center;gap:24px}
+    .nav-links a{color:#b9c6c0;text-decoration:none;font-size:13px;font-weight:750}
+    .nav-links .contact{padding:10px 15px;border-radius:999px;background:white;color:var(--dark)}
+    .hero{position:relative;z-index:1;padding:92px 0 108px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:72px;align-items:end}
+    .eyebrow{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.17em;text-transform:uppercase}
+    .hero .eyebrow{color:#f39a69}
+    h1{max-width:910px;margin:17px 0 27px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(54px,7.4vw,96px);font-weight:500;line-height:.94;letter-spacing:-.06em}
+    .hero-copy{max-width:820px;margin:0;color:#b9c6c0;font-size:clamp(18px,2vw,23px);line-height:1.55}
+    .hero-copy strong{color:white}
+    .actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:34px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 17px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none;font-size:13px;font-weight:800}
+    .button.primary{background:var(--orange);border-color:var(--orange);color:var(--dark)}
+    .button.ghost{border-color:#3a4942;background:transparent;color:white}
+    .brief{padding:27px;border:1px solid #314039;border-radius:22px;background:rgba(255,255,255,.035);backdrop-filter:blur(12px)}
+    .brief-label{color:#7f9188;font:800 10px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.12em}
+    .brief h2{margin:25px 0 10px;font-family:Georgia,serif;font-size:30px;font-weight:500;line-height:1.12;letter-spacing:-.04em}
+    .brief p{margin:0;color:#aebbb5;font-size:13px}
+    .brief-list{display:grid;gap:12px;margin-top:25px;padding-top:20px;border-top:1px solid #314039}
+    .brief-item{display:grid;grid-template-columns:28px 1fr;gap:11px;align-items:start;color:#d7dfdb;font-size:12px}
+    .brief-item b{width:25px;height:25px;border-radius:8px;background:#26362f;color:#f39a69;display:grid;place-items:center;font-size:10px}
+    section{padding:94px 0;border-top:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:180px 1fr;gap:34px;margin-bottom:44px}
+    .section-head h2{max-width:880px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,5vw,62px);font-weight:500;line-height:1.06;letter-spacing:-.05em}
+    .lede{max-width:790px;margin:0;color:var(--muted);font-size:17px}
+    .services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .service{min-height:310px;padding:28px;border:1px solid var(--line);border-radius:19px;background:var(--card);display:flex;flex-direction:column}
+    .service .num{color:var(--green);font:850 11px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}
+    .service h3{margin:38px 0 10px;font-family:Georgia,serif;font-size:31px;font-weight:500;line-height:1.05;letter-spacing:-.04em}
+    .service p{margin:0;color:var(--muted);font-size:14px}
+    .service ul{display:grid;gap:8px;margin:22px 0 0;padding:0;list-style:none;color:var(--muted);font-size:13px}
+    .service li:before{content:"";display:inline-block;width:7px;height:7px;margin-right:9px;border-radius:50%;background:var(--orange)}
+    .proof-band{background:#e8ebe6}
+    .proof-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:24px;align-items:start}
+    .proof-card{padding:34px;border-radius:24px;background:var(--green);color:white}
+    .proof-card .eyebrow{color:#c5ecdc}
+    .proof-card h2{margin:16px 0 16px;font-family:Georgia,serif;font-size:clamp(36px,4.5vw,56px);font-weight:500;line-height:1.05;letter-spacing:-.05em}
+    .proof-card p{margin:0;color:#d6eadf}
+    .principles{display:grid;gap:12px}
+    .principle{padding:18px 20px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:800}
+    .principle b{display:inline-grid;width:27px;height:27px;margin-right:11px;border-radius:8px;background:var(--green-soft);place-items:center;color:var(--green);font-size:11px}
+    .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .product{min-height:310px;padding:28px;border:1px solid var(--line);border-radius:20px;background:var(--card);display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease}
+    .product:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+    .product.dark{background:var(--dark);border-color:var(--dark);color:white}
+    .product-number{font:800 11px/1 ui-monospace,SFMono-Regular,monospace;color:var(--green);letter-spacing:.1em}
+    .product.dark .product-number{color:#f39a69}
+    .product h3{margin:29px 0 10px;font-family:Georgia,serif;font-size:36px;font-weight:500;letter-spacing:-.04em}
+    .product p{margin:0;color:var(--muted)}
+    .product.dark p{color:#afbeb6}
+    .product a{margin-top:auto;padding-top:25px;text-decoration:none;color:var(--green);font-size:13px;font-weight:850}
+    .product.dark a{color:#f39a69}
+    .fit{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .panel{padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+    .panel h3{margin:0 0 14px;font-size:24px;letter-spacing:-.035em}
+    .panel p{margin:0;color:var(--muted)}
+    .panel ul{display:grid;gap:11px;margin:22px 0 0;padding:0;list-style:none;color:var(--muted);font-size:14px}
+    .panel li{display:grid;grid-template-columns:20px 1fr;gap:9px}
+    .panel li:before{content:"✓";color:var(--green);font-weight:900}
+    .founder{display:grid;grid-template-columns:.85fr 1.15fr;gap:24px;align-items:stretch}
+    .profile-card{position:relative;overflow:hidden;padding:28px;border-radius:24px;background:var(--dark);color:white;box-shadow:var(--shadow)}
+    .profile-card:after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-90px;top:-110px;background:radial-gradient(circle,rgba(239,125,59,.58),rgba(239,125,59,0) 68%)}
+    .monogram{width:58px;height:58px;border-radius:17px;background:var(--orange);display:grid;place-items:center;color:var(--dark);font-family:Georgia,serif;font-size:24px;font-weight:700}
+    .profile-card h3{position:relative;margin:34px 0 4px;font-size:23px;letter-spacing:-.04em}
+    .profile-card p{position:relative;margin:0;color:#b6c4bc;font-size:13px}
+    .facts{position:relative;display:grid;gap:13px;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.13)}
+    .fact{display:flex;justify-content:space-between;gap:16px;font-size:12px}
+    .fact span{color:#82928a}
+    .fact b{text-align:right}
+    .founder-copy{padding:31px;border:1px solid var(--line);border-radius:22px;background:var(--card)}
+    .founder-copy p{margin:0;color:var(--muted);font-size:17px}
+    .founder-copy p+p{margin-top:17px}
+    .closing{margin:0 auto 90px;padding:58px;border:0;border-radius:27px;background:var(--dark);color:white;display:grid;grid-template-columns:1fr auto;gap:35px;align-items:end}
+    .closing .eyebrow{color:#f39a69}
+    .closing h2{max-width:780px;margin:14px 0 0;font-family:Georgia,serif;font-size:clamp(39px,5vw,64px);font-weight:500;line-height:1.03;letter-spacing:-.05em}
+    footer{padding:0 0 38px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:12px}
+    footer div{display:flex;gap:17px}
+    footer a{text-decoration:none}
+    @media(max-width:980px){
+      .hero,.proof-grid,.founder{grid-template-columns:1fr;gap:44px}
+      .services{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:760px){
+      .section-head,.fit{grid-template-columns:1fr}
+      .products{grid-template-columns:1fr}
+      .section-head{gap:14px}
+      .closing{grid-template-columns:1fr;padding:38px}
+    }
+    @media(max-width:560px){
+      .shell{width:min(100% - 28px,1160px)}
+      nav{height:70px}.brand{font-size:14px}
+      .nav-links>a:not(.contact){display:none}
+      .hero{padding:62px 0 78px}
+      h1{font-size:52px}
+      section{padding:70px 0}
+      .services{grid-template-columns:1fr}
+      .service{min-height:260px}
+      footer{flex-direction:column}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.product{transition:none}}
+  </style>
 </head>
-
 <body>
-<div class="container">
-    <nav>
-        <div class="logo">Intent<span>.</span></div>
-        <a href="mailto:sortedqueue@gmail.com" class="nav-cta">Join Beta</a>
-    </nav>
-
-    <section class="hero">
-        <div>
-            <div class="badge">AI Personal Decision Intelligence</div>
-
-            <h1>Know what deserves your attention today.</h1>
-
-            <p>
-                Intent helps you overcome decision paralysis by connecting long term goals,
-                research, planning and daily execution into one continuous system.
-            </p>
-
-            <div class="buttons">
-                <a href="mailto:sortedqueue@gmail.com" class="primary">Join Early Access</a>
-                <a href="/intent-demo.html" class="secondary">▶ Watch Demo</a>
-                <a href="#how" class="secondary">See How It Works</a>
-            </div>
+  <div class="hero-wrap">
+    <header class="shell">
+      <nav aria-label="Primary navigation">
+        <a class="brand" href="index.html">SortedQueue<span>.</span></a>
+        <div class="nav-links">
+          <a href="#services">Services</a>
+          <a href="#products">Products</a>
+          <a href="founder.html">Founder</a>
+          <a class="contact" href="mailto:alokomkar.gudikote@gmail.com?subject=SortedQueue consultation">Start a conversation</a>
         </div>
-
-        <div class="mockup">
-            <div class="mockup-header">
-                <h3>Today</h3>
-                <span class="pill">Prototype</span>
-            </div>
-
-            <div class="capacity">
-                <small>Today's capacity</small>
-                <strong>4h available</strong>
-            </div>
-
-            <div class="card">
-                <strong>🎯 Become Staff Engineer</strong>
-                <span>2 priorities planned for today</span>
-            </div>
-
-            <div class="card">
-                <strong>🧠 Goal brief updated</strong>
-                <span>3 new insights synthesized into what changed</span>
-            </div>
-
-            <div class="card">
-                <strong>✨ Sia suggests</strong>
-                <span>Focus on system design before adding more research.</span>
-            </div>
+      </nav>
+    </header>
+    <div class="shell hero">
+      <div>
+        <div class="eyebrow">Software development · AI product consulting</div>
+        <h1>Build useful software from messy, important problems.</h1>
+        <p class="hero-copy"><strong>SortedQueue helps teams turn ambiguity into shipped product.</strong> We combine product strategy, hands-on engineering, AI workflow design, and verification so ideas become software people can actually use.</p>
+        <div class="actions">
+          <a class="button primary" href="mailto:alokomkar.gudikote@gmail.com?subject=SortedQueue consultation">Discuss a project <span aria-hidden="true">↗</span></a>
+          <a class="button ghost" href="#products">See product thinking <span aria-hidden="true">↓</span></a>
+          <a class="button ghost" href="founder.html">Meet the founder</a>
         </div>
+      </div>
+      <aside class="brief" aria-label="SortedQueue engagement summary">
+        <div class="brief-label">WHAT WE BRING</div>
+        <h2>Product judgment with implementation accountability.</h2>
+        <p>SortedQueue is built by a senior engineer and product builder with 12+ years across retail, education, fintech, enterprise workflows, Android, web, and AI-native product systems.</p>
+        <div class="brief-list">
+          <div class="brief-item"><b>01</b><span>Clarify the real user and business outcome.</span></div>
+          <div class="brief-item"><b>02</b><span>Prototype fast without losing architectural discipline.</span></div>
+          <div class="brief-item"><b>03</b><span>Ship with visible evidence, decisions, and trade-offs.</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <main>
+    <section id="services">
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Services</div>
+          <div>
+            <h2>Consulting for teams that need more than code output.</h2>
+            <p class="lede">We work best where the shape of the problem is still changing: new products, AI-assisted workflows, internal tools, mobile experiences, and prototypes that need to become credible systems.</p>
+          </div>
+        </div>
+        <div class="services">
+          <article class="service">
+            <span class="num">01 · DISCOVERY</span>
+            <h3>Product strategy and UX shaping</h3>
+            <p>Turn scattered requirements, stakeholder claims, and user pain into a focused product direction.</p>
+            <ul>
+              <li>Problem framing</li>
+              <li>Workflow mapping</li>
+              <li>Prototype scope</li>
+            </ul>
+          </article>
+          <article class="service">
+            <span class="num">02 · BUILD</span>
+            <h3>Software development and architecture</h3>
+            <p>Design and implement practical software across web, Android, internal tools, and AI-enabled systems.</p>
+            <ul>
+              <li>Frontend and mobile builds</li>
+              <li>System design</li>
+              <li>Delivery planning</li>
+            </ul>
+          </article>
+          <article class="service">
+            <span class="num">03 · AI WORKFLOWS</span>
+            <h3>Agentic product implementation</h3>
+            <p>Use AI coding and workflow agents responsibly while keeping product truth, quality, and accountability intact.</p>
+            <ul>
+              <li>AI-assisted delivery</li>
+              <li>Evaluation and evidence</li>
+              <li>Human approval loops</li>
+            </ul>
+          </article>
+        </div>
+      </div>
     </section>
-</div>
 
-<section id="problem">
-    <div class="container">
-        <h2 class="section-title">Too many goals. Too much information. Not enough clarity.</h2>
-
-        <p class="section-text">
-            Modern professionals have access to AI assistants, productivity apps,
-            calendars and notes. Yet long term goals still become fragmented.
-            Intent exists to help people maintain continuity and decide what deserves
-            attention today.
-        </p>
-    </div>
-</section>
-
-<section id="features">
-    <div class="container">
-        <h2 class="section-title">Built around meaningful goals.</h2>
-
-        <p class="section-text">
-            Intent is not a note taking app or a task manager. Everything in Intent
-            exists in the context of a goal.
-        </p>
-
-        <div class="grid">
-            <div class="feature">
-                <h3>🎯 Goal-first planning</h3>
-                <p>
-                    Create meaningful goals across career, business, education, finance,
-                    health or personal growth.
-                </p>
-            </div>
-
-            <div class="feature">
-                <h3>🧠 Sia AI assistant</h3>
-                <p>
-                    Clarify goals, organize research, generate plans and adapt when
-                    priorities change.
-                </p>
-            </div>
-
-            <div class="feature">
-                <h3>📖 Evolving goal brief</h3>
-                <p>
-                    Keep what you know, what changed and what matters next synthesized
-                    in one living brief for every goal.
-                </p>
-            </div>
-
-            <div class="feature">
-                <h3>⚡ Capacity planning</h3>
-                <p>
-                    Plan based on the time and energy you actually have today.
-                </p>
-            </div>
-
-            <div class="feature">
-                <h3>🔄 Living plans</h3>
-                <p>
-                    Goals evolve as your circumstances, research and decisions change.
-                </p>
-            </div>
-
-            <div class="feature">
-                <h3>🏆 Meaningful progress</h3>
-                <p>
-                    Connect daily action to long term achievement instead of chasing
-                    empty streaks.
-                </p>
-            </div>
+    <section class="proof-band">
+      <div class="shell proof-grid">
+        <article class="proof-card">
+          <div class="eyebrow">Operating philosophy</div>
+          <h2>Ambiguity should become inspectable before it becomes expensive.</h2>
+          <p>SortedQueue engagements make decisions, assumptions, product intent, implementation, and verification visible enough for teams to review and improve.</p>
+        </article>
+        <div class="principles" aria-label="Working principles">
+          <div class="principle"><b>01</b>Start with the human outcome</div>
+          <div class="principle"><b>02</b>Make the real workflow visible</div>
+          <div class="principle"><b>03</b>Prototype to learn, then engineer to last</div>
+          <div class="principle"><b>04</b>Use evidence before claims</div>
+          <div class="principle"><b>05</b>Ship, observe, and adapt</div>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<section id="how">
-    <div class="container">
-        <h2 class="section-title">How it works</h2>
-
-        <div class="timeline">
-            <div class="step">
-                <div class="circle">1</div>
-                <h3>Choose a goal</h3>
-                <p>
-                    Start with something meaningful, from career growth to starting a
-                    small business.
-                </p>
-            </div>
-
-            <div class="step">
-                <div class="circle">2</div>
-                <h3>Research and plan</h3>
-                <p>
-                    Sia helps organize research, clarify decisions and create an
-                    adaptive plan.
-                </p>
-            </div>
-
-            <div class="step">
-                <div class="circle">3</div>
-                <h3>Focus daily</h3>
-                <p>
-                    Intent helps you decide what deserves attention based on goals,
-                    context and capacity.
-                </p>
-            </div>
+    <section id="products">
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Product lab</div>
+          <h2>Our own products explore the same problems we help clients solve.</h2>
         </div>
-    </div>
-</section>
-
-<section>
-    <div class="container">
-        <div class="quote">
-            <h2>Intent is for people pursuing meaningful long term goals.</h2>
-            <p>
-                Whether you are preparing for a promotion, learning AI, researching
-                agriculture, starting a dairy farm, planning financial independence or
-                building a startup, Intent helps you keep your thinking connected to
-                action.
-            </p>
+        <div class="products">
+          <article class="product dark">
+            <span class="product-number">01 · DECISION CONTINUITY</span>
+            <h3>Intent</h3>
+            <p>An AI decision companion that helps people clarify meaningful goals, preserve why decisions were made, and translate them into one focused next action.</p>
+            <a href="intent.html">Explore Intent →</a>
+          </article>
+          <article class="product">
+            <span class="product-number">02 · EXPERIENCE EVIDENCE</span>
+            <h3>Parity</h3>
+            <p>Describe a customer journey once, execute it across customer-facing platforms, and see evidence of where behavior and visuals diverge.</p>
+            <a href="parity.html">View Parity →</a>
+          </article>
+          <article class="product">
+            <span class="product-number">03 · OUTCOME-LED LEARNING</span>
+            <h3>Learn with Intent</h3>
+            <p>A personal learning journey that works backward from a real ambition, adapts to existing experience, and builds credible readiness evidence.</p>
+            <a href="learnwithintent.html">Try Learn with Intent →</a>
+          </article>
+          <article class="product dark">
+            <span class="product-number">04 · AGENTIC DELIVERY</span>
+            <h3>Omkara</h3>
+            <p>A local-first command center that keeps customer intent, visual approval, coding-agent work, technical decisions, and verification connected.</p>
+            <a href="omkara.html">Explore Omkara →</a>
+          </article>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<footer>
-    <div class="container">
-        <h2>Building the future of Personal Decision Intelligence.</h2>
-        <p>Currently in prototype. Looking for early users and thoughtful feedback.</p>
-        <div class="email">sortedqueue@gmail.com</div>
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Good fit</div>
+          <h2>Bring SortedQueue in when the problem matters and the path is not obvious yet.</h2>
+        </div>
+        <div class="fit">
+          <article class="panel">
+            <h3>Common engagements</h3>
+            <p>Focused projects where product clarity and engineering execution need to move together.</p>
+            <ul>
+              <li>AI product prototype or MVP</li>
+              <li>Internal workflow automation</li>
+              <li>Mobile or web product build</li>
+              <li>Product discovery to technical plan</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h3>What the work produces</h3>
+            <p>Not just a deck, not just code. The goal is a usable system and the reasoning needed to keep evolving it.</p>
+            <ul>
+              <li>Clear product brief and assumptions</li>
+              <li>Interactive prototype or shipped slice</li>
+              <li>Architecture and delivery plan</li>
+              <li>Verification evidence and next decisions</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="founder">
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Founder</div>
+          <h2>Senior engineering depth, product-builder range.</h2>
+        </div>
+        <div class="founder">
+          <aside class="profile-card" aria-label="Founder summary">
+            <div class="monogram" aria-hidden="true">AG</div>
+            <h3>Alok Gudikote</h3>
+            <p>Founder · AI Product Builder · Senior Engineer</p>
+            <div class="facts">
+              <div class="fact"><span>Based in</span><b>Bengaluru, India</b></div>
+              <div class="fact"><span>Experience</span><b>12+ years</b></div>
+              <div class="fact"><span>Background</span><b>Walmart · BYJU'S · fintech</b></div>
+              <div class="fact"><span>Focus</span><b>AI-native products</b></div>
+            </div>
+          </aside>
+          <article class="founder-copy">
+            <p>SortedQueue is led by Alok Gudikote, a Bengaluru-based engineer and product builder who has shipped consumer and enterprise software across retail, education, fintech, and early-stage products.</p>
+            <p>The company reflects a hands-on way of working: understand the user outcome, shape the experience, design the system, implement the slice, and preserve enough evidence for the next decision.</p>
+            <div class="actions">
+              <a class="button" href="founder.html">Read founder profile →</a>
+              <a class="button" href="https://www.linkedin.com/in/alokgudikote">LinkedIn ↗</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell closing" aria-labelledby="closing-title">
+      <div>
+        <div class="eyebrow">Let’s build something useful</div>
+        <h2 id="closing-title">Have a sharp problem, a half-formed product, or an AI workflow that needs grown-up engineering?</h2>
+      </div>
+      <a class="button primary" href="mailto:alokomkar.gudikote@gmail.com?subject=SortedQueue consultation">Email SortedQueue →</a>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <span>© 2026 SortedQueue · Bengaluru, India</span>
+    <div>
+      <a href="founder.html">Founder</a>
+      <a href="intent.html">Intent</a>
+      <a href="mailto:alokomkar.gudikote@gmail.com">Email</a>
     </div>
-</footer>
+  </footer>
 </body>
 </html>
