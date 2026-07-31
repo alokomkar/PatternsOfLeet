@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order at Store — Skip the Queue | Guru Sweet Mart</title>
+<meta name="description" content="Pay ahead on your phone, get a token and QR code, and collect fresh sweets the moment your order is ready at our Mysuru shops.">
+<meta name="theme-color" content="#56163a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guru Sweet Mart">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<style>
+  .order-hero { padding: 40px 0 30px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); text-align: center; }
+  .order-hero h1 { color: var(--sandal-50); }
+  .steps-list { counter-reset: step; max-width: 640px; margin: 0 auto; }
+  .steps-list li {
+    counter-increment: step; list-style: none; position: relative;
+    padding: 10px 0 10px 46px; border-bottom: 1px dashed rgba(41,8,26,0.12);
+  }
+  .steps-list li::before {
+    content: counter(step); position: absolute; left: 0; top: 10px;
+    width: 28px; height: 28px; border-radius: 50%; background: var(--maroon-800); color: var(--gold-100);
+    font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+  }
+  .status-line { text-align: center; font-weight: 700; color: var(--maroon-800); margin-top: 4px; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sym-cart" viewBox="0 0 24 24">
+      <path d="M3 4 h2.4 l1.9 11.4 a2 2 0 0 0 2 1.6 h7.6 a2 2 0 0 0 2 -1.6 L20.5 8 H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="sym-qr" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="5.3" y="5.3" width="2.4" height="2.4" fill="currentColor"/>
+      <rect x="16.3" y="5.3" width="2.4" height="2.4" fill="currentColor"/>
+      <rect x="5.3" y="16.3" width="2.4" height="2.4" fill="currentColor"/>
+      <rect x="14" y="14" width="3" height="3" fill="currentColor"/>
+      <rect x="18" y="14" width="3" height="3" fill="currentColor"/>
+      <rect x="14" y="18" width="3" height="3" fill="currentColor"/>
+      <rect x="18" y="18" width="3" height="3" fill="currentColor"/>
+    </symbol>
+    <symbol id="sym-shield" viewBox="0 0 24 24">
+      <path d="M12 2 L20 5.5 V11 C20 16 16.5 19.8 12 22 C7.5 19.8 4 16 4 11 V5.5 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M8.5 12 L11 14.5 L16 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="sym-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M12 7 V12 L16 14.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-info">
+      <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
+      <span>Devaraja Market, Mysuru</span>
+      <span>Open 8:00 AM – 9:30 PM</span>
+      <a href="visit.html">Track Order</a>
+      <a href="visit.html#help">Help</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+      <span class="brand-text">
+        <strong>Guru Sweet Mart</strong>
+        <small>Mysuru · Est. Palace Kitchen</small>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="shop.html#gifts">Gifts</a>
+      <a href="story.html">Our Story</a>
+      <a href="order.html" class="active">Order at Store</a>
+      <a href="visit.html">Visit Us</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="icon-btn" href="shop.html" aria-label="View cart">
+        <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
+        <span class="cart-count" aria-hidden="true">0</span>
+      </a>
+      <a class="btn btn-gold btn-sm" href="order.html">Order at Store</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="order-hero">
+    <div class="container">
+      <p class="eyebrow" style="color:var(--gold-200); justify-content:center;">Order at store</p>
+      <h1 style="font-size:clamp(2rem,4vw + 1rem,3rem)">Skip the queue at Devaraja Market</h1>
+      <p style="color:rgba(253,249,239,0.8); max-width:56ch; margin:0 auto;">Pay online, get a token and QR code, and walk in only when your order is ready.</p>
+    </div>
+  </section>
+
+  <section class="bg-sandal">
+    <div class="container">
+      <div class="token-card">
+        <p class="eyebrow" style="justify-content:center;">Your token</p>
+        <div class="token-number">B-042</div>
+        <p class="status-line" data-status-text>Paid</p>
+        <div class="qr-box">
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="color:var(--maroon-950)"><use href="#sym-qr"/></svg>
+        </div>
+        <p class="desc" style="font-size:0.78rem;">Devaraja Market · Royal Ghee Mysore Pak (500 g) · ₹640</p>
+
+        <div class="stage-track" data-stage-track aria-live="polite">
+          <div class="stage"><div class="dot">1</div>Paid</div>
+          <div class="stage"><div class="dot">2</div>Accepted</div>
+          <div class="stage"><div class="dot">3</div>Preparing</div>
+          <div class="stage"><div class="dot">4</div>Ready</div>
+          <div class="stage"><div class="dot">5</div>Collected</div>
+        </div>
+
+        <button class="btn btn-teal btn-block" style="margin-top:20px;" data-sim-next>Simulate next stage →</button>
+        <p class="desc" style="font-size:0.72rem;margin-top:10px;">Demo only — this button simulates staff moving your order through the queue. No real order exists.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container two-col">
+      <div>
+        <p class="eyebrow">How it works</p>
+        <h2>Six steps, no counter queue</h2>
+        <ol class="steps-list">
+          <li>Open <strong>Order at Store</strong> and choose your Mysuru shop.</li>
+          <li>See the current estimated preparation time before you order.</li>
+          <li>Build your order and add a verified mobile number.</li>
+          <li>Pay online — your order is confirmed only after verified payment.</li>
+          <li>Get your token number and a signed, single-use QR code.</li>
+          <li>Walk in when notified, show your QR at the counter, and collect.</li>
+        </ol>
+      </div>
+      <div class="frame-art">
+        <svg viewBox="0 0 24 24" aria-hidden="true" style="color:#f0dfa3;width:40%;height:40%"><use href="#sym-qr"/></svg>
+        <p class="frame-caption">Signed · Single-use · Store-bound</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-maroon">
+    <div class="container">
+      <div class="trust-strip">
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#sym-shield"/></svg>
+          <h4 style="color:var(--gold-100)">Verified payment first</h4>
+          <p>Your order only enters the queue after payment is confirmed by the gateway — never on a client-side promise.</p>
+        </div>
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#sym-qr"/></svg>
+          <h4 style="color:var(--gold-100)">Single-use QR</h4>
+          <p>Each QR is signed and store-bound. A second scan after handover is rejected and clearly reported.</p>
+        </div>
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#sym-clock"/></svg>
+          <h4 style="color:var(--gold-100)">Realistic wait times</h4>
+          <p>Estimated preparation time is shown before you pay, and updates live — never a guarantee, always current.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-mark sm"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+          <strong>Guru Sweet Mart</strong>
+        </div>
+        <p>The original Mysore Pak from Mysuru's palace-kitchen heritage — shipped nationwide, and ready ahead at our stores.</p>
+        <div class="footer-langs">
+          <span>English</span><span class="kn">ಕನ್ನಡ</span><span>हिंदी</span><span>தமிழ்</span><span>తెలుగు</span><span>മലയാളം</span>
+        </div>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All sweets</a></li>
+          <li><a href="shop.html#gifts">Gift boxes</a></li>
+          <li><a href="order.html">Order at store</a></li>
+          <li><a href="visit.html">Track order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="visit.html">Visit us</a></li>
+          <li><a href="visit.html#help">Help &amp; support</a></li>
+          <li><a href="visit.html#help">Shipping &amp; delivery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="visit.html#help">Privacy policy</a></li>
+          <li><a href="visit.html#help">Terms of sale</a></li>
+          <li><a href="visit.html#help">Cancellations &amp; refunds</a></li>
+          <li><a href="visit.html#help">Food information</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Guru Sweet Mart, Mysuru. Design mockup for review — not a live store.</span>
+      <div class="legal-links">
+        <span>FSSAI details to be added</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="install-banner" data-install-banner>
+  <span class="ic"><img src="images/logo-mark.png" alt="Guru Sweet Mart"></span>
+  <div class="txt"><strong>Install Guru Sweet Mart</strong>Add to your home screen for quick, app-like ordering.</div>
+  <button class="btn btn-gold btn-sm" data-install-action>Install</button>
+  <button class="close-install" data-install-close aria-label="Dismiss">✕</button>
+</div>
+<div class="offline-pill" data-offline-pill></div>
+
+<script src="js/app.js?v=2"></script>
+</body>
+</html>

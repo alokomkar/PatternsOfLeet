@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Visit Us &amp; Help — Guru Sweet Mart, Mysuru</title>
+<meta name="description" content="Store locations, hours, order tracking and help for Guru Sweet Mart, Mysuru.">
+<meta name="theme-color" content="#56163a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guru Sweet Mart">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<style>
+  .visit-hero { padding: 40px 0 30px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); text-align: center; }
+  .visit-hero h1 { color: var(--sandal-50); }
+  .track-form { display: flex; gap: 10px; flex-wrap: wrap; max-width: 520px; margin: 0 auto; }
+  .track-form input {
+    flex: 1; min-width: 180px; padding: 12px 16px; border-radius: 999px;
+    border: 1px solid rgba(41,8,26,0.2); font-family: var(--font-body); font-size: 0.95rem;
+  }
+  .help-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  @media (max-width: 640px) { .help-grid { grid-template-columns: 1fr; } }
+  .help-card {
+    background: var(--sandal-50); border-radius: var(--radius-md); padding: 22px;
+    border: 1px solid rgba(41,8,26,0.08); box-shadow: var(--shadow-card);
+  }
+  .help-card h4 { margin-bottom: 8px; }
+  details.faq { border-bottom: 1px solid rgba(41,8,26,0.1); padding: 14px 0; }
+  details.faq summary { cursor: pointer; font-weight: 700; color: var(--maroon-800); }
+  details.faq p { margin-top: 8px; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sym-cart" viewBox="0 0 24 24">
+      <path d="M3 4 h2.4 l1.9 11.4 a2 2 0 0 0 2 1.6 h7.6 a2 2 0 0 0 2 -1.6 L20.5 8 H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="sym-pin" viewBox="0 0 24 24">
+      <path d="M12 22 C12 22 5 14.5 5 9.5 A7 7 0 0 1 19 9.5 C19 14.5 12 22 12 22 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="12" cy="9.5" r="2.6" fill="currentColor"/>
+    </symbol>
+    <symbol id="sym-phone" viewBox="0 0 24 24">
+      <path d="M6 3 h3 l2 5 -2.4 1.6 a12 12 0 0 0 5.8 5.8 L16 13 l5 2 v3 a2 2 0 0 1 -2.2 2 A15 15 0 0 1 4 6.2 A2 2 0 0 1 6 3 Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-info">
+      <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
+      <span>Devaraja Market, Mysuru</span>
+      <span>Open 8:00 AM – 9:30 PM</span>
+      <a href="visit.html">Track Order</a>
+      <a href="visit.html#help">Help</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+      <span class="brand-text">
+        <strong>Guru Sweet Mart</strong>
+        <small>Mysuru · Est. Palace Kitchen</small>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="shop.html#gifts">Gifts</a>
+      <a href="story.html">Our Story</a>
+      <a href="order.html">Order at Store</a>
+      <a href="visit.html" class="active">Visit Us</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="icon-btn" href="shop.html" aria-label="View cart">
+        <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
+        <span class="cart-count" aria-hidden="true">0</span>
+      </a>
+      <a class="btn btn-gold btn-sm" href="order.html">Order at Store</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="visit-hero">
+    <div class="container">
+      <p class="eyebrow" style="color:var(--gold-200); justify-content:center;">Visit &amp; track</p>
+      <h1 style="font-size:clamp(2rem,4vw + 1rem,3rem)">Find us in Mysuru, or track your order</h1>
+    </div>
+  </section>
+
+  <section class="bg-sandal">
+    <div class="container">
+      <div class="token-card" style="max-width:560px;">
+        <h3>Track an order</h3>
+        <p class="desc">Enter your order number or token number and the mobile number used at checkout.</p>
+        <form class="track-form" onsubmit="return false;">
+          <input type="text" placeholder="Order or token number" aria-label="Order or token number">
+          <input type="tel" placeholder="Mobile number" aria-label="Mobile number">
+          <button class="btn btn-teal btn-block" type="submit">Track order</button>
+        </form>
+        <p class="desc" style="font-size:0.72rem;margin-top:10px;">Demo only — this mockup has no backend, so tracking is illustrative.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="stores">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Our shops</p>
+        <h2>Two shops, one recipe</h2>
+      </div>
+      <div class="grid grid-2">
+        <div class="store-card">
+          <div class="store-map">
+            <svg class="pin" aria-hidden="true"><use href="#sym-pin"/></svg>
+          </div>
+          <div class="store-body">
+            <h4>Devaraja Market</h4>
+            <p class="desc">Shop No. 1, near K.R. Circle, Sayyaji Rao Road, Mysuru</p>
+            <p class="desc" style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" aria-hidden="true"><use href="#sym-phone"/></svg> Contact number to be confirmed</p>
+            <ul class="hours">
+              <li><span>Mon–Sat</span><span>8:00 AM – 9:30 PM</span></li>
+              <li><span>Sunday</span><span>8:00 AM – 9:30 PM</span></li>
+            </ul>
+            <a class="btn btn-teal btn-sm btn-block" href="order.html">Order ahead here</a>
+          </div>
+        </div>
+        <div class="store-card">
+          <div class="store-map">
+            <svg class="pin" aria-hidden="true"><use href="#sym-pin"/></svg>
+          </div>
+          <div class="store-body">
+            <h4>Second Mysuru Shop</h4>
+            <p class="desc">Address to be confirmed with store operations</p>
+            <p class="desc" style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" aria-hidden="true"><use href="#sym-phone"/></svg> Contact number to be confirmed</p>
+            <ul class="hours">
+              <li><span>Mon–Sat</span><span>8:00 AM – 9:30 PM</span></li>
+              <li><span>Sunday</span><span>8:00 AM – 9:30 PM</span></li>
+            </ul>
+            <a class="btn btn-teal btn-sm btn-block" href="order.html">Order ahead here</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-sandal" id="help">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Help &amp; policies</p>
+        <h2>Common questions</h2>
+      </div>
+
+      <div class="help-grid" style="margin-bottom:36px;">
+        <div class="help-card">
+          <h4>Shipping &amp; delivery</h4>
+          <p class="desc">Domestic shipping across serviceable Indian postcodes, with delivery estimates shown before payment based on product shelf life and season.</p>
+        </div>
+        <div class="help-card">
+          <h4>Cancellations &amp; refunds</h4>
+          <p class="desc">Cancellation windows and refund eligibility are shown at checkout and depend on preparation status and store policy.</p>
+        </div>
+        <div class="help-card">
+          <h4>Food information</h4>
+          <p class="desc">Ingredients, allergens, net quantity and storage guidance are listed on every product before you buy.</p>
+        </div>
+        <div class="help-card">
+          <h4>Privacy &amp; terms</h4>
+          <p class="desc">We collect only what is needed for your order and communicate in your chosen language wherever possible.</p>
+        </div>
+      </div>
+
+      <div style="max-width:760px;margin:0 auto;">
+        <details class="faq" open>
+          <summary>What happens if I can't make it to collect my token order?</summary>
+          <p>Orders not collected within the store's configured window move to a no-show or expired state per store policy; contact support for options.</p>
+        </details>
+        <details class="faq">
+          <summary>Can someone else collect my order for me?</summary>
+          <p>Yes, if they can show your QR code or your token number plus your verified mobile number, with staff confirmation recorded.</p>
+        </details>
+        <details class="faq">
+          <summary>Is Guru Sweet Mart's food 100% vegetarian?</summary>
+          <p>Yes — every product carries a clear vegetarian mark, along with ingredients and allergen information.</p>
+        </details>
+        <details class="faq">
+          <summary>Which languages can I shop in?</summary>
+          <p>English and Kannada are available at launch, with Hindi, Tamil, Telugu and Malayalam following — more Indian languages are planned.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-mark sm"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+          <strong>Guru Sweet Mart</strong>
+        </div>
+        <p>The original Mysore Pak from Mysuru's palace-kitchen heritage — shipped nationwide, and ready ahead at our stores.</p>
+        <div class="footer-langs">
+          <span>English</span><span class="kn">ಕನ್ನಡ</span><span>हिंदी</span><span>தமிழ்</span><span>తెలుగు</span><span>മലയാളം</span>
+        </div>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All sweets</a></li>
+          <li><a href="shop.html#gifts">Gift boxes</a></li>
+          <li><a href="order.html">Order at store</a></li>
+          <li><a href="visit.html">Track order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="visit.html">Visit us</a></li>
+          <li><a href="visit.html#help">Help &amp; support</a></li>
+          <li><a href="visit.html#help">Shipping &amp; delivery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="visit.html#help">Privacy policy</a></li>
+          <li><a href="visit.html#help">Terms of sale</a></li>
+          <li><a href="visit.html#help">Cancellations &amp; refunds</a></li>
+          <li><a href="visit.html#help">Food information</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Guru Sweet Mart, Mysuru. Design mockup for review — not a live store.</span>
+      <div class="legal-links">
+        <span>FSSAI details to be added</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="install-banner" data-install-banner>
+  <span class="ic"><img src="images/logo-mark.png" alt="Guru Sweet Mart"></span>
+  <div class="txt"><strong>Install Guru Sweet Mart</strong>Add to your home screen for quick, app-like ordering.</div>
+  <button class="btn btn-gold btn-sm" data-install-action>Install</button>
+  <button class="close-install" data-install-close aria-label="Dismiss">✕</button>
+</div>
+<div class="offline-pill" data-offline-pill></div>
+
+<script src="js/app.js?v=2"></script>
+</body>
+</html>

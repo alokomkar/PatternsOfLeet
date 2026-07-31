@@ -1,0 +1,38 @@
+{
+  "name": "Guru Sweet Mart — Original Mysore Pak",
+  "short_name": "Guru Sweet Mart",
+  "description": "The original Mysore Pak from Mysuru's palace-kitchen heritage. Shop online or order ahead and skip the queue at our stores.",
+  "id": "/gurusweetmart/",
+  "start_url": "/gurusweetmart/index.html",
+  "scope": "/gurusweetmart/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#3d0e22",
+  "theme_color": "#56163a",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["food", "shopping"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Order at Store",
+      "short_name": "Order",
+      "description": "Skip the queue — prepay and collect with a token",
+      "url": "/gurusweetmart/order.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Shop",
+      "short_name": "Shop",
+      "description": "Browse Mysore Pak and sweets",
+      "url": "/gurusweetmart/shop.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

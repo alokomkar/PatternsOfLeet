@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shop Mysore Pak &amp; Sweets — Guru Sweet Mart</title>
+<meta name="description" content="Shop the full Guru Sweet Mart menu — Royal Ghee Mysore Pak, Milk Mysore Pak, Traditional Mysore Pak, assorted sweets and heritage gift boxes.">
+<meta name="theme-color" content="#56163a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guru Sweet Mart">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<style>
+  .shop-hero { padding: 40px 0 30px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); }
+  .shop-hero h1 { color: var(--sandal-50); }
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+  .filter-bar button {
+    border: 1px solid rgba(41,8,26,0.18); background: var(--sandal-50); border-radius: 999px;
+    padding: 9px 18px; font-family: var(--font-body); font-weight: 700; font-size: 0.85rem; cursor: pointer;
+  }
+  .filter-bar button[aria-pressed="true"] { background: var(--maroon-800); color: var(--gold-100); border-color: var(--maroon-800); }
+  .sweet-card[hidden] { display: none; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sym-veg" viewBox="0 0 20 20">
+      <rect x="1" y="1" width="18" height="18" rx="2" fill="none" stroke="#1f7a3d" stroke-width="1.6"/>
+      <circle cx="10" cy="10" r="5" fill="#1f7a3d"/>
+    </symbol>
+    <symbol id="sym-mysorepak" viewBox="0 0 120 120">
+      <rect x="18" y="46" width="84" height="30" rx="3" fill="#d4af37"/>
+      <rect x="18" y="46" width="84" height="7" fill="#f0dfa3"/>
+      <line x1="46" y1="46" x2="46" y2="76" stroke="#a97c1f" stroke-width="1.5"/>
+      <line x1="74" y1="46" x2="74" y2="76" stroke="#a97c1f" stroke-width="1.5"/>
+      <line x1="18" y1="61" x2="102" y2="61" stroke="#a97c1f" stroke-width="1.5"/>
+      <ellipse cx="60" cy="80" rx="46" ry="7" fill="#7a1f3d" opacity="0.15"/>
+    </symbol>
+    <symbol id="sym-milksweet" viewBox="0 0 120 120">
+      <circle cx="60" cy="58" r="30" fill="#faf0d2"/>
+      <circle cx="60" cy="58" r="30" fill="none" stroke="#d4af37" stroke-width="2"/>
+      <circle cx="60" cy="58" r="9" fill="#d4af37"/>
+      <path d="M42 40 Q60 30 78 40" stroke="#c39a2b" stroke-width="2" fill="none"/>
+      <ellipse cx="60" cy="92" rx="34" ry="6" fill="#7a1f3d" opacity="0.12"/>
+    </symbol>
+    <symbol id="sym-giftbox" viewBox="0 0 120 120">
+      <rect x="24" y="46" width="72" height="48" rx="3" fill="#7a1f3d"/>
+      <rect x="24" y="46" width="72" height="14" fill="#56163a"/>
+      <rect x="54" y="46" width="12" height="48" fill="#d4af37"/>
+      <path d="M60 46 Q40 20 30 40 Q30 50 60 46 Z" fill="#d4af37"/>
+      <path d="M60 46 Q80 20 90 40 Q90 50 60 46 Z" fill="#d4af37"/>
+    </symbol>
+    <symbol id="sym-assorted" viewBox="0 0 120 120">
+      <rect x="16" y="70" width="30" height="22" rx="4" fill="#d4af37"/>
+      <circle cx="62" cy="72" r="16" fill="#f0dfa3"/>
+      <rect x="82" y="66" width="24" height="26" rx="12" fill="#7a1f3d"/>
+      <ellipse cx="60" cy="98" rx="48" ry="6" fill="#7a1f3d" opacity="0.1"/>
+    </symbol>
+    <symbol id="sym-shield" viewBox="0 0 24 24">
+      <path d="M12 2 L20 5.5 V11 C20 16 16.5 19.8 12 22 C7.5 19.8 4 16 4 11 V5.5 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M8.5 12 L11 14.5 L16 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="sym-leaf" viewBox="0 0 24 24">
+      <path d="M4 20 C4 10 12 4 21 4 C21 13 15 20 4 20 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M5 19 C10 14 14 10 20 5" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="sym-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M12 7 V12 L16 14.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="sym-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <ellipse cx="12" cy="12" rx="4" ry="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M3 12 H21 M4.5 7.5 H19.5 M4.5 16.5 H19.5" stroke="currentColor" stroke-width="1.3"/>
+    </symbol>
+    <symbol id="sym-cart" viewBox="0 0 24 24">
+      <path d="M3 4 h2.4 l1.9 11.4 a2 2 0 0 0 2 1.6 h7.6 a2 2 0 0 0 2 -1.6 L20.5 8 H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-info">
+      <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
+      <span>Devaraja Market, Mysuru</span>
+      <span>Open 8:00 AM – 9:30 PM</span>
+      <a href="visit.html">Track Order</a>
+      <a href="visit.html#help">Help</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+      <span class="brand-text">
+        <strong>Guru Sweet Mart</strong>
+        <small>Mysuru · Est. Palace Kitchen</small>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="shop.html#gifts">Gifts</a>
+      <a href="story.html">Our Story</a>
+      <a href="order.html">Order at Store</a>
+      <a href="visit.html">Visit Us</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="icon-btn" href="shop.html" aria-label="View cart">
+        <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
+        <span class="cart-count" aria-hidden="true">0</span>
+      </a>
+      <a class="btn btn-gold btn-sm" href="order.html">Order at Store</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="shop-hero">
+    <div class="container" style="text-align:center;">
+      <p class="eyebrow" style="color:var(--gold-200)">The full menu</p>
+      <h1 style="font-size:clamp(2rem,4vw + 1rem,3rem)">Every sweet, hand-cut in Mysuru</h1>
+      <p style="color:rgba(253,249,239,0.8); max-width:60ch; margin:0 auto;">Prices shown per pack. Weight, gifting and delivery options are confirmed at checkout, along with postcode serviceability.</p>
+    </div>
+  </section>
+
+  <section class="bg-sandal" style="padding-top:44px;">
+    <div class="container">
+
+      <div class="filter-bar" role="group" aria-label="Filter by category">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="mysorepak" aria-pressed="false">Mysore Pak</button>
+        <button type="button" data-filter="sweets" aria-pressed="false">Other Sweets</button>
+        <button type="button" data-filter="gifts" aria-pressed="false">Gifts &amp; Boxes</button>
+      </div>
+
+      <div class="grid">
+
+        <article class="product-card sweet-card" data-cat="mysorepak">
+          <div class="product-media">
+            <span class="badge">Signature</span>
+            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
+            <svg aria-hidden="true"><use href="#sym-mysorepak"/></svg>
+          </div>
+          <div class="product-body">
+            <h4>Royal Ghee Mysore Pak</h4>
+            <p class="desc">Our original recipe — gram flour, sugar and generous pure ghee, hand-cut to order.</p>
+            <div class="weight-pills" role="group" aria-label="Select weight">
+              <button type="button" aria-pressed="true">250 g</button>
+              <button type="button" aria-pressed="false">500 g</button>
+              <button type="button" aria-pressed="false">1 kg</button>
+            </div>
+            <div class="product-meta">
+              <span class="price">₹320 <small>/ 250 g</small></span>
+              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card sweet-card" data-cat="mysorepak">
+          <div class="product-media">
+            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
+            <svg aria-hidden="true"><use href="#sym-milksweet"/></svg>
+          </div>
+          <div class="product-body">
+            <h4>Milk Mysore Pak</h4>
+            <p class="desc">A softer, milk-enriched take on the classic — a customer favourite for gifting.</p>
+            <div class="weight-pills" role="group" aria-label="Select weight">
+              <button type="button" aria-pressed="true">250 g</button>
+              <button type="button" aria-pressed="false">500 g</button>
+            </div>
+            <div class="product-meta">
+              <span class="price">₹280 <small>/ 250 g</small></span>
+              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card sweet-card" data-cat="mysorepak">
+          <div class="product-media">
+            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
+            <svg aria-hidden="true"><use href="#sym-mysorepak"/></svg>
+          </div>
+          <div class="product-body">
+            <h4>Traditional Mysore Pak</h4>
+            <p class="desc">Firmer texture, lightly porous — the everyday favourite for tea-time.</p>
+            <div class="weight-pills" role="group" aria-label="Select weight">
+              <button type="button" aria-pressed="true">250 g</button>
+              <button type="button" aria-pressed="false">500 g</button>
+            </div>
+            <div class="product-meta">
+              <span class="price">₹260 <small>/ 250 g</small></span>
+              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card sweet-card" data-cat="sweets">
+          <div class="product-media">
+            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
+            <svg aria-hidden="true"><use href="#sym-assorted"/></svg>
+          </div>
+          <div class="product-body">
+            <h4>Assorted Sweets Box</h4>
+            <p class="desc">A curated mix of Mysuru favourites beyond Mysore Pak, for everyday tea-time.</p>
+            <div class="weight-pills" role="group" aria-label="Select size">
+              <button type="button" aria-pressed="true">500 g</button>
+              <button type="button" aria-pressed="false">1 kg</button>
+            </div>
+            <div class="product-meta">
+              <span class="price">₹340 <small>/ 500 g</small></span>
+              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card sweet-card" data-cat="gifts" id="gifts">
+          <div class="product-media">
+            <span class="badge">Gifting</span>
+            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
+            <svg aria-hidden="true"><use href="#sym-giftbox"/></svg>
+          </div>
+          <div class="product-body">
+            <h4>Heritage Gift Box</h4>
+            <p class="desc">An assortment box for festivals and gifting, packed with a handwritten note.</p>
+            <div class="weight-pills" role="group" aria-label="Select size">
+              <button type="button" aria-pressed="true">Classic</button>
+              <button type="button" aria-pressed="false">Grand</button>
+            </div>
+            <div class="product-meta">
+              <span class="price">₹650 <small>/ box</small></span>
+              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card sweet-card" data-cat="gifts">
+          <div class="product-media">
+            <span class="badge">Festival</span>
+            <svg class="veg-mark" aria-hidden="true"><use href="#sym-giftbox"/></svg>
+            <svg aria-hidden="true"><use href="#sym-giftbox"/></svg>
+          </div>
+          <div class="product-body">
+            <h4>Dasara Celebration Box</h4>
+            <p class="desc">Royal Ghee Mysore Pak paired with festival favourites in a keepsake box.</p>
+            <div class="weight-pills" role="group" aria-label="Select size">
+              <button type="button" aria-pressed="true">1 kg</button>
+              <button type="button" aria-pressed="false">2 kg</button>
+            </div>
+            <div class="product-meta">
+              <span class="price">₹1,150 <small>/ box</small></span>
+              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="motif-divider" aria-hidden="true">✦</div>
+
+      <div style="max-width:720px;margin:0 auto;text-align:center;">
+        <h3>Every product label, before you buy</h3>
+        <p>Ingredients, allergens, net quantity, shelf life and storage guidance are shown on every product page before checkout, along with a vegetarian mark and applicable taxes.</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-mark sm"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+          <strong>Guru Sweet Mart</strong>
+        </div>
+        <p>The original Mysore Pak from Mysuru's palace-kitchen heritage — shipped nationwide, and ready ahead at our stores.</p>
+        <div class="footer-langs">
+          <span>English</span><span class="kn">ಕನ್ನಡ</span><span>हिंदी</span><span>தமிழ்</span><span>తెలుగు</span><span>മലയാളം</span>
+        </div>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All sweets</a></li>
+          <li><a href="shop.html#gifts">Gift boxes</a></li>
+          <li><a href="order.html">Order at store</a></li>
+          <li><a href="visit.html">Track order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="visit.html">Visit us</a></li>
+          <li><a href="visit.html#help">Help &amp; support</a></li>
+          <li><a href="visit.html#help">Shipping &amp; delivery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="visit.html#help">Privacy policy</a></li>
+          <li><a href="visit.html#help">Terms of sale</a></li>
+          <li><a href="visit.html#help">Cancellations &amp; refunds</a></li>
+          <li><a href="visit.html#help">Food information</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Guru Sweet Mart, Mysuru. Design mockup for review — not a live store.</span>
+      <div class="legal-links">
+        <span>FSSAI details to be added</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="install-banner" data-install-banner>
+  <span class="ic"><img src="images/logo-mark.png" alt="Guru Sweet Mart"></span>
+  <div class="txt"><strong>Install Guru Sweet Mart</strong>Add to your home screen for quick, app-like ordering.</div>
+  <button class="btn btn-gold btn-sm" data-install-action>Install</button>
+  <button class="close-install" data-install-close aria-label="Dismiss">✕</button>
+</div>
+<div class="offline-pill" data-offline-pill></div>
+
+<script src="js/app.js?v=2"></script>
+<script>
+  (function () {
+    var buttons = document.querySelectorAll('.filter-bar button');
+    var cards = document.querySelectorAll('.sweet-card');
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        buttons.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+        btn.setAttribute('aria-pressed', 'true');
+        var filter = btn.dataset.filter;
+        cards.forEach(function (card) {
+          card.hidden = filter !== 'all' && card.dataset.cat !== filter;
+        });
+      });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>You're offline — Guru Sweet Mart</title>
+<meta name="theme-color" content="#56163a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<style>
+  body { background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); }
+  .offline-wrap {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 32px;
+  }
+  .offline-wrap h1 { color: var(--sandal-50); }
+  .offline-mark { width: 88px; height: 88px; margin-bottom: 24px; object-fit: contain; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+  </defs>
+</svg>
+
+<div class="offline-wrap">
+  <img class="offline-mark" src="images/logo-mark.png" alt="Guru Sweet Mart emblem">
+  <p class="eyebrow" style="color:var(--gold-200); justify-content:center;">Guru Sweet Mart</p>
+  <h1 style="font-size:clamp(1.6rem,4vw,2.4rem)">You're offline right now</h1>
+  <p style="color:rgba(253,249,239,0.8); max-width:52ch;">
+    Pages you've already visited may still be available from cache. A
+    previously issued order token and QR code remain viewable offline, but
+    checkout, payment, live queue status and QR scanning all need a
+    connection.
+  </p>
+  <button class="btn btn-gold" onclick="location.reload()">Try again</button>
+</div>
+</body>
+</html>
