@@ -434,7 +434,8 @@ p { margin: 0 0 1em; color: var(--ink-soft); }
   justify-self: center;
 }
 .hero-medallion {
-  width: 100%; height: 100%;
+  width: 72%; height: 72%;
+  margin: 14%;
   border-radius: 50%;
   background:
     radial-gradient(circle at 35% 25%, rgba(250,240,210,0.16), transparent 55%),
@@ -445,8 +446,41 @@ p { margin: 0 0 1em; color: var(--ink-soft); }
   position: relative;
 }
 .hero-medallion svg { width: 62%; height: 62%; }
+.hero-signature-product {
+  position: relative;
+  z-index: 2;
+  width: 138%;
+  height: 138%;
+  flex: 0 0 auto;
+  object-fit: contain;
+  transform: translateY(-4%);
+  filter: drop-shadow(0 24px 20px rgba(20, 2, 10, 0.42));
+}
+.hero-product-label {
+  z-index: 3;
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 86%;
+  padding: 7px 13px;
+  border: 1px solid rgba(240, 223, 163, 0.35);
+  border-radius: 999px;
+  color: var(--gold-100);
+  background: rgba(41, 8, 26, 0.76);
+  backdrop-filter: blur(8px);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
 .hero-ring {
-  position: absolute; inset: -18px;
+  position: absolute;
+  width: 78%;
+  height: 78%;
+  inset: 11%;
   border-radius: 50%;
   border: 1px dashed rgba(212,175,55,0.4);
   animation: spin 60s linear infinite;
@@ -518,6 +552,14 @@ section { padding: 74px 0; }
   background: linear-gradient(160deg, var(--gold-100), var(--sandal-200));
 }
 .product-media svg { width: 46%; height: 46%; opacity: 0.9; }
+.product-media > img {
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 12px rgba(68, 24, 17, 0.16));
+  transition: transform 0.25s ease;
+}
+.product-card:hover .product-media > img { transform: scale(1.025); }
 .product-media .veg-mark {
   position: absolute; top: 10px; left: 10px;
   width: 18px; height: 18px;
@@ -532,6 +574,7 @@ section { padding: 74px 0; }
 
 .product-body { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .product-body h4 { margin: 0; }
+.product-category { margin: 0; color: var(--maroon-700); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .product-body .desc { font-size: 0.86rem; margin: 0; }
 .product-meta { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; }
 .price { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--maroon-800); }
@@ -582,7 +625,23 @@ section { padding: 74px 0; }
   pointer-events: none;
 }
 .frame-art svg { width: 55%; height: 55%; }
+.frame-art > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.08) contrast(1.02);
+}
+.frame-art.storefront-art { aspect-ratio: 4 / 3; }
+.frame-art::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 28%;
+  background: linear-gradient(transparent, rgba(41, 8, 26, 0.86));
+  pointer-events: none;
+}
 .frame-caption {
+  z-index: 1;
   position: absolute; left: 26px; right: 26px; bottom: 22px;
   color: var(--gold-100);
   font-family: var(--font-accent);

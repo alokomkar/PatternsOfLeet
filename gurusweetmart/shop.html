@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shop Mysore Pak &amp; Sweets — Guru Sweet Mart</title>
-<meta name="description" content="Shop the full Guru Sweet Mart menu — Royal Ghee Mysore Pak, Milk Mysore Pak, Traditional Mysore Pak, assorted sweets and heritage gift boxes.">
+<meta name="description" content="Browse 66 confirmed Guru Sweet Mart products across Mysore Pak, burfi, peda, dry-fruit sweets, ladoo and namkeen.">
 <meta name="theme-color" content="#56163a">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
@@ -27,6 +27,12 @@
   }
   .filter-bar button[aria-pressed="true"] { background: var(--maroon-800); color: var(--gold-100); border-color: var(--maroon-800); }
   .sweet-card[hidden] { display: none; }
+  .catalog-tools { display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:18px; align-items:center; margin-bottom:22px; }
+  .catalog-search { min-height:48px; width:100%; border:1px solid rgba(41,8,26,.16); border-radius:999px; background:var(--sandal-50); padding:0 20px; color:var(--ink); font:inherit; }
+  .catalog-search:focus { outline:3px solid rgba(202,146,39,.25); border-color:var(--gold-500); }
+  .catalog-count { margin:0; color:var(--ink-soft); font-weight:700; white-space:nowrap; }
+  .catalog-empty { grid-column:1/-1; padding:48px 20px; text-align:center; border:1px dashed rgba(41,8,26,.2); border-radius:var(--radius-lg); }
+  @media (max-width:640px) { .catalog-tools { grid-template-columns:1fr; gap:10px; } .catalog-count { padding-left:4px; } }
 </style>
 </head>
 <body>
@@ -144,141 +150,31 @@
     <div class="container" style="text-align:center;">
       <p class="eyebrow" style="color:var(--gold-200)">The full menu</p>
       <h1 style="font-size:clamp(2rem,4vw + 1rem,3rem)">Every sweet, hand-cut in Mysuru</h1>
-      <p style="color:rgba(253,249,239,0.8); max-width:60ch; margin:0 auto;">Prices shown per pack. Weight, gifting and delivery options are confirmed at checkout, along with postcode serviceability.</p>
+      <p style="color:rgba(253,249,239,0.8); max-width:60ch; margin:0 auto;">Browse all 66 confirmed menu items. Choose a weight to see its price; ordering remains a mockup until checkout and inventory are connected.</p>
     </div>
   </section>
 
   <section class="bg-sandal" style="padding-top:44px;">
     <div class="container">
 
+      <div class="catalog-tools">
+        <label>
+          <span class="sr-only">Search the menu</span>
+          <input class="catalog-search" type="search" data-catalog-search placeholder="Search Mysore Pak, ladoo, burfi…" autocomplete="off">
+        </label>
+        <p class="catalog-count" data-catalog-count aria-live="polite">Loading 66 products…</p>
+      </div>
+
       <div class="filter-bar" role="group" aria-label="Filter by category">
-        <button type="button" data-filter="all" aria-pressed="true">All</button>
-        <button type="button" data-filter="mysorepak" aria-pressed="false">Mysore Pak</button>
-        <button type="button" data-filter="sweets" aria-pressed="false">Other Sweets</button>
-        <button type="button" data-filter="gifts" aria-pressed="false">Gifts &amp; Boxes</button>
+        <button type="button" data-filter="all" aria-pressed="true">All 66</button>
+        <button type="button" data-filter="mysore-pak" aria-pressed="false">Mysore Pak</button>
+        <button type="button" data-filter="burfi-peda" aria-pressed="false">Burfi &amp; Peda</button>
+        <button type="button" data-filter="dry-fruit" aria-pressed="false">Dry Fruit</button>
+        <button type="button" data-filter="ladoo" aria-pressed="false">Ladoo</button>
+        <button type="button" data-filter="khara-namkeen" aria-pressed="false">Khara &amp; Namkeen</button>
       </div>
 
-      <div class="grid">
-
-        <article class="product-card sweet-card" data-cat="mysorepak">
-          <div class="product-media">
-            <span class="badge">Signature</span>
-            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
-            <svg aria-hidden="true"><use href="#sym-mysorepak"/></svg>
-          </div>
-          <div class="product-body">
-            <h4>Royal Ghee Mysore Pak</h4>
-            <p class="desc">Our original recipe — gram flour, sugar and generous pure ghee, hand-cut to order.</p>
-            <div class="weight-pills" role="group" aria-label="Select weight">
-              <button type="button" aria-pressed="true">250 g</button>
-              <button type="button" aria-pressed="false">500 g</button>
-              <button type="button" aria-pressed="false">1 kg</button>
-            </div>
-            <div class="product-meta">
-              <span class="price">₹320 <small>/ 250 g</small></span>
-              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card sweet-card" data-cat="mysorepak">
-          <div class="product-media">
-            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
-            <svg aria-hidden="true"><use href="#sym-milksweet"/></svg>
-          </div>
-          <div class="product-body">
-            <h4>Milk Mysore Pak</h4>
-            <p class="desc">A softer, milk-enriched take on the classic — a customer favourite for gifting.</p>
-            <div class="weight-pills" role="group" aria-label="Select weight">
-              <button type="button" aria-pressed="true">250 g</button>
-              <button type="button" aria-pressed="false">500 g</button>
-            </div>
-            <div class="product-meta">
-              <span class="price">₹280 <small>/ 250 g</small></span>
-              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card sweet-card" data-cat="mysorepak">
-          <div class="product-media">
-            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
-            <svg aria-hidden="true"><use href="#sym-mysorepak"/></svg>
-          </div>
-          <div class="product-body">
-            <h4>Traditional Mysore Pak</h4>
-            <p class="desc">Firmer texture, lightly porous — the everyday favourite for tea-time.</p>
-            <div class="weight-pills" role="group" aria-label="Select weight">
-              <button type="button" aria-pressed="true">250 g</button>
-              <button type="button" aria-pressed="false">500 g</button>
-            </div>
-            <div class="product-meta">
-              <span class="price">₹260 <small>/ 250 g</small></span>
-              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card sweet-card" data-cat="sweets">
-          <div class="product-media">
-            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
-            <svg aria-hidden="true"><use href="#sym-assorted"/></svg>
-          </div>
-          <div class="product-body">
-            <h4>Assorted Sweets Box</h4>
-            <p class="desc">A curated mix of Mysuru favourites beyond Mysore Pak, for everyday tea-time.</p>
-            <div class="weight-pills" role="group" aria-label="Select size">
-              <button type="button" aria-pressed="true">500 g</button>
-              <button type="button" aria-pressed="false">1 kg</button>
-            </div>
-            <div class="product-meta">
-              <span class="price">₹340 <small>/ 500 g</small></span>
-              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card sweet-card" data-cat="gifts" id="gifts">
-          <div class="product-media">
-            <span class="badge">Gifting</span>
-            <svg class="veg-mark" aria-hidden="true"><use href="#sym-veg"/></svg>
-            <svg aria-hidden="true"><use href="#sym-giftbox"/></svg>
-          </div>
-          <div class="product-body">
-            <h4>Heritage Gift Box</h4>
-            <p class="desc">An assortment box for festivals and gifting, packed with a handwritten note.</p>
-            <div class="weight-pills" role="group" aria-label="Select size">
-              <button type="button" aria-pressed="true">Classic</button>
-              <button type="button" aria-pressed="false">Grand</button>
-            </div>
-            <div class="product-meta">
-              <span class="price">₹650 <small>/ box</small></span>
-              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-card sweet-card" data-cat="gifts">
-          <div class="product-media">
-            <span class="badge">Festival</span>
-            <svg class="veg-mark" aria-hidden="true"><use href="#sym-giftbox"/></svg>
-            <svg aria-hidden="true"><use href="#sym-giftbox"/></svg>
-          </div>
-          <div class="product-body">
-            <h4>Dasara Celebration Box</h4>
-            <p class="desc">Royal Ghee Mysore Pak paired with festival favourites in a keepsake box.</p>
-            <div class="weight-pills" role="group" aria-label="Select size">
-              <button type="button" aria-pressed="true">1 kg</button>
-              <button type="button" aria-pressed="false">2 kg</button>
-            </div>
-            <div class="product-meta">
-              <span class="price">₹1,150 <small>/ box</small></span>
-              <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
-            </div>
-          </div>
-        </article>
-
-      </div>
+      <div class="grid catalog-grid" data-catalog-grid aria-busy="true"></div>
 
       <div class="motif-divider" aria-hidden="true">✦</div>
 
@@ -350,22 +246,7 @@
 </div>
 <div class="offline-pill" data-offline-pill></div>
 
-<script src="js/app.js?v=2"></script>
-<script>
-  (function () {
-    var buttons = document.querySelectorAll('.filter-bar button');
-    var cards = document.querySelectorAll('.sweet-card');
-    buttons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        buttons.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-        btn.setAttribute('aria-pressed', 'true');
-        var filter = btn.dataset.filter;
-        cards.forEach(function (card) {
-          card.hidden = filter !== 'all' && card.dataset.cat !== filter;
-        });
-      });
-    });
-  })();
-</script>
+<script src="js/app.js?v=3"></script>
+<script src="js/menu.js?v=1"></script>
 </body>
 </html>

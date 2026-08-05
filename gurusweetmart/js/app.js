@@ -40,16 +40,6 @@
     });
   });
 
-  /* Weight pill selection within product cards */
-  document.querySelectorAll(".weight-pills").forEach(function (group) {
-    group.querySelectorAll("button").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        group.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
-        btn.setAttribute("aria-pressed", "true");
-      });
-    });
-  });
-
   /* Cart count demo (localStorage-backed, mockup only) */
   var cartCountEls = document.querySelectorAll(".cart-count");
   function readCart() {
@@ -59,15 +49,29 @@
     var n = readCart();
     cartCountEls.forEach(function (el) { el.textContent = n; });
   }
-  document.querySelectorAll("[data-add-to-cart]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
+  document.addEventListener("click", function (event) {
+    var weightButton = event.target.closest(".weight-pills button");
+    if (weightButton) {
+      var group = weightButton.closest(".weight-pills");
+      group.querySelectorAll("button").forEach(function (button) { button.setAttribute("aria-pressed", "false"); });
+      weightButton.setAttribute("aria-pressed", "true");
+      var card = weightButton.closest(".product-card");
+      var price = card && card.querySelector("[data-card-price]");
+      if (price && weightButton.dataset.price) {
+        price.innerHTML = "₹" + Number(weightButton.dataset.price).toLocaleString("en-IN") + " <small>/ " + weightButton.textContent + "</small>";
+      }
+      return;
+    }
+
+    var btn = event.target.closest("[data-add-to-cart]");
+    if (btn) {
       var n = readCart() + 1;
       localStorage.setItem("gsm_demo_cart_count", String(n));
       paintCart();
       var original = btn.textContent;
       btn.textContent = "Added ✓";
       setTimeout(function () { btn.textContent = original; }, 1200);
-    });
+    }
   });
   paintCart();
 
