@@ -1,0 +1,1144 @@
+{
+  "currency": "INR",
+  "price_effective_note": "PDFs state updated prices since June 2025",
+  "items": [
+    {
+      "category": "burfi-peda",
+      "name": "Milk Burfi",
+      "source_label": "Milk Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img03.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/milk-burfi.png",
+      "image_webp": "web-ready/burfi-peda/milk-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Coconut Burfi",
+      "source_label": "Coconut Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img04.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/coconut-burfi.png",
+      "image_webp": "web-ready/burfi-peda/coconut-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Pista Burfi",
+      "source_label": "Pista Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img05.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/pista-burfi.png",
+      "image_webp": "web-ready/burfi-peda/pista-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Chocolate Burfi",
+      "source_label": "Chocolate Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img08.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/chocolate-burfi.png",
+      "image_webp": "web-ready/burfi-peda/chocolate-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Fruit Burfi",
+      "source_label": "Fruit Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img07.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/fruit-burfi.png",
+      "image_webp": "web-ready/burfi-peda/fruit-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Peda",
+      "source_label": "Peda",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img06.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/peda.png",
+      "image_webp": "web-ready/burfi-peda/peda.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Kesar Peda",
+      "source_label": "Kesar Peda",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img09.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/burfi-peda/kesar-peda.png",
+      "image_webp": "web-ready/burfi-peda/kesar-peda.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Dharwad Peda",
+      "source_label": "Dharwad Peda",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 1,
+      "raw_image": "burfi-peda-menu-p01-img10.jpg",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/dharwad-peda.png",
+      "image_webp": "web-ready/burfi-peda/dharwad-peda.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Special Coconut Burfi",
+      "source_label": "Coconut Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img03.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/burfi-peda/special-coconut-burfi.png",
+      "image_webp": "web-ready/burfi-peda/special-coconut-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Horlicks Burfi",
+      "source_label": "Horlicks Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img10.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/burfi-peda/horlicks-burfi.png",
+      "image_webp": "web-ready/burfi-peda/horlicks-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Boost Burfi",
+      "source_label": "Boost Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img04.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/burfi-peda/boost-burfi.png",
+      "image_webp": "web-ready/burfi-peda/boost-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Malai Burfi",
+      "source_label": "Malai Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img07.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/malai-burfi.png",
+      "image_webp": "web-ready/burfi-peda/malai-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Malai Tutti Frutti Burfi",
+      "source_label": "Malai Tutti Frutti Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img06.jpg",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/malai-tutti-frutti-burfi.png",
+      "image_webp": "web-ready/burfi-peda/malai-tutti-frutti-burfi.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Pista Malai Burfi",
+      "source_label": "Pista Malai burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img05.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/pista-malai-burfi.png",
+      "image_webp": "web-ready/burfi-peda/pista-malai-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Vanilla Burfi",
+      "source_label": "Vanilla Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img08.jpg",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/vanilla-burfi.png",
+      "image_webp": "web-ready/burfi-peda/vanilla-burfi.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Kesar Burfi",
+      "source_label": "Kesar Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 2,
+      "raw_image": "burfi-peda-menu-p02-img09.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/kesar-burfi.png",
+      "image_webp": "web-ready/burfi-peda/kesar-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Mango Burfi",
+      "source_label": "Mango burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 3,
+      "raw_image": "burfi-peda-menu-p03-img03.jpg",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/mango-burfi.png",
+      "image_webp": "web-ready/burfi-peda/mango-burfi.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Strawberry Burfi",
+      "source_label": "Strawberry Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 3,
+      "raw_image": "burfi-peda-menu-p03-img05.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/strawberry-burfi.png",
+      "image_webp": "web-ready/burfi-peda/strawberry-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Rose Burfi",
+      "source_label": "Rose Burfi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 3,
+      "raw_image": "burfi-peda-menu-p03-img04.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/rose-burfi.png",
+      "image_webp": "web-ready/burfi-peda/rose-burfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Milk Cake",
+      "source_label": "Milk Cake",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 3,
+      "raw_image": "burfi-peda-menu-p03-img06.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/burfi-peda/milk-cake.png",
+      "image_webp": "web-ready/burfi-peda/milk-cake.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "burfi-peda",
+      "name": "Special Soan Papdi",
+      "source_label": "Special Soan Papdi",
+      "source_pdf": "Burfi_Peda Menu.pdf",
+      "source_page": 3,
+      "raw_image": "burfi-peda-menu-p03-img07.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/burfi-peda/special-soan-papdi.png",
+      "image_webp": "web-ready/burfi-peda/special-soan-papdi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Kaju Barfi",
+      "source_label": "Kaju Barfi",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img02.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/dry-fruit/kaju-barfi.png",
+      "image_webp": "web-ready/dry-fruit/kaju-barfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Kaju Roll",
+      "source_label": "Kaju Roll",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img03.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/dry-fruit/kaju-roll.png",
+      "image_webp": "web-ready/dry-fruit/kaju-roll.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Kaju Pista Roll",
+      "source_label": "Kaju Pista Roll",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img06.png",
+      "prices_inr": {
+        "1kg": 1400,
+        "500g": 700,
+        "250g": 350
+      },
+      "image_png": "web-ready/dry-fruit/kaju-pista-roll.png",
+      "image_webp": "web-ready/dry-fruit/kaju-pista-roll.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Kaju Katori",
+      "source_label": "Kaju Katori",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img08.png",
+      "prices_inr": {
+        "1kg": 1400,
+        "500g": 700,
+        "250g": 350
+      },
+      "image_png": "web-ready/dry-fruit/kaju-katori.png",
+      "image_webp": "web-ready/dry-fruit/kaju-katori.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Dates Barfi",
+      "source_label": "Dates Barfi",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img04.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/dry-fruit/dates-barfi.png",
+      "image_webp": "web-ready/dry-fruit/dates-barfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Anjeer (Fig) Dry Fruit Barfi",
+      "source_label": "Anjeer (Fig) Dry Fruit Barfi",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img05.png",
+      "prices_inr": {
+        "1kg": 1600,
+        "500g": 800,
+        "250g": 400
+      },
+      "image_png": "web-ready/dry-fruit/anjeer-fig-dry-fruit-barfi.png",
+      "image_webp": "web-ready/dry-fruit/anjeer-fig-dry-fruit-barfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Dates Sesame Roll",
+      "source_label": "Dates sesame roll",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img07.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/dry-fruit/dates-sesame-roll.png",
+      "image_webp": "web-ready/dry-fruit/dates-sesame-roll.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Kaju Badam Barfi",
+      "source_label": "Kaju Badam Barfi",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 1,
+      "raw_image": "dry-fruit-menu-p01-img10.png",
+      "prices_inr": {
+        "1kg": 1400,
+        "500g": 700,
+        "250g": 350
+      },
+      "image_png": "web-ready/dry-fruit/kaju-badam-barfi.png",
+      "image_webp": "web-ready/dry-fruit/kaju-badam-barfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Kardhantu Barfi",
+      "source_label": "Kardhantu Barfi",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 2,
+      "raw_image": "dry-fruit-menu-p02-img02.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/dry-fruit/kardhantu-barfi.png",
+      "image_webp": "web-ready/dry-fruit/kardhantu-barfi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "dry-fruit",
+      "name": "Dry Fruit Halwa",
+      "source_label": "Dry Fruit Halwa",
+      "source_pdf": "Dry Fruit Menu.pdf",
+      "source_page": 2,
+      "raw_image": "dry-fruit-menu-p02-img03.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/dry-fruit/dry-fruit-halwa.png",
+      "image_webp": "web-ready/dry-fruit/dry-fruit-halwa.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Pumpkin Seed and Dry Fruits Mixture",
+      "source_label": "Pumpkin Seed and Dry Fruits Mixture",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img03.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300,
+        "100g": 120
+      },
+      "image_png": "web-ready/khara-namkeen/pumpkin-seed-and-dry-fruits-mixture.png",
+      "image_webp": "web-ready/khara-namkeen/pumpkin-seed-and-dry-fruits-mixture.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Pudina Coated Cashews",
+      "source_label": "Pudina Coated Cashews",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img04.png",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250,
+        "100g": 100
+      },
+      "image_png": "web-ready/khara-namkeen/pudina-coated-cashews.png",
+      "image_webp": "web-ready/khara-namkeen/pudina-coated-cashews.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Special Dal Moot Mixture",
+      "source_label": "Special Dal Moot Mixture",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img05.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200,
+        "100g": 80
+      },
+      "image_png": "web-ready/khara-namkeen/special-dal-moot-mixture.png",
+      "image_webp": "web-ready/khara-namkeen/special-dal-moot-mixture.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Cashew Mixture",
+      "source_label": "Cashew Mixture",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img06.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150,
+        "100g": 60
+      },
+      "image_png": "web-ready/khara-namkeen/cashew-mixture.png",
+      "image_webp": "web-ready/khara-namkeen/cashew-mixture.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Agra Mixture",
+      "source_label": "Agra Mixture",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img07.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/agra-mixture.png",
+      "image_webp": "web-ready/khara-namkeen/agra-mixture.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Special Bombay Mixture",
+      "source_label": "Special Bombay Mixture",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img08.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/special-bombay-mixture.png",
+      "image_webp": "web-ready/khara-namkeen/special-bombay-mixture.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Ghaati Sticks",
+      "source_label": "Ghaati Sticks",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img09.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150,
+        "100g": 60
+      },
+      "image_png": "web-ready/khara-namkeen/ghaati-sticks.png",
+      "image_webp": "web-ready/khara-namkeen/ghaati-sticks.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Ordinary Mixture",
+      "source_label": "Ordinary Mixture",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 1,
+      "raw_image": "khara-namkeen-menu-p01-img10.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/ordinary-mixture.png",
+      "image_webp": "web-ready/khara-namkeen/ordinary-mixture.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Kasuri Methi Sticks",
+      "source_label": "Kasuri Methi Sticks",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img03.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/kasuri-methi-sticks.png",
+      "image_webp": "web-ready/khara-namkeen/kasuri-methi-sticks.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Khara Boodi",
+      "source_label": "Khara Boodi",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img10.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/khara-boodi.png",
+      "image_webp": "web-ready/khara-namkeen/khara-boodi.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Chakli Murku",
+      "source_label": "Chakli Murku",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img04.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/chakli-murku.png",
+      "image_webp": "web-ready/khara-namkeen/chakli-murku.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Khara Sev (Pepper Sticks)",
+      "source_label": "Khara Sev (Pepper sticks)",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img07.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/khara-sev-pepper-sticks.png",
+      "image_webp": "web-ready/khara-namkeen/khara-sev-pepper-sticks.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Masala Kaju (Besan Coated)",
+      "source_label": "Masala Kaju (Besan Coated)",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img06.png",
+      "prices_inr": {
+        "1kg": 1600,
+        "500g": 800,
+        "250g": 400,
+        "100g": 160
+      },
+      "image_png": "web-ready/khara-namkeen/masala-kaju-besan-coated.png",
+      "image_webp": "web-ready/khara-namkeen/masala-kaju-besan-coated.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Salt and Pepper Kaju",
+      "source_label": "Salt and Pepper Kaju",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img05.png",
+      "prices_inr": {
+        "1kg": 1600,
+        "500g": 800,
+        "250g": 400,
+        "100g": 160
+      },
+      "image_png": "web-ready/khara-namkeen/salt-and-pepper-kaju.png",
+      "image_webp": "web-ready/khara-namkeen/salt-and-pepper-kaju.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Peri Peri Kaju",
+      "source_label": "Peri peri Kaju",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img08.png",
+      "prices_inr": {
+        "1kg": 1600,
+        "500g": 800,
+        "250g": 400,
+        "100g": 160
+      },
+      "image_png": "web-ready/khara-namkeen/peri-peri-kaju.png",
+      "image_webp": "web-ready/khara-namkeen/peri-peri-kaju.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "khara-namkeen",
+      "name": "Shankarpoli (Sweet)",
+      "source_label": "Shankarpoli (sweet)",
+      "source_pdf": "Khara (Namkeen) Menu.pdf",
+      "source_page": 2,
+      "raw_image": "khara-namkeen-menu-p02-img09.png",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120,
+        "105g": 50
+      },
+      "image_png": "web-ready/khara-namkeen/shankarpoli-sweet.png",
+      "image_webp": "web-ready/khara-namkeen/shankarpoli-sweet.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "ladoo",
+      "name": "Antina Ladoo",
+      "source_label": "Antina Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img02.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/ladoo/antina-ladoo.png",
+      "image_webp": "web-ready/ladoo/antina-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "ladoo",
+      "name": "Ghee Motichoor Ladoo",
+      "source_label": "Ghee Motichoor Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img03.png",
+      "prices_inr": {
+        "1kg": 720,
+        "500g": 360,
+        "250g": 180
+      },
+      "image_png": "web-ready/ladoo/ghee-motichoor-ladoo.png",
+      "image_webp": "web-ready/ladoo/ghee-motichoor-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "ladoo",
+      "name": "Cashew Ladoo",
+      "source_label": "Cashew Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img06.jpg",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/ladoo/cashew-ladoo.png",
+      "image_webp": "web-ready/ladoo/cashew-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "ladoo",
+      "name": "Gulkand Dry Fruit Ladoo",
+      "source_label": "Gulkand Dry Fruit Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img05.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/ladoo/gulkand-dry-fruit-ladoo.png",
+      "image_webp": "web-ready/ladoo/gulkand-dry-fruit-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "ladoo",
+      "name": "Kiwi Dry Fruit Ladoo",
+      "source_label": "Kiwi Dry Fruit Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img04.jpg",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/ladoo/kiwi-dry-fruit-ladoo.png",
+      "image_webp": "web-ready/ladoo/kiwi-dry-fruit-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "ladoo",
+      "name": "Ghee Besan Ladoo",
+      "source_label": "Ghee Besan Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img07.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/ladoo/ghee-besan-ladoo.png",
+      "image_webp": "web-ready/ladoo/ghee-besan-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "ladoo",
+      "name": "Ordinary Boondi Ladoo",
+      "source_label": "Ordinary Boondi Ladoo",
+      "source_pdf": "Ladoo Menu.pdf",
+      "source_page": 1,
+      "raw_image": "ladoo-menu-p01-img08.jpg",
+      "prices_inr": {
+        "1kg": 480,
+        "500g": 240,
+        "250g": 120
+      },
+      "image_png": "web-ready/ladoo/ordinary-boondi-ladoo.png",
+      "image_webp": "web-ready/ladoo/ordinary-boondi-ladoo.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Special Ghee Mysore Pak",
+      "source_label": "Special Ghee Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img02.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/mysore-pak/special-ghee-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/special-ghee-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Milk Mysore Pak",
+      "source_label": "Ghee and Milk Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img03.png",
+      "prices_inr": {
+        "1kg": 800,
+        "500g": 400,
+        "250g": 200
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-milk-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-milk-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Jaggery Mysore Pak",
+      "source_label": "Ghee and Jaggery Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img04.jpg",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-jaggery-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-jaggery-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Badam Mysore Pak",
+      "source_label": "Ghee and Badam Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img05.jpg",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-badam-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-badam-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Dry Fruit Mysore Pak",
+      "source_label": "Ghee and Dry Fruit Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img06.jpg",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-dry-fruit-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-dry-fruit-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Kaju Mysore Pak",
+      "source_label": "Ghee and Kaju Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img07.jpg",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-kaju-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-kaju-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ordinary Mysore Pak",
+      "source_label": "Ordinary Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img08.png",
+      "prices_inr": {
+        "1kg": 600,
+        "500g": 300,
+        "250g": 150
+      },
+      "image_png": "web-ready/mysore-pak/ordinary-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ordinary-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Carrot Mysore Pak",
+      "source_label": "Ghee and Carrot Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 1,
+      "raw_image": "mysore-pak-menu-2-p01-img12.jpg",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-carrot-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-carrot-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "edge-connected white removal"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Coffee Mysore Pak (Filter)",
+      "source_label": "Ghee and Coffee Mysore Pak (Filter)",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 2,
+      "raw_image": "mysore-pak-menu-2-p02-img02.png",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-coffee-mysore-pak-filter.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-coffee-mysore-pak-filter.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Coffee Mysore Pak (Powder)",
+      "source_label": "Ghee and Coffee Mysore Pak (Powder)",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 2,
+      "raw_image": "mysore-pak-menu-2-p02-img05.png",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-coffee-mysore-pak-powder.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-coffee-mysore-pak-powder.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Ghee and Anjeer Mysore Pak",
+      "source_label": "Ghee and Anjeer Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 2,
+      "raw_image": "mysore-pak-menu-2-p02-img06.png",
+      "prices_inr": {
+        "1kg": 1200,
+        "500g": 600,
+        "250g": 300
+      },
+      "image_png": "web-ready/mysore-pak/ghee-and-anjeer-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/ghee-and-anjeer-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    },
+    {
+      "category": "mysore-pak",
+      "name": "Assorted Ghee Mysore Pak",
+      "source_label": "Assorted Ghee Mysore Pak",
+      "source_pdf": "Mysore Pak Menu (2).pdf",
+      "source_page": 2,
+      "raw_image": "mysore-pak-menu-2-p02-img03.png",
+      "prices_inr": {
+        "1kg": 1000,
+        "500g": 500,
+        "250g": 250
+      },
+      "image_png": "web-ready/mysore-pak/assorted-ghee-mysore-pak.png",
+      "image_webp": "web-ready/mysore-pak/assorted-ghee-mysore-pak.webp",
+      "transparent_background": true,
+      "background_method": "source alpha"
+    }
+  ]
+}

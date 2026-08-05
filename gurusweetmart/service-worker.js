@@ -3,7 +3,7 @@
    pages. This is a design mockup: there is no real backend, cart, or
    payment traffic to manage here. */
 
-const CACHE_VERSION = "gsm-sortedqueue-v1";
+const CACHE_VERSION = "gsm-sortedqueue-v2";
 const APP_SHELL = [
   "/gurusweetmart/",
   "/gurusweetmart/index.html",
@@ -14,6 +14,8 @@ const APP_SHELL = [
   "/gurusweetmart/offline.html",
   "/gurusweetmart/css/style.css",
   "/gurusweetmart/js/app.js",
+  "/gurusweetmart/js/menu.js",
+  "/gurusweetmart/data/menu-items.json",
   "/gurusweetmart/manifest.webmanifest",
   "/gurusweetmart/icons/icon-192.png",
   "/gurusweetmart/icons/icon-512.png",
