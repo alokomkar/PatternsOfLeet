@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Phase 2.3 - Forms, Search, and Filters</title><meta name="description" content="Junior Android tutorial for Compose text fields, validation, search, filters, sorting, and error messages."><link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-03-forms-search.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-02-lists-detail.html">Previous</a><a href="phase-2-04-network-json.html">Next</a><a href="phase-2-junior.html">Phase 2</a></nav></div></header>
+  <main class="shell page-layout"><aside class="side-nav"><a href="#goal">Goal</a><a href="#visual">Visual</a><a href="#code">Code</a><a href="#practice">Practice</a></aside><article>
+    <section class="lesson" id="goal"><div class="eyebrow">Tutorial 3</div><h1>Let users find the right item.</h1><p class="hero-copy">Search and filters make a catalogue useful. Keep filtering logic pure so it is easy to test and debug.</p></section>
+    <section class="lesson" id="visual"><h2>Search flow</h2><div class="diagram-visual"><div class="diagram-node">Query</div><div class="diagram-node">Category</div><div class="diagram-node hot">Filter function</div><div class="diagram-node">Visible list</div></div></section>
+    <section class="lesson" id="code"><h2>Filter function</h2><pre class="code-card">fun filterBusinesses(
+    businesses: List&lt;Business&gt;,
+    query: String,
+    category: String?
+): List&lt;Business&gt; {
+    val normalizedQuery = query.trim().lowercase()
+
+    return businesses.filter { business -&gt;
+        val matchesQuery =
+            business.name.lowercase().contains(normalizedQuery) ||
+            business.city.lowercase().contains(normalizedQuery)
+
+        val matchesCategory =
+            category == null || business.category == category
+
+        matchesQuery && matchesCategory
+    }
+}</pre></section>
+    <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Add a search TextField above the list.</li><li>Add category chips for Clinic, School, Coaching, and Services.</li><li>Show “No results” when filters remove every item.</li><li>Keep the filter function separate from UI code.</li></ul><div class="actions"><a class="button primary" href="phase-2-04-network-json.html">Next tutorial</a><a class="button" href="phase-2-02-lists-detail.html">Previous</a></div></section>
+  </article></main>
+  <footer class="footer"><div class="shell"><span>Phase 2.3 - Forms and search</span><div><a href="phase-2-junior.html">Phase 2</a></div></div></footer>
+</body></html>

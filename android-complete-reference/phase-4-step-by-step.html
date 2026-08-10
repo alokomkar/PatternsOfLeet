@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 4 Step-by-Step - Senior Android Engineering</title>
+  <meta name="description" content="Step-by-step senior Android tutorial for feature design, module boundaries, performance, accessibility, security, review, and rollout.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-4-step-by-step.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-4-senior.html">Phase 4</a><a href="phase-5-step-by-step.html">Next phase</a><a href="index.html">Roadmap</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#steps">Steps</a><a href="#errors">Risks</a><a href="#gate">Gate</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Phase 4 step-by-step</div><h1>Deliver one senior-level feature end to end.</h1><p class="hero-copy">Outcome: a feature design, module plan, code boundary, accessibility review, performance evidence, security pass, and rollout plan.</p><div class="diagram-visual"><div class="diagram-node hot">Design</div><div class="diagram-node">Build</div><div class="diagram-node">Measure</div><div class="diagram-node">Roll out</div></div></section>
+      <section class="tutorial-flow" id="steps">
+        <div class="tutorial-step"><h2>Choose the feature</h2><p>Use a feature with real cross-cutting concerns. Example: reminder notifications for saved businesses.</p><div class="checkpoint-box"><b>Checkpoint:</b> you can state the user problem in one sentence and define one non-goal.</div></div>
+        <div class="tutorial-step"><h2>Write the feature design doc</h2><pre class="code-card">Feature: Saved business reminders
+Problem: Users save providers but forget to contact them.
+User flow: Detail screen -> Save -> Set reminder -> Reminder list.
+Non-goals: No server notifications. No calendar sync.
+Risks: notification permission, OEM alarm behavior, duplicate reminders.
+Success: users can create, view, cancel reminders reliably.</pre><div class="expected-result">A reviewer can understand scope before reading code.</div></div>
+        <div class="tutorial-step"><h2>Draw module boundaries</h2><p>Start with ownership and dependency direction.</p><div class="file-tree"><div>:app</div><div>:core:model</div><div>:core:notifications</div><div>:feature:catalogue</div><div>:feature:reminders</div></div><pre class="code-card">Allowed:
+:feature:reminders -> :core:model
+:feature:reminders -> :core:notifications
+
+Not allowed:
+:core:notifications -> :feature:reminders</pre></div>
+        <div class="tutorial-step"><h2>Define the feature API</h2><p>Expose the smallest contract other modules need.</p><pre class="code-card">interface ReminderScheduler {
+    fun schedule(reminder: BusinessReminder): Result&lt;Unit&gt;
+    fun cancel(reminderId: String): Result&lt;Unit&gt;
+}
+
+data class BusinessReminder(
+    val id: String,
+    val businessId: Int,
+    val title: String,
+    val triggerAtMillis: Long
+)</pre><div class="checkpoint-box"><b>Checkpoint:</b> feature code can be tested with a fake ReminderScheduler.</div></div>
+        <div class="tutorial-step"><h2>Add accessibility requirements before implementation</h2><ul class="content-list"><li>Reminder time picker has clear labels.</li><li>Save/cancel buttons are reachable by screen reader.</li><li>Dynamic font does not clip date/time labels.</li><li>Error message says how to fix invalid reminder time.</li></ul></div>
+        <div class="tutorial-step"><h2>Add performance checks</h2><p>Senior engineers measure the risk they introduce.</p><table class="table"><tbody><tr><th>Startup</th><td>No reminder database read before first screen unless required.</td></tr><tr><th>List</th><td>Reminder list uses stable ids and avoids formatting in tight loops.</td></tr><tr><th>Battery</th><td>Scheduling does not poll; use platform scheduling APIs.</td></tr></tbody></table></div>
+        <div class="tutorial-step"><h2>Add security and privacy checks</h2><ul class="content-list"><li>No phone numbers or addresses in logs.</li><li>Reminder notification text avoids sensitive private data.</li><li>Permission prompt appears only when the user asks for reminders.</li><li>Failure path works if notification permission is denied.</li></ul></div>
+        <div class="tutorial-step"><h2>Prepare rollout evidence</h2><pre class="code-card">Rollout checklist:
+- Unit tests for reminder validation
+- Manual test on Android 13+ notification permission
+- Accessibility pass with large font
+- Feature flag default off
+- Rollback: disable reminder entry point
+- Metrics: reminder created, reminder fired, reminder cancelled</pre><div class="expected-result">The feature can launch gradually and be disabled without breaking saved businesses.</div></div>
+      </section>
+      <section class="lesson" id="errors"><h2>Senior-level risks</h2><div class="error-grid"><div class="error-card"><b>Feature starts with code</b><span>Write design and rollout constraints before implementation.</span></div><div class="error-card"><b>Module boundary follows UI tabs</b><span>Boundary should follow ownership and dependency direction, not screen labels.</span></div><div class="error-card"><b>Accessibility checked late</b><span>Late accessibility fixes often cause layout rewrites.</span></div><div class="error-card"><b>No rollback</b><span>A senior feature needs a safe stop path before launch.</span></div></div></section>
+      <section class="lesson" id="gate"><h2>Completion gate</h2><ul class="checklist"><li>Design doc reviewed before code.</li><li>Module graph is explicit.</li><li>Public API is small and testable.</li><li>Accessibility, performance, security, and rollout evidence exist.</li></ul><a class="button primary" href="phase-5-step-by-step.html">Continue to Phase 5</a></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 4 Step-by-Step</span><div><a href="phase-4-senior.html">Phase 4</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

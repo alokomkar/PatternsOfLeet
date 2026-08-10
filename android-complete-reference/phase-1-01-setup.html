@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.1 - Android Setup and Mental Model</title>
+  <meta name="description" content="Beginner Android tutorial for installing Android Studio, creating a Compose app, running it, and understanding the first app mental model.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-01-setup.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-foundations.html">Phase 1</a><a href="phase-1-02-kotlin-basics.html">Next</a><a href="index.html">Roadmap</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#setup">Setup</a><a href="#model">Mental model</a><a href="#practice">Practice</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 1</div><h1>Setup Android Studio and run your first app.</h1><p class="hero-copy">The first win is simple: create a new Compose project, run it on an emulator or physical device, and know which files matter.</p><div class="ide-visual"><div class="ide-sidebar"><span></span><span></span><span></span><span></span><span></span></div><div class="ide-editor"><span class="ide-line hot"></span><span class="ide-line mid"></span><span class="ide-line"></span><span class="ide-line short"></span><span class="ide-line"></span><span class="ide-line mid"></span></div></div></section>
+      <section class="lesson" id="setup"><h2>Steps</h2><ol class="content-list"><li>Install the latest stable Android Studio.</li><li>Create a new project using Empty Activity with Jetpack Compose.</li><li>Choose Kotlin as the language and keep the default minimum SDK unless you have a specific target device constraint.</li><li>Create an emulator from Device Manager or connect a physical Android phone with USB debugging enabled.</li><li>Press Run and wait for the app to install.</li></ol><pre class="code-card">Expected result:
+The app launches and shows the default Compose screen.
+
+If the emulator is slow:
+- Close heavy apps
+- Use a smaller device profile
+- Prefer a physical phone if available</pre></section>
+      <section class="lesson" id="model"><h2>Mental model</h2><div class="concept-visual"><div class="concept-box"><b>Android Studio</b><span>The workshop where you edit, run, debug, and inspect the app.</span></div><div class="concept-box"><b>Gradle</b><span>The build system that turns Kotlin code and resources into an installable app.</span></div><div class="concept-box"><b>Device</b><span>The emulator or phone where the app actually runs.</span></div></div><p>At beginner level, treat Android development as a loop: edit code, run the app, observe behavior, fix one thing, run again.</p></section>
+      <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Change the text shown on the first screen.</li><li>Run the app again and confirm the new text appears.</li><li>Open Logcat and find logs from your running app.</li><li>Write a short README with your Android Studio version and device used.</li></ul><div class="actions"><a class="button primary" href="phase-1-02-kotlin-basics.html">Next tutorial</a><a class="button" href="phase-1-foundations.html">Phase overview</a></div><p class="source-note">Reference: Android Developers recommends Android Basics with Compose as the beginner path and uses Kotlin with Compose for first apps.</p></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.1 - Setup</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

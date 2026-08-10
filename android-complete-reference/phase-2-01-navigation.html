@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Phase 2.1 - Compose Navigation</title><meta name="description" content="Junior Android tutorial for Compose navigation, routes, NavHost, detail arguments, and back behavior."><link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-01-navigation.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-junior.html">Phase 2</a><a href="phase-2-02-lists-detail.html">Next</a></nav></div></header>
+  <main class="shell page-layout"><aside class="side-nav"><a href="#goal">Goal</a><a href="#model">Model</a><a href="#code">Code</a><a href="#practice">Practice</a></aside><article>
+    <section class="lesson" id="goal"><div class="eyebrow">Tutorial 1</div><h1>Move between screens predictably.</h1><p class="hero-copy">Navigation is the structure that lets users move across list, detail, search, and settings screens. At junior level, focus on simple routes and correct back behavior.</p></section>
+    <section class="lesson" id="model"><h2>Navigation model</h2><div class="diagram-visual"><div class="diagram-node hot">NavHost</div><div class="diagram-node">List route</div><div class="diagram-node">Detail route</div><div class="diagram-node">Settings route</div></div><p>Think in destinations. Each destination owns one screen. The route identifies where the user should go.</p></section>
+    <section class="lesson" id="code"><h2>Starter code</h2><pre class="code-card">@Serializable data object BusinessListRoute
+@Serializable data class BusinessDetailRoute(val id: Int)
+
+@Composable
+fun CatalogueNav() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = BusinessListRoute
+    ) {
+        composable&lt;BusinessListRoute&gt; {
+            BusinessListScreen(
+                onOpenBusiness = { id -&gt;
+                    navController.navigate(BusinessDetailRoute(id))
+                }
+            )
+        }
+        composable&lt;BusinessDetailRoute&gt; { entry -&gt;
+            val route = entry.toRoute&lt;BusinessDetailRoute&gt;()
+            BusinessDetailScreen(id = route.id)
+        }
+    }
+}</pre></section>
+    <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Create list, detail, and settings destinations.</li><li>Navigate from list to detail with an id.</li><li>Use the system back button and verify it returns to list.</li><li>Write down what data belongs in a route and what should stay in state.</li></ul><div class="actions"><a class="button primary" href="phase-2-02-lists-detail.html">Next tutorial</a><a class="button" href="phase-2-junior.html">Phase overview</a></div></section>
+  </article></main>
+  <footer class="footer"><div class="shell"><span>Phase 2.1 - Navigation</span><div><a href="phase-2-junior.html">Phase 2</a></div></div></footer>
+</body></html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1 Step-by-Step - Compose Habit Tracker</title>
+  <meta name="description" content="Step-by-step beginner Android tutorial to build a Jetpack Compose habit tracker from project setup to final review.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-step-by-step.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-foundations.html">Phase 1</a><a href="phase-2-step-by-step.html">Next phase</a><a href="index.html">Roadmap</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#steps">Steps</a><a href="#errors">Errors</a><a href="#quiz">Quiz</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Phase 1 step-by-step</div><h1>Build a Compose habit tracker from zero.</h1><p class="hero-copy">Outcome: one runnable Android app where the user can add habits, mark them done, delete them, and understand how Compose state updates the screen.</p><div class="phone-mock wide"><div class="mock-bar"></div><div class="mock-title"></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div></div></section>
+      <section class="tutorial-flow" id="steps">
+        <div class="tutorial-step"><h2>Create and verify the app shell</h2><p>Create an Empty Activity Compose project named <b>HabitTracker</b>. Run it before changing code.</p><div class="file-tree"><div>app/src/main/java/com/example/habittracker/MainActivity.kt</div></div><div class="expected-result"><b>Expected result:</b> the default app opens on emulator or phone. If it does not run, fix SDK/emulator/Gradle before continuing.</div></div>
+        <div class="tutorial-step"><h2>Replace the first screen</h2><p>Open <b>MainActivity.kt</b>. Keep the generated package line. Replace the body with a simple composable.</p><pre class="code-card">import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { MaterialTheme { HabitTrackerApp() } }
+    }
+}
+
+@Composable
+fun HabitTrackerApp() {
+    Text("Habit Tracker")
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> app compiles and shows “Habit Tracker”.</div></div>
+        <div class="tutorial-step"><h2>Add the data model</h2><p>Add this below the imports. A habit needs a stable id so list actions affect the correct row.</p><pre class="code-card">data class Habit(
+    val id: Int,
+    val title: String,
+    val isDone: Boolean = false
+)</pre><div class="expected-result">Nothing visual changes yet. This step prepares the screen state.</div></div>
+        <div class="tutorial-step"><h2>Add text input state</h2><p>Use <b>remember</b> so Compose keeps the current text while the screen redraws.</p><pre class="code-card">import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
+@Composable
+fun HabitTrackerApp() {
+    var title by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Habit Tracker")
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = title,
+            onValueChange = { title = it },
+            label = { Text("New habit") }
+        )
+        Button(
+            enabled = title.trim().isNotEmpty(),
+            onClick = { title = "" }
+        ) { Text("Add habit") }
+    }
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> typing works, and the button disables when the field is blank.</div></div>
+        <div class="tutorial-step"><h2>Add list state and render rows</h2><p>Now store a list of habits and render it with <b>LazyColumn</b>.</p><pre class="code-card">import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.layout.Row
+
+@Composable
+fun HabitTrackerApp() {
+    var nextId by remember { mutableStateOf(1) }
+    var title by remember { mutableStateOf("") }
+    var habits by remember { mutableStateOf(listOf&lt;Habit&gt;()) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Habit Tracker")
+        OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("New habit") })
+        Button(enabled = title.trim().isNotEmpty(), onClick = {
+            habits = habits + Habit(nextId, title.trim())
+            nextId += 1
+            title = ""
+        }) { Text("Add habit") }
+
+        if (habits.isEmpty()) {
+            Text("No habits yet. Add one to start.")
+        } else {
+            LazyColumn {
+                items(habits, key = { it.id }) { habit -&gt;
+                    Card(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                        Row(modifier = Modifier.padding(12.dp)) {
+                            Checkbox(checked = habit.isDone, onCheckedChange = null)
+                            Text(habit.title)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</pre><div class="expected-result">You can add multiple habits and see them as rows.</div></div>
+        <div class="tutorial-step"><h2>Add complete and delete actions</h2><p>Update the row so each habit can change independently.</p><pre class="code-card">items(habits, key = { it.id }) { habit -&gt;
+    Card(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Row(modifier = Modifier.padding(12.dp)) {
+            Checkbox(
+                checked = habit.isDone,
+                onCheckedChange = {
+                    habits = habits.map {
+                        if (it.id == habit.id) it.copy(isDone = !it.isDone) else it
+                    }
+                }
+            )
+            Text(modifier = Modifier.weight(1f), text = habit.title)
+            Button(onClick = {
+                habits = habits.filterNot { it.id == habit.id }
+            }) { Text("Delete") }
+        }
+    }
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> add three habits, complete the second, delete the first, and confirm the remaining rows are correct.</div></div>
+        <div class="tutorial-step"><h2>Refactor into small composables</h2><p>Split the screen into <b>AddHabitForm</b>, <b>HabitList</b>, and <b>HabitRow</b>. The behavior should not change.</p><div class="callout">Refactor only after the app works. Beginners should not split code before they understand the data flow.</div></div>
+        <div class="tutorial-step"><h2>Final review</h2><ul class="content-list"><li>Blank habits cannot be added.</li><li>Each row has a stable id.</li><li>Empty state appears when all rows are deleted.</li><li>State lives in the parent screen.</li><li>Child rows use callbacks instead of editing hidden global data.</li></ul><div class="actions"><a class="button primary" href="phase-1-09-quiz-lab.html">Take Phase 1 quiz</a></div></div>
+      </section>
+      <section class="lesson" id="errors"><h2>Common failures</h2><div class="error-grid"><div class="error-card"><b>Unresolved reference: weight</b><span>Import Modifier and use Text(modifier = Modifier.weight(1f), ... inside Row scope.</span></div><div class="error-card"><b>State resets unexpectedly</b><span>Make sure title and habits use remember and are not local plain variables.</span></div><div class="error-card"><b>Wrong item changes</b><span>Use stable id matching, not list index matching.</span></div><div class="error-card"><b>Composable call error</b><span>Only call composables from another composable or from setContent.</span></div></div></section>
+      <section class="lesson" id="quiz"><h2>Checkpoint quiz</h2><p>Use the interactive Phase 1 quiz after completing the build. If you guess, revisit the exact step that introduced that concept.</p><a class="button primary" href="phase-1-09-quiz-lab.html">Open quiz lab</a></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1 Step-by-Step</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

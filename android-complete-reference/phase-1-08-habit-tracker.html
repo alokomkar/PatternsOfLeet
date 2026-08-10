@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.8 - Build a Compose Habit Tracker</title>
+  <meta name="description" content="Final Phase 1 beginner Android project: build a Compose habit tracker with state, input, list rows, complete action, delete action, and empty state.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-08-habit-tracker.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-07-debugging.html">Previous</a><a href="phase-1-09-quiz-lab.html">Quiz lab</a><a href="phase-2-junior.html">Phase 2</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#screen">Screen</a><a href="#code">Code</a><a href="#review">Review</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 8</div><h1>Build the Phase 1 habit tracker.</h1><p class="hero-copy">This project combines Kotlin data modeling, Compose layout, state, events, and debugging into one small app. It is intentionally simple; the proof is correctness and clarity.</p></section>
+      <section class="lesson" id="screen"><h2>Target screen</h2><div class="phone-mock wide"><div class="mock-bar"></div><div class="mock-title"></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-tabs"><span></span><span></span><span></span></div></div></section>
+      <section class="lesson" id="code"><h2>Starter implementation</h2><pre class="code-card">data class Habit(
+    val id: Int,
+    val title: String,
+    val isDone: Boolean = false
+)
+
+@Composable
+fun HabitTrackerApp() {
+    var nextId by remember { mutableStateOf(1) }
+    var title by remember { mutableStateOf("") }
+    var habits by remember { mutableStateOf(listOf&lt;Habit&gt;()) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "Habit Tracker")
+
+        OutlinedTextField(
+            value = title,
+            onValueChange = { title = it },
+            label = { Text("New habit") }
+        )
+
+        Button(
+            enabled = title.trim().isNotEmpty(),
+            onClick = {
+                habits = habits + Habit(nextId, title.trim())
+                nextId += 1
+                title = ""
+            }
+        ) {
+            Text("Add habit")
+        }
+
+        if (habits.isEmpty()) {
+            Text("No habits yet. Add one to start.")
+        } else {
+            habits.forEach { habit -&gt;
+                HabitRow(
+                    habit = habit,
+                    onToggle = {
+                        habits = habits.map {
+                            if (it.id == habit.id) it.copy(isDone = !it.isDone) else it
+                        }
+                    },
+                    onDelete = {
+                        habits = habits.filterNot { it.id == habit.id }
+                    }
+                )
+            }
+        }
+    }
+}</pre></section>
+      <section class="lesson" id="review"><h2>Review checklist</h2><ul class="checklist"><li>Blank titles cannot be added.</li><li>Adding a habit clears the text field.</li><li>Checking one habit does not change another habit.</li><li>Deleting one habit removes only that habit.</li><li>Empty state appears when the list has no habits.</li><li>README includes screenshots, features, known limitations, and next improvements.</li></ul><div class="actions"><a class="button primary" href="phase-1-09-quiz-lab.html">Open quiz lab</a><a class="button" href="phase-2-junior.html">Continue to Phase 2</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.8 - Habit tracker</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

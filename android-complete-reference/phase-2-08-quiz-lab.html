@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 2.8 - Junior Android Quiz Lab</title>
+  <meta name="description" content="Interactive Phase 2 Android quiz lab with drag-and-drop route ordering, storage matching, multi-select UI states, and code review prompts.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-08-quiz-lab.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-07-business-catalogue.html">Previous</a><a href="phase-2-junior.html">Phase 2</a><a href="phase-3-production.html">Phase 3</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#multi">Multi-select</a><a href="#drag">Drag order</a><a href="#match">Match</a><a href="#review">Code review</a></aside>
+    <article>
+      <section class="lesson"><div class="eyebrow">Tutorial 8</div><h1>Interactive Phase 2 quiz lab.</h1><p class="hero-copy">The Phase 2 quiz checks app-flow reasoning: navigation, state, storage choices, and user-facing error behavior.</p></section>
+
+      <section class="lesson quiz-shell" id="multi">
+        <h2>Multi-select: states a catalogue app should handle</h2>
+        <div class="quiz-card" data-quiz="p2-multi">
+          <p><b>Question:</b> Which UI states should a network-backed catalogue handle?</p>
+          <label class="quiz-option"><input type="checkbox" value="correct"> Loading while data is fetched.</label>
+          <label class="quiz-option"><input type="checkbox" value="correct"> Empty result after search or filter.</label>
+          <label class="quiz-option"><input type="checkbox" value="wrong"> Silent failure with a blank screen.</label>
+          <label class="quiz-option"><input type="checkbox" value="correct"> Error with retry when the request fails.</label>
+          <div class="quiz-actions"><button class="button primary" type="button" data-check="p2-multi">Check answer</button></div>
+          <div class="quiz-feedback" id="p2-multi-feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="lesson quiz-shell" id="drag">
+        <h2>Drag-and-drop: order a detail navigation flow</h2>
+        <p>Drag the steps into the correct sequence. Use move buttons on touch devices.</p>
+        <div class="drop-zone" id="p2-order-zone">
+          <div class="drag-item" draggable="true" data-order="4">Back returns to the previous list state</div>
+          <div class="drag-item" draggable="true" data-order="1">User taps a business row</div>
+          <div class="drag-item" draggable="true" data-order="3">Detail screen loads business by id</div>
+          <div class="drag-item" draggable="true" data-order="2">Navigate with the business id route argument</div>
+        </div>
+        <div class="quiz-actions"><button class="button" type="button" data-p2-move="up">Move selected up</button><button class="button" type="button" data-p2-move="down">Move selected down</button><button class="button primary" type="button" data-check="p2-order">Check order</button><button class="button" type="button" data-reset="p2-order">Reset</button></div>
+        <div class="quiz-feedback" id="p2-order-feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="lesson quiz-shell" id="match">
+        <h2>Matching: choose the right storage</h2>
+        <div class="match-grid">
+          <label>Selected language<select data-p2-match="language"><option value="">Choose</option><option value="datastore">DataStore</option><option value="room">Room</option><option value="network">Network only</option></select></label>
+          <label>Favourite business ids<select data-p2-match="favourites"><option value="">Choose</option><option value="network">Network only</option><option value="room">Room</option><option value="datastore">DataStore</option></select></label>
+          <label>Fresh server catalogue<select data-p2-match="catalogue"><option value="">Choose</option><option value="room">Room</option><option value="network">Network response</option><option value="datastore">DataStore</option></select></label>
+          <label>Sort preference<select data-p2-match="sort"><option value="">Choose</option><option value="datastore">DataStore</option><option value="network">Network only</option><option value="room">Room</option></select></label>
+        </div>
+        <div class="quiz-actions"><button class="button primary" type="button" data-check="p2-match">Check matches</button></div>
+        <div class="quiz-feedback" id="p2-match-feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="lesson quiz-shell" id="review">
+        <h2>Code review prompt</h2>
+        <p>Find the user-facing problem before checking the explanation.</p>
+        <pre class="code-card">if (businesses.isEmpty()) {
+    // Do nothing
+} else {
+    BusinessList(businesses)
+}</pre>
+        <div class="quiz-actions"><button class="button primary" type="button" data-check="p2-code">Show explanation</button></div>
+        <div class="quiz-feedback" id="p2-code-feedback" aria-live="polite"></div>
+      </section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 2.8 - Quiz lab</span><div><a href="phase-2-junior.html">Phase 2</a></div></div></footer>
+  <script src="phase-2-quiz.js"></script>
+</body>
+</html>

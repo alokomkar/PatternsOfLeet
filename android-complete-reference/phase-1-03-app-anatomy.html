@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.3 - Android App Anatomy</title>
+  <meta name="description" content="Beginner Android tutorial explaining MainActivity, setContent, Gradle, Manifest, resources, and project structure.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-03-app-anatomy.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-02-kotlin-basics.html">Previous</a><a href="phase-1-04-compose-ui.html">Next</a><a href="phase-1-foundations.html">Phase 1</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#files">Files</a><a href="#code">Code</a><a href="#practice">Practice</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 3</div><h1>Understand the first Android project.</h1><p class="hero-copy">Beginners often get lost because Android projects contain many files. In Phase 1, focus on a small set: MainActivity, build files, manifest, and resources.</p></section>
+      <section class="lesson" id="files"><h2>Files that matter first</h2><div class="ide-visual"><div class="ide-sidebar"><span></span><span></span><span></span><span></span><span></span></div><div class="ide-editor"><span class="ide-line hot"></span><span class="ide-line"></span><span class="ide-line mid"></span><span class="ide-line short"></span><span class="ide-line"></span></div></div><table class="table"><tbody><tr><th>MainActivity.kt</th><td>Your first screen starts here. Compose UI is usually called from setContent.</td></tr><tr><th>build.gradle.kts</th><td>Dependencies, plugins, SDK versions, and build settings.</td></tr><tr><th>AndroidManifest.xml</th><td>Declares app components and permissions.</td></tr><tr><th>res/</th><td>Strings, colors, icons, themes, and other resources.</td></tr></tbody></table></section>
+      <section class="lesson" id="code"><h2>MainActivity pattern</h2><pre class="code-card">class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            HabitApp()
+        }
+    }
+}
+
+@Composable
+fun HabitApp() {
+    Text(text = "My first Android app")
+}</pre><p>The activity hosts the screen. The composable describes the UI. Keep that distinction clear from the beginning.</p></section>
+      <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Find MainActivity.kt in your project.</li><li>Rename the first composable to something meaningful.</li><li>Find the app name string in resources if your template created one.</li><li>Write down which file you would open to change UI, app name, and dependencies.</li></ul><div class="actions"><a class="button primary" href="phase-1-04-compose-ui.html">Next tutorial</a><a class="button" href="phase-1-02-kotlin-basics.html">Previous</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.3 - App anatomy</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

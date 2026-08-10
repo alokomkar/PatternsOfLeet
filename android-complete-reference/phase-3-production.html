@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 3 - Production Android Engineer</title>
+  <meta name="description" content="Phase 3 of the Android Complete Reference: architecture, coroutines, Flow, Room, Hilt, testing, and production release quality.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-3-production.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="index.html">Roadmap</a><a href="phase-2-junior.html">Previous</a><a href="phase-3-step-by-step.html">Step-by-step</a><a href="phase-4-senior.html">Next phase</a><a href="../android-guide.html">Advanced guide</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#learn">What to learn</a><a href="#project">Project</a><a href="#gate">Exit gate</a></aside>
+    <article>
+      <section class="lesson" id="outcome"><div class="eyebrow">Phase 3 - 3 to 6 months</div><h1>Become reliable in production codebases.</h1><p class="hero-copy">Goal: build apps that survive change. You now learn architecture, concurrency, dependency injection, persistence, testing, and release discipline.</p></section>
+      <section class="lesson" id="learn"><h2>What to learn</h2><ul class="checklist"><li>Recommended app architecture: UI layer, domain decisions, data layer, repositories, source of truth.</li><li>ViewModel, StateFlow, SharedFlow, coroutine scopes, cancellation, dispatchers, and structured concurrency.</li><li>Room migrations, DataStore, paging basics, cache invalidation, and sync strategy.</li><li>Dependency injection with Hilt and test-friendly boundaries.</li><li>Unit tests, coroutine tests, Compose UI tests, fake repositories, and screenshot/regression thinking.</li><li>Release basics: build variants, signing concepts, crash reporting, analytics events, and staged rollout discipline.</li></ul></section>
+      <section class="lesson" id="project"><h2>Build this project</h2><p>Create an API-backed task manager with offline cache, authentication mock, filters, sync status, and tests around the repository and ViewModel behavior.</p><div class="diagram-visual"><div class="diagram-node">Compose UI</div><div class="diagram-node">ViewModel</div><div class="diagram-node hot">Repository</div><div class="diagram-node">Room + API</div></div><pre class="code-card">Architecture proof:
+UI -> ViewModel -> Use case or repository -> Local DB + Remote API
+
+Test proof:
+- ViewModel emits loading then data
+- Network failure shows retry state
+- Cached data appears offline
+- Invalid mutation is rejected</pre></section>
+      <section class="lesson" id="gate"><h2>Exit gate</h2><ul class="checklist"><li>You can explain where business logic belongs and why.</li><li>You can write tests before changing risky data or state logic.</li><li>You can reason about coroutine cancellation and lifecycle boundaries.</li><li>You can ship a release candidate with known risks and verification notes.</li><li>You can use the advanced guide sections on lifecycle, Room, Hilt, Coroutines, Flow, and testing.</li></ul><div class="actions"><a class="button primary" href="phase-3-step-by-step.html">Open step-by-step tutorial</a><a class="button" href="phase-3-complete-tutorial.html">Complete reference</a><a class="button" href="phase-4-senior.html">Continue to Phase 4</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 3 - Android Complete Reference</span><div><a href="index.html">Roadmap</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

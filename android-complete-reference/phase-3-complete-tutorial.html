@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 3 Complete Tutorial - Production Android Architecture</title>
+  <meta name="description" content="Complete production Android tutorial covering UI state, ViewModel, repository, Room-style local source, API source, coroutine testing, and release checks.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-3-complete-tutorial.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-3-production.html">Phase 3</a><a href="phase-4-complete-tutorial.html">Phase 4</a><a href="../android-guide.html">Advanced guide</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#files">Files</a><a href="#dependencies">Dependencies</a><a href="#state">UI state</a><a href="#repository">Repository</a><a href="#viewmodel">ViewModel</a><a href="#tests">Tests</a><a href="#errors">Errors</a></aside>
+    <article>
+      <section class="lesson" id="outcome"><div class="eyebrow">Phase 3 complete track</div><h1>Turn the catalogue app into production-shaped Android code.</h1><p class="hero-copy">This phase moves from “the app works” to “the app survives real change.” The target is an API-backed task manager pattern with explicit UI state, repository boundaries, cache thinking, coroutine usage, and tests.</p><div class="diagram-visual"><div class="diagram-node">Compose screen</div><div class="diagram-node">ViewModel</div><div class="diagram-node hot">Repository</div><div class="diagram-node">API + database</div></div></section>
+      <section class="lesson" id="files"><span class="step-label">Step 1</span><h2>Use this production file structure</h2><div class="file-tree"><div>app/src/main/java/com/example/tasks/</div><div>  ui/TaskListScreen.kt</div><div>  ui/TaskListViewModel.kt</div><div>  data/TaskRepository.kt</div><div>  data/TaskApi.kt</div><div>  data/TaskDao.kt</div><div>  data/TaskEntity.kt</div><div>  model/Task.kt</div><div>app/src/test/java/com/example/tasks/</div><div>  TaskListViewModelTest.kt</div></div><p>Do not create a domain layer by default. Add it only when business rules are reused or complicated enough to justify another boundary.</p></section>
+      <section class="lesson" id="dependencies"><span class="step-label">Step 2</span><h2>Dependencies to add</h2><pre class="code-card">dependencies {
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
+    // Add Room, Retrofit/Ktor, and Hilt when the beginner flow works.
+    // Do not add libraries before you know what boundary they serve.
+}</pre></section>
+      <section class="lesson" id="state"><span class="step-label">Step 3</span><h2>Define UI state first</h2><pre class="code-card">data class Task(
+    val id: Int,
+    val title: String,
+    val isDone: Boolean
+)
+
+sealed interface TaskListUiState {
+    data object Loading : TaskListUiState
+    data class Success(val tasks: List&lt;Task&gt;) : TaskListUiState
+    data object Empty : TaskListUiState
+    data class Error(val message: String) : TaskListUiState
+}</pre><p>UI state is the contract between ViewModel and screen. If a state is possible in production, represent it explicitly.</p></section>
+      <section class="lesson" id="repository"><span class="step-label">Step 4</span><h2>Create a repository boundary</h2><pre class="code-card">interface TaskRepository {
+    suspend fun refreshTasks(): Result&lt;List&lt;Task&gt;&gt;
+    suspend fun toggleTask(id: Int): Result&lt;Task&gt;
+}
+
+class OfflineFirstTaskRepository(
+    private val api: TaskApi,
+    private val dao: TaskDao
+) : TaskRepository {
+    override suspend fun refreshTasks(): Result&lt;List&lt;Task&gt;&gt; {
+        return runCatching {
+            val remoteTasks = api.fetchTasks().map { it.toEntity() }
+            dao.replaceAll(remoteTasks)
+            dao.getAll().map { it.toModel() }
+        }.recoverCatching {
+            val cached = dao.getAll().map { it.toModel() }
+            if (cached.isEmpty()) throw it else cached
+        }
+    }
+}</pre><p>The repository owns data decisions. The UI should not know whether data came from cache or network unless the product needs to display that distinction.</p></section>
+      <section class="lesson" id="viewmodel"><span class="step-label">Step 5</span><h2>Expose state from a ViewModel</h2><pre class="code-card">class TaskListViewModel(
+    private val repository: TaskRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow&lt;TaskListUiState&gt;(TaskListUiState.Loading)
+    val uiState: StateFlow&lt;TaskListUiState&gt; = _uiState.asStateFlow()
+
+    fun load() {
+        viewModelScope.launch {
+            _uiState.value = TaskListUiState.Loading
+            val result = repository.refreshTasks()
+            _uiState.value = result.fold(
+                onSuccess = { tasks -&gt;
+                    if (tasks.isEmpty()) TaskListUiState.Empty else TaskListUiState.Success(tasks)
+                },
+                onFailure = { error -&gt;
+                    TaskListUiState.Error(error.message ?: "Unable to load tasks")
+                }
+            )
+        }
+    }
+}</pre></section>
+      <section class="lesson" id="tests"><span class="step-label">Step 6</span><h2>Test behavior, not implementation detail</h2><pre class="code-card">class FakeTaskRepository : TaskRepository {
+    var result: Result&lt;List&lt;Task&gt;&gt; = Result.success(emptyList())
+
+    override suspend fun refreshTasks(): Result&lt;List&lt;Task&gt;&gt; = result
+    override suspend fun toggleTask(id: Int): Result&lt;Task&gt; =
+        Result.success(Task(id, "Fake", true))
+}
+
+@Test
+fun loadShowsSuccessWhenRepositoryReturnsTasks() = runTest {
+    val repository = FakeTaskRepository().apply {
+        result = Result.success(listOf(Task(1, "Ship release", false)))
+    }
+    val viewModel = TaskListViewModel(repository)
+
+    viewModel.load()
+
+    assertTrue(viewModel.uiState.value is TaskListUiState.Success)
+}</pre><div class="callout">A test that only checks “method was called” is weak. Prefer tests that prove the user-visible state is correct.</div></section>
+      <section class="lesson" id="errors"><span class="step-label">Step 7</span><h2>Common production mistakes</h2><div class="error-grid"><div class="error-card"><b>Repository returns DTOs</b><span>Map network DTOs into app models before exposing them to UI.</span></div><div class="error-card"><b>ViewModel knows Retrofit</b><span>The ViewModel should depend on repository behavior, not transport details.</span></div><div class="error-card"><b>No error state</b><span>Every production network path needs visible failure behavior.</span></div><div class="error-card"><b>Untested state transitions</b><span>Test loading, success, empty, error, and retry behavior.</span></div></div><div class="actions"><a class="button primary" href="phase-4-complete-tutorial.html">Continue to Phase 4</a><a class="button" href="phase-3-production.html">Phase overview</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 3 Complete Tutorial</span><div><a href="phase-3-production.html">Phase 3</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

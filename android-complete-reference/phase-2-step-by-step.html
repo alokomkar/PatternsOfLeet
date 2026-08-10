@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 2 Step-by-Step - Business Catalogue App</title>
+  <meta name="description" content="Step-by-step junior Android tutorial to build a multi-screen business catalogue app with navigation, lists, filters, favourites, and intents.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-step-by-step.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-junior.html">Phase 2</a><a href="phase-3-step-by-step.html">Next phase</a><a href="index.html">Roadmap</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#steps">Steps</a><a href="#errors">Errors</a><a href="#quiz">Quiz</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Phase 2 step-by-step</div><h1>Build a multi-screen business catalogue.</h1><p class="hero-copy">Outcome: a junior-level app with list, detail, favourites, settings, search, filters, and call/map/share actions.</p><div class="phone-mock wide"><div class="mock-title"></div><div class="mock-tabs"><span></span><span></span><span></span></div><div class="mock-card"></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div></div></section>
+      <section class="tutorial-flow" id="steps">
+        <div class="tutorial-step"><h2>Add navigation dependency</h2><p>Open <b>app/build.gradle.kts</b>, add Navigation Compose, sync Gradle, and run the app once.</p><pre class="code-card">dependencies {
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+}</pre><div class="expected-result">Gradle sync succeeds. If Android Studio suggests a newer stable version, use that.</div></div>
+        <div class="tutorial-step"><h2>Create the catalogue model and sample data</h2><p>Add a data class and five local records. Keep data local first so navigation and UI are easy to debug.</p><pre class="code-card">data class Business(
+    val id: Int,
+    val name: String,
+    val category: String,
+    val city: String,
+    val phone: String,
+    val address: String
+)
+
+val sampleBusinesses = listOf(
+    Business(1, "Asha Clinic", "Clinic", "Shivamogga", "9876543210", "MG Road"),
+    Business(2, "Future Steps School", "School", "Davanagere", "9876500001", "PB Road"),
+    Business(3, "RankPlus Coaching", "Coaching", "Mysuru", "9876500002", "VV Mohalla")
+)</pre></div>
+        <div class="tutorial-step"><h2>Build the list screen first</h2><p>Render the list without navigation. This proves the data model and row UI work.</p><pre class="code-card">@Composable
+fun BusinessListScreen(
+    businesses: List&lt;Business&gt;,
+    onOpen: (Int) -&gt; Unit
+) {
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(businesses, key = { it.id }) { business -&gt;
+            Card(modifier = Modifier.fillMaxWidth().clickable { onOpen(business.id) }) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text(business.name, fontWeight = FontWeight.Bold)
+                    Text("${business.category} • ${business.city}")
+                }
+            }
+        }
+    }
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> all sample businesses render in a scrollable list.</div></div>
+        <div class="tutorial-step"><h2>Add NavHost and detail route</h2><p>Move from one screen to two screens. Pass only the id through the route.</p><pre class="code-card">@Composable
+fun CatalogueApp() {
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = "list") {
+        composable("list") {
+            BusinessListScreen(sampleBusinesses) { id -&gt;
+                navController.navigate("detail/$id")
+            }
+        }
+        composable("detail/{id}") { entry -&gt;
+            val id = entry.arguments?.getString("id")?.toIntOrNull()
+            val business = sampleBusinesses.firstOrNull { it.id == id }
+            BusinessDetailScreen(business, onBack = { navController.popBackStack() })
+        }
+    }
+}</pre><div class="expected-result">Tapping a row opens detail; Back returns to the list.</div></div>
+        <div class="tutorial-step"><h2>Add search and category filters</h2><p>Keep filtering as a pure function so it can be tested later.</p><pre class="code-card">fun filterBusinesses(items: List&lt;Business&gt;, query: String, category: String?): List&lt;Business&gt; {
+    val clean = query.trim().lowercase()
+    return items.filter {
+        val queryMatch = clean.isBlank() ||
+            it.name.lowercase().contains(clean) ||
+            it.city.lowercase().contains(clean)
+        val categoryMatch = category == null || it.category == category
+        queryMatch && categoryMatch
+    }
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> searching “mys” shows Mysuru rows; selecting Clinic hides non-clinic rows.</div></div>
+        <div class="tutorial-step"><h2>Add favourites</h2><p>Use a set of ids. Persist it later with Room; first make the flow correct.</p><pre class="code-card">var favourites by remember { mutableStateOf(setOf&lt;Int&gt;()) }
+
+fun toggleFavourite(id: Int) {
+    favourites = if (id in favourites) favourites - id else favourites + id
+}</pre><div class="expected-result">Rows can be saved and the favourites screen shows only saved businesses.</div></div>
+        <div class="tutorial-step"><h2>Add device actions</h2><p>Use external intents for actions Android already supports.</p><pre class="code-card">fun openDialer(context: Context, phone: String) {
+    context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone")))
+}
+
+fun openMap(context: Context, address: String) {
+    val uri = Uri.parse("geo:0,0?q=${Uri.encode(address)}")
+    context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> detail screen has Call, Map, and Share buttons. Missing apps on emulator are documented as known limitations.</div></div>
+        <div class="tutorial-step"><h2>Add app states</h2><p>Do not show a blank area. A junior app needs visible success, empty, and error states.</p><pre class="code-card">sealed interface CatalogueState {
+    data object Loading : CatalogueState
+    data class Success(val businesses: List&lt;Business&gt;) : CatalogueState
+    data object Empty : CatalogueState
+    data class Error(val message: String) : CatalogueState
+}</pre><div class="actions"><a class="button primary" href="phase-2-08-quiz-lab.html">Take Phase 2 quiz</a></div></div>
+      </section>
+      <section class="lesson" id="errors"><h2>Common failures</h2><div class="error-grid"><div class="error-card"><b>Navigation symbols unresolved</b><span>Sync Gradle after adding navigation-compose and import navigation.compose APIs.</span></div><div class="error-card"><b>Back button exits app</b><span>Use navController.popBackStack() on detail back action.</span></div><div class="error-card"><b>Favourites reset</b><span>Expected for this step. Phase 3 introduces persistence and repository ownership.</span></div><div class="error-card"><b>Map does not open</b><span>The emulator may not have a map app. Test real device or handle ActivityNotFoundException later.</span></div></div></section>
+      <section class="lesson" id="quiz"><h2>Checkpoint quiz</h2><a class="button primary" href="phase-2-08-quiz-lab.html">Open quiz lab</a></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 2 Step-by-Step</span><div><a href="phase-2-junior.html">Phase 2</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.2 - Kotlin Basics for Android</title>
+  <meta name="description" content="Beginner Kotlin tutorial for Android: variables, functions, data classes, lists, null safety, and simple practice code.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-02-kotlin-basics.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-01-setup.html">Previous</a><a href="phase-1-03-app-anatomy.html">Next</a><a href="phase-1-foundations.html">Phase 1</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#concepts">Concepts</a><a href="#code">Code</a><a href="#practice">Practice</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 2</div><h1>Kotlin basics you need before Compose.</h1><p class="hero-copy">You do not need advanced Kotlin to start Android. You need enough to read examples, model screen data, and write small functions safely.</p></section>
+      <section class="lesson" id="concepts"><h2>Core concepts</h2><div class="concept-visual"><div class="concept-box"><b>val and var</b><span>Use val by default. Use var only when the value must change.</span></div><div class="concept-box"><b>Data class</b><span>A compact way to represent app data such as Habit, User, or Product.</span></div><div class="concept-box"><b>Null safety</b><span>Kotlin forces you to handle missing values instead of crashing later.</span></div></div></section>
+      <section class="lesson" id="code"><h2>Code walkthrough</h2><pre class="code-card">data class Habit(
+    val id: Int,
+    val title: String,
+    val isDone: Boolean = false
+)
+
+fun completedCount(habits: List&lt;Habit&gt;): Int {
+    return habits.count { habit -&gt; habit.isDone }
+}
+
+fun labelFor(count: Int): String {
+    return if (count == 1) "1 habit done" else "$count habits done"
+}</pre><p>Important beginner habit: read the type of every value. If you know the type, you can usually predict what operations are allowed.</p></section>
+      <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Create a data class named Course with title, durationWeeks, and isCompleted.</li><li>Create a list of three courses.</li><li>Write a function that returns only completed courses.</li><li>Write a function that prints a friendly summary.</li></ul><div class="actions"><a class="button primary" href="phase-1-03-app-anatomy.html">Next tutorial</a><a class="button" href="phase-1-01-setup.html">Previous</a></div><p class="source-note">Reference: Android Basics with Compose starts with introductory Kotlin concepts before app building.</p></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.2 - Kotlin basics</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

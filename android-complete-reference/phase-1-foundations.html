@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1 - Android Foundations</title>
+  <meta name="description" content="Phase 1 of the Android Complete Reference: beginner Android tutorials with Kotlin, Android Studio, Compose, state, debugging, quizzes, and a habit tracker project.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-foundations.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="index.html">Roadmap</a><a href="phase-1-step-by-step.html">Step-by-step</a><a href="phase-1-09-quiz-lab.html">Quiz lab</a><a href="phase-2-junior.html">Next phase</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#learn">Tutorials</a><a href="#project">Project</a><a href="#gate">Exit gate</a></aside>
+    <article>
+      <section class="lesson" id="outcome">
+        <div class="eyebrow">Phase 1 - 2 to 4 weeks</div>
+        <h1>Android foundations for true beginners.</h1>
+        <p class="hero-copy">Goal: build comfort with Android Studio, Kotlin, and Compose without drowning in architecture. By the end, you should be able to build a simple app with multiple UI states and explain what happens when a user taps a button.</p>
+        <div class="callout">Do not start with Dagger, Clean Architecture, advanced Gradle, or performance tuning. Those topics matter later, but they slow down beginners before they can build anything.</div>
+      </section>
+
+      <section class="lesson" id="learn">
+        <h2>Tutorial sequence</h2>
+        <p>Work through these in order. Each tutorial has a concrete outcome, an illustration, code, and a practice task.</p>
+        <div class="lesson-grid">
+          <a class="tutorial-card" href="phase-1-step-by-step.html"><b>00</b><div><h3>Step-by-step build track</h3><p>Build the habit tracker one screen and one concept at a time.</p></div></a>
+          <a class="tutorial-card" href="phase-1-complete-tutorial.html"><b>R</b><div><h3>Complete reference version</h3><p>Full code and explanation in one longer reference page.</p></div></a>
+          <a class="tutorial-card" href="phase-1-01-setup.html"><b>01</b><div><h3>Setup and mental model</h3><p>Install, run, inspect files, and understand how an Android app starts.</p></div></a>
+          <a class="tutorial-card" href="phase-1-02-kotlin-basics.html"><b>02</b><div><h3>Kotlin basics</h3><p>Variables, functions, lists, data classes, null safety, and conditions.</p></div></a>
+          <a class="tutorial-card" href="phase-1-03-app-anatomy.html"><b>03</b><div><h3>App anatomy</h3><p>MainActivity, setContent, Gradle, manifest, resources, and package structure.</p></div></a>
+          <a class="tutorial-card" href="phase-1-04-compose-ui.html"><b>04</b><div><h3>Compose UI basics</h3><p>Composable functions, Text, Button, Preview, and the UI tree.</p></div></a>
+          <a class="tutorial-card" href="phase-1-05-layout-material.html"><b>05</b><div><h3>Layout and Material</h3><p>Column, Row, Box, Modifier, spacing, cards, and simple responsive layout.</p></div></a>
+          <a class="tutorial-card" href="phase-1-06-state-events.html"><b>06</b><div><h3>State and events</h3><p>remember, mutableStateOf, text input, click handlers, and recomposition.</p></div></a>
+          <a class="tutorial-card" href="phase-1-07-debugging.html"><b>07</b><div><h3>Debugging basics</h3><p>Compiler errors, Logcat, breakpoints, crashes, and systematic fixes.</p></div></a>
+          <a class="tutorial-card" href="phase-1-08-habit-tracker.html"><b>08</b><div><h3>Final habit tracker</h3><p>Combine the concepts into one small, reviewable beginner project.</p></div></a>
+          <a class="tutorial-card" href="phase-1-09-quiz-lab.html"><b>09</b><div><h3>Interactive quiz lab</h3><p>Multi-select, drag-and-drop ordering, matching, and code-fix checks.</p></div></a>
+        </div>
+      </section>
+
+      <section class="lesson" id="project">
+        <h2>Final Phase 1 project</h2>
+        <p>Create a habit tracker with add, complete, delete, and empty-state screens. Keep persistence optional in this phase. The main proof is that you can model user interaction and screen state clearly.</p>
+        <div class="phone-mock"><div class="mock-bar"></div><div class="mock-title"></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div></div>
+        <pre class="code-card">Screen states:
+- No habits yet
+- Habit list with pending items
+- Habit list with completed items
+- Invalid input message
+- Confirmation after delete</pre>
+      </section>
+
+      <section class="lesson" id="gate">
+        <h2>Exit gate</h2>
+        <ul class="checklist"><li>You can create and run a Compose app without copying every step.</li><li>You can explain why UI updates after state changes.</li><li>You can build a form with validation and at least three user states.</li><li>You can fix basic compiler errors and runtime crashes using Logcat.</li><li>You can complete the quiz lab without guessing.</li><li>You have one small project in GitHub with a README and screenshots.</li></ul>
+        <div class="actions"><a class="button primary" href="phase-1-step-by-step.html">Start step-by-step tutorial</a><a class="button" href="phase-1-09-quiz-lab.html">Open quiz lab</a><a class="button" href="index.html">Back to roadmap</a></div>
+      </section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1 - Android Complete Reference</span><div><a href="index.html">Roadmap</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

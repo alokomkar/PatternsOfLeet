@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Phase 2.6 - Device Actions and Intents</title><meta name="description" content="Junior Android tutorial for call, map, share, WhatsApp-style actions, intents, and beginner permission decisions."><link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-06-device-actions.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-05-local-storage.html">Previous</a><a href="phase-2-07-business-catalogue.html">Next</a><a href="phase-2-junior.html">Phase 2</a></nav></div></header>
+  <main class="shell page-layout"><aside class="side-nav"><a href="#goal">Goal</a><a href="#actions">Actions</a><a href="#code">Code</a><a href="#practice">Practice</a></aside><article>
+    <section class="lesson" id="goal"><div class="eyebrow">Tutorial 6</div><h1>Use device actions safely.</h1><p class="hero-copy">A catalogue becomes useful when users can call, open maps, or share. Prefer external intents when another app already owns the job.</p></section>
+    <section class="lesson" id="actions"><h2>Action map</h2><div class="concept-visual"><div class="concept-box"><b>Call</b><span>Open dialer with a phone number. Avoid direct call permission unless required.</span></div><div class="concept-box"><b>Map</b><span>Open location in a maps app using a geo or search URI.</span></div><div class="concept-box"><b>Share</b><span>Use system share sheet for business name, phone, and address.</span></div></div></section>
+    <section class="lesson" id="code"><h2>Open dialer</h2><pre class="code-card">fun openDialer(context: Context, phone: String) {
+    val intent = Intent(
+        Intent.ACTION_DIAL,
+        Uri.parse("tel:$phone")
+    )
+    context.startActivity(intent)
+}</pre><p>ACTION_DIAL opens the dialer and lets the user decide. That is safer than making the call directly.</p></section>
+    <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Add Call, Map, and Share buttons to the detail screen.</li><li>Disable Call when phone is missing.</li><li>Test the action on emulator and real device if possible.</li><li>Document which actions need permissions and which do not.</li></ul><div class="actions"><a class="button primary" href="phase-2-07-business-catalogue.html">Next tutorial</a><a class="button" href="phase-2-05-local-storage.html">Previous</a></div></section>
+  </article></main>
+  <footer class="footer"><div class="shell"><span>Phase 2.6 - Device actions</span><div><a href="phase-2-junior.html">Phase 2</a></div></div></footer>
+</body></html>

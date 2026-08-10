@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.5 - Compose Layout and Material</title>
+  <meta name="description" content="Beginner Jetpack Compose tutorial for Column, Row, Box, Modifier, spacing, buttons, cards, and Material styling.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-05-layout-material.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-04-compose-ui.html">Previous</a><a href="phase-1-06-state-events.html">Next</a><a href="phase-1-foundations.html">Phase 1</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#visual">Visual</a><a href="#code">Code</a><a href="#practice">Practice</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 5</div><h1>Arrange UI with layout and modifiers.</h1><p class="hero-copy">Most beginner Compose screens use a small toolkit: Column for vertical stacking, Row for horizontal layout, Box for layering, and Modifier for size, padding, background, and clicks.</p></section>
+      <section class="lesson" id="visual"><h2>Rendered screen target</h2><div class="phone-mock"><div class="mock-bar"></div><div class="mock-title"></div><div class="mock-card"></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div></div></section>
+      <section class="lesson" id="code"><h2>Layout code</h2><pre class="code-card">@Composable
+fun HabitSummaryCard(done: Int, total: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Progress")
+            Text(text = "$done of $total habits complete")
+            Button(onClick = { }) {
+                Text("Add habit")
+            }
+        }
+    }
+}</pre><p>Beginner rule: add one Modifier at a time and preview. Modifier chains are easier to learn when you see each effect.</p></section>
+      <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Create a card with title, description, and button.</li><li>Add padding around the card and inside the card.</li><li>Use Row to place an icon placeholder next to text.</li><li>Use Preview to compare before and after spacing.</li></ul><div class="actions"><a class="button primary" href="phase-1-06-state-events.html">Next tutorial</a><a class="button" href="phase-1-04-compose-ui.html">Previous</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.5 - Layout and Material</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

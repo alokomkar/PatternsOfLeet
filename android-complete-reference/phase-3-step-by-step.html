@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 3 Step-by-Step - Production Android Engineering</title>
+  <meta name="description" content="Step-by-step production Android tutorial for ViewModel, UI state, repository, fake data source, offline-first thinking, and tests.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-3-step-by-step.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-3-production.html">Phase 3</a><a href="phase-4-step-by-step.html">Next phase</a><a href="index.html">Roadmap</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#steps">Steps</a><a href="#errors">Errors</a><a href="#gate">Gate</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Phase 3 step-by-step</div><h1>Convert the app into production-shaped architecture.</h1><p class="hero-copy">Outcome: the learner can split UI, ViewModel, repository, model, and tests without losing behavior. This is where “it works” becomes “it is maintainable.”</p><div class="diagram-visual"><div class="diagram-node">Screen</div><div class="diagram-node">ViewModel</div><div class="diagram-node hot">Repository</div><div class="diagram-node">Sources</div></div></section>
+      <section class="tutorial-flow" id="steps">
+        <div class="tutorial-step"><h2>Create the package structure</h2><p>Start from the Phase 2 catalogue or a new task app. Create packages before moving code.</p><div class="file-tree"><div>ui/TaskListScreen.kt</div><div>ui/TaskListViewModel.kt</div><div>data/TaskRepository.kt</div><div>data/FakeTaskRepository.kt</div><div>model/Task.kt</div><div>test/TaskListViewModelTest.kt</div></div><div class="expected-result">The app should still compile after creating empty files. Move code one file at a time.</div></div>
+        <div class="tutorial-step"><h2>Define the model</h2><p>The model is what the app trusts internally. Do not let DTOs leak into UI code.</p><pre class="code-card">data class Task(
+    val id: Int,
+    val title: String,
+    val isDone: Boolean,
+    val updatedAtMillis: Long
+)</pre><div class="checkpoint-box"><b>Checkpoint:</b> UI code imports model.Task, not data-layer DTO classes.</div></div>
+        <div class="tutorial-step"><h2>Define every UI state</h2><p>If users can experience it, represent it. Do not rely on null or empty strings to imply state.</p><pre class="code-card">sealed interface TaskListUiState {
+    data object Loading : TaskListUiState
+    data class Content(val tasks: List&lt;Task&gt;) : TaskListUiState
+    data object Empty : TaskListUiState
+    data class Error(val message: String) : TaskListUiState
+}</pre><div class="expected-result">The screen can switch on one state object and render predictable UI.</div></div>
+        <div class="tutorial-step"><h2>Create the repository contract</h2><p>The repository hides where data comes from. Start with a fake implementation before adding Room or network.</p><pre class="code-card">interface TaskRepository {
+    suspend fun loadTasks(): Result&lt;List&lt;Task&gt;&gt;
+    suspend fun toggleTask(id: Int): Result&lt;Task&gt;
+}</pre><div class="callout">This is the first production boundary. The UI does not know cache, API, database, or retry details.</div></div>
+        <div class="tutorial-step"><h2>Add a fake repository</h2><p>Fake data lets you build and test behavior without waiting for backend or database setup.</p><pre class="code-card">class FakeTaskRepository : TaskRepository {
+    private var tasks = listOf(Task(1, "Write release checklist", false, 0))
+
+    override suspend fun loadTasks(): Result&lt;List&lt;Task&gt;&gt; = Result.success(tasks)
+
+    override suspend fun toggleTask(id: Int): Result&lt;Task&gt; {
+        tasks = tasks.map { if (it.id == id) it.copy(isDone = !it.isDone) else it }
+        return Result.success(tasks.first { it.id == id })
+    }
+}</pre></div>
+        <div class="tutorial-step"><h2>Add ViewModel state flow</h2><p>The ViewModel converts repository results into UI state.</p><pre class="code-card">class TaskListViewModel(
+    private val repository: TaskRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow&lt;TaskListUiState&gt;(TaskListUiState.Loading)
+    val uiState = _uiState.asStateFlow()
+
+    fun load() = viewModelScope.launch {
+        _uiState.value = TaskListUiState.Loading
+        _uiState.value = repository.loadTasks().fold(
+            onSuccess = { if (it.isEmpty()) TaskListUiState.Empty else TaskListUiState.Content(it) },
+            onFailure = { TaskListUiState.Error(it.message ?: "Unable to load tasks") }
+        )
+    }
+}</pre><div class="checkpoint-box"><b>Checkpoint:</b> manually force fake success, empty, and failure results and verify the screen changes.</div></div>
+        <div class="tutorial-step"><h2>Write the first behavior test</h2><p>Test the user-visible state transition, not whether a private method ran.</p><pre class="code-card">@Test
+fun loadWithTasksShowsContent() = runTest {
+    val repository = FakeTaskRepository()
+    val viewModel = TaskListViewModel(repository)
+
+    viewModel.load()
+
+    assertTrue(viewModel.uiState.value is TaskListUiState.Content)
+}</pre><div class="expected-result">The test proves loading data changes the UI state to content.</div></div>
+        <div class="tutorial-step"><h2>Add real sources one at a time</h2><p>Add Room first if offline matters. Add network next. Never add both in the same learning step.</p><table class="table"><tbody><tr><th>Room step</th><td>Create entity, DAO, database, mapper, repository implementation.</td></tr><tr><th>Network step</th><td>Create DTO, API interface, mapper, failure handling, retry path.</td></tr><tr><th>Offline-first step</th><td>Read cache, refresh remote, update cache, expose stable model.</td></tr></tbody></table></div>
+      </section>
+      <section class="lesson" id="errors"><h2>Common failures</h2><div class="error-grid"><div class="error-card"><b>ViewModel imports Retrofit</b><span>Move transport details into repository/data source.</span></div><div class="error-card"><b>Tests are flaky</b><span>Use coroutine test dispatcher and avoid real network/database in unit tests.</span></div><div class="error-card"><b>UI shows old data</b><span>Verify repository emits or returns updated models after mutations.</span></div><div class="error-card"><b>Too many layers</b><span>Remove domain/use-case layer until there is real reusable business logic.</span></div></div></section>
+      <section class="lesson" id="gate"><h2>Completion gate</h2><ul class="checklist"><li>UI renders Loading, Content, Empty, and Error.</li><li>ViewModel depends on repository contract.</li><li>Repository owns data-source decisions.</li><li>At least three ViewModel tests pass.</li><li>You can explain where Room and API code will be added.</li></ul><a class="button primary" href="phase-4-step-by-step.html">Continue to Phase 4</a></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 3 Step-by-Step</span><div><a href="phase-3-production.html">Phase 3</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

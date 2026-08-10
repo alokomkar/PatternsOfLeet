@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.7 - Android Debugging Basics</title>
+  <meta name="description" content="Beginner Android debugging tutorial covering compiler errors, Logcat, breakpoints, crashes, and a systematic debugging checklist.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-07-debugging.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-06-state-events.html">Previous</a><a href="phase-1-08-habit-tracker.html">Next</a><a href="phase-1-foundations.html">Phase 1</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#errors">Errors</a><a href="#code">Code</a><a href="#practice">Practice</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 7</div><h1>Debug without guessing.</h1><p class="hero-copy">Beginners lose hours because they change random code. Debugging is a repeatable loop: reproduce, read the error, isolate the cause, fix one thing, verify.</p></section>
+      <section class="lesson" id="errors"><h2>Error types</h2><div class="debug-panel"><div><span>Compiler error:</span> app cannot build because code is invalid.</div><div><span>Runtime crash:</span> app builds but fails while running.</div><div><span>Logic bug:</span> app runs but behavior is wrong.</div><div><span>UI bug:</span> app works but layout, text, or interaction is wrong.</div></div></section>
+      <section class="lesson" id="code"><h2>Add useful logs</h2><pre class="code-card">private const val TAG = "HabitTracker"
+
+fun addHabit(title: String) {
+    Log.d(TAG, "Adding habit: $title")
+
+    if (title.isBlank()) {
+        Log.w(TAG, "Ignored blank habit")
+        return
+    }
+
+    // Add habit to state here
+}</pre><p>Logs should explain what the app is doing. Avoid dumping private user data into logs.</p></section>
+      <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Intentionally remove a closing parenthesis and read the compiler error.</li><li>Add a log when the Add button is clicked.</li><li>Use a breakpoint inside a click handler.</li><li>Create a debugging note: symptom, cause, fix, verification.</li></ul><div class="actions"><a class="button primary" href="phase-1-08-habit-tracker.html">Next tutorial</a><a class="button" href="phase-1-06-state-events.html">Previous</a></div><p class="source-note">Reference: Android Studio debugging documentation covers breakpoints, the debugger, and inspecting app behavior during execution.</p></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.7 - Debugging</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

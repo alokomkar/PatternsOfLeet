@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Phase 2.5 - DataStore and Room Basics</title><meta name="description" content="Junior Android tutorial for choosing DataStore or Room, saving preferences, and storing favourite catalogue items."><link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-05-local-storage.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-04-network-json.html">Previous</a><a href="phase-2-06-device-actions.html">Next</a><a href="phase-2-junior.html">Phase 2</a></nav></div></header>
+  <main class="shell page-layout"><aside class="side-nav"><a href="#goal">Goal</a><a href="#choice">Choice</a><a href="#code">Code</a><a href="#practice">Practice</a></aside><article>
+    <section class="lesson" id="goal"><div class="eyebrow">Tutorial 5</div><h1>Save useful data locally.</h1><p class="hero-copy">Use DataStore for small preferences and Room for structured app data. Do not force everything into one storage mechanism.</p></section>
+    <section class="lesson" id="choice"><h2>Storage choice</h2><table class="table"><tbody><tr><th>DataStore</th><td>Theme, language, onboarding seen, selected city, sort preference.</td></tr><tr><th>Room</th><td>Favourite businesses, cached catalogue rows, notes, records with ids.</td></tr><tr><th>Network only</th><td>Fresh data that can be re-fetched and does not need offline use.</td></tr></tbody></table></section>
+    <section class="lesson" id="code"><h2>Room-style favourite entity</h2><pre class="code-card">@Entity(tableName = "favourites")
+data class FavouriteBusinessEntity(
+    @PrimaryKey val businessId: Int,
+    val savedAtMillis: Long
+)
+
+@Dao
+interface FavouriteBusinessDao {
+    @Query("SELECT * FROM favourites")
+    suspend fun getAll(): List&lt;FavouriteBusinessEntity&gt;
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun save(entity: FavouriteBusinessEntity)
+
+    @Query("DELETE FROM favourites WHERE businessId = :id")
+    suspend fun remove(id: Int)
+}</pre></section>
+    <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Save selected city or language using DataStore.</li><li>Save favourite business ids using Room or a simple local abstraction first.</li><li>Show favourites after app restart.</li><li>Write down why each value belongs in its chosen storage.</li></ul><div class="actions"><a class="button primary" href="phase-2-06-device-actions.html">Next tutorial</a><a class="button" href="phase-2-04-network-json.html">Previous</a></div></section>
+  </article></main>
+  <footer class="footer"><div class="shell"><span>Phase 2.5 - Local storage</span><div><a href="phase-2-junior.html">Phase 2</a></div></div></footer>
+</body></html>

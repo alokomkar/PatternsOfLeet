@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 2 Complete Tutorial - Build a Business Catalogue App</title>
+  <meta name="description" content="Complete junior Android tutorial with navigation, lists, search, filters, detail screens, favourites, device actions, full code, common errors, and quiz checkpoints.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-complete-tutorial.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-junior.html">Phase 2</a><a href="phase-2-08-quiz-lab.html">Quiz lab</a><a href="phase-3-production.html">Phase 3</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#dependencies">Dependencies</a><a href="#files">Files</a><a href="#code">Full code</a><a href="#storage">Storage note</a><a href="#errors">Errors</a><a href="#checkpoint">Checkpoint</a></aside>
+    <article>
+      <section class="lesson" id="outcome">
+        <div class="eyebrow">Phase 2 complete track</div>
+        <h1>Build a junior-level business catalogue app.</h1>
+        <p class="hero-copy">This page gives a complete first version of the Phase 2 app. It includes navigation, list/detail screens, search, filters, favourites, and device actions without forcing beginners to debug Room or Retrofit before they understand the app flow.</p>
+        <div class="callout">Important design choice: this tutorial uses in-memory sample data and a simple favourites list first. Room, DataStore, and real networking are explained as next upgrades. That keeps the tutorial runnable for beginners while still teaching the correct app shape.</div>
+      </section>
+
+      <section class="lesson" id="dependencies">
+        <span class="step-label">Step 1</span>
+        <h2>Add the one required dependency</h2>
+        <p>Open <b>app/build.gradle.kts</b>. Add Navigation Compose if your project does not already have it. Use the latest stable version shown by Android Studio if it suggests a newer one.</p>
+        <pre class="code-card">dependencies {
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+}</pre>
+        <p>Sync Gradle after adding the dependency. If sync fails, fix that before editing Kotlin files.</p>
+      </section>
+
+      <section class="lesson" id="files">
+        <span class="step-label">Step 2</span>
+        <h2>Use this beginner file structure</h2>
+        <p>Keep the first version in one Kotlin file. After it works, split it into files as a refactor exercise.</p>
+        <div class="file-tree">
+          <div>app/</div>
+          <div>  src/main/java/com/example/catalogue/</div>
+          <div>    MainActivity.kt   &lt;- paste the full code here</div>
+          <div>  build.gradle.kts    &lt;- add navigation dependency</div>
+        </div>
+        <div class="diagram-visual"><div class="diagram-node hot">List</div><div class="diagram-node">Detail</div><div class="diagram-node">Favourites</div><div class="diagram-node">Settings</div></div>
+      </section>
+
+      <section class="lesson" id="code">
+        <span class="step-label">Step 3</span>
+        <h2>Paste this complete MainActivity.kt</h2>
+        <p>Replace the package line with your package name. This is intentionally compact, but it is complete enough to run.</p>
+        <pre class="code-card">package com.example.catalogue
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    CatalogueApp()
+                }
+            }
+        }
+    }
+}
+
+data class Business(
+    val id: Int,
+    val name: String,
+    val category: String,
+    val city: String,
+    val phone: String,
+    val address: String,
+    val description: String
+)
+
+val sampleBusinesses = listOf(
+    Business(1, "Asha Clinic", "Clinic", "Shivamogga", "9876543210", "MG Road, Shivamogga", "General consultation and family care."),
+    Business(2, "Future Steps School", "School", "Davanagere", "9876500001", "PB Road, Davanagere", "Primary school with activity-based learning."),
+    Business(3, "RankPlus Coaching", "Coaching", "Mysuru", "9876500002", "VV Mohalla, Mysuru", "PUC, CET, and NEET coaching batches."),
+    Business(4, "Prakash & Co Tax Services", "Services", "Hubballi", "9876500003", "Vidyanagar, Hubballi", "GST, accounting, and small business tax filing."),
+    Business(5, "Care Dental Studio", "Clinic", "Mangaluru", "9876500004", "Kadri, Mangaluru", "Dental consultation, cleaning, and cosmetic dentistry.")
+)
+
+@Composable
+fun CatalogueApp() {
+    val navController = rememberNavController()
+    var favourites by remember { mutableStateOf(setOf&lt;Int&gt;()) }
+
+    NavHost(navController = navController, startDestination = "list") {
+        composable("list") {
+            BusinessListScreen(
+                businesses = sampleBusinesses,
+                favourites = favourites,
+                onOpen = { id -&gt; navController.navigate("detail/$id") },
+                onOpenFavourites = { navController.navigate("favourites") },
+                onOpenSettings = { navController.navigate("settings") },
+                onToggleFavourite = { id -&gt;
+                    favourites = if (id in favourites) favourites - id else favourites + id
+                }
+            )
+        }
+
+        composable(
+            route = "detail/{businessId}",
+            arguments = listOf(navArgument("businessId") { type = NavType.IntType })
+        ) { entry -&gt;
+            val id = entry.arguments?.getInt("businessId")
+            val business = sampleBusinesses.firstOrNull { it.id == id }
+            if (business == null) {
+                ErrorScreen(message = "Business not found.")
+            } else {
+                BusinessDetailScreen(
+                    business = business,
+                    isFavourite = business.id in favourites,
+                    onBack = { navController.popBackStack() },
+                    onToggleFavourite = {
+                        favourites = if (business.id in favourites) {
+                            favourites - business.id
+                        } else {
+                            favourites + business.id
+                        }
+                    }
+                )
+            }
+        }
+
+        composable("favourites") {
+            val favouriteBusinesses = sampleBusinesses.filter { it.id in favourites }
+            SimpleListScreen(
+                title = "Favourites",
+                businesses = favouriteBusinesses,
+                emptyMessage = "No favourites yet.",
+                onOpen = { id -&gt; navController.navigate("detail/$id") },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("settings") {
+            SettingsScreen(onBack = { navController.popBackStack() })
+        }
+    }
+}
+
+@Composable
+fun BusinessListScreen(
+    businesses: List&lt;Business&gt;,
+    favourites: Set&lt;Int&gt;,
+    onOpen: (Int) -&gt; Unit,
+    onOpenFavourites: () -&gt; Unit,
+    onOpenSettings: () -&gt; Unit,
+    onToggleFavourite: (Int) -&gt; Unit
+) {
+    var query by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf&lt;String?&gt;(null) }
+    val categories = listOf("Clinic", "School", "Coaching", "Services")
+    val visibleBusinesses = filterBusinesses(businesses, query, category)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text("Karnataka Business Catalogue", style = MaterialTheme.typography.headlineMedium)
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onOpenFavourites) { Text("Favourites") }
+            Button(onClick = onOpenSettings) { Text("Settings") }
+        }
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = query,
+            onValueChange = { query = it },
+            label = { Text("Search by name or city") },
+            singleLine = true
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            categories.forEach { item -&gt;
+                FilterChip(
+                    selected = category == item,
+                    onClick = { category = if (category == item) null else item },
+                    label = { Text(item) }
+                )
+            }
+        }
+
+        if (visibleBusinesses.isEmpty()) {
+            Text("No businesses match this search. Try clearing filters.")
+        } else {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(visibleBusinesses, key = { it.id }) { business -&gt;
+                    BusinessRow(
+                        business = business,
+                        isFavourite = business.id in favourites,
+                        onOpen = { onOpen(business.id) },
+                        onToggleFavourite = { onToggleFavourite(business.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun filterBusinesses(
+    businesses: List&lt;Business&gt;,
+    query: String,
+    category: String?
+): List&lt;Business&gt; {
+    val cleanQuery = query.trim().lowercase()
+    return businesses.filter { business -&gt;
+        val matchesQuery = cleanQuery.isBlank() ||
+            business.name.lowercase().contains(cleanQuery) ||
+            business.city.lowercase().contains(cleanQuery)
+        val matchesCategory = category == null || business.category == category
+        matchesQuery && matchesCategory
+    }
+}
+
+@Composable
+fun BusinessRow(
+    business: Business,
+    isFavourite: Boolean,
+    onOpen: () -&gt; Unit,
+    onToggleFavourite: () -&gt; Unit
+) {
+    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onOpen)) {
+        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(business.name, fontWeight = FontWeight.Bold)
+            Text("${business.category} • ${business.city}")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onOpen) { Text("Open") }
+                Button(onClick = onToggleFavourite) {
+                    Text(if (isFavourite) "Saved" else "Save")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BusinessDetailScreen(
+    business: Business,
+    isFavourite: Boolean,
+    onBack: () -&gt; Unit,
+    onToggleFavourite: () -&gt; Unit
+) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Button(onClick = onBack) { Text("Back") }
+        Text(business.name, style = MaterialTheme.typography.headlineMedium)
+        Text("${business.category} in ${business.city}")
+        Text(business.description)
+        Text(business.address)
+        Text("Phone: ${business.phone}")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onToggleFavourite) { Text(if (isFavourite) "Remove saved" else "Save") }
+            Button(onClick = { openDialer(context, business.phone) }) { Text("Call") }
+            Button(onClick = { openMap(context, business.address) }) { Text("Map") }
+            Button(onClick = { shareBusiness(context, business) }) { Text("Share") }
+        }
+    }
+}
+
+@Composable
+fun SimpleListScreen(
+    title: String,
+    businesses: List&lt;Business&gt;,
+    emptyMessage: String,
+    onOpen: (Int) -&gt; Unit,
+    onBack: () -&gt; Unit
+) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Button(onClick = onBack) { Text("Back") }
+        Text(title, style = MaterialTheme.typography.headlineMedium)
+        if (businesses.isEmpty()) {
+            Text(emptyMessage)
+        } else {
+            businesses.forEach { business -&gt;
+                BusinessRow(business, isFavourite = true, onOpen = { onOpen(business.id) }, onToggleFavourite = {})
+            }
+        }
+    }
+}
+
+@Composable
+fun SettingsScreen(onBack: () -&gt; Unit) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Button(onClick = onBack) { Text("Back") }
+        Text("Settings", style = MaterialTheme.typography.headlineMedium)
+        Text("Phase 2 keeps settings simple. In the next upgrade, save selected city and language in DataStore.")
+    }
+}
+
+@Composable
+fun ErrorScreen(message: String) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text("Something went wrong", style = MaterialTheme.typography.headlineMedium)
+        Text(message)
+    }
+}
+
+fun openDialer(context: Context, phone: String) {
+    context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone")))
+}
+
+fun openMap(context: Context, address: String) {
+    val uri = Uri.parse("geo:0,0?q=${Uri.encode(address)}")
+    context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+}
+
+fun shareBusiness(context: Context, business: Business) {
+    val text = "${business.name}\n${business.category} in ${business.city}\n${business.phone}\n${business.address}"
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(Intent.createChooser(intent, "Share business"))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CataloguePreview() {
+    MaterialTheme {
+        CatalogueApp()
+    }
+}</pre>
+      </section>
+
+      <section class="lesson" id="storage">
+        <span class="step-label">Step 4</span>
+        <h2>What this tutorial intentionally postpones</h2>
+        <p>The app above uses in-memory favourites. That means favourites reset when the app process restarts. This is acceptable for learning navigation and UI flow. The next upgrade is storage.</p>
+        <table class="table">
+          <tbody>
+            <tr><th>Persist selected language/city</th><td>Use DataStore because it is a small preference.</td></tr>
+            <tr><th>Persist favourites</th><td>Use Room because favourite business ids are structured records.</td></tr>
+            <tr><th>Load real catalogue</th><td>Use Retrofit or Ktor, map DTOs to UI models, and show loading/error states.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout">This sequencing matters. Beginners should first prove the app flow works. Then add persistence and network one at a time.</div>
+      </section>
+
+      <section class="lesson" id="errors">
+        <span class="step-label">Step 5</span>
+        <h2>Common errors and fixes</h2>
+        <div class="error-grid">
+          <div class="error-card"><b>Unresolved reference: NavHost</b><span>Add navigation-compose to Gradle, sync, then import androidx.navigation.compose.NavHost.</span></div>
+          <div class="error-card"><b>FilterChip unresolved</b><span>Your Material3 dependency may be old. Update Compose Material3 through Android Studio's recommended version.</span></div>
+          <div class="error-card"><b>App crashes opening map</b><span>Some emulators have no maps app. Test on a real device or handle ActivityNotFoundException later.</span></div>
+          <div class="error-card"><b>Favourites disappear after restart</b><span>Expected in this version. Persistence is the next upgrade using Room.</span></div>
+        </div>
+      </section>
+
+      <section class="lesson" id="checkpoint">
+        <span class="step-label">Step 6</span>
+        <h2>Checkpoint before Phase 3</h2>
+        <ul class="checklist">
+          <li>The list, detail, favourites, and settings routes work.</li>
+          <li>Search and category filters work together.</li>
+          <li>Empty state appears for impossible searches.</li>
+          <li>Call, map, and share buttons open external apps or fail in a way you can explain.</li>
+          <li>You can explain why this version uses in-memory state and what Room/DataStore would improve.</li>
+          <li>You can complete the Phase 2 quiz lab without guessing.</li>
+        </ul>
+        <div class="actions"><a class="button primary" href="phase-2-08-quiz-lab.html">Open Phase 2 quiz</a><a class="button" href="phase-3-production.html">Continue to Phase 3</a></div>
+      </section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 2 Complete Tutorial</span><div><a href="phase-2-junior.html">Phase 2</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

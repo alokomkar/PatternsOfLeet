@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 4 Complete Tutorial - Senior Android Engineering</title>
+  <meta name="description" content="Complete senior Android tutorial covering system design, modularization, performance, accessibility, security, code review, and rollout quality.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-4-complete-tutorial.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-4-senior.html">Phase 4</a><a href="phase-5-complete-tutorial.html">Phase 5</a><a href="../android-guide.html">Advanced guide</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#design">Design doc</a><a href="#modules">Modules</a><a href="#performance">Performance</a><a href="#accessibility">Accessibility</a><a href="#security">Security</a><a href="#review">Review</a></aside>
+    <article>
+      <section class="lesson" id="outcome"><div class="eyebrow">Phase 4 complete track</div><h1>Operate like a senior Android engineer.</h1><p class="hero-copy">Senior work is not just harder code. It is owning feature design, failure modes, review quality, performance, accessibility, security, and rollout evidence.</p><div class="diagram-visual"><div class="diagram-node hot">Feature design</div><div class="diagram-node">Module boundary</div><div class="diagram-node">Quality gates</div><div class="diagram-node">Rollout evidence</div></div></section>
+      <section class="lesson" id="design"><span class="step-label">Step 1</span><h2>Write a feature design before coding</h2><pre class="code-card">Feature: Saved provider reminders
+
+User problem:
+- Users save clinics and schools but forget to contact them.
+
+Proposed behavior:
+- Let user set a reminder from the business detail screen.
+- Show upcoming reminders on the home screen.
+
+Non-goals:
+- No calendar sync in v1.
+- No server notification service in v1.
+
+Risks:
+- Alarm behavior differs by OEM.
+- Notification permission may reduce completion.
+
+Verification:
+- Unit tests for reminder time validation.
+- Manual test on Android 13+ notification permission.
+- Rollout behind a remote flag.</pre></section>
+      <section class="lesson" id="modules"><span class="step-label">Step 2</span><h2>Split modules by ownership, not fashion</h2><div class="file-tree"><div>:app</div><div>:core:model</div><div>:core:network</div><div>:core:database</div><div>:feature:catalogue</div><div>:feature:favourites</div><div>:feature:reminders</div></div><pre class="code-card">// Rule: feature modules can depend on core modules.
+// Rule: core modules must not depend on feature modules.
+// Rule: shared UI belongs in core only after two real features need it.</pre><p>A module boundary is useful only if it reduces build coupling, ownership confusion, or change risk.</p></section>
+      <section class="lesson" id="performance"><span class="step-label">Step 3</span><h2>Measure performance before optimizing</h2><table class="table"><tbody><tr><th>Startup</th><td>Track cold start and avoid heavy work before first draw.</td></tr><tr><th>Lists</th><td>Use stable keys and avoid expensive work inside item composition.</td></tr><tr><th>Network</th><td>Cache intentionally and avoid duplicate requests on rotation/recomposition.</td></tr><tr><th>Build</th><td>Watch module graph, annotation processors, and unnecessary dependencies.</td></tr></tbody></table><pre class="code-card">Senior review question:
+"What evidence shows this change improved performance?"</pre></section>
+      <section class="lesson" id="accessibility"><span class="step-label">Step 4</span><h2>Accessibility checklist for every feature</h2><ul class="checklist"><li>All interactive elements have clear labels.</li><li>Touch targets are large enough for repeated use.</li><li>Dynamic font sizes do not break layout.</li><li>Color is not the only way to communicate state.</li><li>Screen reader order follows the visible workflow.</li><li>Error messages explain what the user can do next.</li></ul></section>
+      <section class="lesson" id="security"><span class="step-label">Step 5</span><h2>Security and privacy threat pass</h2><div class="strategy-map"><div><b>Data collected</b><span>What is stored locally, sent to network, logged, or shared?</span></div><div><b>Failure case</b><span>What happens if token, cache, or intent data leaks?</span></div><div><b>Permission</b><span>Can the feature work without a dangerous permission?</span></div><div><b>Logging</b><span>Are names, phone numbers, tokens, or addresses printed to logs?</span></div></div></section>
+      <section class="lesson" id="review"><span class="step-label">Step 6</span><h2>Senior code review rubric</h2><ul class="checklist"><li>Does the code match the agreed feature design?</li><li>Are states explicit and recoverable?</li><li>Are module dependencies pointing in the right direction?</li><li>Are tests protecting business behavior?</li><li>Is rollout reversible if metrics regress?</li><li>Is the README or release note clear enough for the next engineer?</li></ul><div class="actions"><a class="button primary" href="phase-5-complete-tutorial.html">Continue to Phase 5</a><a class="button" href="phase-4-senior.html">Phase overview</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 4 Complete Tutorial</span><div><a href="phase-4-senior.html">Phase 4</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

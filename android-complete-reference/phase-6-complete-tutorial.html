@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 6 Complete Tutorial - Principal Android Engineering</title>
+  <meta name="description" content="Complete principal Android tutorial covering mobile strategy, engineering economics, governance, executive communication, risk, and long-term technical direction.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-6-complete-tutorial.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-6-principal.html">Phase 6</a><a href="index.html">Roadmap</a><a href="../android-guide.html">Advanced guide</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#strategy">Strategy</a><a href="#economics">Economics</a><a href="#governance">Governance</a><a href="#memo">Memo</a><a href="#risks">Risks</a><a href="#gate">Gate</a></aside>
+    <article>
+      <section class="lesson" id="outcome"><div class="eyebrow">Phase 6 complete track</div><h1>Set Android technical direction with business judgment.</h1><p class="hero-copy">Principal engineering is not “more senior staff.” It is choosing the technical direction that best manages product risk, delivery economics, platform quality, and organizational constraints.</p><div class="strategy-map"><div><b>Direction</b><span>What technical path should the org take?</span></div><div><b>Cost</b><span>What must be funded, paused, or rejected?</span></div><div><b>Risk</b><span>What can damage users, revenue, reliability, or hiring?</span></div><div><b>Governance</b><span>How will decisions stay coherent across teams?</span></div></div></section>
+      <section class="lesson" id="strategy"><span class="step-label">Step 1</span><h2>Create a three-year mobile strategy</h2><pre class="code-card">Mobile platform strategy
+
+Current state:
+- Android app is native Kotlin with mixed XML and Compose.
+- Build time and release confidence are slowing product delivery.
+- Teams duplicate networking, analytics, and design-system code.
+
+Target state:
+- Compose-first native Android.
+- Shared platform modules for design, network, auth, analytics, release flags.
+- Offline-first for user-critical workflows.
+
+Non-goals:
+- No full rewrite.
+- No cross-platform migration without a separate economic case.
+- No platform mandate without migration support.</pre></section>
+      <section class="lesson" id="economics"><span class="step-label">Step 2</span><h2>Evaluate decisions economically</h2><table class="table"><tbody><tr><th>Build</th><td>Use when the capability is product-differentiating or deeply integrated.</td></tr><tr><th>Buy</th><td>Use when the problem is commodity and vendor risk is acceptable.</td></tr><tr><th>Defer</th><td>Use when cost is real but the risk is not urgent.</td></tr><tr><th>Reject</th><td>Use when the technical appeal is high but product value is weak.</td></tr></tbody></table><pre class="code-card">Decision rule:
+Do not approve a migration unless it has at least one measurable payoff:
+- lower crash/ANR risk
+- faster delivery
+- lower maintenance cost
+- better compliance/security posture
+- improved hiring/onboarding leverage</pre></section>
+      <section class="lesson" id="governance"><span class="step-label">Step 3</span><h2>Define architecture governance</h2><ul class="checklist"><li>Architecture review is required for new platform primitives.</li><li>Teams can make local feature decisions inside approved boundaries.</li><li>Every shared library has an owner, support policy, and deprecation path.</li><li>Exceptions are documented with expiration dates.</li><li>Release quality gates are visible before code freeze.</li><li>Security and privacy reviews happen before sensitive data is collected.</li></ul></section>
+      <section class="lesson" id="memo"><span class="step-label">Step 4</span><h2>Write an executive-readable decision memo</h2><pre class="code-card">Subject: Fund Android platform reliability work for H1
+
+Recommendation:
+- Fund a two-engineer platform lane for six months.
+
+Why now:
+- Release confidence is dropping and duplicated mobile infrastructure is slowing feature teams.
+
+Expected payoff:
+- Reduce repeated implementation work.
+- Improve crash and ANR response.
+- Shorten onboarding for new Android engineers.
+
+Trade-off:
+- Two engineers will deliver fewer product features in the short term.
+
+Risk if declined:
+- Teams continue local solutions, making future migration more expensive.</pre></section>
+      <section class="lesson" id="risks"><span class="step-label">Step 5</span><h2>Maintain a principal-level risk register</h2><table class="table"><thead><tr><th>Risk</th><th>Signal</th><th>Response</th></tr></thead><tbody><tr><td>Platform dependency decay</td><td>Old libraries block SDK upgrades</td><td>Quarterly dependency health review</td></tr><tr><td>Release fragility</td><td>Hotfix rate increases</td><td>Staged rollout and rollback drills</td></tr><tr><td>Accessibility debt</td><td>Support complaints and failed audits</td><td>Accessibility gate for core flows</td></tr><tr><td>Architecture drift</td><td>Teams duplicate platform code</td><td>Owner review and documented exceptions</td></tr></tbody></table></section>
+      <section class="lesson" id="gate"><span class="step-label">Step 6</span><h2>Principal-level completion gate</h2><ul class="checklist"><li>You can explain technical strategy to engineering and non-engineering leaders.</li><li>You can quantify why a migration is worth funding or not worth funding.</li><li>You can define governance without blocking every local decision.</li><li>You can identify risks before they become incidents.</li><li>You can create successors and owners so the platform does not depend on you.</li></ul><div class="actions"><a class="button primary" href="index.html">Back to roadmap</a><a class="button" href="phase-6-principal.html">Phase overview</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 6 Complete Tutorial</span><div><a href="phase-6-principal.html">Phase 6</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

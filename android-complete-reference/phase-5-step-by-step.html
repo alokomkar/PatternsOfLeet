@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 5 Step-by-Step - Staff Android Migration</title>
+  <meta name="description" content="Step-by-step staff Android tutorial to plan and execute a migration with ADRs, rollout, metrics, adoption, and post-migration review.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-5-step-by-step.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-5-staff.html">Phase 5</a><a href="phase-6-step-by-step.html">Next phase</a><a href="index.html">Roadmap</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#steps">Steps</a><a href="#risks">Risks</a><a href="#gate">Gate</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Phase 5 step-by-step</div><h1>Run a staff-level Android migration.</h1><p class="hero-copy">Outcome: a migration package for XML to Compose, monolith to modules, RxJava to coroutines, or a networking platform replacement.</p><div class="metric-board"><div class="metric-tile"><b>1</b><span>pilot feature</span></div><div class="metric-tile"><b>3</b><span>adopter teams</span></div><div class="metric-tile"><b>0</b><span>blocked releases</span></div></div></section>
+      <section class="tutorial-flow" id="steps">
+        <div class="tutorial-step"><h2>Pick one migration and define why</h2><p>Choose a migration with measurable payoff. Example: XML to Compose for high-change screens.</p><div class="checkpoint-box"><b>Checkpoint:</b> if you cannot name the payoff, do not start the migration.</div></div>
+        <div class="tutorial-step"><h2>Audit current state</h2><pre class="code-card">Current-state audit:
+- 84 XML screens
+- 12 screens changed every month
+- 5 duplicated custom widgets
+- No shared accessibility checklist
+- Average PR review time: 2.8 days
+- Known risk: mixed theme behavior across old screens</pre><div class="expected-result">You have numbers, not opinions, for why the migration matters.</div></div>
+        <div class="tutorial-step"><h2>Define target state</h2><pre class="code-card">Target state:
+- New screens are Compose-first.
+- Shared components live in :core:design.
+- Legacy XML remains supported for stable low-change screens.
+- Migration happens by product area.
+- Feature flags protect high-risk screen swaps.</pre></div>
+        <div class="tutorial-step"><h2>Write the ADR</h2><pre class="code-card">ADR: Compose-first new feature screens
+Decision: New feature screens use Compose. Existing XML migrates by risk and change frequency.
+Rejected option: Big-bang rewrite.
+Reason rejected: high regression risk and no product delivery during rewrite.
+Consequences: mixed stack for 6-12 months; training required; design system must support Compose.</pre></div>
+        <div class="tutorial-step"><h2>Plan the pilot</h2><p>Pick one low-risk but real screen. Avoid both throwaway examples and mission-critical checkout flows.</p><table class="table"><tbody><tr><th>Pilot candidate</th><td>Saved businesses screen</td></tr><tr><th>Why</th><td>Real usage, moderate UI complexity, reversible route.</td></tr><tr><th>Rollback</th><td>Route flag returns users to XML screen.</td></tr></tbody></table></div>
+        <div class="tutorial-step"><h2>Create adoption material</h2><ul class="content-list"><li>Before/after example PR.</li><li>Component usage guide.</li><li>Migration checklist.</li><li>Known gotchas.</li><li>Office-hours schedule.</li><li>Exception process.</li></ul></div>
+        <div class="tutorial-step"><h2>Define metrics and thresholds</h2><table class="table"><thead><tr><th>Metric</th><th>Threshold</th><th>Owner</th></tr></thead><tbody><tr><td>Crash-free sessions</td><td>No regression vs baseline</td><td>Feature team</td></tr><tr><td>PR review time</td><td>Improve by 20%</td><td>Staff owner</td></tr><tr><td>Adoption</td><td>3 teams by quarter end</td><td>Platform lead</td></tr><tr><td>Accessibility</td><td>No critical findings</td><td>Feature owner</td></tr></tbody></table></div>
+        <div class="tutorial-step"><h2>Run post-migration review</h2><pre class="code-card">Post-migration review:
+- What improved?
+- What regressed?
+- Which docs were missing?
+- Which API caused misuse?
+- Should the migration continue, pause, or change sequence?
+- What decision should be recorded for the next team?</pre></div>
+      </section>
+      <section class="lesson" id="risks"><h2>Staff-level risks</h2><div class="error-grid"><div class="error-card"><b>Mandate without enablement</b><span>Teams resist migrations when examples, docs, and support are missing.</span></div><div class="error-card"><b>Big-bang rewrite</b><span>Usually maximizes regression risk and pauses product delivery.</span></div><div class="error-card"><b>No exception policy</b><span>Without exceptions, teams either block or bypass the platform.</span></div><div class="error-card"><b>Metrics without owners</b><span>Dashboards are useless without thresholds and response owners.</span></div></div></section>
+      <section class="lesson" id="gate"><h2>Completion gate</h2><ul class="checklist"><li>Current-state audit is evidence-based.</li><li>ADR explains rejected alternatives.</li><li>Pilot can roll back safely.</li><li>Adoption plan supports other teams.</li><li>Post-migration review decides continue, pause, or adjust.</li></ul><a class="button primary" href="phase-6-step-by-step.html">Continue to Phase 6</a></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 5 Step-by-Step</span><div><a href="phase-5-staff.html">Phase 5</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

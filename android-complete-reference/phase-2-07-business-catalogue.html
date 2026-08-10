@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Phase 2.7 - Build a Business Catalogue App</title><meta name="description" content="Final Phase 2 Android project tutorial: build a local business catalogue app with navigation, lists, search, filters, storage, and device actions."><link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-2-07-business-catalogue.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-2-06-device-actions.html">Previous</a><a href="phase-2-08-quiz-lab.html">Quiz lab</a><a href="phase-2-junior.html">Phase 2</a></nav></div></header>
+  <main class="shell page-layout"><aside class="side-nav"><a href="#goal">Goal</a><a href="#screens">Screens</a><a href="#code">Code</a><a href="#review">Review</a></aside><article>
+    <section class="lesson" id="goal"><div class="eyebrow">Tutorial 7</div><h1>Build the Phase 2 catalogue app.</h1><p class="hero-copy">The final project proves you can build a small, complete app instead of isolated screens. Keep scope tight and polish the states.</p></section>
+    <section class="lesson" id="screens"><h2>Required screens</h2><div class="diagram-visual"><div class="diagram-node hot">Home list</div><div class="diagram-node">Detail</div><div class="diagram-node">Favourites</div><div class="diagram-node">Settings</div></div><div class="phone-mock wide"><div class="mock-title"></div><div class="mock-tabs"><span></span><span></span><span></span></div><div class="mock-card"></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div><div class="mock-row"><span class="mock-dot"></span><span class="mock-line"></span><span class="mock-pill"></span></div></div></section>
+    <section class="lesson" id="code"><h2>Simple UI state</h2><pre class="code-card">sealed interface CatalogueUiState {
+    data object Loading : CatalogueUiState
+    data class Success(
+        val businesses: List&lt;Business&gt;,
+        val query: String,
+        val category: String?
+    ) : CatalogueUiState
+    data object Empty : CatalogueUiState
+    data class Error(val message: String) : CatalogueUiState
+}</pre><p>This app is ready for Phase 3 when state, navigation, data, and error behavior are explicit.</p></section>
+    <section class="lesson" id="review"><h2>Review checklist</h2><ul class="checklist"><li>List, detail, favourites, and settings screens are reachable.</li><li>Search and filters work together.</li><li>Empty and error states are visible and useful.</li><li>Favourite selection survives app restart.</li><li>Call, map, and share actions fail gracefully when data is missing.</li><li>README contains screenshots and a short architecture note.</li></ul><div class="actions"><a class="button primary" href="phase-2-08-quiz-lab.html">Open quiz lab</a><a class="button" href="phase-3-production.html">Continue to Phase 3</a></div></section>
+  </article></main>
+  <footer class="footer"><div class="shell"><span>Phase 2.7 - Catalogue app</span><div><a href="phase-2-junior.html">Phase 2</a></div></div></footer>
+</body></html>

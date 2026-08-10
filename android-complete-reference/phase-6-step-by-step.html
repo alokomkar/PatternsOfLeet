@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 6 Step-by-Step - Principal Android Strategy</title>
+  <meta name="description" content="Step-by-step principal Android tutorial to create a mobile platform strategy, investment model, governance plan, risk register, and executive memo.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-6-step-by-step.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-6-principal.html">Phase 6</a><a href="index.html">Roadmap</a><a href="../android-guide.html">Advanced guide</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#steps">Steps</a><a href="#risks">Risks</a><a href="#gate">Gate</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Phase 6 step-by-step</div><h1>Create a principal-level mobile platform strategy.</h1><p class="hero-copy">Outcome: a three-year Android/mobile strategy that executives, directors, staff engineers, and feature teams can actually use.</p><div class="strategy-map"><div><b>Direction</b><span>Native, KMP, Flutter, web, or hybrid investment.</span></div><div><b>Economics</b><span>Build, buy, defer, or reject.</span></div><div><b>Governance</b><span>Decision rights and policy.</span></div><div><b>Risk</b><span>Reliability, security, hiring, platform drift.</span></div></div></section>
+      <section class="tutorial-flow" id="steps">
+        <div class="tutorial-step"><h2>Write the business context</h2><p>Start with business constraints, not architecture preference.</p><pre class="code-card">Business context:
+- Mobile drives 68% of user sessions.
+- Android supports low-end devices in tier-2 and tier-3 cities.
+- Release confidence is low near campaign launches.
+- Hiring senior Android engineers is slow.
+- Product needs faster experimentation without reducing reliability.</pre><div class="checkpoint-box"><b>Checkpoint:</b> the strategy can be understood without knowing Android internals.</div></div>
+        <div class="tutorial-step"><h2>Audit technical current state</h2><table class="table"><tbody><tr><th>Architecture</th><td>Native Kotlin, mixed XML/Compose, duplicated platform utilities.</td></tr><tr><th>Quality</th><td>Crash monitoring exists, but ANR and startup ownership are weak.</td></tr><tr><th>Delivery</th><td>Release train is predictable but rollback confidence is inconsistent.</td></tr><tr><th>People</th><td>Feature teams depend on a few senior Android reviewers.</td></tr></tbody></table></div>
+        <div class="tutorial-step"><h2>Compare strategic options</h2><table class="table"><thead><tr><th>Option</th><th>Use when</th><th>Risk</th></tr></thead><tbody><tr><td>Native Android</td><td>Platform integration and performance matter.</td><td>Separate iOS investment needed.</td></tr><tr><td>KMP</td><td>Shared business logic is stable and cross-platform.</td><td>Org must handle shared ownership.</td></tr><tr><td>Flutter</td><td>New product surface, shared UI, controlled scope.</td><td>Migration cost and native integration risk.</td></tr><tr><td>Web/PWA</td><td>Low device integration and fast distribution matter.</td><td>Native UX and offline limits.</td></tr></tbody></table></div>
+        <div class="tutorial-step"><h2>Choose investment posture</h2><pre class="code-card">Recommendation:
+- Keep core app native Android.
+- Use Compose-first for new Android UI.
+- Evaluate KMP only for stable business rules, not UI rewrite.
+- Fund platform reliability lane for two quarters.
+- Reject full cross-platform rewrite until economics change.</pre><div class="expected-result">The recommendation is specific enough to fund, defer, or reject work.</div></div>
+        <div class="tutorial-step"><h2>Define governance</h2><ul class="content-list"><li>Architecture review required for shared platform APIs.</li><li>Feature teams own local implementation inside approved boundaries.</li><li>Every shared module has an owner and deprecation path.</li><li>Security/privacy review required before collecting sensitive data.</li><li>Exceptions expire and must be re-approved.</li></ul></div>
+        <div class="tutorial-step"><h2>Create the investment model</h2><table class="table"><thead><tr><th>Investment</th><th>Cost</th><th>Payoff</th></tr></thead><tbody><tr><td>Platform reliability lane</td><td>2 engineers for 6 months</td><td>Lower release risk, faster feature teams.</td></tr><tr><td>Design system cleanup</td><td>1 engineer + designer for 1 quarter</td><td>Less duplicated UI and better accessibility.</td></tr><tr><td>Full rewrite</td><td>High, multi-quarter</td><td>Rejected unless current app becomes unmaintainable.</td></tr></tbody></table></div>
+        <div class="tutorial-step"><h2>Write the executive memo</h2><pre class="code-card">Decision memo:
+We should fund Android platform reliability for H1.
+
+Reason:
+Feature delivery is slowing due to duplicated infrastructure and low release confidence.
+
+Trade-off:
+Two engineers will not ship feature work directly during this period.
+
+Expected result:
+Improved release confidence, lower duplicated code, faster onboarding, clearer ownership.
+
+Decision needed:
+Approve platform lane and success metrics by end of planning cycle.</pre></div>
+        <div class="tutorial-step"><h2>Maintain the risk register</h2><table class="table"><thead><tr><th>Risk</th><th>Signal</th><th>Response</th></tr></thead><tbody><tr><td>Architecture drift</td><td>Teams duplicate platform code</td><td>Platform review and exception expiry</td></tr><tr><td>Release fragility</td><td>Hotfix rate increases</td><td>Rollback drills and staged release policy</td></tr><tr><td>Hiring bottleneck</td><td>Senior reviewers overloaded</td><td>Review rubric and mentorship rotation</td></tr><tr><td>Accessibility debt</td><td>Core flows fail audits</td><td>Accessibility gate before release</td></tr></tbody></table></div>
+      </section>
+      <section class="lesson" id="risks"><h2>Principal-level failure modes</h2><div class="error-grid"><div class="error-card"><b>Strategy is a preference essay</b><span>Convert preference into funded choices, rejected options, and measurable outcomes.</span></div><div class="error-card"><b>No economic model</b><span>Leaders need cost, trade-off, and timing, not only technical correctness.</span></div><div class="error-card"><b>Governance blocks teams</b><span>Govern shared decisions; do not centralize every implementation choice.</span></div><div class="error-card"><b>No succession</b><span>A platform that depends on one principal engineer is not healthy.</span></div></div></section>
+      <section class="lesson" id="gate"><h2>Completion gate</h2><ul class="checklist"><li>Strategy starts from business context.</li><li>Options are compared with explicit trade-offs.</li><li>Investment model names cost and payoff.</li><li>Governance defines owners and exceptions.</li><li>Risk register has signals and responses.</li></ul><a class="button primary" href="index.html">Back to roadmap</a></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 6 Step-by-Step</span><div><a href="phase-6-principal.html">Phase 6</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

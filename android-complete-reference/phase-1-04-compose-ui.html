@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.4 - Compose UI Basics</title>
+  <meta name="description" content="Beginner Jetpack Compose tutorial covering composable functions, Text, Button, Preview, and UI tree thinking.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-04-compose-ui.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-03-app-anatomy.html">Previous</a><a href="phase-1-05-layout-material.html">Next</a><a href="phase-1-foundations.html">Phase 1</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#goal">Goal</a><a href="#tree">UI tree</a><a href="#code">Code</a><a href="#practice">Practice</a></aside>
+    <article>
+      <section class="lesson" id="goal"><div class="eyebrow">Tutorial 4</div><h1>Build UI with composable functions.</h1><p class="hero-copy">Compose UI is written as Kotlin functions. A composable function describes what the UI should look like for the current data.</p></section>
+      <section class="lesson" id="tree"><h2>Think in a UI tree</h2><div class="ui-tree"><div class="tree-node">HabitScreen</div><div class="tree-node child">Column</div><div class="tree-node leaf">Text: Today's habits</div><div class="tree-node leaf">Button: Add habit</div><div class="tree-node leaf">HabitRow</div></div><p>If UI feels confusing, draw the tree. Ask: what contains what?</p></section>
+      <section class="lesson" id="code"><h2>First composable</h2><pre class="code-card">@Composable
+fun HabitScreen() {
+    Column {
+        Text(text = "Today's habits")
+        Button(onClick = { }) {
+            Text(text = "Add habit")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HabitScreenPreview() {
+    HabitScreen()
+}</pre><p>Preview functions let you inspect UI without launching the full app every time. Use them constantly while learning.</p></section>
+      <section class="lesson" id="practice"><h2>Practice task</h2><ul class="checklist"><li>Create a composable named ProfileCard.</li><li>Show a name, role, and one button.</li><li>Add a Preview function.</li><li>Change text values and refresh the preview.</li></ul><div class="actions"><a class="button primary" href="phase-1-05-layout-material.html">Next tutorial</a><a class="button" href="phase-1-03-app-anatomy.html">Previous</a></div><p class="source-note">Reference: the official Compose tutorial introduces composable functions, Text, Preview, and layout hierarchy early.</p></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.4 - Compose UI</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+</body>
+</html>

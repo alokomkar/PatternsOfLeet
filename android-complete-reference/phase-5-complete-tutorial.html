@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 5 Complete Tutorial - Staff Android Engineering</title>
+  <meta name="description" content="Complete staff Android tutorial covering migration strategy, ADRs, platform ownership, observability, cross-team adoption, and risk management.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-5-complete-tutorial.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-5-staff.html">Phase 5</a><a href="phase-6-complete-tutorial.html">Phase 6</a><a href="../android-guide.html">Advanced guide</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#outcome">Outcome</a><a href="#migration">Migration</a><a href="#adr">ADR</a><a href="#platform">Platform</a><a href="#metrics">Metrics</a><a href="#adoption">Adoption</a><a href="#review">Review</a></aside>
+    <article>
+      <section class="lesson" id="outcome"><div class="eyebrow">Phase 5 complete track</div><h1>Lead Android architecture across teams.</h1><p class="hero-copy">Staff work reduces risk and increases leverage across multiple teams. Your deliverables are not only code: migration plans, ADRs, platform contracts, observability, and adoption systems matter.</p><div class="metric-board"><div class="metric-tile"><b>4</b><span>teams affected</span></div><div class="metric-tile"><b>12</b><span>week migration</span></div><div class="metric-tile"><b>0</b><span>blocked releases target</span></div></div></section>
+      <section class="lesson" id="migration"><span class="step-label">Step 1</span><h2>Write a migration plan that keeps shipping possible</h2><pre class="code-card">Migration: XML screens to Compose
+
+Goal:
+- Move high-change screens to Compose without blocking feature work.
+
+Sequence:
+1. Add Compose to existing app shell.
+2. Build shared design primitives.
+3. Convert one low-risk screen.
+4. Measure crash, startup, and developer feedback.
+5. Convert high-change screens by product area.
+6. Remove obsolete XML utilities after adoption.
+
+Rollback:
+- Keep old screen route available behind a flag until parity is verified.</pre></section>
+      <section class="lesson" id="adr"><span class="step-label">Step 2</span><h2>Use ADRs for decisions that outlive one PR</h2><pre class="code-card">ADR-014: Use Compose for new feature screens
+
+Context:
+- New features need faster iteration and shared UI consistency.
+
+Options:
+- Continue XML
+- Compose only for new screens
+- Rewrite all screens immediately
+
+Decision:
+- Compose for new feature screens; migrate old screens incrementally.
+
+Consequences:
+- Need training and review checklist.
+- Mixed UI stack remains for 6-12 months.
+- Design system must support Compose first.</pre></section>
+      <section class="lesson" id="platform"><span class="step-label">Step 3</span><h2>Define platform contracts</h2><table class="table"><tbody><tr><th>Networking</th><td>Typed errors, retry policy, auth injection, observability hooks.</td></tr><tr><th>Design system</th><td>Approved components, accessibility defaults, theming rules.</td></tr><tr><th>Analytics</th><td>Event naming, required properties, privacy review.</td></tr><tr><th>Release</th><td>Feature flags, staged rollout, rollback owner, release evidence.</td></tr></tbody></table></section>
+      <section class="lesson" id="metrics"><span class="step-label">Step 4</span><h2>Make observability actionable</h2><div class="strategy-map"><div><b>Crash-free sessions</b><span>Release health and regression signal.</span></div><div><b>ANR rate</b><span>Main-thread and responsiveness risk.</span></div><div><b>Startup time</b><span>User-perceived launch quality.</span></div><div><b>Adoption</b><span>How many teams use the platform correctly.</span></div></div><p>Do not create dashboards nobody acts on. Every metric needs an owner, threshold, and response.</p></section>
+      <section class="lesson" id="adoption"><span class="step-label">Step 5</span><h2>Plan cross-team adoption</h2><ul class="checklist"><li>Identify first adopter teams and their constraints.</li><li>Publish migration examples before enforcing policy.</li><li>Run office hours for the first two release cycles.</li><li>Track blockers publicly.</li><li>Define the date when old patterns become unsupported.</li><li>Document exceptions and who can approve them.</li></ul></section>
+      <section class="lesson" id="review"><span class="step-label">Step 6</span><h2>Staff-level review criteria</h2><ul class="checklist"><li>The plan reduces risk for more than one team.</li><li>Migration can pause without leaving the app broken.</li><li>Ownership is clear after the original author moves on.</li><li>Metrics distinguish adoption, quality, and product impact.</li><li>Decision records explain rejected alternatives.</li></ul><div class="actions"><a class="button primary" href="phase-6-complete-tutorial.html">Continue to Phase 6</a><a class="button" href="phase-5-staff.html">Phase overview</a></div></section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 5 Complete Tutorial</span><div><a href="phase-5-staff.html">Phase 5</a><a href="index.html">Roadmap</a></div></div></footer>
+</body>
+</html>

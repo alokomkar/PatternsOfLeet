@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 1.9 - Android Quiz Lab</title>
+  <meta name="description" content="Interactive beginner Android quiz lab with multi-select, drag-and-drop ordering, matching, and code-fix exercises for Phase 1.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/phase-1-09-quiz-lab.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html">SortedQueue<span>.</span></a><nav class="nav-links"><a href="phase-1-08-habit-tracker.html">Previous</a><a href="phase-1-foundations.html">Phase 1</a><a href="phase-2-junior.html">Phase 2</a></nav></div></header>
+  <main class="shell page-layout">
+    <aside class="side-nav"><a href="#multi">Multi-select</a><a href="#drag">Drag order</a><a href="#match">Match</a><a href="#code-fix">Code fix</a></aside>
+    <article>
+      <section class="lesson"><div class="eyebrow">Tutorial 9</div><h1>Interactive Phase 1 quiz lab.</h1><p class="hero-copy">These quizzes check whether the learner can reason about Android concepts, not just recognize terms. They are intentionally small and repeatable.</p></section>
+
+      <section class="lesson quiz-shell" id="multi">
+        <h2>Multi-select: choose all correct statements</h2>
+        <div class="quiz-card" data-quiz="multi">
+          <p><b>Question:</b> Which statements are correct for beginner Compose state?</p>
+          <label class="quiz-option"><input type="checkbox" value="correct"> UI should read state and display it.</label>
+          <label class="quiz-option"><input type="checkbox" value="wrong"> You should manually redraw the screen after every click.</label>
+          <label class="quiz-option"><input type="checkbox" value="correct"> Button clicks can update state.</label>
+          <label class="quiz-option"><input type="checkbox" value="correct"> When state changes, Compose can re-run relevant composables.</label>
+          <div class="quiz-actions"><button class="button primary" type="button" data-check="multi">Check answer</button></div>
+          <div class="quiz-feedback" id="multi-feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="lesson quiz-shell" id="drag">
+        <h2>Drag-and-drop: order the first app workflow</h2>
+        <p>Drag the steps into the correct sequence.</p>
+        <div class="drop-zone" id="order-zone">
+          <div class="drag-item" draggable="true" data-order="3">Run the app on emulator or phone</div>
+          <div class="drag-item" draggable="true" data-order="1">Create an Empty Activity Compose project</div>
+          <div class="drag-item" draggable="true" data-order="4">Observe the screen and logs</div>
+          <div class="drag-item" draggable="true" data-order="2">Edit MainActivity or a composable</div>
+        </div>
+        <div class="quiz-actions"><button class="button" type="button" data-move="up">Move selected up</button><button class="button" type="button" data-move="down">Move selected down</button><button class="button primary" type="button" data-check="order">Check order</button><button class="button" type="button" data-reset="order">Reset</button></div>
+        <div class="quiz-feedback" id="order-feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="lesson quiz-shell" id="match">
+        <h2>Matching: connect the concept to its role</h2>
+        <div class="match-grid">
+          <label>MainActivity<select data-match="activity"><option value="">Choose role</option><option value="build">Builds APK</option><option value="entry">App entry screen host</option><option value="state">Stores UI value</option></select></label>
+          <label>Gradle<select data-match="gradle"><option value="">Choose role</option><option value="entry">App entry screen host</option><option value="build">Builds APK</option><option value="layout">Arranges UI vertically</option></select></label>
+          <label>remember<select data-match="remember"><option value="">Choose role</option><option value="state">Stores UI value across recomposition</option><option value="build">Builds APK</option><option value="entry">App entry screen host</option></select></label>
+          <label>Column<select data-match="column"><option value="">Choose role</option><option value="state">Stores UI value</option><option value="layout">Arranges UI vertically</option><option value="build">Builds APK</option></select></label>
+        </div>
+        <div class="quiz-actions"><button class="button primary" type="button" data-check="match">Check matches</button></div>
+        <div class="quiz-feedback" id="match-feedback" aria-live="polite"></div>
+      </section>
+
+      <section class="lesson quiz-shell" id="code-fix">
+        <h2>Code-fix prompt</h2>
+        <p>Find the problem before checking the explanation.</p>
+        <pre class="code-card">@Composable
+fun Counter() {
+    var count = 0
+
+    Button(onClick = { count += 1 }) {
+        Text("Count: $count")
+    }
+}</pre>
+        <div class="quiz-actions"><button class="button primary" type="button" data-check="code">Show explanation</button></div>
+        <div class="quiz-feedback" id="code-feedback" aria-live="polite"></div>
+      </section>
+    </article>
+  </main>
+  <footer class="footer"><div class="shell"><span>Phase 1.9 - Quiz lab</span><div><a href="phase-1-foundations.html">Phase 1</a><a href="mailto:sortedqueue@gmail.com">Email</a></div></div></footer>
+  <script src="phase-1-quiz.js"></script>
+</body>
+</html>
