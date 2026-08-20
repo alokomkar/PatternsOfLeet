@@ -122,6 +122,12 @@
     .source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .source-card { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 16px 18px; }
     .source-card span { color: var(--muted); font-size: .8rem; }
+    .source-card[hidden] { display: none; }
+    .source-filter { display: flex; justify-content: space-between; gap: 18px; align-items: center; margin-bottom: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--brand-soft); }
+    .source-filter strong, .source-filter span { display: block; }
+    .source-filter span { margin-top: 2px; color: var(--muted); font-size: .82rem; }
+    .filter-button { min-height: 40px; padding: 8px 13px; border: 1px solid var(--brand); border-radius: 10px; color: var(--brand); background: white; font-weight: 750; white-space: nowrap; }
+    .filter-button:disabled { cursor: default; opacity: .48; }
     footer { padding: 26px 0 36px; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
     .mobile-only { display: none; }
     @media (max-width: 860px) {
@@ -148,6 +154,8 @@
       .scenario { display: block; }
       .scenario h3 { margin-top: 2px; }
       .controls, .results, .source-grid, .layer-grid, .covenant { grid-template-columns: 1fr; }
+      .source-filter { align-items: stretch; flex-direction: column; }
+      .filter-button { width: 100%; }
       .result.primary { order: -1; }
       .mobile-only { display: inline; }
     }
@@ -374,28 +382,32 @@
 
     <section class="section" aria-labelledby="sources-title">
       <div class="section-head"><div><p class="eyebrow">Evidence</p><h2 id="sources-title">Official pricing and lifecycle sources</h2></div><p>Open each vendor page before procurement; prices, support windows and regional treatment can change.</p></div>
-      <div class="source-grid">
-        <a class="source-card" href="https://vercel.com/pricing" target="_blank" rel="noreferrer"><b>Vercel pricing</b><span>Hosting & compute ↗</span></a>
-        <a class="source-card" href="https://supabase.com/pricing" target="_blank" rel="noreferrer"><b>Supabase pricing</b><span>Database & auth ↗</span></a>
-        <a class="source-card" href="https://developers.cloudflare.com/workers/platform/pricing/" target="_blank" rel="noreferrer"><b>Cloudflare Workers</b><span>Runtime ↗</span></a>
-        <a class="source-card" href="https://developers.cloudflare.com/r2/pricing/" target="_blank" rel="noreferrer"><b>Cloudflare R2</b><span>Documents ↗</span></a>
-        <a class="source-card" href="https://resend.com/docs/knowledge-base/what-is-resend-pricing" target="_blank" rel="noreferrer"><b>Resend</b><span>Email ↗</span></a>
-        <a class="source-card" href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer"><b>Gemini API</b><span>AI tokens ↗</span></a>
-        <a class="source-card" href="https://nextjs.org/support-policy" target="_blank" rel="noreferrer"><b>Next.js support</b><span>Lifecycle ↗</span></a>
-        <a class="source-card" href="https://nodejs.org/en/about/previous-releases" target="_blank" rel="noreferrer"><b>Node.js releases</b><span>LTS lifecycle ↗</span></a>
-        <a class="source-card" href="https://www.oracle.com/europe/java/technologies/java-se-support-roadmap.html" target="_blank" rel="noreferrer"><b>Java support roadmap</b><span>LTS lifecycle ↗</span></a>
-        <a class="source-card" href="https://www.postgresql.org/support/versioning/" target="_blank" rel="noreferrer"><b>PostgreSQL versioning</b><span>Five-year support ↗</span></a>
-        <a class="source-card" href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html" target="_blank" rel="noreferrer"><b>Amazon ECS</b><span>Managed containers ↗</span></a>
-        <a class="source-card" href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html" target="_blank" rel="noreferrer"><b>Amazon RDS PostgreSQL</b><span>Multi-AZ & recovery ↗</span></a>
-        <a class="source-card" href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html" target="_blank" rel="noreferrer"><b>Amazon SQS</b><span>Durable queue ↗</span></a>
-        <a class="source-card" href="https://aws.amazon.com/fargate/pricing/" target="_blank" rel="noreferrer"><b>AWS Fargate pricing</b><span>Spring API compute ↗</span></a>
-        <a class="source-card" href="https://aws.amazon.com/rds/postgresql/pricing/" target="_blank" rel="noreferrer"><b>RDS PostgreSQL pricing</b><span>Database & Multi-AZ ↗</span></a>
-        <a class="source-card" href="https://aws.amazon.com/elasticloadbalancing/pricing/" target="_blank" rel="noreferrer"><b>Elastic Load Balancing</b><span>ALB & LCU ↗</span></a>
-        <a class="source-card" href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/flat-rate-pricing-plan.html" target="_blank" rel="noreferrer"><b>CloudFront flat-rate plans</b><span>Delivery, security & SLA ↗</span></a>
-        <a class="source-card" href="https://aws.amazon.com/cognito/pricing/" target="_blank" rel="noreferrer"><b>Amazon Cognito pricing</b><span>Identity MAU ↗</span></a>
-        <a class="source-card" href="https://aws.amazon.com/ses/pricing/" target="_blank" rel="noreferrer"><b>Amazon SES pricing</b><span>Transactional email ↗</span></a>
-        <a class="source-card" href="https://aws.amazon.com/premiumsupport/pricing/" target="_blank" rel="noreferrer"><b>AWS Support pricing</b><span>Production support ↗</span></a>
-        <a class="source-card" href="https://openid.net/specs/openid-connect-core-1_0-18.html" target="_blank" rel="noreferrer"><b>OpenID Connect</b><span>Identity standard ↗</span></a>
+      <div class="source-filter">
+        <div><strong>Architecture-linked evidence</strong><span id="source-filter-status" aria-live="polite">Showing links relevant to Architecture B.</span></div>
+        <button class="filter-button" id="clear-source-filter" type="button">Clear filter</button>
+      </div>
+      <div class="source-grid" id="source-grid">
+        <a class="source-card" data-architectures="a b" href="https://vercel.com/pricing" target="_blank" rel="noreferrer"><b>Vercel pricing</b><span>Hosting & compute ↗</span></a>
+        <a class="source-card" data-architectures="a b c" href="https://supabase.com/pricing" target="_blank" rel="noreferrer"><b>Supabase pricing</b><span>Database & auth ↗</span></a>
+        <a class="source-card" data-architectures="c" href="https://developers.cloudflare.com/workers/platform/pricing/" target="_blank" rel="noreferrer"><b>Cloudflare Workers</b><span>Runtime ↗</span></a>
+        <a class="source-card" data-architectures="b c" href="https://developers.cloudflare.com/r2/pricing/" target="_blank" rel="noreferrer"><b>Cloudflare R2</b><span>Documents ↗</span></a>
+        <a class="source-card" data-architectures="a b c" href="https://resend.com/docs/knowledge-base/what-is-resend-pricing" target="_blank" rel="noreferrer"><b>Resend</b><span>Email ↗</span></a>
+        <a class="source-card" data-architectures="a b c d" href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer"><b>Gemini API</b><span>AI tokens ↗</span></a>
+        <a class="source-card" data-architectures="a b" href="https://nextjs.org/support-policy" target="_blank" rel="noreferrer"><b>Next.js support</b><span>Lifecycle ↗</span></a>
+        <a class="source-card" data-architectures="a b c" href="https://nodejs.org/en/about/previous-releases" target="_blank" rel="noreferrer"><b>Node.js releases</b><span>LTS lifecycle ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://www.oracle.com/europe/java/technologies/java-se-support-roadmap.html" target="_blank" rel="noreferrer"><b>Java support roadmap</b><span>LTS lifecycle ↗</span></a>
+        <a class="source-card" data-architectures="a b c d" href="https://www.postgresql.org/support/versioning/" target="_blank" rel="noreferrer"><b>PostgreSQL versioning</b><span>Five-year support ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html" target="_blank" rel="noreferrer"><b>Amazon ECS</b><span>Managed containers ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html" target="_blank" rel="noreferrer"><b>Amazon RDS PostgreSQL</b><span>Multi-AZ & recovery ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html" target="_blank" rel="noreferrer"><b>Amazon SQS</b><span>Durable queue ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://aws.amazon.com/fargate/pricing/" target="_blank" rel="noreferrer"><b>AWS Fargate pricing</b><span>Spring API compute ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://aws.amazon.com/rds/postgresql/pricing/" target="_blank" rel="noreferrer"><b>RDS PostgreSQL pricing</b><span>Database & Multi-AZ ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://aws.amazon.com/elasticloadbalancing/pricing/" target="_blank" rel="noreferrer"><b>Elastic Load Balancing</b><span>ALB & LCU ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/flat-rate-pricing-plan.html" target="_blank" rel="noreferrer"><b>CloudFront flat-rate plans</b><span>Delivery, security & SLA ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://aws.amazon.com/cognito/pricing/" target="_blank" rel="noreferrer"><b>Amazon Cognito pricing</b><span>Identity MAU ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://aws.amazon.com/ses/pricing/" target="_blank" rel="noreferrer"><b>Amazon SES pricing</b><span>Transactional email ↗</span></a>
+        <a class="source-card" data-architectures="d" href="https://aws.amazon.com/premiumsupport/pricing/" target="_blank" rel="noreferrer"><b>AWS Support pricing</b><span>Production support ↗</span></a>
+        <a class="source-card" data-architectures="a b c d" href="https://openid.net/specs/openid-connect-core-1_0-18.html" target="_blank" rel="noreferrer"><b>OpenID Connect</b><span>Identity standard ↗</span></a>
       </div>
     </section>
   </main>
@@ -416,11 +428,13 @@
       scale: { whatsapp: 500000, sms: 25000 }
     };
     const elements = Object.fromEntries([
-      "architecture", "scenario", "whatsapp-rate", "sms-rate", "fx-rate", "staging",
+      "architecture", "scenario", "whatsapp-rate", "sms-rate", "fx-rate", "staging", "clear-source-filter", "source-filter-status",
       "total-inr", "total-usd", "core-inr", "core-usd", "wa-cost", "wa-volume", "sms-cost", "sms-volume"
     ].map(id => [id, document.getElementById(id)]));
     const money = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
     const number = new Intl.NumberFormat("en-IN");
+    const sourceCards = [...document.querySelectorAll(".source-card[data-architectures]")];
+    const architectureLabels = { a: "Architecture A", b: "Architecture B", c: "Architecture C", d: "Architecture D" };
 
     function safeNumber(input, fallback = 0) {
       const parsed = Number(input.value);
@@ -450,9 +464,32 @@
       elements["sms-volume"].textContent = `${number.format(volumes[scenario].sms)} messages`;
     }
 
-    [elements.architecture, elements.scenario, elements["whatsapp-rate"], elements["sms-rate"], elements["fx-rate"], elements.staging]
+    function filterSources(architecture) {
+      let visibleCount = 0;
+      sourceCards.forEach(card => {
+        const isRelevant = card.dataset.architectures.split(" ").includes(architecture);
+        card.hidden = !isRelevant;
+        if (isRelevant) visibleCount += 1;
+      });
+      elements["source-filter-status"].textContent = `Showing ${visibleCount} links relevant to ${architectureLabels[architecture]}.`;
+      elements["clear-source-filter"].disabled = false;
+    }
+
+    function clearSourceFilter() {
+      sourceCards.forEach(card => { card.hidden = false; });
+      elements["source-filter-status"].textContent = `Showing all ${sourceCards.length} links.`;
+      elements["clear-source-filter"].disabled = true;
+    }
+
+    elements.architecture.addEventListener("input", () => {
+      updateCalculator();
+      filterSources(elements.architecture.value);
+    });
+    elements["clear-source-filter"].addEventListener("click", clearSourceFilter);
+    [elements.scenario, elements["whatsapp-rate"], elements["sms-rate"], elements["fx-rate"], elements.staging]
       .forEach(element => element.addEventListener("input", updateCalculator));
     updateCalculator();
+    filterSources(elements.architecture.value);
   </script>
 </body>
 </html>
