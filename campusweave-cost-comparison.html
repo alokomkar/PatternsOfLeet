@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en" data-theme="maroon">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CampusWeave ten-year technology architecture and cost comparison across pre-pilot, pilot, growth and scale workloads.">
+  <title>CampusWeave · Technology architecture and cost comparison</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #24181d;
+      --muted: #725f68;
+      --paper: #fbf8f9;
+      --surface: #ffffff;
+      --line: #eadde2;
+      --brand: #731f3d;
+      --brand-dark: #4b1027;
+      --brand-soft: #f7eaf0;
+      --accent: #d69a32;
+      --good: #17704a;
+      --warn: #9b4b12;
+      --shadow: 0 18px 55px rgba(77, 16, 40, .10);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.55; }
+    a { color: var(--brand); text-underline-offset: 3px; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .masthead { padding: 26px 0 58px; color: white; background: linear-gradient(135deg, var(--brand-dark), var(--brand) 65%, #9e3e61); }
+    .topline { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.02em; }
+    .brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; color: var(--brand-dark); background: #f0bc52; box-shadow: inset 0 0 0 1px rgba(255,255,255,.42); }
+    .as-of { color: rgba(255,255,255,.76); font-size: .84rem; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .75fr); gap: 42px; align-items: end; padding-top: 54px; }
+    .eyebrow { margin: 0 0 10px; color: #f3c96f; font-size: .77rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 790px; margin: 0; font-size: clamp(2.2rem, 6vw, 4.6rem); line-height: .98; letter-spacing: -.055em; }
+    .hero-copy { max-width: 760px; margin: 20px 0 0; color: rgba(255,255,255,.82); font-size: clamp(1rem, 2vw, 1.18rem); }
+    .recommendation { padding: 20px; border: 1px solid rgba(255,255,255,.18); border-radius: 18px; background: rgba(255,255,255,.10); backdrop-filter: blur(8px); }
+    .recommendation strong { display: block; margin-bottom: 6px; color: #ffe3a5; }
+    .recommendation p { margin: 0; font-size: .93rem; color: rgba(255,255,255,.83); }
+    main { padding: 42px 0 80px; }
+    .notice { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 17px 18px; border: 1px solid #efc992; border-radius: 14px; background: #fff9ed; color: #6f4011; }
+    .notice b { color: #8a4508; }
+    .section { padding-top: 58px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 20px; }
+    h2 { margin: 0; font-size: clamp(1.6rem, 3.5vw, 2.45rem); line-height: 1.08; letter-spacing: -.04em; }
+    h3 { margin: 0; font-size: 1.05rem; }
+    .section-head p { max-width: 620px; margin: 0; color: var(--muted); }
+    .scenario-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .stack-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .scenario, .stack-card, .calculator, .detail-card, .source-card, .decision-card, .layer-card { border: 1px solid var(--line); border-radius: 19px; background: var(--surface); box-shadow: 0 8px 30px rgba(62, 31, 43, .045); }
+    .scenario { padding: 20px; }
+    .scenario .tag { display: inline-flex; margin-bottom: 18px; padding: 5px 9px; border-radius: 999px; color: var(--brand); background: var(--brand-soft); font-size: .74rem; font-weight: 800; text-transform: uppercase; }
+    .scenario strong { display: block; font-size: 1.55rem; letter-spacing: -.03em; }
+    .scenario p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+    .metric-list { display: grid; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+    .metric-list li { display: flex; justify-content: space-between; gap: 16px; padding-top: 8px; border-top: 1px solid var(--line); font-size: .86rem; }
+    .metric-list span { color: var(--muted); }
+    .stack-card { position: relative; overflow: hidden; padding: 24px; }
+    .stack-card.recommended { border-color: rgba(115,31,61,.42); box-shadow: var(--shadow); }
+    .ribbon { position: absolute; top: 17px; right: -35px; width: 145px; padding: 6px; color: white; background: var(--brand); font-size: .66rem; font-weight: 800; text-align: center; text-transform: uppercase; transform: rotate(34deg); }
+    .stack-letter { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 18px; border-radius: 12px; color: white; background: var(--brand); font-weight: 900; }
+    .stack-card p { min-height: 65px; margin: 10px 0 18px; color: var(--muted); font-size: .9rem; }
+    .prices { display: grid; gap: 10px; }
+    .price-row { display: flex; justify-content: space-between; gap: 14px; align-items: baseline; padding-top: 10px; border-top: 1px solid var(--line); }
+    .price-row span { color: var(--muted); font-size: .82rem; }
+    .price-row strong { font-size: 1.12rem; }
+    .bar { height: 6px; margin-top: 18px; overflow: hidden; border-radius: 999px; background: #eee7e9; }
+    .bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand), var(--accent)); }
+    .calculator { padding: 25px; }
+    .controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    label { display: grid; gap: 7px; color: var(--muted); font-size: .78rem; font-weight: 700; }
+    select, input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #d9cbd1; border-radius: 10px; color: var(--ink); background: white; }
+    select:focus, input:focus, button:focus-visible, a:focus-visible { outline: 3px solid rgba(214,154,50,.45); outline-offset: 2px; }
+    .check { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 10px 12px; border: 1px solid #d9cbd1; border-radius: 10px; color: var(--ink); background: white; }
+    .check input { width: 17px; min-height: auto; margin: 0; }
+    .results { display: grid; grid-template-columns: 1.2fr repeat(3, minmax(0, .8fr)); gap: 14px; margin-top: 22px; }
+    .result { padding: 18px; border-radius: 14px; background: var(--brand-soft); }
+    .result.primary { color: white; background: var(--brand); }
+    .result span { display: block; margin-bottom: 5px; color: var(--muted); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .result.primary span { color: rgba(255,255,255,.75); }
+    .result strong { display: block; font-size: clamp(1.25rem, 3vw, 1.75rem); letter-spacing: -.035em; }
+    .result small { color: var(--muted); }
+    .result.primary small { color: rgba(255,255,255,.72); }
+    .formula-note { margin: 16px 0 0; color: var(--muted); font-size: .82rem; }
+    .decision-card { display: grid; grid-template-columns: minmax(210px, .7fr) minmax(0, 1.8fr); gap: 24px; align-items: center; padding: 24px; border-color: rgba(115,31,61,.34); background: linear-gradient(120deg, #fff, var(--brand-soft)); box-shadow: var(--shadow); }
+    .decision-card .choice { padding: 18px; border-radius: 15px; color: white; background: var(--brand); }
+    .decision-card .choice span { display: block; margin-bottom: 8px; color: #f4c96f; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .decision-card .choice strong { display: block; font-size: 1.35rem; line-height: 1.15; }
+    .decision-card p { margin: 0; color: var(--muted); }
+    .status { display: inline-flex; padding: 4px 8px; border-radius: 999px; font-size: .68rem; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+    .status.preferred { color: #075a39; background: #dcf5e9; }
+    .status.pilot { color: #784208; background: #fff0d2; }
+    .status.reject { color: #8a2633; background: #fde5e9; }
+    .layer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+    .layer-card { padding: 18px; }
+    .layer-card span { display: block; margin-bottom: 6px; color: var(--brand); font-size: .7rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .layer-card strong { display: block; line-height: 1.2; }
+    .layer-card p { margin: 8px 0 0; color: var(--muted); font-size: .82rem; }
+    .architecture-flow { display: grid; grid-template-columns: repeat(7, auto); gap: 8px; align-items: center; margin-top: 18px; padding: 20px; overflow-x: auto; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
+    .flow-node { min-width: 135px; padding: 14px; border-radius: 12px; color: var(--brand-dark); background: var(--brand-soft); text-align: center; font-size: .8rem; font-weight: 800; }
+    .flow-node.core { color: white; background: var(--brand); }
+    .flow-arrow { color: var(--accent); font-size: 1.35rem; font-weight: 900; }
+    .covenant { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+    .covenant div { padding: 15px; border-top: 3px solid var(--brand); border-radius: 8px 8px 13px 13px; background: white; box-shadow: 0 7px 22px rgba(62, 31, 43, .05); }
+    .covenant strong { display: block; color: var(--brand); font-size: .75rem; text-transform: uppercase; }
+    .covenant span { display: block; margin-top: 6px; color: var(--muted); font-size: .78rem; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 17px; background: white; }
+    table { width: 100%; border-collapse: collapse; min-width: 770px; }
+    th, td { padding: 14px 16px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-size: .88rem; }
+    th { color: var(--muted); background: #faf6f8; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    td strong { color: var(--brand-dark); }
+    .detail-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
+    .detail-card { padding: 23px; }
+    .detail-card ul { display: grid; gap: 11px; margin: 17px 0 0; padding-left: 20px; color: var(--muted); }
+    .risk-number { font-size: 2rem; font-weight: 850; letter-spacing: -.04em; color: var(--brand); }
+    .risk-copy { margin: 4px 0 0; color: var(--muted); }
+    .source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .source-card { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 16px 18px; }
+    .source-card span { color: var(--muted); font-size: .8rem; }
+    footer { padding: 26px 0 36px; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
+    .mobile-only { display: none; }
+    @media (max-width: 860px) {
+      .hero, .detail-grid, .decision-card { grid-template-columns: 1fr; }
+      .hero { gap: 24px; }
+      .scenario-grid, .stack-grid { grid-template-columns: 1fr; }
+      .scenario { display: grid; grid-template-columns: 120px 1fr; gap: 10px 20px; }
+      .scenario .tag { align-self: start; justify-self: start; }
+      .scenario h3, .scenario > p { grid-column: 2; }
+      .scenario .metric-list { grid-column: 1 / -1; }
+      .controls, .results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .layer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .covenant { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stack-card p { min-height: 0; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 22px, 1180px); }
+      .masthead { padding-bottom: 38px; }
+      .topline { align-items: flex-start; }
+      .as-of { max-width: 120px; text-align: right; }
+      .hero { padding-top: 38px; }
+      .section { padding-top: 44px; }
+      .section-head { display: grid; }
+      .scenario { display: block; }
+      .scenario h3 { margin-top: 2px; }
+      .controls, .results, .source-grid, .layer-grid, .covenant { grid-template-columns: 1fr; }
+      .result.primary { order: -1; }
+      .mobile-only { display: inline; }
+    }
+    @media print {
+      .masthead { padding: 20px 0; color: var(--ink); background: white; }
+      .hero { padding-top: 18px; }
+      .hero-copy, .as-of { color: var(--muted); }
+      .recommendation { color: var(--ink); border-color: var(--line); background: white; }
+      .recommendation strong { color: var(--brand); }
+      .recommendation p { color: var(--muted); }
+      main { padding-top: 10px; }
+      .section { break-inside: avoid; padding-top: 30px; }
+      .calculator { display: none; }
+      .stack-card, .scenario, .detail-card, .source-card { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="shell">
+      <div class="topline">
+        <div class="brand"><span class="brand-mark">CW</span><span>CampusWeave</span></div>
+        <div class="as-of">Planning prices checked 20 Aug 2026</div>
+      </div>
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Architecture and cost model</p>
+          <h1>Build for ten years. Upgrade by design.</h1>
+          <p class="hero-copy">A long-term technology decision and transparent monthly comparison for the CampusWeave PWA, system of record, documents, notifications, email and context-aware AI.</p>
+        </div>
+        <aside class="recommendation">
+          <strong>Preferred production foundation</strong>
+          <p>React PWA + Java/Spring modular monolith + managed PostgreSQL, packaged portably and initially operated on AWS managed services.</p>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="notice" role="note">
+      <span aria-hidden="true">⚠</span>
+      <div><b>Ten years does not mean freezing the 2026 stack.</b> It means controlled upgrades, tested recovery, backward-compatible releases and replaceable providers. Cloud cost is still not total product cost.</div>
+    </div>
+
+    <section class="section" aria-labelledby="longevity-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Software architecture decision</p><h2 id="longevity-title">Portable core over the cheapest runtime</h2></div>
+        <p>CampusWeave is a transactional, audit-heavy, multi-tenant ERP. The database model and API contracts must outlive any single UI framework or cloud vendor.</p>
+      </div>
+      <div class="decision-card">
+        <div class="choice"><span>Preferred</span><strong>React PWA + Java 25 LTS + Spring Boot + PostgreSQL</strong></div>
+        <p>Deploy the API as an OCI container on ECS Fargate, use RDS PostgreSQL Multi-AZ for the system of record, S3-compatible storage for documents, an OIDC identity adapter and a transactional outbox with SQS. The current Vinext beta remains prototype-only.</p>
+      </div>
+      <div class="table-wrap" role="region" aria-label="Long-term architecture alternatives" tabindex="0" style="margin-top:18px">
+        <table>
+          <thead><tr><th>Alternative</th><th>Advantages</th><th>Long-term risk</th><th>Decision</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Next.js + Vercel + Supabase</strong></td><td>Fast delivery, low starting operations, strong developer experience</td><td>Shorter framework/runtime support cycles and accumulating provider coupling</td><td><span class="status pilot">Pilot only</span></td></tr>
+            <tr><td><strong>Cloudflare + Vinext + Supabase/R2</strong></td><td>Lowest estimated runtime cost and inexpensive document delivery</td><td>Beta framework plus edge-runtime and split-provider operational constraints</td><td><span class="status reject">Not ERP core</span></td></tr>
+            <tr><td><strong>Flutter/React Native + Firebase</strong></td><td>Native device UX, offline capability and platform push</td><td>App-store releases, duplicated admin/web work and weaker relational defaults</td><td><span class="status pilot">Add if proven</span></td></tr>
+            <tr><td><strong>Microservices + Kubernetes</strong></td><td>Independent deployment and scaling</td><td>Distributed transactions, consistency, observability and staffing cost</td><td><span class="status reject">Reject now</span></td></tr>
+            <tr><td><strong>React PWA + Java/Spring + PostgreSQL</strong></td><td>Mature transactions, open protocols, container portability and controlled operations</td><td>Higher initial infrastructure and delivery discipline</td><td><span class="status preferred">Preferred</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="layer-grid" aria-label="Preferred architecture layers">
+        <article class="layer-card"><span>Clients</span><strong>React · TypeScript · Vite PWA</strong><p>Static CDN deployment and instant web releases; no domain rules in the service worker.</p></article>
+        <article class="layer-card"><span>API</span><strong>Java 25 LTS · Spring Boot · OpenAPI</strong><p>Independent, versioned backend packaged as a portable OCI container.</p></article>
+        <article class="layer-card"><span>System of record</span><strong>Managed PostgreSQL</strong><p>Tenant scope, reviewed migrations, audit history, backups and point-in-time recovery.</p></article>
+        <article class="layer-card"><span>Identity</span><strong>OIDC / OAuth adapter</strong><p>Provider-neutral login with application-owned user, school and role mappings.</p></article>
+        <article class="layer-card"><span>Documents & jobs</span><strong>S3-compatible storage · Outbox · SQS</strong><p>Authorized document access and retry-safe asynchronous processing.</p></article>
+        <article class="layer-card"><span>Operations</span><strong>ECS Fargate · OpenTelemetry · IaC</strong><p>Rolling deployment, vendor-neutral telemetry and reproducible environments.</p></article>
+      </div>
+
+      <div class="architecture-flow" role="img" aria-label="CampusWeave request flow from PWA through API and modular monolith to PostgreSQL, queue and document storage">
+        <div class="flow-node">Parent & school PWA</div><div class="flow-arrow" aria-hidden="true">→</div><div class="flow-node">Versioned OpenAPI</div><div class="flow-arrow" aria-hidden="true">→</div><div class="flow-node core">Spring modular monolith</div><div class="flow-arrow" aria-hidden="true">→</div><div class="flow-node">PostgreSQL · SQS · S3</div>
+      </div>
+
+      <div class="detail-grid" style="margin-top:18px">
+        <article class="detail-card"><h3>Strong reason</h3><ul><li>The relational school-domain model—not the web framework—is the durable product asset.</li><li>Frontend, identity, storage, AI and cloud providers can change without rewriting admissions or family history.</li><li>Managed PostgreSQL and queues protect transactions and scheduled work while containers preserve a provider exit.</li></ul></article>
+        <article class="detail-card"><h3>Reliability price</h3><p class="risk-copy">AWS Multi-AZ, load balancing, logs and disaster recovery will cost more initially than the calculator's launch stacks. That premium buys recoverability and operational control; it must be priced after availability, recovery and retention objectives are approved.</p></article>
+      </div>
+
+      <div class="covenant" aria-label="Ten-year upgrade cadence">
+        <div><strong>Every release</strong><span>Tenant, authorization, migration, contract and E2E gates</span></div>
+        <div><strong>Monthly</strong><span>Runtime patches, clean restore and failed-job review</span></div>
+        <div><strong>Quarterly</strong><span>Dependency window and browser/device matrix</span></div>
+        <div><strong>Twice yearly</strong><span>Disaster-recovery drill, access audit and load test</span></div>
+        <div><strong>Every 2–3 years</strong><span>Validated Java LTS and PostgreSQL major upgrade</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="capability-scope-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Included capability scope</p><h2 id="capability-scope-title">Notifications and documents are costed</h2></div>
+        <p>These are infrastructure allowances and workload assumptions. Product implementation, permissions and delivery testing still belong in the MVP build.</p>
+      </div>
+      <div class="detail-grid">
+        <article class="detail-card"><h3>Parents and schools · notifications</h3><ul><li>In-app inbox and standards-based Web Push for desktop and mobile browsers.</li><li>Transactional email through SES.</li><li>Scheduled and retry-safe delivery through the outbox and SQS, with dead-letter handling.</li><li>WhatsApp and SMS volumes are modelled; contracted per-message rates remain calculator inputs.</li></ul></article>
+        <article class="detail-card"><h3>Private documents · upload and download</h3><ul><li>S3-compatible private object storage with application-owned metadata.</li><li>Upload writes, authorized download reads, stored GB and delivered GB are included in each workload.</li><li>Downloads require API authorization and time-limited access; public bucket access is excluded.</li><li>Virus scanning, document extraction and long-term archival need separate measured allowances when enabled.</li></ul></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="scenarios-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Planning boundary</p><h2 id="scenarios-title">Four measurable workloads</h2></div>
+        <p>These are estimates, not forecasts. Replace them with production telemetry and invoices after the first school goes live.</p>
+      </div>
+      <div class="scenario-grid">
+        <article class="scenario">
+          <span class="tag">Pre-pilot</span><div><h3>Preschool validation</h3><strong>1 school</strong><p>100 students · 100 MAU</p></div>
+          <ul class="metric-list"><li><span>Database</span><b>1 GB</b></li><li><span>Documents / delivery</span><b>5 / 5 GB</b></li><li><span>AI interactions</span><b>500</b></li><li><span>Email</span><b>500</b></li></ul>
+        </article>
+        <article class="scenario">
+          <span class="tag">Pilot</span><div><h3>Customer Zero</h3><strong>5 schools</strong><p>1,500 students · 1,000 MAU</p></div>
+          <ul class="metric-list"><li><span>Database</span><b>10 GB</b></li><li><span>Documents / delivery</span><b>20 / 25 GB</b></li><li><span>AI interactions</span><b>5,000</b></li><li><span>Email</span><b>3,000</b></li></ul>
+        </article>
+        <article class="scenario">
+          <span class="tag">Growth</span><div><h3>Repeatable rollout</h3><strong>50 schools</strong><p>15,000 students · 10,000 MAU</p></div>
+          <ul class="metric-list"><li><span>Database</span><b>40 GB</b></li><li><span>Documents / delivery</span><b>200 / 500 GB</b></li><li><span>AI interactions</span><b>50,000</b></li><li><span>Email</span><b>50,000</b></li></ul>
+        </article>
+        <article class="scenario">
+          <span class="tag">Scale</span><div><h3>Regional product</h3><strong>300 schools</strong><p>90,000 students · 60,000 MAU</p></div>
+          <ul class="metric-list"><li><span>Database</span><b>200 GB</b></li><li><span>Documents / delivery</span><b>2 / 5 TB</b></li><li><span>AI interactions</span><b>250,000</b></li><li><span>Email</span><b>500,000</b></li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="comparison-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Monthly estimate</p><h2 id="comparison-title">Architecture cost comparison</h2></div>
+        <p>A–C are launch-cost references. D prices the preferred ten-year foundation with a production availability baseline. Totals include email and AI.</p>
+      </div>
+      <div class="stack-grid">
+        <article class="stack-card">
+          <div class="stack-letter">A</div><h3>Vercel + Supabase storage</h3><p>The simplest implementation. At scale, private file delivery causes the largest increase.</p>
+          <div class="prices"><div class="price-row"><span>Pre-pilot</span><strong>$45 · ₹4.1k</strong></div><div class="price-row"><span>Pilot</span><strong>$47 · ₹4.3k</strong></div><div class="price-row"><span>Growth</span><strong>$173 · ₹15.5k</strong></div><div class="price-row"><span>Scale</span><strong>$1,369 · ₹123.2k</strong></div></div>
+          <div class="bar" aria-hidden="true"><span style="width:100%"></span></div>
+        </article>
+        <article class="stack-card recommended">
+          <div class="ribbon">Growth choice</div><div class="stack-letter">B</div><h3>Vercel + Supabase + R2</h3><p>Preserves the easiest application runtime while separating document economics.</p>
+          <div class="prices"><div class="price-row"><span>Pre-pilot</span><strong>$45 · ₹4.1k</strong></div><div class="price-row"><span>Pilot</span><strong>$47 · ₹4.3k</strong></div><div class="price-row"><span>Growth</span><strong>$142 · ₹12.8k</strong></div><div class="price-row"><span>Scale</span><strong>$916 · ₹82.5k</strong></div></div>
+          <div class="bar" aria-hidden="true"><span style="width:67%"></span></div>
+        </article>
+        <article class="stack-card">
+          <div class="stack-letter">C</div><h3>Cloudflare + Supabase + R2</h3><p>Lowest estimated bill, with additional runtime constraints and current Vinext beta risk.</p>
+          <div class="prices"><div class="price-row"><span>Pre-pilot</span><strong>$30 · ₹2.7k</strong></div><div class="price-row"><span>Pilot</span><strong>$32 · ₹2.9k</strong></div><div class="price-row"><span>Growth</span><strong>$128 · ₹11.5k</strong></div><div class="price-row"><span>Scale</span><strong>$683 · ₹61.5k</strong></div></div>
+          <div class="bar" aria-hidden="true"><span style="width:50%"></span></div>
+        </article>
+        <article class="stack-card recommended">
+          <div class="ribbon">10-year choice</div><div class="stack-letter">D</div><h3>React + Spring + PostgreSQL on AWS</h3><p>Pre-pilot is lean/non-HA; pilot onward uses the production HA baseline.</p>
+          <div class="prices"><div class="price-row"><span>Pre-pilot</span><strong>$87 · ₹7.8k</strong></div><div class="price-row"><span>Pilot</span><strong>$389 · ₹35.0k</strong></div><div class="price-row"><span>Growth</span><strong>$717 · ₹64.5k</strong></div><div class="price-row"><span>Scale</span><strong>$1,803 · ₹162.3k</strong></div></div>
+          <div class="bar" aria-hidden="true"><span style="width:100%"></span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="aws-cost-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Preferred stack cost</p><h2 id="aws-cost-title">What the AWS production baseline buys</h2></div>
+        <p>Mumbai Region, Linux/ARM on demand, 730 hours/month. No expiring credits, reservations or Spot discounts.</p>
+      </div>
+      <div class="notice"><span aria-hidden="true">⚠</span><div><b>$86.67 / ₹7,800 covers one preschool and 100 students, but is not high availability.</b> It uses one application task, Single-AZ PostgreSQL, a public origin and no uptime SLA. Move to the production baseline before schools depend on it.</div></div>
+      <div class="table-wrap" role="region" aria-label="AWS React Spring PostgreSQL monthly component costs" tabindex="0" style="margin-top:16px">
+        <table><thead><tr><th>Component</th><th>Pre-pilot</th><th>Pilot</th><th>Growth</th><th>Scale</th><th>Planning basis</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CloudFront</strong></td><td>$15.00 Pro</td><td>$200.00 Business</td><td>$200.00 Business</td><td>$200.00 Business</td><td>Business adds private origin, stronger controls and SLA</td></tr>
+          <tr><td><strong>ECS Fargate Spring API</strong></td><td>$10.60</td><td>$21.21</td><td>$42.41</td><td>$169.65</td><td>One small task, then redundant and larger ARM tasks</td></tr>
+          <tr><td><strong>RDS PostgreSQL</strong></td><td>$33.28 Single-AZ</td><td>$127.15 Multi-AZ</td><td>$375.87 Multi-AZ</td><td>$777.94 Multi-AZ</td><td>Compute and gp3 storage</td></tr>
+          <tr><td><strong>ALB</strong></td><td>$17.53</td><td>$18.25</td><td>$21.45</td><td>$33.83</td><td>Hourly fee plus processed-byte LCU estimate</td></tr>
+          <tr><td><strong>S3 documents and requests</strong></td><td>$0.01</td><td>$0.18</td><td>$1.80</td><td>$43.60</td><td>Plan storage credit; scale includes 1 TB excess</td></tr>
+          <tr><td><strong>SES + Cognito Lite + SQS</strong></td><td>$0.05</td><td>$0.31</td><td>$5.19</td><td>$328.12</td><td>Email, identity MAU and queue requests</td></tr>
+          <tr><td><strong>Operations allowance + AI</strong></td><td>$10.20</td><td>$22.00</td><td>$70.00</td><td>$250.00</td><td>Secrets, monitoring, backups and Gemini</td></tr>
+          <tr><td><strong>Base total</strong></td><td><strong>$86.67</strong></td><td><strong>$389.09</strong></td><td><strong>$716.72</strong></td><td><strong>$1,803.14</strong></td><td>Pre-pilot is non-HA; pilot onward is production HA</td></tr>
+          <tr><td><strong>Optional Business Support+</strong></td><td>$29.00</td><td>$34.84</td><td>$62.70</td><td>$153.28</td><td>Greater of $29 or 9% of eligible AWS charges</td></tr>
+          <tr><td><strong>Total with support</strong></td><td><strong>$115.67</strong></td><td><strong>$423.93</strong></td><td><strong>$779.42</strong></td><td><strong>$1,956.43</strong></td><td>Recommended when external schools depend on production</td></tr>
+        </tbody></table>
+      </div>
+      <p class="formula-note">Line items are rounded to cents; totals use unrounded hourly calculations. Business Support+ is displayed separately and is not included in the calculator.</p>
+    </section>
+
+    <section class="section" aria-labelledby="calculator-title">
+      <div class="section-head"><div><p class="eyebrow">Sensitivity calculator</p><h2 id="calculator-title">Add your contracted messaging rates</h2></div><p>WhatsApp and Indian SMS rates depend on provider, message type and contract. They are intentionally not guessed.</p></div>
+      <div class="calculator">
+        <div class="controls">
+          <label>Architecture<select id="architecture"><option value="a">A · Vercel + Supabase storage</option><option value="b" selected>B · Vercel + Supabase + R2</option><option value="c">C · Cloudflare + Supabase + R2</option><option value="d">D · React + Spring + PostgreSQL on AWS</option></select></label>
+          <label>Workload<select id="scenario"><option value="prepilot">Pre-pilot · 1 preschool · 100 students</option><option value="pilot">Pilot · 5 schools</option><option value="growth">Growth · 50 schools</option><option value="scale">Scale · 300 schools</option></select></label>
+          <label>WhatsApp ₹ / message<input id="whatsapp-rate" type="number" min="0" step="0.01" value="0" inputmode="decimal"></label>
+          <label>SMS ₹ / message<input id="sms-rate" type="number" min="0" step="0.01" value="0" inputmode="decimal"></label>
+          <label>Planning ₹ / USD<input id="fx-rate" type="number" min="1" step="0.1" value="90" inputmode="decimal"></label>
+          <label><span>Production hygiene</span><span class="check"><input id="staging" type="checkbox" checked>Include isolated staging</span></label>
+        </div>
+        <div class="results" aria-live="polite">
+          <div class="result primary"><span>Estimated monthly total</span><strong id="total-inr">₹4,991</strong><small id="total-usd">$55.45 platform equivalent</small></div>
+          <div class="result"><span>Core platform</span><strong id="core-inr">₹4,991</strong><small id="core-usd">$55.45</small></div>
+          <div class="result"><span>WhatsApp</span><strong id="wa-cost">₹0</strong><small id="wa-volume">200 messages</small></div>
+          <div class="result"><span>SMS fallback</span><strong id="sms-cost">₹0</strong><small id="sms-volume">50 messages</small></div>
+        </div>
+        <p class="formula-note">Platform total includes the selected core estimate and optional staging: $10 for A–C or $75 for D. AWS technical support, payment gateway charges, taxes and labour remain excluded.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="breakdown-title">
+      <div class="section-head"><div><p class="eyebrow">Why totals move</p><h2 id="breakdown-title">Scale component breakdown</h2></div><p>The 300-school scenario shows that email and document delivery matter more than basic request execution.</p></div>
+      <div class="table-wrap" role="region" aria-label="Scale cost breakdown" tabindex="0">
+        <table><thead><tr><th>Architecture</th><th>App runtime</th><th>Database & auth</th><th>Documents</th><th>Email</th><th>AI</th><th>Ops / queue</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A · Vercel + Supabase</strong></td><td>$256.95</td><td colspan="2">$661.97 combined</td><td>$350.00</td><td>$100.00</td><td>$0.00</td><td><strong>$1,368.92</strong></td></tr>
+          <tr><td><strong>B · Vercel + R2</strong></td><td>$256.95</td><td>$171.50</td><td>$37.95</td><td>$350.00</td><td>$100.00</td><td>$0.00</td><td><strong>$916.40</strong></td></tr>
+          <tr><td><strong>C · Cloudflare + R2</strong></td><td>$23.40</td><td>$171.50</td><td>$37.95</td><td>$350.00</td><td>$100.00</td><td>$0.00</td><td><strong>$682.85</strong></td></tr>
+          <tr><td><strong>D · React + Spring + PostgreSQL</strong></td><td>$403.48</td><td>$1,052.94</td><td>$43.60</td><td>$51.92</td><td>$100.00</td><td>$151.20</td><td><strong>$1,803.14</strong></td></tr>
+        </tbody></table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="controls-title">
+      <div class="section-head"><div><p class="eyebrow">Operating discipline</p><h2 id="controls-title">Cost controls before complexity</h2></div></div>
+      <div class="detail-grid">
+        <article class="detail-card"><h3>Controls to implement from day one</h3><ul><li>One multi-tenant production database, not one project per school.</li><li>Provider spend caps, upload quotas and per-school AI budgets.</li><li>In-app inbox and Web Push first; paid messaging only for consented, high-value events.</li><li>Portable document references and a tested R2 migration path.</li><li>Monthly unit metrics: cost per active school, student, document GB, delivered notification and AI task.</li></ul></article>
+        <article class="detail-card"><div class="risk-number">₹50,000/mo</div><p class="risk-copy">At the scale workload, every ₹0.10 per WhatsApp message adds ₹50,000. Messaging procurement can therefore outweigh the complete Cloudflare application runtime.</p><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><div class="risk-number">+$574/mo</div><p class="risk-copy">Moving from Supabase Pro ($25) to Team ($599) is a compliance and access-control decision—not a traffic-scaling requirement.</p></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="sources-title">
+      <div class="section-head"><div><p class="eyebrow">Evidence</p><h2 id="sources-title">Official pricing and lifecycle sources</h2></div><p>Open each vendor page before procurement; prices, support windows and regional treatment can change.</p></div>
+      <div class="source-grid">
+        <a class="source-card" href="https://vercel.com/pricing" target="_blank" rel="noreferrer"><b>Vercel pricing</b><span>Hosting & compute ↗</span></a>
+        <a class="source-card" href="https://supabase.com/pricing" target="_blank" rel="noreferrer"><b>Supabase pricing</b><span>Database & auth ↗</span></a>
+        <a class="source-card" href="https://developers.cloudflare.com/workers/platform/pricing/" target="_blank" rel="noreferrer"><b>Cloudflare Workers</b><span>Runtime ↗</span></a>
+        <a class="source-card" href="https://developers.cloudflare.com/r2/pricing/" target="_blank" rel="noreferrer"><b>Cloudflare R2</b><span>Documents ↗</span></a>
+        <a class="source-card" href="https://resend.com/docs/knowledge-base/what-is-resend-pricing" target="_blank" rel="noreferrer"><b>Resend</b><span>Email ↗</span></a>
+        <a class="source-card" href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer"><b>Gemini API</b><span>AI tokens ↗</span></a>
+        <a class="source-card" href="https://nextjs.org/support-policy" target="_blank" rel="noreferrer"><b>Next.js support</b><span>Lifecycle ↗</span></a>
+        <a class="source-card" href="https://nodejs.org/en/about/previous-releases" target="_blank" rel="noreferrer"><b>Node.js releases</b><span>LTS lifecycle ↗</span></a>
+        <a class="source-card" href="https://www.oracle.com/europe/java/technologies/java-se-support-roadmap.html" target="_blank" rel="noreferrer"><b>Java support roadmap</b><span>LTS lifecycle ↗</span></a>
+        <a class="source-card" href="https://www.postgresql.org/support/versioning/" target="_blank" rel="noreferrer"><b>PostgreSQL versioning</b><span>Five-year support ↗</span></a>
+        <a class="source-card" href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html" target="_blank" rel="noreferrer"><b>Amazon ECS</b><span>Managed containers ↗</span></a>
+        <a class="source-card" href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html" target="_blank" rel="noreferrer"><b>Amazon RDS PostgreSQL</b><span>Multi-AZ & recovery ↗</span></a>
+        <a class="source-card" href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html" target="_blank" rel="noreferrer"><b>Amazon SQS</b><span>Durable queue ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/fargate/pricing/" target="_blank" rel="noreferrer"><b>AWS Fargate pricing</b><span>Spring API compute ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/rds/postgresql/pricing/" target="_blank" rel="noreferrer"><b>RDS PostgreSQL pricing</b><span>Database & Multi-AZ ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/elasticloadbalancing/pricing/" target="_blank" rel="noreferrer"><b>Elastic Load Balancing</b><span>ALB & LCU ↗</span></a>
+        <a class="source-card" href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/flat-rate-pricing-plan.html" target="_blank" rel="noreferrer"><b>CloudFront flat-rate plans</b><span>Delivery, security & SLA ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/cognito/pricing/" target="_blank" rel="noreferrer"><b>Amazon Cognito pricing</b><span>Identity MAU ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/ses/pricing/" target="_blank" rel="noreferrer"><b>Amazon SES pricing</b><span>Transactional email ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/premiumsupport/pricing/" target="_blank" rel="noreferrer"><b>AWS Support pricing</b><span>Production support ↗</span></a>
+        <a class="source-card" href="https://openid.net/specs/openid-connect-core-1_0-18.html" target="_blank" rel="noreferrer"><b>OpenID Connect</b><span>Identity standard ↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="shell">CampusWeave architecture and cost planning artifact · Design for upgrades, test recovery, reprice providers quarterly.</div></footer>
+  <script>
+    const estimates = {
+      a: { prepilot: 45.45, pilot: 47.25, growth: 172.63, scale: 1368.92 },
+      b: { prepilot: 45.45, pilot: 47.40, growth: 141.85, scale: 916.40 },
+      c: { prepilot: 30.45, pilot: 32.40, growth: 127.65, scale: 682.85 },
+      d: { prepilot: 86.67, pilot: 389.09, growth: 716.72, scale: 1803.14 }
+    };
+    const stagingCosts = { a: 10, b: 10, c: 10, d: 75 };
+    const volumes = {
+      prepilot: { whatsapp: 200, sms: 50 },
+      pilot: { whatsapp: 2000, sms: 500 },
+      growth: { whatsapp: 50000, sms: 5000 },
+      scale: { whatsapp: 500000, sms: 25000 }
+    };
+    const elements = Object.fromEntries([
+      "architecture", "scenario", "whatsapp-rate", "sms-rate", "fx-rate", "staging",
+      "total-inr", "total-usd", "core-inr", "core-usd", "wa-cost", "wa-volume", "sms-cost", "sms-volume"
+    ].map(id => [id, document.getElementById(id)]));
+    const money = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+    const number = new Intl.NumberFormat("en-IN");
+
+    function safeNumber(input, fallback = 0) {
+      const parsed = Number(input.value);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+    }
+
+    function updateCalculator() {
+      const architecture = elements.architecture.value;
+      const scenario = elements.scenario.value;
+      const fx = Math.max(1, safeNumber(elements["fx-rate"], 90));
+      const waRate = safeNumber(elements["whatsapp-rate"]);
+      const smsRate = safeNumber(elements["sms-rate"]);
+      const stagingUsd = elements.staging.checked ? stagingCosts[architecture] : 0;
+      const platformUsd = estimates[architecture][scenario] + stagingUsd;
+      const platformInr = platformUsd * fx;
+      const waInr = volumes[scenario].whatsapp * waRate;
+      const smsInr = volumes[scenario].sms * smsRate;
+      const totalInr = platformInr + waInr + smsInr;
+
+      elements["total-inr"].textContent = money.format(totalInr);
+      elements["total-usd"].textContent = `$${platformUsd.toFixed(2)} platform equivalent`;
+      elements["core-inr"].textContent = money.format(platformInr);
+      elements["core-usd"].textContent = `$${platformUsd.toFixed(2)}`;
+      elements["wa-cost"].textContent = money.format(waInr);
+      elements["wa-volume"].textContent = `${number.format(volumes[scenario].whatsapp)} messages`;
+      elements["sms-cost"].textContent = money.format(smsInr);
+      elements["sms-volume"].textContent = `${number.format(volumes[scenario].sms)} messages`;
+    }
+
+    [elements.architecture, elements.scenario, elements["whatsapp-rate"], elements["sms-rate"], elements["fx-rate"], elements.staging]
+      .forEach(element => element.addEventListener("input", updateCalculator));
+    updateCalculator();
+  </script>
+</body>
+</html>
