@@ -117,6 +117,11 @@
     .detail-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
     .detail-card { padding: 23px; }
     .detail-card ul { display: grid; gap: 11px; margin: 17px 0 0; padding-left: 20px; color: var(--muted); }
+    .exclusion-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .exclusion-card { padding: 20px; border: 1px solid #efc9cf; border-radius: 17px; background: #fffafb; }
+    .exclusion-card span { display: inline-flex; margin-bottom: 12px; padding: 4px 8px; border-radius: 999px; color: #8a2633; background: #fde5e9; font-size: .68rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+    .exclusion-card p { margin: 8px 0 0; color: var(--muted); font-size: .86rem; }
+    .boundary-note { margin: 16px 0 0; padding: 14px 16px; border-left: 4px solid var(--accent); border-radius: 8px; color: #6f4011; background: #fff9ed; }
     .risk-number { font-size: 2rem; font-weight: 850; letter-spacing: -.04em; color: var(--brand); }
     .risk-copy { margin: 4px 0 0; color: var(--muted); }
     .source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -133,7 +138,7 @@
     @media (max-width: 860px) {
       .hero, .detail-grid, .decision-card { grid-template-columns: 1fr; }
       .hero { gap: 24px; }
-      .scenario-grid, .stack-grid { grid-template-columns: 1fr; }
+      .scenario-grid, .stack-grid, .exclusion-grid { grid-template-columns: 1fr; }
       .scenario { display: grid; grid-template-columns: 120px 1fr; gap: 10px 20px; }
       .scenario .tag { align-self: start; justify-self: start; }
       .scenario h3, .scenario > p { grid-column: 2; }
@@ -199,6 +204,22 @@
       <span aria-hidden="true">⚠</span>
       <div><b>Ten years does not mean freezing the 2026 stack.</b> It means controlled upgrades, tested recovery, backward-compatible releases and replaceable providers. Cloud cost is still not total product cost.</div>
     </div>
+
+    <section class="section" id="excluded-costs" aria-labelledby="excluded-costs-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Cost boundary</p><h2 id="excluded-costs-title">What these totals do not include</h2></div>
+        <p>The comparison estimates recurring platform consumption for the stated workloads. It is not a complete build, launch or operating budget.</p>
+      </div>
+      <div class="exclusion-grid">
+        <article class="exclusion-card"><span>Excluded</span><h3>Product build and rollout</h3><p>Discovery, UX design, frontend and backend implementation, QA automation, infrastructure setup, project management, school configuration and initial training.</p></article>
+        <article class="exclusion-card"><span>Excluded</span><h3>People and support</h3><p>Engineering payroll, help desk, customer success, on-call operations, manual data correction, AI review and incident-response staffing.</p></article>
+        <article class="exclusion-card"><span>Variable</span><h3>Messages and payments</h3><p>WhatsApp and SMS are excluded from base totals unless contracted rates are entered below. Payment-gateway MDR, GST, refunds, chargebacks, settlement and bank fees are excluded.</p></article>
+        <article class="exclusion-card"><span>Excluded</span><h3>Migration and integrations</h3><p>Legacy-data cleanup and import, custom reports, accounting or biometric integrations, third-party API subscriptions, e-signature and identity-verification services.</p></article>
+        <article class="exclusion-card"><span>Excluded</span><h3>Compliance and assurance</h3><p>Taxes, legal and privacy advice, penetration tests, external security audits, certifications, cyber insurance and retained incident-response services.</p></article>
+        <article class="exclusion-card"><span>Excluded</span><h3>Hardware and unmodelled usage</h3><p>Domains, school devices, kiosks, broadband, printing and signage, native-app store fees, cross-region disaster recovery, advanced OCR, malware scanning, archival and usage above the stated limits.</p></article>
+      </div>
+      <p class="boundary-note"><strong>₹0 does not mean free:</strong> leaving WhatsApp or SMS rates at zero keeps those provider charges outside the calculator. Obtain contracted rates and add a contingency before approving a budget.</p>
+    </section>
 
     <section class="section" aria-labelledby="longevity-title">
       <div class="section-head">
