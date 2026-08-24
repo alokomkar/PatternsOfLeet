@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-theme="maroon">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="CampusWeave selected end-to-end technical architecture and flow diagrams.">
+  <title>CampusWeave · Master technical architecture</title>
+  <link rel="stylesheet" href="campusweave-system-architecture.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="campusweave-architecture.html"><span class="mark">CW</span><span><strong>CampusWeave Technical Architecture</strong><small>Selected stack · master system view</small></span></a>
+    <div class="top-actions">
+      <select class="theme" id="theme-select" aria-label="Colour theme"><option value="maroon">Maroon</option><option value="green">Dark green</option><option value="navy">Navy blue</option><option value="orange">Dark orange</option><option value="graphite">Grayish black</option></select>
+      <a class="button secondary" href="campusweave-architecture.html">← Review map</a>
+      <a class="button primary" href="#flow-architectures">Open flows</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">SELECTED IMPLEMENTATION BASELINE · VERSION 1.0</p>
+      <h1>One master view from browser to providers, data and operations.</h1>
+      <p class="hero-copy">The first production architecture is a React PWA backed by a Java/Spring modular monolith and PostgreSQL/PostGIS on AWS. Numbered colour markers identify the exact technology responsible for each block; flow pages show how those blocks collaborate.</p>
+    </section>
+
+    <div class="decision" role="note"><span aria-hidden="true">◆</span><div><b>Deliberate modular-monolith decision.</b> Business modules share one Spring deployment and one governed PostgreSQL cluster initially. SQS isolates asynchronous work, OpenAPI isolates clients, and provider adapters preserve later extraction paths. The diagram does not claim that every block is a separately deployed microservice.</div></div>
+
+    <section aria-labelledby="visual-title">
+      <div class="section-head"><div><p class="eyebrow">ARCHITECTURE AT A GLANCE</p><h2 id="visual-title">CampusWeave end-to-end technical system</h2></div><p>A presentation-ready overview of actors, web clients, security boundary, application modules, data services and external providers.</p></div>
+      <figure class="architecture-visual">
+        <img src="campusweave-end-to-end-architecture.png" width="1672" height="941" alt="CampusWeave architecture showing Parent, School Staff, CampusWeave Admin and Vendor web applications flowing through Edge and Identity into a Spring Boot modular monolith, PostgreSQL, Redis, SQS and S3, then Razorpay, messaging, Google Maps and Gemini providers, with security, delivery and observability alongside." decoding="async">
+        <figcaption><strong>Generated architecture overview</strong><span>The interactive blocks below remain the canonical review model and contain the numbered technology key.</span></figcaption>
+      </figure>
+    </section>
+
+    <section aria-labelledby="master-title">
+      <div class="section-head"><div><p class="eyebrow">HIGH-LEVEL SYSTEM DESIGN</p><h2 id="master-title">End-to-end deployment and trust boundaries</h2></div><p>Read top to bottom. A request enters through the edge and identity boundary, reaches a domain module, commits canonical state, and only then triggers asynchronous provider work.</p></div>
+      <div id="master-diagram" aria-label="CampusWeave high-level technical architecture"></div>
+    </section>
+
+    <section id="flow-architectures" aria-labelledby="flow-title">
+      <div class="section-head"><div><p class="eyebrow">LOW-LEVEL FLOW VIEWS</p><h2 id="flow-title">Open one system journey at a time</h2></div><p>Each child page names actors, ordered runtime steps, technologies, unresolved decisions and links back to this master.</p></div>
+      <div class="flow-grid" id="flow-grid"></div>
+    </section>
+
+    <section aria-labelledby="legend-title">
+      <div class="section-head"><div><p class="eyebrow">NUMBERED TECHNOLOGY KEY</p><h2 id="legend-title">Exact stack used in the blocks</h2></div><p>The number and colour remain identical on the master and every child diagram.</p></div>
+      <div class="legend" id="technology-legend"></div>
+    </section>
+  </main>
+
+  <footer><div class="shell">CampusWeave selected architecture · React PWA + Java/Spring modular monolith + PostgreSQL/PostGIS on AWS · Provider contracts remain replaceable</div></footer>
+  <script src="campusweave-system-architecture-data.js"></script>
+  <script>
+    const model=window.CW_SYSTEM_ARCHITECTURE,$=id=>document.getElementById(id),escapeHtml=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    const techById=Object.fromEntries(model.technologies.map(tech=>[tech.id,tech]));
+    const chips=ids=>`<div class="tech-chips">${ids.map(id=>{const tech=techById[id];return `<span class="tech-chip" style="--tech:${tech.color}" title="${escapeHtml(tech.name)}"><span class="tech-number">${tech.id}</span>${escapeHtml(tech.group)}</span>`}).join("")}</div>`;
+    $("master-diagram").innerHTML=model.masterLayers.map((layer,index)=>`${index?'<div class="connector" aria-hidden="true"></div>':''}<section class="system-layer"><div class="layer-head"><span class="layer-number">${index+1}</span><div><h3>${escapeHtml(layer.title)}</h3><p>${escapeHtml(layer.caption)}</p></div></div><div class="nodes">${layer.nodes.map(node=>`<article class="node"><strong>${escapeHtml(node.title)}</strong><p>${escapeHtml(node.text)}</p>${chips(node.tech)}</article>`).join("")}</div></section>`).join("");
+    $("flow-grid").innerHTML=Object.values(model.flows).map((flow,index)=>`<a class="flow-card" href="${escapeHtml(flow.file)}"><span class="flow-index">${index+1}</span><h3>${escapeHtml(flow.short)}</h3><p>${escapeHtml(flow.summary)}</p><span class="flow-link">Open detailed flow →</span></a>`).join("");
+    $("technology-legend").innerHTML=model.technologies.map(tech=>`<article class="legend-item" style="--tech:${tech.color}"><span class="legend-number">${tech.id}</span><div><strong>${escapeHtml(tech.name)}</strong><span>${escapeHtml(tech.purpose)}</span></div></article>`).join("");
+    const savedTheme=localStorage.getItem("cw-architecture-theme")||"maroon";document.documentElement.dataset.theme=savedTheme;$("theme-select").value=savedTheme;$("theme-select").addEventListener("change",event=>{document.documentElement.dataset.theme=event.target.value;localStorage.setItem("cw-architecture-theme",event.target.value)});
+  </script>
+</body>
+</html>

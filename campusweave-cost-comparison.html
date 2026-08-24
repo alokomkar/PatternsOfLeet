@@ -104,6 +104,11 @@
     .flow-node { min-width: 135px; padding: 14px; border-radius: 12px; color: var(--brand-dark); background: var(--brand-soft); text-align: center; font-size: .8rem; font-weight: 800; }
     .flow-node.core { color: white; background: var(--brand); }
     .flow-arrow { color: var(--accent); font-size: 1.35rem; font-weight: 900; }
+    .architecture-link { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; margin-top: 16px; padding: 17px 18px; border: 1px solid rgba(115,31,61,.34); border-radius: 15px; color: var(--ink); background: linear-gradient(120deg, #fff, var(--brand-soft)); box-shadow: 0 8px 30px rgba(62,31,43,.045); text-decoration: none; }
+    .architecture-link-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; color: white; background: var(--brand); font-weight: 900; }
+    .architecture-link strong, .architecture-link span { display: block; }
+    .architecture-link span { margin-top: 2px; color: var(--muted); font-size: .82rem; }
+    .architecture-link-arrow { color: var(--brand); font-size: 1.35rem; font-weight: 900; }
     .covenant { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
     .covenant div { padding: 15px; border-top: 3px solid var(--brand); border-radius: 8px 8px 13px 13px; background: white; box-shadow: 0 7px 22px rgba(62, 31, 43, .05); }
     .covenant strong { display: block; color: var(--brand); font-size: .75rem; text-transform: uppercase; }
@@ -255,6 +260,12 @@
       <div class="architecture-flow" role="img" aria-label="CampusWeave request flow from PWA through API and modular monolith to PostgreSQL, queue and document storage">
         <div class="flow-node">Parent & school PWA</div><div class="flow-arrow" aria-hidden="true">→</div><div class="flow-node">Versioned OpenAPI</div><div class="flow-arrow" aria-hidden="true">→</div><div class="flow-node core">Spring modular monolith</div><div class="flow-arrow" aria-hidden="true">→</div><div class="flow-node">PostgreSQL · SQS · S3</div>
       </div>
+
+      <a class="architecture-link" href="campusweave-high-level-master.html">
+        <span class="architecture-link-mark" aria-hidden="true">CW</span>
+        <span><strong>Review the complete CampusWeave technical architecture</strong><span>Open the master system diagram and eight end-to-end flow architectures.</span></span>
+        <span class="architecture-link-arrow" aria-hidden="true">→</span>
+      </a>
 
       <div class="detail-grid" style="margin-top:18px">
         <article class="detail-card"><h3>Strong reason</h3><ul><li>The relational school-domain model—not the web framework—is the durable product asset.</li><li>Frontend, identity, storage, AI and cloud providers can change without rewriting admissions or family history.</li><li>Managed PostgreSQL and queues protect transactions and scheduled work while containers preserve a provider exit.</li></ul></article>
