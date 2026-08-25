@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en" data-theme="maroon">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive CampusWeave cost comparison for Supabase, Firebase, Zoho Catalyst and AWS.">
+  <title>CampusWeave · Alternative platform cost simulator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #24181d;
+      --muted: #725f68;
+      --paper: #fbf8f9;
+      --surface: #fff;
+      --line: #eadde2;
+      --brand: #731f3d;
+      --brand-dark: #4b1027;
+      --brand-soft: #f7eaf0;
+      --accent: #d69a32;
+      --good: #176a48;
+      --warning: #9a4a0f;
+      --danger: #9b3344;
+      --shadow: 0 18px 55px rgba(77, 16, 40, .11);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); line-height: 1.5; }
+    a { color: var(--brand); text-underline-offset: 3px; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1200px, calc(100% - 32px)); margin: auto; }
+    .masthead { padding: 24px 0 48px; color: #fff; background: linear-gradient(135deg, var(--brand-dark), var(--brand) 64%, #9e3e61); }
+    .topline, .brand, .mast-links { display: flex; align-items: center; }
+    .topline { justify-content: space-between; gap: 18px; }
+    .brand { gap: 11px; font-weight: 850; }
+    .brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; color: var(--brand-dark); background: #f0bc52; }
+    .mast-links { gap: 18px; }
+    .mast-links a { color: rgba(255,255,255,.86); font-size: .84rem; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, .7fr); gap: 36px; align-items: end; padding-top: 48px; }
+    .eyebrow { margin: 0 0 9px; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { max-width: 800px; margin: 0; font-size: clamp(2.3rem, 6vw, 4.7rem); line-height: .98; letter-spacing: -.055em; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.3rem); line-height: 1.08; letter-spacing: -.035em; }
+    h3 { margin: 0; font-size: 1.05rem; }
+    .hero-copy { max-width: 750px; margin: 18px 0 0; color: rgba(255,255,255,.81); font-size: 1.05rem; }
+    .hero-note { padding: 18px; border: 1px solid rgba(255,255,255,.19); border-radius: 17px; background: rgba(255,255,255,.10); }
+    .hero-note strong { color: #ffe2a0; }
+    .hero-note p { margin: 6px 0 0; color: rgba(255,255,255,.79); font-size: .87rem; }
+    main { padding: 34px 0 78px; }
+    .notice { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 15px 17px; border: 1px solid #edc88d; border-radius: 14px; color: #70400e; background: #fff9ed; }
+    .section { padding-top: 52px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 18px; }
+    .section-head > p { max-width: 630px; margin: 0; color: var(--muted); }
+    .panel, .provider, .summary-card, .source-card, .boundary-card { border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 0 8px 28px rgba(62,31,43,.045); }
+    .panel { padding: 22px; }
+    .preset-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .preset { min-height: 40px; padding: 8px 12px; border: 1px solid #d8c7ce; border-radius: 10px; color: var(--brand); background: #fff; font-weight: 750; }
+    .preset[aria-pressed="true"] { color: #fff; border-color: var(--brand); background: var(--brand); }
+    .controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; }
+    label { display: grid; gap: 7px; color: var(--muted); font-size: .76rem; font-weight: 760; }
+    input, select { width: 100%; min-height: 44px; padding: 9px 11px; border: 1px solid #d9cbd1; border-radius: 10px; color: var(--ink); background: #fff; }
+    input[type="range"] { min-height: 24px; padding: 0; accent-color: var(--brand); }
+    input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px solid rgba(214,154,50,.48); outline-offset: 2px; }
+    .input-heading { display: flex; justify-content: space-between; gap: 8px; }
+    .input-heading output { color: var(--brand); font-weight: 850; }
+    .toggle { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 10px 12px; border: 1px solid #d9cbd1; border-radius: 10px; color: var(--ink); background: #fff; }
+    .toggle input { width: 17px; min-height: auto; margin: 0; }
+    .assumption-note { margin: 17px 0 0; color: var(--muted); font-size: .8rem; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-top: 16px; }
+    .summary-card { padding: 16px; }
+    .summary-card span { display: block; color: var(--muted); font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .summary-card strong { display: block; margin-top: 5px; font-size: 1.35rem; letter-spacing: -.03em; }
+    .provider-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .provider { position: relative; overflow: hidden; padding: 22px; }
+    .provider.recommended { border-color: rgba(115,31,61,.45); box-shadow: var(--shadow); }
+    .provider-head { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+    .provider-title { display: flex; gap: 11px; align-items: center; }
+    .provider-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; color: #fff; background: var(--brand); font-weight: 900; }
+    .badge { display: inline-flex; padding: 4px 8px; border-radius: 999px; color: var(--good); background: #e3f5ec; font-size: .66rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+    .provider-copy { min-height: 43px; margin: 13px 0 17px; color: var(--muted); font-size: .87rem; }
+    .cost-main { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: end; padding: 15px; border-radius: 14px; background: var(--brand-soft); }
+    .cost-main span { display: block; color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; }
+    .cost-main strong { display: block; margin-top: 4px; color: var(--brand-dark); font-size: 1.7rem; line-height: 1; letter-spacing: -.04em; }
+    .cost-main small { color: var(--muted); }
+    .bar-track { height: 7px; margin: 18px 0; overflow: hidden; border-radius: 999px; background: #eee7e9; }
+    .bar-fill { height: 100%; width: 40%; border-radius: inherit; background: linear-gradient(90deg, var(--brand), var(--accent)); transition: width .25s ease; }
+    .breakdown { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .breakdown li { display: flex; justify-content: space-between; gap: 14px; padding-top: 8px; border-top: 1px solid var(--line); font-size: .8rem; }
+    .breakdown span { color: var(--muted); }
+    .provider-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 17px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .77rem; }
+    .provider-footer b { color: var(--ink); }
+    .decision { display: grid; grid-template-columns: minmax(200px,.7fr) minmax(0,1.6fr); gap: 22px; padding: 22px; border: 1px solid rgba(115,31,61,.35); border-radius: 18px; background: linear-gradient(120deg,#fff,var(--brand-soft)); box-shadow: var(--shadow); }
+    .decision-choice { padding: 18px; border-radius: 14px; color: #fff; background: var(--brand); }
+    .decision-choice span { display: block; color: #f4cb74; font-size: .69rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .decision-choice strong { display: block; margin-top: 8px; font-size: 1.28rem; line-height: 1.2; }
+    .decision p { margin: 0; color: var(--muted); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
+    table { width: 100%; min-width: 880px; border-collapse: collapse; }
+    th, td { padding: 13px 15px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-size: .84rem; }
+    th { color: var(--muted); background: #faf6f8; font-size: .69rem; letter-spacing: .06em; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    td strong { color: var(--brand-dark); }
+    .matrix-button { display: grid; gap: 2px; width: 100%; min-width: 112px; padding: 9px 10px; border: 1px solid transparent; border-radius: 10px; color: var(--brand-dark); background: transparent; text-align: left; }
+    .matrix-button:hover { border-color: #dcc9d0; background: var(--brand-soft); }
+    .matrix-button strong { font-size: .92rem; }
+    .matrix-button small { color: var(--muted); font-size: .68rem; }
+    .matrix-lowest { color: var(--good); font-size: .64rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
+    .boundary-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 13px; }
+    .boundary-card { padding: 18px; }
+    .boundary-card p { margin: 7px 0 0; color: var(--muted); font-size: .83rem; }
+    .source-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; }
+    .source-card { display: flex; justify-content: space-between; gap: 16px; padding: 14px 16px; }
+    .source-card span { color: var(--muted); font-size: .77rem; }
+    footer { padding: 26px 0 34px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+    @media (max-width: 900px) {
+      .hero, .decision { grid-template-columns: 1fr; }
+      .controls, .summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .boundary-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .shell { width: min(100% - 22px,1200px); }
+      .topline { align-items: flex-start; }
+      .mast-links { display: grid; justify-items: end; gap: 5px; }
+      .hero { padding-top: 36px; }
+      .provider-grid, .controls, .summary-grid, .source-grid { grid-template-columns: 1fr; }
+      .section-head { display: grid; }
+      .provider-copy { min-height: 0; }
+      .provider-footer { display: grid; }
+    }
+    @media print {
+      .masthead { color: var(--ink); background: #fff; }
+      .hero-copy, .mast-links a { color: var(--muted); }
+      .panel { display: none; }
+      .provider { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="shell">
+      <div class="topline">
+        <div class="brand"><span class="brand-mark">CW</span><span>CampusWeave</span></div>
+        <nav class="mast-links" aria-label="Related cost pages">
+          <a href="campusweave-cost-comparison.html">Selected architecture</a>
+          <a href="campusweave-high-level-master.html">Architecture</a>
+        </nav>
+      </div>
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Alternative platform cost simulator</p>
+          <h1>Compare the bill. Keep the exit visible.</h1>
+          <p class="hero-copy">A directional monthly comparison of Supabase, Firebase, Zoho Catalyst and AWS for CampusWeave—from one preschool to regional scale.</p>
+        </div>
+        <aside class="hero-note">
+          <strong>Decision boundary</strong>
+          <p>Platform price is only one axis. Relational fit, operational labour, auditability and migration exposure determine the ten-year cost.</p>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="notice" role="note"><span aria-hidden="true">⚠</span><div><strong>Planning estimate—not a vendor quote.</strong> Prices vary by region, exchange rate, architecture and negotiated messaging contracts. Firebase and Zoho usage billing are especially workload-sensitive.</div></div>
+
+    <section class="section" aria-labelledby="model-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Interactive assumptions</p><h2 id="model-title">Model the operating workload</h2></div>
+        <p>Choose a preset, then alter the drivers. All results update locally in the browser; nothing is submitted.</p>
+      </div>
+      <div class="panel">
+        <div class="preset-row" aria-label="Workload presets">
+          <button class="preset" type="button" data-preset="prepilot" aria-pressed="true">Pre-pilot</button>
+          <button class="preset" type="button" data-preset="pilot" aria-pressed="false">Pilot</button>
+          <button class="preset" type="button" data-preset="growth" aria-pressed="false">Growth</button>
+          <button class="preset" type="button" data-preset="scale" aria-pressed="false">Scale</button>
+        </div>
+        <div class="controls">
+          <label><span class="input-heading"><span>Schools</span><output id="schools-output">1</output></span><input id="schools" type="range" min="1" max="300" step="1" value="1"></label>
+          <label><span class="input-heading"><span>Students</span><output id="students-output">100</output></span><input id="students" type="range" min="100" max="90000" step="100" value="100"></label>
+          <label><span class="input-heading"><span>Monthly data operations</span><output id="operations-output">40,000</output></span><input id="operations" type="range" min="10000" max="50000000" step="10000" value="40000"></label>
+          <label><span class="input-heading"><span>Private documents</span><output id="storage-output">5 GB</output></span><input id="storage" type="range" min="1" max="2000" step="1" value="5"></label>
+          <label>Reliability baseline<select id="reliability"><option value="lean">Lean validation</option><option value="production">Production managed</option><option value="ha">High availability + recovery</option></select></label>
+          <label>Deployment environments<select id="environments"><option value="1">Production only</option><option value="2" selected>Production + staging</option><option value="3">Production + staging + test</option></select></label>
+          <label>Planning exchange rate ₹ / USD<input id="fx" type="number" min="1" step="0.1" value="90" inputmode="decimal"></label>
+          <label>Decision lens<select id="lens"><option value="balanced">Balanced ten-year fit</option><option value="cash">Lowest launch bill</option><option value="speed">Fastest pilot delivery</option><option value="control">Control and portability</option></select></label>
+          <label>WhatsApp messages / month<input id="whatsapp-volume" type="number" min="0" step="100" value="200" inputmode="numeric"></label>
+          <label>Contracted WhatsApp ₹ / message<input id="whatsapp-rate" type="number" min="0" step="0.01" value="0" inputmode="decimal"></label>
+          <label>SMS messages / month<input id="sms-volume" type="number" min="0" step="100" value="50" inputmode="numeric"></label>
+          <label>Contracted SMS ₹ / message<input id="sms-rate" type="number" min="0" step="0.01" value="0" inputmode="decimal"></label>
+          <label>Gemini tasks / month<input id="ai-volume" type="number" min="0" step="100" value="500" inputmode="numeric"></label>
+          <label>Planning Gemini ₹ / task<input id="ai-rate" type="number" min="0" step="0.01" value="0" inputmode="decimal"></label>
+          <label>Monthly payment collection ₹<input id="collection" type="number" min="0" step="10000" value="0" inputmode="numeric"></label>
+          <label>Payment gateway MDR %<input id="mdr" type="number" min="0" max="10" step="0.01" value="0" inputmode="decimal"></label>
+          <label><span>Cost boundary</span><span class="toggle"><input id="include-common" type="checkbox" checked>Include messaging, AI and MDR</span></label>
+          <label><span>Comparison mode</span><span class="toggle"><input id="annual-view" type="checkbox">Show annual totals</span></label>
+        </div>
+        <p class="assumption-note">₹0 rates intentionally exclude uncontracted WhatsApp, SMS, AI and payment charges. The platform model includes frontend delivery, application runtime, database, authentication, documents and basic monitoring; staffing remains outside the total.</p>
+      </div>
+      <div class="summary-grid" aria-live="polite">
+        <div class="summary-card"><span>Selected workload</span><strong id="summary-workload">1 school · 100 students</strong></div>
+        <div class="summary-card"><span>Common variable charges</span><strong id="summary-common">₹0 / month</strong></div>
+        <div class="summary-card"><span>Lowest platform estimate</span><strong id="summary-lowest">—</strong></div>
+        <div class="summary-card"><span>Recommended by lens</span><strong id="summary-recommended">Supabase</strong></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="results-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Calculated comparison</p><h2 id="results-title">Monthly provider estimate</h2></div>
+        <p>The uncertainty band is deliberately visible. Usage-based platforms need production telemetry before budgeting to a single number.</p>
+      </div>
+      <div class="provider-grid" id="provider-grid"></div>
+    </section>
+
+    <section class="section" aria-labelledby="matrix-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Like-for-like monthly view</p><h2 id="matrix-title">Four fixed planning workloads</h2></div>
+        <p>These totals use each phase’s intended reliability baseline and two environments. Select any amount to load that scenario into the calculator above.</p>
+      </div>
+      <div class="table-wrap" role="region" aria-label="Provider cost by CampusWeave workload" tabindex="0">
+        <table>
+          <thead><tr><th>Provider</th><th>Pre-pilot<br>1 school · 100 students</th><th>Pilot<br>5 schools · 1,500 students</th><th>Growth<br>50 schools · 15,000 students</th><th>Scale<br>300 schools · 90,000 students</th><th>Billing risk</th></tr></thead>
+          <tbody id="scenario-matrix-body"></tbody>
+        </table>
+      </div>
+      <p class="assumption-note">Platform totals exclude WhatsApp, SMS, Gemini, payment MDR, taxes and staffing. “Lowest” describes the calculated infrastructure estimate only—not the recommended architecture.</p>
+    </section>
+
+    <section class="section" aria-labelledby="decision-title">
+      <div class="decision">
+        <div class="decision-choice"><span id="decision-label">Balanced ten-year fit</span><strong id="decision-choice">AWS production · Supabase pre-pilot</strong></div>
+        <p id="decision-copy">Use Supabase to validate one preschool only if the API and PostgreSQL schema remain portable. Use AWS with Spring Boot and managed PostgreSQL once external schools depend on recovery, audit and operational control.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="comparison-title">
+      <div class="section-head">
+        <div><p class="eyebrow">Cost beyond the invoice</p><h2 id="comparison-title">Ten-year economic comparison</h2></div>
+        <p>A cheap first invoice can produce an expensive rewrite. This table keeps non-cloud costs in the decision.</p>
+      </div>
+      <div class="table-wrap" role="region" aria-label="Ten-year platform comparison" tabindex="0">
+        <table>
+          <thead><tr><th>Platform</th><th>Canonical data fit</th><th>Launch effort</th><th>Cost predictability</th><th>Lock-in / exit</th><th>Best role</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Supabase</strong></td><td>Strong: PostgreSQL, PostGIS and pgvector</td><td>Low–medium</td><td>Good base plan; compute and recovery add-ons</td><td>Moderate; database remains portable</td><td>Paid pre-pilot or managed PostgreSQL layer</td></tr>
+            <tr><td><strong>Firebase</strong></td><td>Weak–medium for relational ERP; document model</td><td>Low</td><td>Reads, writes, indexes and egress vary with behaviour</td><td>High canonical-data rewrite exposure</td><td>Mobile delivery, analytics and notification adjunct</td></tr>
+            <tr><td><strong>Zoho Catalyst</strong></td><td>Medium; relational-style proprietary Data Store</td><td>Low–medium</td><td>Usage based; verify account currency and minimums</td><td>High ZCQL and SDK dependency</td><td>Zoho-standardised school customers</td></tr>
+            <tr><td><strong>AWS</strong></td><td>Strong: managed PostgreSQL plus portable Spring domain</td><td>Highest</td><td>More fixed baseline; many tunable services</td><td>Moderate; containers and PostgreSQL preserve exits</td><td>Committed multi-school production</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="excluded-title">
+      <div class="section-head"><div><p class="eyebrow">Budget boundary</p><h2 id="excluded-title">Not included in platform totals</h2></div></div>
+      <div class="boundary-grid">
+        <article class="boundary-card"><h3>People and implementation</h3><p>Product discovery, UX, engineering compensation, QA, DevOps, support, training, data migration and school onboarding.</p></article>
+        <article class="boundary-card"><h3>Assurance and incidents</h3><p>Legal/privacy advice, security tests, certifications, cyber insurance, 24×7 on-call and retained incident-response services.</p></article>
+        <article class="boundary-card"><h3>Unmodelled vendors</h3><p>Taxes, domains, native app fees, malware scanning, OCR, e-signatures, biometric systems, accounting integrations, refunds and chargebacks.</p></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="sources-title">
+      <div class="section-head"><div><p class="eyebrow">Official evidence</p><h2 id="sources-title">Recheck before procurement</h2></div><p>Pricing and free tiers change. Open the relevant calculator with the final region and measured workload.</p></div>
+      <div class="source-grid">
+        <a class="source-card" href="https://supabase.com/pricing" target="_blank" rel="noreferrer"><b>Supabase pricing</b><span>Plans, compute, storage ↗</span></a>
+        <a class="source-card" href="https://firebase.google.com/docs/firestore/pricing" target="_blank" rel="noreferrer"><b>Firebase / Firestore</b><span>Operations and storage ↗</span></a>
+        <a class="source-card" href="https://catalyst.zoho.com/pricing.html" target="_blank" rel="noreferrer"><b>Zoho Catalyst</b><span>AppSail and backend usage ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/rds/postgresql/pricing/" target="_blank" rel="noreferrer"><b>AWS RDS PostgreSQL</b><span>Database pricing ↗</span></a>
+        <a class="source-card" href="https://aws.amazon.com/fargate/pricing/" target="_blank" rel="noreferrer"><b>AWS Fargate</b><span>Spring runtime compute ↗</span></a>
+        <a class="source-card" href="https://calculator.aws/" target="_blank" rel="noreferrer"><b>AWS Pricing Calculator</b><span>Region-specific quote ↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="shell">CampusWeave alternative platform planning model · Assumptions reviewed 25 Aug 2026 · Replace estimates with invoices and telemetry after launch.</div></footer>
+
+  <script>
+    const presets = {
+      prepilot: { schools: 1, students: 100, operations: 40000, storage: 5, whatsapp: 200, sms: 50, ai: 500, reliability: "lean" },
+      pilot: { schools: 5, students: 1500, operations: 900000, storage: 25, whatsapp: 2000, sms: 500, ai: 5000, reliability: "production" },
+      growth: { schools: 50, students: 15000, operations: 12000000, storage: 200, whatsapp: 50000, sms: 5000, ai: 50000, reliability: "production" },
+      scale: { schools: 300, students: 90000, operations: 50000000, storage: 2000, whatsapp: 500000, sms: 25000, ai: 250000, reliability: "ha" }
+    };
+
+    const metadata = {
+      supabase: { name: "Supabase", mark: "S", copy: "Portable PostgreSQL foundation with managed auth, storage and realtime. Complex school rules still need an application boundary.", lockIn: "Moderate", fit: "Strong relational fit" },
+      firebase: { name: "Firebase", mark: "F", copy: "Fast mobile and realtime delivery, but document-operation billing and canonical ERP reporting need careful modelling.", lockIn: "High", fit: "Weak–medium ERP fit" },
+      zoho: { name: "Zoho Catalyst", mark: "Z", copy: "Managed AppSail plus a proprietary relational-style Data Store. Zoho Creator is not used as the system-of-record model.", lockIn: "High", fit: "Medium relational fit" },
+      aws: { name: "AWS", mark: "A", copy: "Spring Boot, managed PostgreSQL, object storage and queues with the strongest production control—and the highest baseline.", lockIn: "Moderate", fit: "Strong relational fit" }
+    };
+
+    const recommendations = {
+      balanced: { key: "aws", label: "Balanced ten-year fit", choice: "AWS production · Supabase pre-pilot", copy: "Use Supabase to validate one preschool only if the API and PostgreSQL schema remain portable. Use AWS with Spring Boot and managed PostgreSQL once external schools depend on recovery, audit and operational control." },
+      cash: { key: "supabase", label: "Lowest launch bill", choice: "Supabase for the paid pre-pilot", copy: "Keep one multi-tenant PostgreSQL database, avoid direct browser ownership of sensitive workflow rules, and define an exit test before the second external school is onboarded." },
+      speed: { key: "supabase", label: "Fastest pilot delivery", choice: "Supabase with a strict service boundary", copy: "Supabase minimises initial platform work while preserving PostgreSQL. Firebase can be faster for isolated mobile features, but it creates a worse canonical ERP data fit." },
+      control: { key: "aws", label: "Control and portability", choice: "AWS with Spring Boot + PostgreSQL", copy: "Package the application as containers, keep domain modules provider-neutral, use PostgreSQL as the canonical record and add managed AWS services only where they remove measured operational risk." }
+    };
+
+    const ids = ["schools","students","operations","storage","reliability","environments","fx","lens","whatsapp-volume","whatsapp-rate","sms-volume","sms-rate","ai-volume","ai-rate","collection","mdr","include-common","annual-view"];
+    const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const providerGrid = document.getElementById("provider-grid");
+    const integer = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
+
+    function value(id, fallback = 0) {
+      const parsed = Number(el[id].value);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+    }
+
+    function inr(amount) {
+      return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: amount < 1000 ? 0 : 0 }).format(amount);
+    }
+
+    function usd(amount) {
+      return `$${amount.toLocaleString("en-US", { maximumFractionDigits: amount < 100 ? 2 : 0 })}`;
+    }
+
+    function calculatePlatformCosts({ students, operations, storage, environments, reliability }) {
+      const mau = students * 1.35;
+      const egress = Math.max(2, storage * .35);
+
+      const supabaseRuntime = 25 + Math.max(0, environments - 1) * 10 + (students > 50000 ? 400 : students > 15000 ? 150 : students > 2000 ? 50 : 0);
+      const supabaseData = Math.max(0, storage - 100) * .0213 + Math.max(0, egress - 250) * .03 + Math.max(0, mau - 100000) * .00325;
+      const supabaseRecovery = reliability === "ha" ? 100 : 0;
+
+      const firebaseReads = operations * .7;
+      const firebaseWrites = operations * .25;
+      const firebaseDeletes = operations * .05;
+      const firebaseData = Math.max(0, firebaseReads - 1500000) / 100000 * .06 + Math.max(0, firebaseWrites - 600000) / 100000 * .18 + Math.max(0, firebaseDeletes - 600000) / 100000 * .02 + Math.max(0, storage - 5) * .026 + egress * .12;
+      const firebaseRuntime = 5 + operations / 1000000 * .4 + Math.max(0, environments - 1) * 5;
+      const firebaseOps = reliability === "lean" ? 0 : reliability === "production" ? 20 : 70;
+
+      const zohoRuntime = 22 + (students > 30000 ? 90 : students > 3000 ? 45 : 15) + Math.max(0, environments - 1) * 12;
+      const zohoData = operations / 1000000 * 5.8 + storage * .02;
+      const zohoOps = reliability === "lean" ? 0 : reliability === "production" ? 18 : 55;
+
+      const awsScale = Math.max(.15, Math.pow(students / 1500, .42));
+      const awsRuntime = reliability === "lean" ? 28 + 25 * awsScale : 82 + 95 * awsScale;
+      const awsData = reliability === "lean" ? 34 + storage * .023 : reliability === "production" ? 128 + 120 * Math.max(0, awsScale - 1) + storage * .023 : 255 + 185 * Math.max(0, awsScale - 1) + storage * .023;
+      const awsOps = 20 + operations / 1000000 * 1.7 + Math.max(0, environments - 1) * 35;
+
+      return {
+        supabase: { runtime: supabaseRuntime, data: supabaseData, ops: supabaseRecovery, uncertainty: .22 },
+        firebase: { runtime: firebaseRuntime, data: firebaseData, ops: firebaseOps, uncertainty: .38 },
+        zoho: { runtime: zohoRuntime, data: zohoData, ops: zohoOps, uncertainty: .42 },
+        aws: { runtime: awsRuntime, data: awsData, ops: awsOps, uncertainty: .18 }
+      };
+    }
+
+    function platformCosts() {
+      return calculatePlatformCosts({
+        students: value("students", 100),
+        operations: value("operations", 40000),
+        storage: value("storage", 5),
+        environments: value("environments", 2),
+        reliability: el.reliability.value,
+      });
+    }
+
+    function renderScenarioMatrix(fx) {
+      const scenarioOrder = ["prepilot", "pilot", "growth", "scale"];
+      const providerOrder = ["supabase", "firebase", "zoho", "aws"];
+      const billingRisk = {
+        supabase: "Moderate · plan plus compute and recovery add-ons",
+        firebase: "High · document operations, indexes and egress",
+        zoho: "High · per-operation billing and proprietary services",
+        aws: "Moderate · higher fixed baseline with tunable services",
+      };
+      const matrix = Object.fromEntries(providerOrder.map(key => [key, {}]));
+
+      scenarioOrder.forEach(name => {
+        const scenario = presets[name];
+        const costs = calculatePlatformCosts({ ...scenario, environments: 2 });
+        providerOrder.forEach(key => {
+          const item = costs[key];
+          matrix[key][name] = (item.runtime + item.data + item.ops) * fx;
+        });
+      });
+
+      const lowest = Object.fromEntries(scenarioOrder.map(name => [name, Math.min(...providerOrder.map(key => matrix[key][name]))]));
+      document.getElementById("scenario-matrix-body").innerHTML = providerOrder.map(key => `<tr>
+        <td><strong>${metadata[key].name}</strong><br><small>${metadata[key].fit}</small></td>
+        ${scenarioOrder.map(name => `<td><button class="matrix-button" type="button" data-apply-preset="${name}" aria-label="Load ${name} scenario"><strong>${inr(matrix[key][name])}</strong><small>${usd(matrix[key][name] / fx)} / month</small>${matrix[key][name] === lowest[name] ? `<span class="matrix-lowest">Lowest estimate</span>` : ""}</button></td>`).join("")}
+        <td>${billingRisk[key]}</td>
+      </tr>`).join("");
+    }
+
+    function commonCost() {
+      if (!el["include-common"].checked) return 0;
+      return value("whatsapp-volume") * value("whatsapp-rate") + value("sms-volume") * value("sms-rate") + value("ai-volume") * value("ai-rate") + value("collection") * value("mdr") / 100;
+    }
+
+    function render() {
+      const fx = Math.max(1, value("fx", 90));
+      const multiplier = el["annual-view"].checked ? 12 : 1;
+      const period = el["annual-view"].checked ? "year" : "month";
+      const common = commonCost();
+      const costs = platformCosts();
+      const rec = recommendations[el.lens.value];
+      const entries = Object.entries(costs).map(([key, item]) => {
+        const platformUsd = item.runtime + item.data + item.ops;
+        const totalInr = (platformUsd * fx + common) * multiplier;
+        return { key, ...item, platformUsd, totalInr };
+      }).sort((a,b) => a.totalInr - b.totalInr);
+      const max = Math.max(...entries.map(item => item.totalInr), 1);
+
+      providerGrid.innerHTML = entries.map(item => {
+        const meta = metadata[item.key];
+        const low = Math.max(0, item.totalInr * (1 - item.uncertainty));
+        const high = item.totalInr * (1 + item.uncertainty);
+        const recommended = item.key === rec.key;
+        return `<article class="provider${recommended ? " recommended" : ""}">
+          <div class="provider-head"><div class="provider-title"><span class="provider-mark">${meta.mark}</span><h3>${meta.name}</h3></div>${recommended ? `<span class="badge">Lens choice</span>` : ""}</div>
+          <p class="provider-copy">${meta.copy}</p>
+          <div class="cost-main"><div><span>Estimated total / ${period}</span><strong>${inr(item.totalInr)}</strong><small>${usd(item.totalInr / fx)} equivalent</small></div><small>${inr(low)}–${inr(high)}<br>planning band</small></div>
+          <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="width:${Math.max(5, item.totalInr / max * 100).toFixed(1)}%"></div></div>
+          <ul class="breakdown">
+            <li><span>Application runtime</span><b>${inr(item.runtime * fx * multiplier)}</b></li>
+            <li><span>Database, auth and documents</span><b>${inr(item.data * fx * multiplier)}</b></li>
+            <li><span>Reliability and operational allowance</span><b>${inr(item.ops * fx * multiplier)}</b></li>
+            <li><span>Common messaging, AI and MDR</span><b>${inr(common * multiplier)}</b></li>
+          </ul>
+          <div class="provider-footer"><span><b>Data fit:</b> ${meta.fit}</span><span><b>Exit exposure:</b> ${meta.lockIn}</span></div>
+        </article>`;
+      }).join("");
+
+      document.getElementById("schools-output").textContent = integer.format(value("schools"));
+      document.getElementById("students-output").textContent = integer.format(value("students"));
+      document.getElementById("operations-output").textContent = integer.format(value("operations"));
+      document.getElementById("storage-output").textContent = `${integer.format(value("storage"))} GB`;
+      document.getElementById("summary-workload").textContent = `${integer.format(value("schools"))} schools · ${integer.format(value("students"))} students`;
+      document.getElementById("summary-common").textContent = `${inr(common * multiplier)} / ${period}`;
+      document.getElementById("summary-lowest").textContent = `${metadata[entries[0].key].name} · ${inr(entries[0].totalInr)}`;
+      document.getElementById("summary-recommended").textContent = metadata[rec.key].name;
+      document.getElementById("decision-label").textContent = rec.label;
+      document.getElementById("decision-choice").textContent = rec.choice;
+      document.getElementById("decision-copy").textContent = rec.copy;
+      document.getElementById("results-title").textContent = `${el["annual-view"].checked ? "Annual" : "Monthly"} provider estimate`;
+      renderScenarioMatrix(fx);
+    }
+
+    function applyPreset(name) {
+      const preset = presets[name];
+      el.schools.value = preset.schools;
+      el.students.value = preset.students;
+      el.operations.value = preset.operations;
+      el.storage.value = preset.storage;
+      el["whatsapp-volume"].value = preset.whatsapp;
+      el["sms-volume"].value = preset.sms;
+      el["ai-volume"].value = preset.ai;
+      el.reliability.value = preset.reliability;
+      document.querySelectorAll(".preset").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.preset === name)));
+      render();
+    }
+
+    document.querySelectorAll(".preset").forEach(button => button.addEventListener("click", () => applyPreset(button.dataset.preset)));
+    document.getElementById("scenario-matrix-body").addEventListener("click", event => {
+      const button = event.target.closest("[data-apply-preset]");
+      if (button) applyPreset(button.dataset.applyPreset);
+    });
+    Object.values(el).forEach(input => input.addEventListener("input", () => {
+      document.querySelectorAll(".preset").forEach(button => button.setAttribute("aria-pressed", "false"));
+      render();
+    }));
+    render();
+  </script>
+</body>
+</html>
