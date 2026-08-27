@@ -40,8 +40,9 @@ h2{margin:0 0 8px;font-size:clamp(26px,3.4vw,44px);line-height:1.08;letter-spaci
 .sys-box{padding:16px 18px;border-radius:14px;border:1px solid var(--line);background:var(--surface);min-width:150px;box-shadow:0 8px 24px rgba(62,31,43,.05)}
 .sys-box b{display:block;font-size:14.5px;color:var(--brand-dark)}
 .sys-box span{display:block;margin-top:4px;color:var(--muted-solid);font-size:11.5px}
-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
-th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:14px}
+table{width:100%;min-width:480px;border-collapse:collapse;background:var(--surface);border:none;font-size:14px}
+th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;word-break:break-word}
 th{background:var(--brand-soft);color:var(--brand-dark);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
 tr:last-child td{border-bottom:0}
 td b{color:var(--brand-dark)}
@@ -72,6 +73,15 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
 @media (max-width:900px){
   .pillars,.grid2{grid-template-columns:1fr}
   .slide{padding:90px 22px 90px}
+}
+@media (max-width:640px){
+  .slide{padding:80px 16px 84px}
+  .chrome{padding:10px 12px;justify-content:center;gap:14px}
+  .chrome-left{display:none}
+  .dots{display:none}
+  .cost-bar-row{grid-template-columns:70px 1fr 70px;font-size:11px}
+  .system-flow{gap:8px}
+  .sys-box{min-width:120px;padding:12px 14px}
 }
 @media print{
   .chrome{display:none}
@@ -107,7 +117,7 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
     <p class="eyebrow">Competitive landscape</p>
     <h2>Every player here is a specialist in one surface. We're betting on four, combined.</h2>
     <div class="slide-body">
-      <table>
+      <div class="table-wrap"><table>
         <thead><tr><th>Surface</th><th>Existing players</th><th>What they don't do</th></tr></thead>
         <tbody>
           <tr><td><b>School discovery &amp; comparison</b><br><span style="color:var(--muted-solid);font-size:12.5px">parent-facing</span></td><td>Ezyschooling (12,000+ schools listed, 1M+ parent interactions), EduStoke ($687K raised), Skoolz</td><td>School operations, admissions CRM</td></tr>
@@ -115,7 +125,7 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
           <tr><td><b>School ERP / operations</b></td><td>Entab (~15–20% of India's school ERP market, directional), Fedena, Teachmint</td><td>Admissions marketing, discovery</td></tr>
           <tr><td><b>Commerce &amp; vendor coordination</b></td><td>No integrated platform identified — fragmented, vendor-by-vendor</td><td>Everything, currently</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="callout">No single competitor combines discovery + admissions CRM + ERP + commerce with shared data across all four. That's the actual bet — not a better version of any one of these products.</div>
       <p class="foot-note">Compiled from public company profiles, funding databases (Crunchbase, Tracxn) and industry write-ups. No audited, vendor-level market-share data exists for this space — the Entab figure is from an industry listicle, not an audited report; treat all scale figures here as directional, not final.</p>
     </div>
@@ -292,14 +302,14 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
     <p class="eyebrow">The obvious fast option</p>
     <h2>Firebase is fast to start and expensive to grow out of.</h2>
     <div class="slide-body">
-      <table>
+      <div class="table-wrap"><table>
         <thead><tr><th>Dimension</th><th>Supabase (our choice)</th><th>Firebase</th></tr></thead>
         <tbody>
           <tr><td>Relational fit</td><td><b>Strong</b> — real PostgreSQL, PostGIS, pgvector</td><td>Weak–medium — document model fights relational reporting</td></tr>
           <tr><td>Cost predictability</td><td><b>Good</b> — base plan plus compute add-ons</td><td>Workload-sensitive — bills per read/write/delete/index</td></tr>
           <tr><td>Exit exposure</td><td><b>Moderate</b> — database stays portable SQL</td><td>High — a later migration means re-modeling the data, not moving it</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="why" style="margin-top:18px"><b>Why it matters:</b> our core asset — admissions, payments, seat allocation, funnel/attribution analytics — is exactly the transactional, audit-heavy, relational workload Firestore is weakest at. It's genuinely cheaper at Pre-pilot (~$0–2/month); the curve inverts by Growth as query complexity rises with no matching drop in per-operation billing.</div>
     </div>
   </section>
@@ -309,7 +319,7 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
     <p class="eyebrow">Built for the actual market</p>
     <h2>Four choices made for this market, not a generic default.</h2>
     <div class="slide-body">
-      <table>
+      <div class="table-wrap"><table>
         <thead><tr><th>Decision</th><th>Chosen</th><th>Why over the generic default</th></tr></thead>
         <tbody>
           <tr><td>OTP delivery</td><td><b>MSG91</b></td><td>~5x cheaper than Firebase Auth phone (₹0.15–0.20 vs ≈₹0.90/verification) and handles India's mandatory DLT/TRAI template registration as standard</td></tr>
@@ -317,7 +327,7 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
           <tr><td>Maps &amp; geocoding</td><td><b>Google Maps</b></td><td>Trusted brand and data quality; generous free tier still covers Pre-pilot/Pilot volume at $0. (Ola Maps evaluated as the lower-cost India-native option — chose brand trust here instead.)</td></tr>
           <tr><td>Messaging priority</td><td><b>WhatsApp-first</b></td><td>Matches how this parent segment actually reads messages, not a generic email/push default</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </section>
 
@@ -326,14 +336,14 @@ code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9
     <p class="eyebrow">What it costs to run</p>
     <h2>Runway math, not just an engineering preference.</h2>
     <div class="slide-body">
-      <table>
+      <div class="table-wrap"><table>
         <thead><tr><th>Stack</th><th>Pre-pilot<br>1 school · 100 students</th><th>Pilot<br>5 schools · 1,500 students</th><th>Growth<br>50 schools · 15,000 students</th><th>Scale<br>300 schools · 90,000 students</th></tr></thead>
         <tbody>
           <tr><td><b>Our stack</b><br>Kotlin/Spring Boot (Cloud Run) + Supabase + Cloudflare</td><td>$45.45 <span class="badge">Lowest</span></td><td>$47.40 <span class="badge">Lowest</span></td><td>$141.85 <span class="badge">Lowest</span></td><td>$916.40 <span class="badge">Lowest</span></td></tr>
           <tr><td>AWS (same Kotlin/Spring Boot container, on Fargate)</td><td>$86.67</td><td>$389.09</td><td>$716.72</td><td>$1,803.14</td></tr>
           <tr><td>Firebase</td><td>≈$0–2 <span class="badge">directional</span></td><td>≈$10–12 <span class="badge">directional</span></td><td>Not modeled <span class="badge warn">inverts</span></td><td>Not modeled <span class="badge warn">inverts</span></td></tr>
         </tbody>
-      </table>
+      </table></div>
       <div class="callout">At Pilot tier, our stack saves <b>$342/month</b> versus the AWS default — roughly <b>four extra months</b> of a founding engineer's salary, reinvested before Series A instead of spent on infrastructure the product hasn't earned yet.</div>
       <p class="foot-note">Sourced from <code>CAMPUSWEAVE_COST_COMPARISON.md</code> (Architecture B vs. D) and the Firebase evaluation in <code>SCHOOL_PLATFORM_BLUEPRINT.md</code>. The "Our stack" row is carried over from that document's Vercel/Cloudflare-based figures as a directional proxy — Cloud Run's own pricing (pay-per-vCPU-second/memory, generous free tier, near-$0 idle with GraalVM native scale-to-zero) lands in the same order of magnitude but hasn't been individually re-priced line by line for this exact combination yet. The AWS figures were originally modeled with a Spring Boot service on Fargate, so they carry over unchanged here since compute is priced by vCPU/memory, not language or framework. Zoho Catalyst was also evaluated and ruled out early on proprietary Data Store/ZCQL lock-in — not benchmarked to this depth. All figures are planning estimates, not vendor quotes.</p>
     </div>

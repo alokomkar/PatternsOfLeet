@@ -7,6 +7,14 @@ html[data-theme="graphite"]{--ink:#191a1c;--muted:#686a70;--paper:#f3f3f4;--surf
 @media(max-width:1050px){.flow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.legend{grid-template-columns:repeat(2,minmax(0,1fr))}.flow-diagram{grid-template-columns:repeat(3,minmax(200px,1fr));overflow:visible}.stage:not(:last-child):after{display:none}}
 @media(max-width:720px){.topbar{padding-inline:14px}.brand small,.top-actions .button.secondary{display:none}.shell{width:min(100% - 24px,1380px)}.hero{padding-top:38px}.hero h1{font-size:42px}.hero-copy{font-size:15px}.section-head,.flow-hero{display:block}.section-head p{margin-top:7px;text-align:left}.nodes,.flow-grid,.legend,.review-grid,.flow-diagram{grid-template-columns:1fr}.flow-diagram{gap:12px}.stage{min-height:0}.theme{width:110px}.flow-card{min-height:155px}}
 @media print{.topbar,.flow-grid,footer{display:none}.hero{padding-top:20px}.shell{width:100%}.system-layer,.stage,.legend-item{break-inside:avoid;box-shadow:none}.flow-diagram{grid-template-columns:repeat(3,1fr);overflow:visible}}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:14px 0}
+.table-wrap table{width:100%;border-collapse:collapse;font-size:.83rem}
+.table-wrap th,.table-wrap td{padding:11px 13px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;word-break:break-word}
+.table-wrap th{background:var(--paper);color:var(--muted);font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.table-wrap tr:last-child td{border-bottom:0}
+.table-wrap td b{color:var(--brand)}
+.table-wrap code{font-size:.92em}
+@media(max-width:640px){.table-wrap table{font-size:.78rem}.table-wrap th,.table-wrap td{padding:9px 10px}}
 .architecture-visual{margin:10px 0 34px;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow)}
 .architecture-visual img{display:block;width:100%;height:auto;aspect-ratio:1672/941;object-fit:contain}
 .architecture-visual figcaption{display:flex;justify-content:space-between;gap:18px;padding:13px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
