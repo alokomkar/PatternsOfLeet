@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CampusWeave · Master Architecture Diagram</title>
+<style>
+  html,body{margin:0;background:#fbf8f6;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{width:1160px;margin:0 auto;padding:36px 0 30px}
+  figcaption{max-width:1000px;margin:14px auto 0;padding:0 30px;color:#6b5a62;font-size:13.5px;line-height:1.5;text-align:center}
+  .flows-head{margin:56px 0 6px;padding:0 4px}
+  .flows-head h2{margin:0;font-size:22px;color:#4b1027;letter-spacing:-.01em}
+  .flows-head p{margin:6px 0 0;color:#78667a;font-size:13.5px}
+  .flow-figure{margin:34px 0 0}
+  .flow-scroll{overflow-x:auto;border:1px solid #e7dbe1;border-radius:14px;background:#fff;padding:6px}
+  .flow-scroll svg{display:block}
+  .flow-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+  .flow-card{position:relative;display:flex;min-height:180px;flex-direction:column;padding:18px;border:1px solid #e7dbe1;border-radius:16px;background:#fff;text-decoration:none;transition:.17s ease}
+  .flow-card:hover{transform:translateY(-3px);border-color:#4b1027;box-shadow:0 16px 44px rgba(66,20,37,.11)}
+  .flow-index{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#4b1027;color:#fff;font-weight:900;font-size:13px}
+  .flow-card h3{margin:16px 0 7px;font-size:16px;line-height:1.25;color:#241820}
+  .flow-card p{margin:0 0 15px;color:#78667a;font-size:11.5px;line-height:1.5}
+  .flow-link{margin-top:auto;color:#4b1027;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+  @media(max-width:900px){.flow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:600px){.flow-grid{grid-template-columns:1fr}}
+  .perf-head{margin:56px 0 6px;padding:0 4px}
+  .perf-head h2{margin:0;font-size:22px;color:#4b1027;letter-spacing:-.01em}
+  .perf-head p{margin:6px 0 0;color:#78667a;font-size:13.5px;max-width:760px}
+  .perf-table-wrap{overflow-x:auto;border:1px solid #e7dbe1;border-radius:14px;background:#fff;margin-top:18px}
+  .perf-table{width:100%;min-width:760px;border-collapse:collapse;font-size:13px}
+  .perf-table th,.perf-table td{padding:12px 14px;border-bottom:1px solid #e7dbe1;text-align:left;vertical-align:top}
+  .perf-table th{background:#f7eaf0;color:#4b1027;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+  .perf-table tr:last-child td{border-bottom:0}
+  .perf-table td b{color:#4b1027}
+  .perf-callout{margin-top:18px;padding:16px 20px;border-radius:14px;background:#4b1027;color:#fff;font-size:13.5px;line-height:1.55}
+  .perf-callout b{color:#f4cb74}
+  .perf-callout + .perf-callout{margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<figure style="margin:0">
+<svg viewBox="0 0 1160 738" role="img" aria-label="CampusWeave master architecture: a request from the client PWA passes through Cloudflare edge protection into the Kotlin and Spring Boot application on Cloud Run, which reads and writes Supabase PostgreSQL as the system of record and Upstash Redis for ephemeral state, commits an outbox row that a scheduled poller claims, and dispatches outbound calls through provider adapters to MSG91, Razorpay, Google Maps, notification channels, Gemini and Cloudflare R2." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b1027"/>
+    </marker>
+    <marker id="arrowMuted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a7680"/>
+    </marker>
+  </defs>
+
+  <!-- title -->
+  <text x="580" y="26" text-anchor="middle" font-size="15" font-weight="800" fill="#4b1027" letter-spacing=".01em">CampusWeave — master architecture</text>
+
+  <!-- Client -->
+  <rect x="230" y="46" width="700" height="66" rx="14" fill="#ffffff" stroke="#e7dbe1" stroke-width="1.5"/>
+  <text x="580" y="74" text-anchor="middle" font-size="15" font-weight="800" fill="#241820">Client apps — React PWA</text>
+  <text x="580" y="96" text-anchor="middle" font-size="11.5" fill="#78667a">Parent · School / campus staff · Vendor · Platform admin</text>
+
+  <line x1="580" y1="112" x2="580" y2="148" stroke="#4b1027" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="596" y="134" font-size="11" fill="#4b1027">HTTPS request</text>
+
+  <!-- Edge -->
+  <rect x="180" y="148" width="800" height="66" rx="14" fill="#ffffff" stroke="#e7dbe1" stroke-width="1.5"/>
+  <line x1="580" y1="148" x2="580" y2="214" stroke="#e7dbe1" stroke-width="1.5"/>
+  <text x="380" y="176" text-anchor="middle" font-size="13.5" font-weight="750" fill="#241820">Cloudflare Pages</text>
+  <text x="380" y="196" text-anchor="middle" font-size="11" fill="#78667a">static app delivery, instant rollback</text>
+  <text x="780" y="176" text-anchor="middle" font-size="13.5" font-weight="750" fill="#241820">Cloudflare WAF</text>
+  <text x="780" y="196" text-anchor="middle" font-size="11" fill="#78667a">TLS, abuse control, routing</text>
+
+  <line x1="580" y1="214" x2="580" y2="252" stroke="#4b1027" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="596" y="238" font-size="11" fill="#4b1027">authenticated, filtered request</text>
+
+  <!-- Application -->
+  <rect x="160" y="252" width="840" height="118" rx="16" fill="#7f52ff" fill-opacity="0.08" stroke="#7f52ff" stroke-width="2"/>
+  <text x="580" y="284" text-anchor="middle" font-size="17" font-weight="850" fill="#4b1027">Kotlin + Spring Boot</text>
+  <text x="580" y="304" text-anchor="middle" font-size="11.5" fill="#5b3d8a">Google Cloud Run (Mumbai) · GraalVM native image · scale-to-zero</text>
+  <text x="580" y="330" text-anchor="middle" font-size="11" fill="#78667a">One modular monolith: Directory &amp; Family · Discovery &amp; Search · Admissions · Academics · Commerce &amp; Billing · Communications / Documents / AI copilot</text>
+  <text x="580" y="350" text-anchor="middle" font-size="10.5" font-style="italic" fill="#8a7680">same container redeploys to AWS Fargate unchanged if a compliance/scale trigger ever fires</text>
+
+  <!-- Application -> Data -->
+  <line x1="420" y1="370" x2="360" y2="428" stroke="#4b1027" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="300" y="404" font-size="11" fill="#4b1027">JDBC reads / writes</text>
+  <line x1="740" y1="370" x2="800" y2="428" stroke="#4b1027" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="770" y="404" font-size="11" fill="#4b1027">cache get / set</text>
+
+  <!-- Data -->
+  <rect x="180" y="428" width="380" height="82" rx="14" fill="#ffffff" stroke="#3ecf8e" stroke-width="1.5"/>
+  <text x="370" y="456" text-anchor="middle" font-size="13.5" font-weight="750" fill="#241820">Supabase PostgreSQL</text>
+  <text x="370" y="476" text-anchor="middle" font-size="10.5" fill="#78667a">system of record + outbox table</text>
+  <text x="370" y="494" text-anchor="middle" font-size="10.5" fill="#78667a">PostGIS · pgvector · row-level security</text>
+
+  <rect x="600" y="428" width="380" height="82" rx="14" fill="#ffffff" stroke="#00c98d" stroke-width="1.5"/>
+  <text x="790" y="456" text-anchor="middle" font-size="13.5" font-weight="750" fill="#241820">Upstash Redis</text>
+  <text x="790" y="476" text-anchor="middle" font-size="10.5" fill="#78667a">ephemeral cache, rate limits,</text>
+  <text x="790" y="494" text-anchor="middle" font-size="10.5" fill="#78667a">idempotency keys — never system of record</text>
+
+  <!-- outbox poller loop: stays left of the JDBC arrow, terminates on the Application box's bottom edge so it never crosses the box's own text -->
+  <path d="M 215 428 C 155 412, 155 388, 197 373" fill="none" stroke="#0e7490" stroke-width="1.6" stroke-dasharray="1 5" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <text x="12" y="392" font-size="10.5" fill="#0e7490">outbox row commits with</text>
+  <text x="12" y="405" font-size="10.5" fill="#0e7490">the write; poller claims it</text>
+  <text x="12" y="418" font-size="10.5" fill="#0e7490">every ~10s</text>
+
+  <!-- boundary -->
+  <line x1="60" y1="548" x2="1100" y2="548" stroke="#8a7680" stroke-width="1.2" stroke-dasharray="6 5"/>
+  <text x="580" y="540" text-anchor="middle" font-size="11" font-weight="750" fill="#8a7680">adapter boundary — everything below is swappable without touching domain logic</text>
+
+  <!-- trunk to bus, broken where it would cross the boundary label -->
+  <line x1="580" y1="370" x2="580" y2="530" stroke="#4b1027" stroke-width="1.6"/>
+  <line x1="580" y1="551" x2="580" y2="566" stroke="#4b1027" stroke-width="1.6"/>
+  <line x1="140" y1="566" x2="1020" y2="566" stroke="#4b1027" stroke-width="1.6"/>
+  <text x="8" y="580" font-size="10.5" fill="#4b1027">outbound calls,</text>
+  <text x="8" y="593" font-size="10.5" fill="#4b1027">one per provider adapter</text>
+
+  <!-- 6 provider drops -->
+  <!-- x centers: 140,316,492,668,844,1020 approx spaced -->
+  <g font-size="10.3" fill="#4b1027">
+    <line x1="140" y1="566" x2="140" y2="606" stroke="#4b1027" stroke-width="1.4" marker-end="url(#arrowMuted)"/>
+    <text x="140" y="600" text-anchor="middle">verify OTP</text>
+
+    <line x1="316" y1="566" x2="316" y2="606" stroke="#4b1027" stroke-width="1.4" marker-end="url(#arrowMuted)"/>
+    <text x="316" y="600" text-anchor="middle">charge &amp; verify</text>
+
+    <line x1="492" y1="566" x2="492" y2="606" stroke="#4b1027" stroke-width="1.4" marker-end="url(#arrowMuted)"/>
+    <text x="492" y="600" text-anchor="middle">geocode address</text>
+
+    <line x1="668" y1="566" x2="668" y2="606" stroke="#4b1027" stroke-width="1.4" marker-end="url(#arrowMuted)"/>
+    <text x="668" y="600" text-anchor="middle">deliver message</text>
+
+    <line x1="844" y1="566" x2="844" y2="606" stroke="#4b1027" stroke-width="1.4" marker-end="url(#arrowMuted)"/>
+    <text x="844" y="600" text-anchor="middle">extract / assist</text>
+
+    <line x1="1020" y1="566" x2="1020" y2="606" stroke="#4b1027" stroke-width="1.4" marker-end="url(#arrowMuted)"/>
+    <text x="1020" y="600" text-anchor="middle">store / fetch doc</text>
+  </g>
+
+  <!-- provider boxes -->
+  <g>
+    <rect x="70" y="608" width="140" height="66" rx="12" fill="#ffffff" stroke="#be185d" stroke-width="1.4"/>
+    <text x="140" y="634" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">MSG91</text>
+    <text x="140" y="652" text-anchor="middle" font-size="10" fill="#78667a">India OTP / SMS,</text>
+    <text x="140" y="664" text-anchor="middle" font-size="10" fill="#78667a">DLT-compliant</text>
+
+    <rect x="246" y="608" width="140" height="66" rx="12" fill="#ffffff" stroke="#0a2540" stroke-width="1.4"/>
+    <text x="316" y="634" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">Razorpay</text>
+    <text x="316" y="652" text-anchor="middle" font-size="10" fill="#78667a">UPI-first,</text>
+    <text x="316" y="664" text-anchor="middle" font-size="10" fill="#78667a">zero MDR on UPI</text>
+
+    <rect x="422" y="608" width="140" height="66" rx="12" fill="#ffffff" stroke="#4285f4" stroke-width="1.4"/>
+    <text x="492" y="634" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">Google Maps</text>
+    <text x="492" y="652" text-anchor="middle" font-size="10" fill="#78667a">geocoding feeds</text>
+    <text x="492" y="664" text-anchor="middle" font-size="10" fill="#78667a">PostGIS search</text>
+
+    <rect x="598" y="608" width="140" height="66" rx="12" fill="#ffffff" stroke="#25d366" stroke-width="1.4"/>
+    <text x="668" y="630" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">WhatsApp ·</text>
+    <text x="668" y="644" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">Push · Email</text>
+    <text x="668" y="662" text-anchor="middle" font-size="10" fill="#78667a">WhatsApp-first policy</text>
+
+    <rect x="774" y="608" width="140" height="66" rx="12" fill="#ffffff" stroke="#6d28d9" stroke-width="1.4"/>
+    <text x="844" y="634" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">Gemini</text>
+    <text x="844" y="652" text-anchor="middle" font-size="10" fill="#78667a">proposals only —</text>
+    <text x="844" y="664" text-anchor="middle" font-size="10" fill="#78667a">human approves writes</text>
+
+    <rect x="950" y="608" width="140" height="66" rx="12" fill="#ffffff" stroke="#f6821f" stroke-width="1.4"/>
+    <text x="1020" y="634" text-anchor="middle" font-size="12.5" font-weight="750" fill="#241820">Cloudflare R2</text>
+    <text x="1020" y="652" text-anchor="middle" font-size="10" fill="#78667a">private documents,</text>
+    <text x="1020" y="664" text-anchor="middle" font-size="10" fill="#78667a">S3-compatible</text>
+  </g>
+
+  <!-- legend note -->
+  <text x="580" y="712" text-anchor="middle" font-size="11" fill="#8a7680">No AWS anywhere above. Every box below the dashed line sits behind a replaceable adapter — none of it is a hard dependency of the domain logic.</text>
+
+</svg>
+<figcaption>A request enters through Cloudflare's edge, reaches the single Kotlin/Spring Boot application, and either commits directly to Supabase Postgres or falls through the outbox → scheduled-poller path before any external provider call is made. Everything below the dashed line is swappable without touching domain logic.</figcaption>
+</figure>
+
+<div class="flows-head">
+  <h2>Analytics &amp; AI insight</h2>
+  <p><a href="campusweave-analytics-architecture.html" style="color:#4b1027;font-weight:800">Open the analytics architecture →</a> — role × metrics for every actor, operational metrics per component above, the master funnel, and where AI generates reviewed proposals rather than automated actions.</p>
+</div>
+
+<div class="flows-head">
+  <h2>Database schema</h2>
+  <p><a href="campusweave-database-schema.html" style="color:#4b1027;font-weight:800">Open the database schema →</a> — 36 tables across 6 domain modules, cross-checked against all 8 flows below, with the core relationships (family, enquiry-to-admission, commerce, payments) drawn explicitly.</p>
+</div>
+
+<div class="flows-head">
+  <h2>Detailed flows</h2>
+  <p>Each flow has its own page: the stage diagram plus a request-sequence and failure-path diagram (actors, systems, API calls and responses).</p>
+</div>
+<div class="flow-grid">
+      <a class="flow-card" href="campusweave-flow-discovery-appointment.html"><span class="flow-index">1</span><h3>School discovery and appointment flow</h3><p>A parent provides exactly one search origin; PostGIS enforces the five-kilometre boundary before OTP registration and appointment creation.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-admissions.html"><span class="flow-index">2</span><h3>Enquiry-to-admission flow</h3><p>Source-attributed enquiries progress through counsellor, application, payment and admission gates without forcing parents to re-enter captured data.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-academics.html"><span class="flow-index">3</span><h3>Academics and parent visibility flow</h3><p>School staff publish tenant-, campus-, child- and term-scoped academic records; parents can only read information for verified relationships.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-commerce-vendors.html"><span class="flow-index">4</span><h3>Commerce and vendor fulfilment flow</h3><p>A child's school and enrolment determine catalogue eligibility; paid orders split into least-privilege vendor fulfilments.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-payments-emi.html"><span class="flow-index">5</span><h3>Fees, payment and EMI flow</h3><p>The server owns every payable amount. Signed provider callbacks update payment attempts, while separate business gates decide admission or fulfilment.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-notifications-documents.html"><span class="flow-index">6</span><h3>Notification and document flow</h3><p>Domain transactions emit durable work; private documents and paid communication channels remain purpose-, consent- and tenant-scoped.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-ai-analytics.html"><span class="flow-index">7</span><h3>Context-aware AI and analytics flow</h3><p>The assistant receives a deterministic tenant, role, child, school and screen context; retrieval is permission-filtered and writes require review.</p><span class="flow-link">Open detailed flow →</span></a>
+      <a class="flow-card" href="campusweave-flow-platform-security.html"><span class="flow-index">8</span><h3>Platform security, delivery and recovery flow</h3><p>Tenant isolation, immutable delivery, observability and rehearsed recovery surround every business flow rather than being added after launch.</p><span class="flow-link">Open detailed flow →</span></a>
+</div>
+
+<div class="perf-head">
+  <h2>Performance implications of Kotlin + Spring Boot vs. pure TypeScript</h2>
+  <p>CampusWeave's actual workload is I/O-bound CRUD — database reads/writes and calls to MSG91, Razorpay, Google Maps, Gemini and WhatsApp — not CPU-bound computation. For that profile the practical difference between the two stacks is small, and where a difference exists it doesn't uniformly favor TypeScript.</p>
+</div>
+<div class="perf-table-wrap">
+  <table class="perf-table">
+    <thead><tr><th>Dimension</th><th>Kotlin + Spring Boot (GraalVM native, Cloud Run)</th><th>Pure TypeScript (Node, Cloud Run)</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>Cold start</td><td>Sub-100–500ms with native compilation — the reason this stack was chosen</td><td>Also fast on Cloud Run, typically 100–300ms</td><td><b>Comparable</b> — the GraalVM choice specifically closed this gap</td></tr>
+      <tr><td>Warm request latency, I/O-bound work</td><td>Fast — this is what JVM concurrency is built for</td><td>Fast — this is what Node's event loop is built for</td><td><b>No meaningful difference</b> for CRUD/API-call-heavy work like this app</td></tr>
+      <tr><td>Using multiple vCPUs in one container</td><td>Real advantage — JVM threads (and Java 21+ virtual threads) use all cores natively in one process</td><td>Single-threaded per process; using &gt;1 vCPU well needs clustering/worker processes</td><td><b>Kotlin edge</b> — a 2-vCPU Cloud Run instance is simpler to actually use fully with Spring</td></tr>
+      <tr><td>Memory footprint</td><td>Native image is lean — comparable to Node, nowhere near a traditional JVM's overhead</td><td>Naturally lean</td><td><b>Comparable</b> — native compilation mostly erases Node's traditional advantage here</td></tr>
+      <tr><td>Consistent performance from request 1</td><td>Yes — AOT-compiled, no JIT warm-up curve</td><td>Yes — V8's warm-up is much less pronounced than a traditional JVM's anyway</td><td><b>Comparable</b>, both fine</td></tr>
+      <tr><td>Build / deploy time</td><td>Native image compilation takes minutes in CI, not seconds</td><td>Build/bundle is fast</td><td><b>TypeScript edge</b> — a developer-velocity cost, not a runtime one</td></tr>
+      <tr><td>Library compatibility</td><td>Occasional friction: reflection-heavy libraries need extra GraalVM config to compile natively</td><td>No such constraint</td><td><b>TypeScript edge</b>, but narrow — mainstream Spring libraries are officially native-supported in Spring Boot 4</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="perf-callout"><b>The one thing worth internalizing:</b> this isn't "JVM is slow, avoid it" — that reputation predates GraalVM native images and virtual threads. The actual trade made here was Kotlin's build-time tax (slower CI) in exchange for using the team's own language and getting genuinely better multi-core utilization per container — not a runtime performance sacrifice.</div>
+<div class="perf-callout"><b>Where it would matter differently:</b> if CampusWeave later adds something genuinely CPU-bound in-process — computing search-ranking scores over large result sets, or heavy in-app document processing instead of delegating to Gemini — Kotlin's true parallelism becomes a bigger, not smaller, advantage over Node's single-threaded model. Nothing in the current flows needs that yet, but it's a reason this choice ages well rather than needing revisiting.</div>
+
+</div>
+</body>
+</html>

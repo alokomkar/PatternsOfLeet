@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CampusWeave · Technology &amp; Investment Overview</title>
+<style>
+:root{
+  --ink:#241820; --muted:#78667040; --muted-solid:#7a6670; --paper:#f8f4f6; --surface:#fff; --line:#e7dbe1;
+  --brand:#731f3d; --brand-dark:#4b1027; --brand-soft:#f7eaf0; --accent:#d69a32; --good:#176a48; --bad:#9b3344;
+  --cf:#f6821f; --sb:#3ecf8e; --shadow:0 22px 60px rgba(75,16,39,.18);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#1c1216;color:var(--ink)}
+.deck{position:relative;width:100%;height:100%;overflow:hidden}
+.slide{
+  position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+  padding:min(6vw,72px) min(8vw,96px);background:var(--paper);overflow-y:auto;
+}
+.slide.active{display:flex}
+.eyebrow{margin:0 0 14px;color:var(--brand);font:850 12px/1.3 ui-monospace,SFMono-Regular,monospace;letter-spacing:.16em;text-transform:uppercase}
+h1{margin:0;font-size:clamp(40px,6.4vw,84px);line-height:.98;letter-spacing:-.05em;color:var(--brand-dark)}
+h2{margin:0 0 8px;font-size:clamp(26px,3.4vw,44px);line-height:1.08;letter-spacing:-.03em;max-width:20ch}
+.sub{max-width:60ch;margin:18px 0 0;color:var(--muted-solid);font-size:clamp(15px,1.4vw,19px);line-height:1.55}
+.slide-body{margin-top:34px}
+.pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:8px}
+.pillar{padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 8px 24px rgba(62,31,43,.05)}
+.pillar b{display:block;margin-bottom:6px;color:var(--brand-dark);font-size:16px}
+.pillar span{color:var(--muted-solid);font-size:14px;line-height:1.5}
+.flow-steps{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 20px}
+.flow-step{padding:10px 14px;border:1px solid var(--line);border-radius:11px;background:var(--surface);font-size:13.5px;font-weight:700;color:var(--brand-dark)}
+.flow-arrow{color:var(--brand);font-weight:900;font-size:16px}
+.tech-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:800;color:#fff}
+.why{padding:18px 20px;border-left:4px solid var(--brand);border-radius:0 14px 14px 0;background:var(--brand-soft);max-width:70ch}
+.why b{color:var(--brand-dark)}
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:start}
+.system-flow{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:20px}
+.sys-box{padding:16px 18px;border-radius:14px;border:1px solid var(--line);background:var(--surface);min-width:150px;box-shadow:0 8px 24px rgba(62,31,43,.05)}
+.sys-box b{display:block;font-size:14.5px;color:var(--brand-dark)}
+.sys-box span{display:block;margin-top:4px;color:var(--muted-solid);font-size:11.5px}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--brand-soft);color:var(--brand-dark);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+td b{color:var(--brand-dark)}
+.callout{margin-top:18px;padding:16px 20px;border-radius:14px;background:var(--brand-dark);color:#fff;font-size:15px;line-height:1.5}
+.callout b{color:#f4cb74}
+.cost-bars{display:grid;gap:10px;margin-top:6px}
+.cost-bar-row{display:grid;grid-template-columns:110px 1fr 90px;gap:12px;align-items:center;font-size:13px}
+.cost-bar-track{height:22px;border-radius:8px;background:#eee4e8;overflow:hidden}
+.cost-bar-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--brand),var(--accent))}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;background:var(--good);color:#fff;font-size:10.5px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}
+.badge.warn{background:var(--bad)}
+.foot-note{margin-top:22px;color:var(--muted-solid);font-size:12.5px}
+ul.plain{margin:10px 0 0;padding-left:20px;color:var(--muted-solid);font-size:14.5px;line-height:1.6}
+ul.plain li{margin-bottom:4px}
+code{background:var(--brand-soft);border-radius:5px;padding:1px 6px;font-size:.9em}
+
+/* chrome */
+.chrome{position:fixed;inset:auto 0 0 0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(28,18,22,.92);backdrop-filter:blur(10px)}
+.chrome-left{display:flex;align-items:center;gap:10px;color:#f3e6ea;font-size:12.5px;font-weight:750}
+.mark{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--brand-dark);font-weight:950;font-size:11px}
+.dots{display:flex;gap:7px}
+.dot{width:7px;height:7px;border-radius:999px;background:#5a4650;border:0;padding:0;cursor:pointer}
+.dot.active{background:var(--accent);width:20px;border-radius:5px}
+.nav-btn{min-width:38px;min-height:34px;border:1px solid #4d3a42;border-radius:9px;background:#2a1c22;color:#f3e6ea;font-weight:900;cursor:pointer}
+.nav-btn:hover{background:#3a2530}
+.counter{color:#c9b6bf;font-size:12px;font-variant-numeric:tabular-nums;min-width:46px;text-align:center}
+
+@media (max-width:900px){
+  .pillars,.grid2{grid-template-columns:1fr}
+  .slide{padding:90px 22px 90px}
+}
+@media print{
+  .chrome{display:none}
+  .deck{position:static;height:auto;overflow:visible}
+  .slide{position:static;display:flex!important;page-break-after:always;height:100vh}
+}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1: TITLE -->
+  <section class="slide active">
+    <p class="eyebrow">Technology &amp; Investment Overview · Draft, for discussion</p>
+    <h1>CampusWeave</h1>
+    <p class="sub">How the platform is built, why each piece was chosen over its alternatives, and what it costs to run at every stage from pre-pilot to 300 schools.</p>
+  </section>
+
+  <!-- 2: THESIS -->
+  <section class="slide">
+    <p class="eyebrow">Why this stack</p>
+    <h2>Four decisions, one thesis: don't spend runway on infrastructure the business hasn't earned yet.</h2>
+    <div class="slide-body pillars">
+      <div class="pillar"><b>1 · Capital efficient</b><span>Runs on $45–140/month through Pilot and Growth, versus $390–1,800 on an AWS/Java default. That's runway, not a rounding error.</span></div>
+      <div class="pillar"><b>2 · Built for India, not adapted to it</b><span>UPI-first payments, WhatsApp-first messaging, DLT-compliant OTP delivery, India-priced compute — chosen for the actual customer, not a generic global default.</span></div>
+      <div class="pillar"><b>3 · No single point of lock-in</b><span>Every external dependency — identity, payments, maps, AI — sits behind a swappable adapter. Any one provider can change without touching domain logic.</span></div>
+      <div class="pillar"><b>4 · Nothing beta in the critical path</b><span>Every core platform here — Cloudflare, Supabase, PostgreSQL, Spring Boot — runs production workloads at massive scale for other companies today.</span></div>
+    </div>
+  </section>
+
+  <!-- 3: COMPETITIVE LANDSCAPE -->
+  <section class="slide">
+    <p class="eyebrow">Competitive landscape</p>
+    <h2>Every player here is a specialist in one surface. We're betting on four, combined.</h2>
+    <div class="slide-body">
+      <table>
+        <thead><tr><th>Surface</th><th>Existing players</th><th>What they don't do</th></tr></thead>
+        <tbody>
+          <tr><td><b>School discovery &amp; comparison</b><br><span style="color:var(--muted-solid);font-size:12.5px">parent-facing</span></td><td>Ezyschooling (12,000+ schools listed, 1M+ parent interactions), EduStoke ($687K raised), Skoolz</td><td>School operations, admissions CRM</td></tr>
+          <tr><td><b>Admissions / enrollment CRM</b><br><span style="color:var(--muted-solid);font-size:12.5px">sold to schools</span></td><td>Meritto / formerly NoPaperForms ($4.85M raised, backed by InfoEdge, 1,000+ institutional customers), ExtraaEdge (~$1M ARR)</td><td>Parent-facing discovery or comparison</td></tr>
+          <tr><td><b>School ERP / operations</b></td><td>Entab (~15–20% of India's school ERP market, directional), Fedena, Teachmint</td><td>Admissions marketing, discovery</td></tr>
+          <tr><td><b>Commerce &amp; vendor coordination</b></td><td>No integrated platform identified — fragmented, vendor-by-vendor</td><td>Everything, currently</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">No single competitor combines discovery + admissions CRM + ERP + commerce with shared data across all four. That's the actual bet — not a better version of any one of these products.</div>
+      <p class="foot-note">Compiled from public company profiles, funding databases (Crunchbase, Tracxn) and industry write-ups. No audited, vendor-level market-share data exists for this space — the Entab figure is from an industry listicle, not an audited report; treat all scale figures here as directional, not final.</p>
+    </div>
+  </section>
+
+  <!-- 4: SYSTEM AT A GLANCE -->
+  <section class="slide">
+    <p class="eyebrow">The shape of the system</p>
+    <h2>One deployable, one database, five layers.</h2>
+    <p class="sub">Modular monolith by design — not microservices we don't need yet, not a rewrite waiting to happen.</p>
+    <div class="system-flow">
+      <div class="sys-box"><b>Client</b><span>React PWA — parent, school, vendor, admin</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="sys-box"><b>Edge</b><span>Cloudflare — delivery, WAF, routing</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="sys-box"><b>Application</b><span>Kotlin + Spring Boot — all domain modules</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="sys-box"><b>Data</b><span>Supabase Postgres — system of record</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="sys-box"><b>External providers</b><span>MSG91 · Razorpay · Google Maps · WhatsApp · Gemini</span></div>
+    </div>
+    <p class="foot-note">Full layer-by-layer detail, database schema and analytics architecture: <code>campusweave-master-architecture.html</code>.</p>
+  </section>
+
+  <!-- 4b: DATA MODEL & ANALYTICS -->
+  <section class="slide">
+    <p class="eyebrow">Data model &amp; analytics</p>
+    <h2>Every table exists because a flow needs it. Every AI output exists because a person reviews it.</h2>
+    <p class="sub">Not a claim — a discipline we ran against the system itself before putting it in this deck.</p>
+    <div class="slide-body pillars">
+      <div class="pillar"><b>36 tables, tenant-isolated</b><span>Every row that isn't platform-global carries <code>school_id</code>/<code>campus_id</code>, enforced by Postgres Row-Level Security — not just application-layer filtering. 300 schools' data can't leak into each other by construction, not by discipline.</span></div>
+      <div class="pillar"><b>Traced, not assumed</b><span>Every table was checked against an actual flow's stage or sequence diagram; every analytics claim traced to the specific field it reads. That process found and fixed ten real gaps — including <code>order_items</code> having no price, which meant revenue itself wasn't computable.</span></div>
+      <div class="pillar"><b>One dashboard per role</b><span>Parent, centre head, counsellor, school admin, teacher, finance, vendor, platform engineering each see metrics scoped to what they're allowed to know — the same tenant boundary as the schema underneath.</span></div>
+      <div class="pillar"><b>AI proposes, a person decides</b><span>Every AI-generated insight is written as a reviewed proposal, never an automated action. If the model can't name a specific, actionable cause, it doesn't generate the insight.</span></div>
+    </div>
+    <p class="foot-note">Full schema and analytics architecture: <code>campusweave-database-schema.html</code> and <code>campusweave-analytics-architecture.html</code>.</p>
+  </section>
+
+  <!-- 4: FLOW 1 DISCOVERY -->
+  <section class="slide">
+    <p class="eyebrow">Flow 1 of 5 · Parent-facing</p>
+    <h2>A parent finds the right school in under five taps.</h2>
+    <div class="slide-body">
+      <div class="flow-steps">
+        <span class="flow-step">Search location + filters</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Geocode address</span><span class="flow-arrow">→</span>
+        <span class="flow-step">5km radius + facet query</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Ranked, comparable results</span>
+      </div>
+      <div class="tech-row">
+        <span class="chip" style="background:#b45309">React PWA</span>
+        <span class="chip" style="background:#7f52ff">Kotlin + Spring Boot</span>
+        <span class="chip" style="background:#3ecf8e">Supabase Postgres + PostGIS</span>
+        <span class="chip" style="background:#4285f4">Google Maps</span>
+      </div>
+      <div class="why"><b>Why:</b> PostGIS answers "within 5km" directly inside the database — no separate search service to run, scale or pay for. Google Maps for geocoding: the trusted, well-documented default that parents' own devices already resolve addresses against.</div>
+    </div>
+  </section>
+
+  <!-- 5: FLOW 2 DATA SOURCING -->
+  <section class="slide">
+    <p class="eyebrow">Flow 2 of 5 · Platform-facing</p>
+    <h2>Thousands of school profiles, without thousands of hours of manual entry.</h2>
+    <div class="slide-body">
+      <div class="flow-steps">
+        <span class="flow-step">Crawl public sources</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Store raw snapshot</span><span class="flow-arrow">→</span>
+        <span class="flow-step">AI extracts structured fields</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Confidence-gated human review</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Verified record</span>
+      </div>
+      <div class="tech-row">
+        <span class="chip" style="background:#7f52ff">Kotlin + Spring Boot</span>
+        <span class="chip" style="background:#f6821f">Cloudflare R2</span>
+        <span class="chip" style="background:#6d28d9">Gemini API</span>
+        <span class="chip" style="background:#3ecf8e">Supabase Postgres</span>
+      </div>
+      <div class="why"><b>Why:</b> AI does the first pass at a scale no team could hand-enter. A person still verifies before anything is shown as "platform-verified" — data trust is the actual product here, not just the listing count.</div>
+    </div>
+  </section>
+
+  <!-- 6: FLOW 3 ENQUIRY TO ADMISSION -->
+  <section class="slide">
+    <p class="eyebrow">Flow 3 of 5 · Revenue-adjacent</p>
+    <h2>Every step that touches a seat or a rupee is transactional, not best-effort.</h2>
+    <div class="slide-body">
+      <div class="flow-steps">
+        <span class="flow-step">OTP verify</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Book appointment</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Counsellor follow-up</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Application</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Payment</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Admission gate</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Notify</span>
+      </div>
+      <div class="tech-row">
+        <span class="chip" style="background:#3ecf8e">Supabase Auth</span>
+        <span class="chip" style="background:#be185d">MSG91</span>
+        <span class="chip" style="background:#7f52ff">Kotlin + Spring Boot</span>
+        <span class="chip" style="background:#3ecf8e">Supabase Postgres</span>
+        <span class="chip" style="background:#f6821f">Cloudflare R2</span>
+        <span class="chip" style="background:#0a2540">Razorpay</span>
+        <span class="chip" style="background:#0e7490">Postgres outbox + scheduler</span>
+        <span class="chip" style="background:#25d366">WhatsApp</span>
+      </div>
+      <div class="why"><b>Why:</b> UPI-first because that's how these parents actually pay — zero transaction fee on the dominant rail is a bonus, not the reason. Seat allocation runs inside a real database transaction, so two families can never be admitted into the same last seat.</div>
+    </div>
+  </section>
+
+  <!-- 7: FLOW 4 SCHOOL OPERATIONS -->
+  <section class="slide">
+    <p class="eyebrow">Flow 4 of 5 · School-facing</p>
+    <h2>One codebase, one database, six domains — until the business proves it needs more.</h2>
+    <div class="slide-body">
+      <div class="flow-steps">
+        <span class="flow-step">Directory &amp; Family</span>
+        <span class="flow-step">Discovery &amp; Search</span>
+        <span class="flow-step">Admissions</span>
+        <span class="flow-step">Academics</span>
+        <span class="flow-step">Commerce &amp; Billing</span>
+        <span class="flow-step">Communications / Documents / AI</span>
+      </div>
+      <div class="tech-row">
+        <span class="chip" style="background:#7f52ff">Kotlin + Spring Boot (single deployable)</span>
+        <span class="chip" style="background:#3ecf8e">Supabase Postgres (single governed database)</span>
+      </div>
+      <div class="why"><b>Why:</b> Microservices solve a staffing and scaling problem this stage doesn't have yet. A modular monolith keeps domain boundaries clean enough to split out later, without paying distributed-systems tax today.</div>
+    </div>
+  </section>
+
+  <!-- 8: FLOW 5 NOTIFICATIONS -->
+  <section class="slide">
+    <p class="eyebrow">Flow 5 of 5 · Retention-adjacent</p>
+    <h2>The channel is chosen by where parents actually read, not by what's easiest to build.</h2>
+    <div class="slide-body">
+      <div class="flow-steps">
+        <span class="flow-step">Domain event commits</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Outbox row</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Worker claims it</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Queue retries</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Channel policy decides</span>
+      </div>
+      <div class="tech-row">
+        <span class="chip" style="background:#0e7490">Postgres outbox + scheduler</span>
+        <span class="chip" style="background:#25d366">WhatsApp Business API</span>
+        <span class="chip" style="background:#475569">Web Push</span>
+        <span class="chip" style="background:#334155">Resend (email)</span>
+        <span class="chip" style="background:#be185d">MSG91 (SMS fallback)</span>
+      </div>
+      <div class="why"><b>Why:</b> WhatsApp is primary, not a fallback behind email — matches how this parent segment actually engages. A decision made for this market specifically, not inherited from a generic template.</div>
+    </div>
+  </section>
+
+  <!-- 9: DEFEND - WHY NOT AWS -->
+  <section class="slide">
+    <p class="eyebrow">The hardest question</p>
+    <h2>"Isn't AWS the safe default?" — Only if you're paying for reliability you can't use yet.</h2>
+    <div class="slide-body grid2">
+      <div>
+        <div class="cost-bars">
+          <div class="cost-bar-row"><span>Pre-pilot</span><div class="cost-bar-track"><div class="cost-bar-fill" style="width:5%"></div></div><span>$45 vs $87</span></div>
+          <div class="cost-bar-row"><span>Pilot</span><div class="cost-bar-track"><div class="cost-bar-fill" style="width:12%"></div></div><span>$47 vs $389</span></div>
+          <div class="cost-bar-row"><span>Growth</span><div class="cost-bar-track"><div class="cost-bar-fill" style="width:20%"></div></div><span>$142 vs $717</span></div>
+          <div class="cost-bar-row"><span>Scale</span><div class="cost-bar-track"><div class="cost-bar-fill" style="width:51%"></div></div><span>$916 vs $1,803</span></div>
+        </div>
+        <p class="foot-note">Bar shows our stack's share of the AWS figure at each tier. Full sourcing: <code>CAMPUSWEAVE_COST_COMPARISON.md</code>.</p>
+      </div>
+      <div class="why" style="margin-top:0"><b>No rewrite risk if we ever do move:</b> the application is Kotlin on Spring Boot, running today as a GraalVM-native container on Google Cloud Run — chosen specifically so it scales to zero like an edge function instead of carrying a traditional multi-second JVM boot. If a school contract requires SOC2/ISO27001 certification or true multi-region failover, the exact same container image redeploys to AWS Fargate. Same codebase, same framework, different hosting — that day is a deploy, not a rewrite.</div>
+    </div>
+  </section>
+
+  <!-- 10: DEFEND - WHY NOT FIREBASE -->
+  <section class="slide">
+    <p class="eyebrow">The obvious fast option</p>
+    <h2>Firebase is fast to start and expensive to grow out of.</h2>
+    <div class="slide-body">
+      <table>
+        <thead><tr><th>Dimension</th><th>Supabase (our choice)</th><th>Firebase</th></tr></thead>
+        <tbody>
+          <tr><td>Relational fit</td><td><b>Strong</b> — real PostgreSQL, PostGIS, pgvector</td><td>Weak–medium — document model fights relational reporting</td></tr>
+          <tr><td>Cost predictability</td><td><b>Good</b> — base plan plus compute add-ons</td><td>Workload-sensitive — bills per read/write/delete/index</td></tr>
+          <tr><td>Exit exposure</td><td><b>Moderate</b> — database stays portable SQL</td><td>High — a later migration means re-modeling the data, not moving it</td></tr>
+        </tbody>
+      </table>
+      <div class="why" style="margin-top:18px"><b>Why it matters:</b> our core asset — admissions, payments, seat allocation, funnel/attribution analytics — is exactly the transactional, audit-heavy, relational workload Firestore is weakest at. It's genuinely cheaper at Pre-pilot (~$0–2/month); the curve inverts by Growth as query complexity rises with no matching drop in per-operation billing.</div>
+    </div>
+  </section>
+
+  <!-- 11: DEFEND - INDIA FIRST -->
+  <section class="slide">
+    <p class="eyebrow">Built for the actual market</p>
+    <h2>Four choices made for this market, not a generic default.</h2>
+    <div class="slide-body">
+      <table>
+        <thead><tr><th>Decision</th><th>Chosen</th><th>Why over the generic default</th></tr></thead>
+        <tbody>
+          <tr><td>OTP delivery</td><td><b>MSG91</b></td><td>~5x cheaper than Firebase Auth phone (₹0.15–0.20 vs ≈₹0.90/verification) and handles India's mandatory DLT/TRAI template registration as standard</td></tr>
+          <tr><td>Payments</td><td><b>Razorpay, UPI-first</b></td><td>Zero MDR on standard UPI P2M by RBI mandate — the dominant payment rail for this segment</td></tr>
+          <tr><td>Maps &amp; geocoding</td><td><b>Google Maps</b></td><td>Trusted brand and data quality; generous free tier still covers Pre-pilot/Pilot volume at $0. (Ola Maps evaluated as the lower-cost India-native option — chose brand trust here instead.)</td></tr>
+          <tr><td>Messaging priority</td><td><b>WhatsApp-first</b></td><td>Matches how this parent segment actually reads messages, not a generic email/push default</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 12: COST COMPARISON -->
+  <section class="slide">
+    <p class="eyebrow">What it costs to run</p>
+    <h2>Runway math, not just an engineering preference.</h2>
+    <div class="slide-body">
+      <table>
+        <thead><tr><th>Stack</th><th>Pre-pilot<br>1 school · 100 students</th><th>Pilot<br>5 schools · 1,500 students</th><th>Growth<br>50 schools · 15,000 students</th><th>Scale<br>300 schools · 90,000 students</th></tr></thead>
+        <tbody>
+          <tr><td><b>Our stack</b><br>Kotlin/Spring Boot (Cloud Run) + Supabase + Cloudflare</td><td>$45.45 <span class="badge">Lowest</span></td><td>$47.40 <span class="badge">Lowest</span></td><td>$141.85 <span class="badge">Lowest</span></td><td>$916.40 <span class="badge">Lowest</span></td></tr>
+          <tr><td>AWS (same Kotlin/Spring Boot container, on Fargate)</td><td>$86.67</td><td>$389.09</td><td>$716.72</td><td>$1,803.14</td></tr>
+          <tr><td>Firebase</td><td>≈$0–2 <span class="badge">directional</span></td><td>≈$10–12 <span class="badge">directional</span></td><td>Not modeled <span class="badge warn">inverts</span></td><td>Not modeled <span class="badge warn">inverts</span></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">At Pilot tier, our stack saves <b>$342/month</b> versus the AWS default — roughly <b>four extra months</b> of a founding engineer's salary, reinvested before Series A instead of spent on infrastructure the product hasn't earned yet.</div>
+      <p class="foot-note">Sourced from <code>CAMPUSWEAVE_COST_COMPARISON.md</code> (Architecture B vs. D) and the Firebase evaluation in <code>SCHOOL_PLATFORM_BLUEPRINT.md</code>. The "Our stack" row is carried over from that document's Vercel/Cloudflare-based figures as a directional proxy — Cloud Run's own pricing (pay-per-vCPU-second/memory, generous free tier, near-$0 idle with GraalVM native scale-to-zero) lands in the same order of magnitude but hasn't been individually re-priced line by line for this exact combination yet. The AWS figures were originally modeled with a Spring Boot service on Fargate, so they carry over unchanged here since compute is priced by vCPU/memory, not language or framework. Zoho Catalyst was also evaluated and ruled out early on proprietary Data Store/ZCQL lock-in — not benchmarked to this depth. All figures are planning estimates, not vendor quotes.</p>
+    </div>
+  </section>
+
+  <!-- 13: CLOSING -->
+  <section class="slide">
+    <p class="eyebrow">We're not locked in — we're sequenced</p>
+    <h2 style="max-width:26ch">This isn't the forever stack. It's the right stack for the stage we're at, with the next stage already written down.</h2>
+    <div class="slide-body">
+      <ul class="plain">
+        <li>Move the same containerized Kotlin/Spring Boot application to AWS Fargate at Growth-tier scale (50+ schools) — the point real operational blast radius justifies the operational cost. No rewrite, ever — the container moves, only the hosting does</li>
+        <li>Or the moment any single school contract requires SOC2/ISO27001 certification or true multi-region failover — whichever comes first</li>
+      </ul>
+      <div class="callout" style="margin-top:24px">Every provider in this deck — identity, payments, maps, messaging, AI, even the database — sits behind a replaceable adapter for exactly this reason.</div>
+    </div>
+  </section>
+
+</div>
+
+<div class="chrome">
+  <div class="chrome-left"><span class="mark">CW</span>CampusWeave · Technology Overview</div>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="nav-btn" id="prev" aria-label="Previous slide">‹</button>
+    <span class="counter" id="counter">1 / 13</span>
+    <button class="nav-btn" id="next" aria-label="Next slide">›</button>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dotsEl = document.getElementById('dots');
+  const counterEl = document.getElementById('counter');
+  let i = 0;
+
+  slides.forEach((_, idx) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (idx === 0 ? ' active' : '');
+    b.setAttribute('aria-label', 'Go to slide ' + (idx + 1));
+    b.addEventListener('click', () => go(idx));
+    dotsEl.appendChild(b);
+  });
+  const dots = Array.from(dotsEl.children);
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+    counterEl.textContent = (i + 1) + ' / ' + slides.length;
+    slides[i].scrollTop = 0;
+  }
+
+  document.getElementById('prev').addEventListener('click', () => go(i - 1));
+  document.getElementById('next').addEventListener('click', () => go(i + 1));
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(i - 1); }
+  });
+
+  go(0);
+</script>
+</body>
+</html>
