@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d1713">
+  <meta name="description" content="Longview is a personal AI chief of staff. Clara reviews competing long-term goals against your real weekly capacity and proposes one reviewable step at a time.">
+  <meta property="og:title" content="Longview — One reviewable step, every day, across every goal">
+  <meta property="og:description" content="Clara coordinates multiple Plans against finite time, previews every proposed change, and never writes without your explicit approval.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sortedqueue.com/longview.html">
+  <title>Longview — One reviewable step, every day, across every goal</title>
+  <style>
+    :root{
+      --ink:#17201c;
+      --muted:#66716b;
+      --paper:#f3f1e9;
+      --card:#fffef9;
+      --dark:#0d1713;
+      --dark-2:#17241e;
+      --line:#d9ddd6;
+      --green:#176349;
+      --green-soft:#dcefe6;
+      --orange:#ef7d3b;
+      --orange-soft:#fff0e5;
+      --blue:#2f6491;
+      --shadow:0 24px 70px rgba(23,32,28,.11);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    a{color:inherit}
+    .shell{width:min(1160px,calc(100% - 40px));margin:0 auto}
+    header{position:relative;z-index:2}
+    nav{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{text-decoration:none;font-weight:850;letter-spacing:-.03em}
+    .brand span{color:var(--orange)}
+    .back{display:inline-flex;align-items:center;gap:8px;color:#b9c6c0;text-decoration:none;font-size:13px;font-weight:750}
+    .back:hover{color:white}
+    .hero-wrap{background:var(--dark);color:white;position:relative;overflow:hidden}
+    .hero-wrap:before{content:"";position:absolute;pointer-events:none;width:650px;height:650px;border-radius:50%;right:-250px;top:-310px;background:radial-gradient(circle,rgba(239,125,59,.42),rgba(239,125,59,0) 67%)}
+    .hero-wrap:after{content:"";position:absolute;pointer-events:none;width:520px;height:520px;border:1px solid rgba(255,255,255,.09);border-radius:50%;left:-310px;bottom:-350px;box-shadow:0 0 0 70px rgba(255,255,255,.018),0 0 0 140px rgba(255,255,255,.012)}
+    .hero{position:relative;z-index:1;padding:92px 0 110px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(310px,.65fr);gap:70px;align-items:end}
+    .eyebrow{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.17em;text-transform:uppercase}
+    .hero .eyebrow{color:#f39a69}
+    h1{max-width:900px;margin:17px 0 27px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(48px,6.6vw,86px);font-weight:500;line-height:.98;letter-spacing:-.05em}
+    .hero-copy{max-width:800px;margin:0;color:#b9c6c0;font-size:clamp(18px,2vw,23px);line-height:1.55}
+    .hero-copy strong{color:white}
+    .actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:34px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 17px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none;font-size:13px;font-weight:800}
+    .button.primary{background:var(--orange);border-color:var(--orange);color:var(--dark)}
+    .button.ghost{border-color:#3a4942;background:transparent;color:white}
+    .signal{padding:26px;border:1px solid #314039;border-radius:22px;background:rgba(255,255,255,.035);backdrop-filter:blur(12px)}
+    .signal-label{color:#7f9188;font:800 10px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.12em}
+    .signal h2{margin:25px 0 10px;font-family:Georgia,serif;font-size:27px;font-weight:500;line-height:1.14;letter-spacing:-.04em}
+    .signal p{margin:0;color:#aebbb5;font-size:13px}
+    .signal-list{display:grid;gap:12px;margin-top:25px;padding-top:20px;border-top:1px solid #314039}
+    .signal-item{display:grid;grid-template-columns:28px 1fr;gap:11px;align-items:start;color:#d7dfdb;font-size:12px}
+    .signal-item b{width:25px;height:25px;border-radius:8px;background:#26362f;color:#f39a69;display:grid;place-items:center;font-size:10px}
+    section{padding:94px 0;border-top:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:180px 1fr;gap:34px;margin-bottom:44px}
+    .section-head h2{max-width:850px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(34px,4.6vw,54px);font-weight:500;line-height:1.08;letter-spacing:-.05em}
+    .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .problem{padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+    .problem.before{border-top:5px solid var(--orange)}
+    .problem.after{border-top:5px solid var(--green)}
+    .problem h3{margin:20px 0 12px;font-size:22px;letter-spacing:-.035em}
+    .problem p{margin:0;color:var(--muted)}
+    .problem ul{margin:22px 0 0;padding:0;list-style:none;display:grid;gap:11px}
+    .problem li{display:grid;grid-template-columns:20px 1fr;gap:9px;color:var(--muted);font-size:14px}
+    .problem li:before{content:"—";color:var(--orange);font-weight:900}
+    .problem.after li:before{content:"✓";color:var(--green)}
+    .flow-section{background:#e8ebe6}
+    .flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+    .stage{position:relative;min-height:180px;padding:18px 14px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+    .stage:not(:last-child):after{content:"→";position:absolute;z-index:2;right:-13px;top:50%;transform:translateY(-50%);color:var(--orange);font-weight:900}
+    .stage b{display:grid;place-items:center;width:34px;height:34px;margin-bottom:22px;border-radius:11px;background:var(--green-soft);color:var(--green);font-size:11px}
+    .stage strong,.stage small{display:block}
+    .stage strong{font-size:13px;letter-spacing:-.015em}
+    .stage small{margin-top:7px;color:var(--muted);font-size:10px;line-height:1.45}
+    .capabilities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .capability{min-height:230px;padding:26px;border:1px solid var(--line);border-radius:19px;background:var(--card)}
+    .capability .num{color:var(--green);font:850 11px/1 ui-monospace,SFMono-Regular,monospace;letter-spacing:.1em}
+    .capability h3{margin:32px 0 10px;font-family:Georgia,serif;font-size:24px;font-weight:500;line-height:1.1;letter-spacing:-.035em}
+    .capability p{margin:0;color:var(--muted);font-size:14px}
+    .boundary{display:grid;grid-template-columns:1fr .85fr;gap:22px;align-items:stretch}
+    .boundary-main{padding:34px;border-radius:22px;background:var(--green);color:white}
+    .boundary-main h3{max-width:600px;margin:13px 0 18px;font-family:Georgia,serif;font-size:clamp(30px,3.6vw,42px);font-weight:500;line-height:1.08;letter-spacing:-.04em}
+    .boundary-main p{max-width:650px;margin:0;color:#d3e9df}
+    .boundary-list{display:grid;gap:1px;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--line)}
+    .boundary-list div{padding:17px 20px;background:var(--card);display:grid;grid-template-columns:25px 1fr;gap:12px;font-size:13px;font-weight:750}
+    .boundary-list b{color:var(--green)}
+    .closing{margin:0 auto 90px;padding:58px;border:0;border-radius:27px;background:var(--dark);color:white;display:grid;grid-template-columns:1fr auto;gap:35px;align-items:end}
+    .closing .eyebrow{color:#f39a69}
+    .closing h2{max-width:780px;margin:14px 0 0;font-family:Georgia,serif;font-size:clamp(34px,4.4vw,54px);font-weight:500;line-height:1.05;letter-spacing:-.05em}
+    footer{padding:0 0 38px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:12px}
+    footer div{display:flex;gap:17px}
+    footer a{text-decoration:none}
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr;gap:44px}
+      .flow{grid-template-columns:repeat(3,1fr)}
+      .stage:nth-child(3):after{display:none}
+      .capabilities{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:760px){
+      .section-head,.problem-grid,.boundary{grid-template-columns:1fr}
+      .section-head{gap:14px}
+      .flow{grid-template-columns:repeat(2,1fr)}
+      .stage:nth-child(even):after{display:none}
+      .closing{grid-template-columns:1fr;padding:38px}
+    }
+    @media(max-width:560px){
+      .shell{width:min(100% - 28px,1160px)}
+      nav{height:70px}.brand{font-size:14px}
+      .hero{padding:62px 0 78px}
+      h1{font-size:44px}
+      section{padding:70px 0}
+      .flow,.capabilities{grid-template-columns:1fr}
+      .stage:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-19px;transform:none}
+      footer{flex-direction:column}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <div class="hero-wrap">
+    <header class="shell">
+      <nav aria-label="Product navigation">
+        <a class="brand" href="index.html">SortedQueue<span>.</span></a>
+        <a class="back" href="founder.html"><span aria-hidden="true">←</span> Back to Alok’s work</a>
+      </nav>
+    </header>
+    <div class="shell hero">
+      <div>
+        <div class="eyebrow">Longview · Bounded agentic planning</div>
+        <h1>One reviewable step, every day, across every goal.</h1>
+        <p class="hero-copy"><strong>Longview is a personal AI chief of staff.</strong> Clara reviews your competing Plans against your real weekly capacity and proposes the next honest step — you see the exact before and after, and nothing is written until you approve it.</p>
+        <div class="actions">
+          <a class="button primary" href="https://longview.sortedqueue.com/" target="_blank" rel="noopener">Open Longview <span aria-hidden="true">↗</span></a>
+          <a class="button ghost" href="#loop">See how it works <span aria-hidden="true">↓</span></a>
+          <a class="button ghost" href="https://github.com/alokomkar/Longview" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <aside class="signal" aria-label="Longview product position">
+        <div class="signal-label">CLARA RUNS ON GEMINI 3.5 · VERTEX AI</div>
+        <h2>The model can change. Your approval never does.</h2>
+        <p>Every proposed change is a typed preview — Plan, before, after, rationale — checked against your current data before anything durable happens.</p>
+        <div class="signal-list">
+          <div class="signal-item"><b>01</b><span>Recommendations run on Gemini 3.5 Flash via Vertex AI.</span></div>
+          <div class="signal-item"><b>02</b><span>Nothing writes to a Plan until you explicitly approve it.</span></div>
+          <div class="signal-item"><b>03</b><span>Deployed on Cloud Run, Firestore, and Firebase Hosting.</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <main>
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">The real problem</div>
+          <h2>Every planning technique breaks the moment you have more than one goal.</h2>
+        </div>
+        <div class="problem-grid">
+          <article class="problem before">
+            <div class="eyebrow">Without Longview</div>
+            <h3>Plans compete for hours no one is tracking.</h3>
+            <p>A startup, a fitness goal, a house project — each lives in its own app or notebook.</p>
+            <ul>
+              <li>Nothing accounts for shared weekly capacity across goals.</li>
+              <li>Generic AI suggestions ignore your other commitments.</li>
+              <li>A missed day quietly cascades with no record of why.</li>
+              <li>Recommendations arrive as prose you have to trust blindly.</li>
+            </ul>
+          </article>
+          <article class="problem after">
+            <div class="eyebrow">With Longview</div>
+            <h3>One shared portfolio, one reviewable step at a time.</h3>
+            <p>Every Plan declares its weekly hours and working days against one finite budget.</p>
+            <ul>
+              <li>Clara reasons only from your full committed capacity.</li>
+              <li>Every proposed schedule change is a preview, never a silent edit.</li>
+              <li>Completions, approvals, and rationale stay in an audit trail.</li>
+              <li>Structured, schema-validated output — not free-form chat text.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="flow-section" id="loop">
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">The daily loop</div>
+          <h2>From competing Plans to one approved step.</h2>
+        </div>
+        <div class="flow" aria-label="Longview daily loop">
+          <div class="stage"><b>01</b><strong>Define</strong><small>Declare a Plan's outcome, weekly hours, and working days.</small></div>
+          <div class="stage"><b>02</b><strong>Surface</strong><small>Today deterministically picks the nearest active Plan and one step.</small></div>
+          <div class="stage"><b>03</b><strong>Review</strong><small>Clara reads only that bounded context and proposes a next action.</small></div>
+          <div class="stage"><b>04</b><strong>Approve</strong><small>You see the exact before/after and confirm — or reject it.</small></div>
+          <div class="stage"><b>05</b><strong>Execute</strong><small>Calendar turns the day into an ordered, capacity-bounded plan.</small></div>
+          <div class="stage"><b>06</b><strong>Record</strong><small>Completion, decisions, and Plan Brief versions stay reviewable.</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-head">
+          <div class="eyebrow">Core system</div>
+          <h2>Built around the parts that break when done naively.</h2>
+        </div>
+        <div class="capabilities">
+          <article class="capability">
+            <div class="num">01 · BOUNDED RECOMMENDATIONS</div>
+            <h3>Clara sees one Plan, not your whole history.</h3>
+            <p>Each request carries only the selected Plan and Today's step, and returns a strict schema-validated payload, never free text.</p>
+          </article>
+          <article class="capability">
+            <div class="num">02 · EXPLICIT APPROVAL</div>
+            <h3>Every change previews before it happens.</h3>
+            <p>A proposed schedule change shows before/after, expected version, and downstream effect before one idempotent write occurs.</p>
+          </article>
+          <article class="capability">
+            <div class="num">03 · CAPACITY-AWARE CALENDAR</div>
+            <h3>The day's plan is a proposal, not a mandate.</h3>
+            <p>Retry, replacement, and break carryover are handled explicitly inside your real time window — never silently.</p>
+          </article>
+          <article class="capability">
+            <div class="num">04 · ATTRIBUTED RESEARCH</div>
+            <h3>External evidence arrives with a real source.</h3>
+            <p>Grounded findings show up as a reviewable card with a source link and retrieval time — never merged into a Plan automatically.</p>
+          </article>
+          <article class="capability">
+            <div class="num">05 · VERSIONED PLAN BRIEF</div>
+            <h3>Accepted research becomes durable memory.</h3>
+            <p>Promoted findings create an immutable, versioned Brief with a current pointer you can trace back through.</p>
+          </article>
+          <article class="capability">
+            <div class="num">06 · OFFLINE-CAPABLE PWA</div>
+            <h3>Keeps working when the connection doesn't.</h3>
+            <p>Installable shell, offline fallback, and a durable local outbox for Today completions made while disconnected.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell boundary">
+        <div class="boundary-main">
+          <div class="eyebrow" style="color:#bfe6d6">The model proposes. You dispose.</div>
+          <h3>Clara's output stays advisory until a human reviews it.</h3>
+          <p>Authorization, current-version checks, and one idempotent Firestore transaction stand between any suggestion and your actual Plan.</p>
+        </div>
+        <div class="boundary-list" aria-label="Longview trust guarantees">
+          <div><b>✓</b><span>Firebase-authenticated boundary on every write</span></div>
+          <div><b>✓</b><span>Fail-closed on timeout, malformed output, or missing attribution</span></div>
+          <div><b>✓</b><span>No proposal applies without explicit approval</span></div>
+          <div><b>✓</b><span>Every durable write creates one audit record</span></div>
+          <div><b>✓</b><span>Anonymous accounts work with zero signup</span></div>
+          <div><b>✓</b><span>Optional Google linking, never required</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell closing" aria-labelledby="closing-title">
+      <div>
+        <div class="eyebrow">Live today</div>
+        <h2 id="closing-title">Try it with your own competing goals.</h2>
+      </div>
+      <a class="button primary" href="https://longview.sortedqueue.com/" target="_blank" rel="noopener">Open Longview →</a>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <span>Longview · A SortedQueue product by Alok Gudikote</span>
+    <div><a href="founder.html">Founder</a><a href="https://github.com/alokomkar/Longview" target="_blank" rel="noopener">Source</a><a href="mailto:sortedqueue@gmail.com?subject=Longview">Contact</a></div>
+  </footer>
+</body>
+</html>
