@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#101814">
+  <meta name="theme-color" content="#f6f7fb">
   <meta name="description" content="Alok Gudikote is the founder of SortedQueue and an AI product builder based in Bengaluru, India.">
   <meta property="og:title" content="Alok Gudikote — Founder & AI Product Builder">
   <meta property="og:description" content="Building AI-native products that turn intent into action, evidence, and better decisions.">
@@ -12,75 +12,77 @@
   <title>Alok Gudikote — Founder & AI Product Builder</title>
   <style>
     :root {
-      --ink:#17201c;
-      --muted:#66716b;
-      --paper:#f3f1e9;
-      --card:#fffef9;
-      --dark:#101814;
-      --line:#d9ddd6;
-      --green:#176349;
-      --green-soft:#dcefe6;
-      --orange:#ef7d3b;
-      --shadow:0 24px 70px rgba(23,32,28,.10);
+      --ink:#12141c;
+      --muted:#5b6472;
+      --bg:#ffffff;
+      --paper:#f6f7fb;
+      --card:#ffffff;
+      --dark:#12141c;
+      --line:#e5e8f0;
+      --blue:#3452ff;
+      --blue-soft:#eef1ff;
+      --shadow:0 20px 50px rgba(18,20,28,.08);
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
     a{color:inherit}
     .shell{width:min(1160px,calc(100% - 40px));margin:0 auto}
     nav{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .brand{text-decoration:none;font-weight:850;letter-spacing:-.03em}
-    .brand span{color:var(--orange)}
+    .brand{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;font-size:16px;letter-spacing:-.02em;color:var(--ink)}
+    .brand:before{content:"";width:26px;height:26px;border-radius:8px;background:var(--blue)}
+    .brand span{color:var(--blue)}
     .nav-links{display:flex;align-items:center;gap:24px}
-    .nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:700}
-    .nav-links .contact{padding:10px 15px;border-radius:999px;background:var(--dark);color:white}
-    .hero{padding:78px 0 100px;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.7fr);gap:70px;align-items:end}
-    .eyebrow{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.17em;text-transform:uppercase}
-    h1{margin:17px 0 26px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(52px,7.4vw,92px);font-weight:500;line-height:.96;letter-spacing:-.055em}
-    .hero-copy{max-width:800px;color:var(--muted);font-size:clamp(18px,2vw,23px);line-height:1.55}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:650}
+    .nav-links a:hover{color:var(--ink)}
+    .nav-links .contact{padding:10px 18px;border-radius:999px;background:var(--blue);color:white;font-weight:750}
+    .hero{background:var(--paper);padding:76px 0 96px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.75fr);gap:56px;align-items:center}
+    .eyebrow{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+    h1{margin:16px 0 22px;font-size:clamp(38px,5.2vw,60px);font-weight:800;line-height:1.08;letter-spacing:-.03em}
+    .hero-copy{max-width:640px;color:var(--muted);font-size:clamp(16px,1.6vw,18px);line-height:1.6}
     .hero-copy strong{color:var(--ink)}
-    .actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:33px}
-    .button{display:inline-flex;align-items:center;gap:8px;padding:12px 17px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none;font-size:13px;font-weight:800}
-    .button.primary{background:var(--green);border-color:var(--green);color:white}
-    .profile-card{position:relative;overflow:hidden;padding:28px;border-radius:24px;background:var(--dark);color:white;box-shadow:var(--shadow)}
-    .profile-card:after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-90px;top:-110px;background:radial-gradient(circle,rgba(239,125,59,.58),rgba(239,125,59,0) 68%)}
-    .monogram{width:58px;height:58px;border-radius:17px;background:var(--orange);display:grid;place-items:center;color:var(--dark);font-family:Georgia,serif;font-size:24px;font-weight:700}
-    .profile-card h2{margin:34px 0 4px;font-size:23px;letter-spacing:-.04em}
-    .profile-card p{margin:0;color:#b6c4bc;font-size:13px}
-    .facts{display:grid;gap:13px;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.13)}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border:1px solid var(--line);border-radius:999px;background:var(--card);text-decoration:none;font-size:13px;font-weight:700;color:var(--ink);transition:transform .15s ease}
+    .button:hover{transform:translateY(-1px)}
+    .button.primary{background:var(--blue);border-color:var(--blue);color:white}
+    .profile-card{padding:28px;border-radius:22px;background:var(--dark);color:white;box-shadow:var(--shadow)}
+    .monogram{width:56px;height:56px;border-radius:16px;background:var(--blue);display:grid;place-items:center;color:white;font-size:20px;font-weight:800}
+    .profile-card h2{margin:30px 0 4px;font-size:21px;letter-spacing:-.02em}
+    .profile-card p{margin:0;color:#aab0d6;font-size:13px}
+    .facts{display:grid;gap:13px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12)}
     .fact{display:flex;justify-content:space-between;gap:16px;font-size:12px}
-    .fact span{color:#82928a}
+    .fact span{color:#8891bb}
     .fact b{text-align:right}
-    section{padding:90px 0;border-top:1px solid var(--line)}
-    .section-head{display:grid;grid-template-columns:180px 1fr;gap:34px;margin-bottom:40px}
-    .section-head h2{max-width:790px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(35px,5vw,58px);font-weight:500;line-height:1.08;letter-spacing:-.045em}
+    section{padding:88px 0;border-top:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:180px 1fr;gap:34px;margin-bottom:44px}
+    .section-head h2{max-width:790px;margin:0;font-size:clamp(28px,3.6vw,42px);font-weight:800;line-height:1.18;letter-spacing:-.02em}
     .about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px}
     .panel{padding:29px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
-    .panel p{margin:0;color:var(--muted);font-size:17px}
-    .panel p+p{margin-top:17px}
+    .panel p{margin:0;color:var(--muted);font-size:16px}
+    .panel p+p{margin-top:16px}
     .principles{display:grid;gap:12px}
-    .principle{padding:16px 18px;border-radius:12px;background:#e9ece8;font-size:14px;font-weight:800}
-    .principle b{display:inline-grid;width:25px;height:25px;margin-right:10px;border-radius:8px;background:var(--green-soft);place-items:center;color:var(--green);font-size:11px}
+    .principle{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:700}
+    .principle b{display:inline-grid;width:25px;height:25px;margin-right:10px;border-radius:8px;background:var(--blue-soft);place-items:center;color:var(--blue);font-size:11px}
     .projects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-    .project{min-height:300px;padding:28px;border:1px solid var(--line);border-radius:20px;background:var(--card);display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease}
+    .project{padding:28px;border:1px solid var(--line);border-radius:18px;background:var(--card);display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease}
     .project:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-    .project-number{font:800 11px/1 ui-monospace,SFMono-Regular,monospace;color:var(--green);letter-spacing:.1em}
-    .project h3{margin:28px 0 10px;font-family:Georgia,serif;font-size:35px;font-weight:500;letter-spacing:-.04em}
+    .project-number{display:inline-flex;align-self:flex-start;padding:6px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.03em}
+    .project h3{margin:22px 0 10px;font-size:23px;font-weight:800;letter-spacing:-.02em}
     .project p{margin:0;color:var(--muted)}
-    .project a{margin-top:auto;padding-top:25px;text-decoration:none;color:var(--green);font-size:13px;font-weight:850}
+    .project a{margin-top:auto;padding-top:22px;text-decoration:none;color:var(--blue);font-size:13px;font-weight:800}
     .project.dark{background:var(--dark);border-color:var(--dark);color:white}
-    .project.dark p{color:#afbeb6}
-    .project.dark a,.project.dark .project-number{color:#f39a69}
+    .project.dark p{color:#b8bcd6}
+    .project.dark a,.project.dark .project-number{color:#9fb0ff}
+    .project.dark .project-number{background:rgba(255,255,255,.12)}
     .timeline{display:grid}
     .role{display:grid;grid-template-columns:180px 1fr 145px;gap:34px;padding:27px 0;border-bottom:1px solid var(--line)}
     .role:first-child{padding-top:0}.role:last-child{border-bottom:0}
-    .role .company{font-weight:850}.role h3{margin:0 0 8px;font-size:20px;letter-spacing:-.025em}
+    .role .company{font-weight:800}.role h3{margin:0 0 8px;font-size:19px;letter-spacing:-.02em}
     .role p{margin:0;color:var(--muted);font-size:14px}
     .role time{color:var(--muted);font-size:12px;text-align:right}
-    .closing{margin-bottom:90px;padding:55px;border:0;border-radius:26px;background:var(--green);color:white;display:grid;grid-template-columns:1fr auto;gap:35px;align-items:end}
-    .closing .eyebrow{color:#bfe6d6}
-    .closing h2{margin:14px 0 0;max-width:750px;font-family:Georgia,serif;font-size:clamp(38px,5vw,62px);font-weight:500;line-height:1.05;letter-spacing:-.05em}
-    .closing .button{border-color:white;background:white;color:var(--green);white-space:nowrap}
+    .closing{margin-bottom:90px;padding:52px;border:0;border-radius:24px;background:var(--dark);color:white;display:grid;grid-template-columns:1fr auto;gap:35px;align-items:end}
+    .closing .eyebrow{color:#8fa0ff}
+    .closing h2{margin:14px 0 0;max-width:750px;font-size:clamp(28px,3.6vw,40px);font-weight:800;line-height:1.2;letter-spacing:-.02em}
     footer{padding:0 0 38px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:12px}
     footer div{display:flex;gap:17px}
     footer a{text-decoration:none}
@@ -95,9 +97,8 @@
     @media(max-width:560px){
       .shell{width:min(100% - 28px,1160px)}
       nav{height:70px}.nav-links>a:not(.contact){display:none}
-      h1{font-size:51px}
-      section{padding:68px 0}
-      .project{min-height:270px}
+      h1{font-size:42px}
+      section{padding:64px 0}
       footer{flex-direction:column}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.project{transition:none}}
@@ -168,10 +169,10 @@
         </div>
         <div class="projects">
           <article class="project dark">
-            <span class="project-number">01 · DECISION CONTINUITY</span>
-            <h3>Intent</h3>
-            <p>An AI decision companion that helps people clarify meaningful goals, preserve why decisions were made, and translate them into one focused next action.</p>
-            <a href="intent.html">Explore Intent →</a>
+            <span class="project-number">01 · CAPACITY CONTINUITY</span>
+            <h3>Longview</h3>
+            <p>An AI chief of staff that turns competing long-term goals into one reviewable step each day, coordinating finite time without silently rewriting your plan.</p>
+            <a href="longview.html">Explore Longview →</a>
           </article>
           <article class="project">
             <span class="project-number">02 · EXPERIENCE EVIDENCE</span>
@@ -204,7 +205,7 @@
         <div class="timeline">
           <article class="role">
             <div class="company">SortedQueue</div>
-            <div><h3>Founder & Product Engineer</h3><p>Product strategy, UX, architecture, AI workflows, implementation, and early validation across Intent, Parity, Learn with Intent, and Omkara.</p></div>
+            <div><h3>Founder & Product Engineer</h3><p>Product strategy, UX, architecture, AI workflows, implementation, and early validation across Longview, Parity, Learn with Intent, and Omkara.</p></div>
             <time>2026 — Present</time>
           </article>
           <article class="role">
@@ -231,7 +232,7 @@
         <div class="eyebrow">Let’s build something useful</div>
         <h2 id="closing-title">I’m always interested in a sharp problem and an honest conversation.</h2>
       </div>
-      <a class="button" href="mailto:sortedqueue@gmail.com">Email Alok →</a>
+      <a class="button primary" href="mailto:sortedqueue@gmail.com">Email Alok →</a>
     </section>
   </main>
 
