@@ -629,6 +629,11 @@
 <li class="toc-section"><a href="#kmp" class="toc-section-link"><span class="toc-icon">🌍</span><span class="toc-title">Kotlin Multiplatform (KMP)</span></a></li>
 <li class="toc-sub"><a href="#kmp-what" class="toc-sub-link">What is KMP and What Does It Share?</a></li>
 <li class="toc-sub"><a href="#kmp-structure" class="toc-sub-link">KMP Project Structure and Setup</a></li>
+<li class="toc-sub"><a href="#kmp-compose-multiplatform" class="toc-sub-link">Compose Multiplatform — Sharing the UI Layer Too</a></li>
+<li class="toc-sub"><a href="#kmp-di-concurrency" class="toc-sub-link">Dependency Injection & Concurrency Across Platforms</a></li>
+<li class="toc-sub"><a href="#kmp-persistence-testing" class="toc-sub-link">Persistence & Testing in Shared Code</a></li>
+<li class="toc-sub"><a href="#kmp-ios-interop" class="toc-sub-link">Publishing to iOS — XCFrameworks & Swift Interop</a></li>
+<li class="toc-sub"><a href="#kmp-adoption" class="toc-sub-link">Adopting KMP in an Existing App — Migration Strategy</a></li>
 <li class="toc-section"><a href="#ml-on-device" class="toc-section-link"><span class="toc-icon">🤖</span><span class="toc-title">On-Device ML: TFLite & ML Kit</span></a></li>
 <li class="toc-sub"><a href="#ml-why" class="toc-sub-link">Why On-Device ML? Cloud vs On-Device</a></li>
 <li class="toc-sub"><a href="#tflite-impl" class="toc-sub-link">TensorFlow Lite — Running Custom Models</a></li>
@@ -648,8 +653,8 @@
   </div>
   <div class="sidebar-stats">
     <div class="stat"><div class="stat-value">33</div><div class="stat-label">Topics</div></div>
-    <div class="stat"><div class="stat-value">72</div><div class="stat-label">Sections</div></div>
-    <div class="stat"><div class="stat-value">160+</div><div class="stat-label">Examples</div></div>
+    <div class="stat"><div class="stat-value">77</div><div class="stat-label">Sections</div></div>
+    <div class="stat"><div class="stat-value">175+</div><div class="stat-label">Examples</div></div>
   </div>
 </nav>
 
@@ -7653,6 +7658,242 @@ class MainActivity : ComponentActivity() {
 <li><strong>Should be shared:</strong> domain models, repository interfaces, use cases, networking (Ktor), serialization, data mapping, core business logic.</li>
 <li><strong>Should NOT be shared:</strong> UI code (each platform uses its native framework), platform-specific APIs (camera, location, push notifications use platform SDKs), anything that depends on Android Context or iOS UIKit.</li>
 <li>Rule: if it's business logic that would need to be identically reimplemented on the other platform → share it. If it's fundamentally tied to one platform's APIs → keep it platform-specific with an interface in shared code and a platform implementation.</li>
+</ul>
+</div>
+</div>
+
+</div>
+<div id="kmp-compose-multiplatform" class="subsection">
+<h3 class="subsection-title">Compose Multiplatform — Sharing the UI Layer Too</h3>
+
+<p>Everything above shares <em>logic</em> while each platform keeps its own native UI. <strong>Compose Multiplatform</strong> (JetBrains) goes further: the same <code>@Composable</code> code compiles and renders on Android, iOS, desktop, and web. This changes the "KMP vs Flutter" comparison from earlier — once you adopt Compose Multiplatform for UI, you've moved to Flutter's model (one rendering engine painting pixels on every platform), just written in Kotlin instead of Dart.</p>
+
+<div class="diagram">
+<pre>
+Two different KMP strategies — pick one per project, don't mix goals:
+
+Strategy A: Share logic only (native UI)          Strategy B: Share logic + UI
+┌─────────────┐        ┌─────────────┐            ┌──────────────────────────┐
+│  Compose UI │        │  SwiftUI    │            │      Compose UI          │
+│  (Android)  │        │  (iOS)      │            │ (Android, iOS, Desktop)  │
+└──────┬──────┘        └──────┬──────┘            └────────────┬─────────────┘
+       │                      │                                 │
+       └──────────┬───────────┘                    renders via Skia on every
+                  shared                            platform — iOS gets pixel-
+              Kotlin module                         identical Compose widgets,
+                                                     not real UIKit/SwiftUI ones
+Pros: iOS looks and feels 100% native,             Pros: one UI codebase, one UI
+      easiest to hire Swift/SwiftUI devs for              team, fastest to ship
+Cons: UI still written twice                       Cons: iOS UI is NOT built from
+                                                           native widgets — subtle
+                                                           platform feel differences,
+                                                           harder to adopt iOS-only
+                                                           system UI conventions
+</pre>
+</div>
+
+<pre><code class="language-kotlin">// shared/build.gradle.kts — enabling Compose Multiplatform on top of existing KMP targets
+plugins {
+    id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.compose")                 // Compose Multiplatform plugin
+    id("org.jetbrains.kotlin.plugin.compose")
+}
+
+kotlin {
+    androidTarget()
+    iosX64(); iosArm64(); iosSimulatorArm64()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)   // Material 3, shared across ALL platforms
+            }
+        }
+    }
+}
+</code></pre>
+
+<pre><code class="language-kotlin">// commonMain — one Composable screen, used by Android AND iOS
+@Composable
+fun UserScreen(viewModel: UserViewModel) {
+    val users by viewModel.users.collectAsState()
+    LazyColumn { items(users) { UserRow(it) } }
+}
+
+// iosApp (Swift) hosts the shared Composable inside a UIViewController
+// ComposeUIViewController { UserScreen(viewModel = ...) }
+// — this is the only "bridge" code the iOS side needs to write
+</code></pre>
+
+<div class="callout callout-warning">
+<strong>Staff-level call to make early:</strong> Strategy A and Strategy B solve different problems and pull your architecture in different directions. Deciding "share logic only" vs "share logic + UI" is a product decision (how much does platform-native feel matter to this app?) as much as a technical one — don't let it default silently by whichever engineer touches the shared module first.
+</div>
+
+</div>
+<div id="kmp-di-concurrency" class="subsection">
+<h3 class="subsection-title">Dependency Injection & Concurrency Across Platforms</h3>
+
+<p>Hilt doesn't work in <code>commonMain</code> — it's built on the Android Gradle plugin's annotation processing and has no iOS target. KMP projects reach for a multiplatform-first DI framework instead, most commonly <strong>Koin</strong> (pure Kotlin, runtime service locator, zero codegen) or <strong>kotlin-inject</strong> (compile-time, KSP-based, more like Dagger/Hilt).</p>
+
+<pre><code class="language-kotlin">// commonMain — one Koin module shared by every platform
+val sharedModule = module {
+    single { HttpClient() }
+    single<UserRepository> { UserRepositoryImpl(get(), get()) }
+    factory { GetUsersUseCase(get()) }
+}
+
+// androidApp — started from Application.onCreate()
+class MyApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@MyApp)   // Android-only helper, still called from commonMain-shared modules
+            modules(sharedModule, androidModule)
+        }
+    }
+}
+
+// iosApp — Swift calls a small Kotlin-exposed initializer function
+// KoinKt.doInitKoin() from shared/src/iosMain/kotlin/Koin.kt:
+fun doInitKoin() = startKoin { modules(sharedModule, iosModule) }
+</code></pre>
+
+<div class="callout callout-info">
+<strong>expect/actual vs interface + DI:</strong> the raw <code>expect</code>/<code>actual</code> pattern shown earlier works, but most teams now prefer defining a plain interface in <code>commonMain</code> and binding the platform-specific implementation through Koin instead. It's easier to swap in a fake for tests, and it avoids the strict "every expect must have exactly one actual per target" compiler bookkeeping as the codebase grows.
+</div>
+
+<p>Concurrency is the other place platform differences leak through. Kotlin/Native's old "frozen state" model (where mutable objects had to be frozen before crossing threads) was removed with the new memory model in Kotlin 1.7.20+ — coroutines now behave close to how they do on the JVM. What still doesn't disappear:</p>
+
+<div class="callout callout-warning">
+<strong>iOS UI updates must happen on the main thread</strong>, same rule as Android's main-thread-only UI rule. <code>Dispatchers.Main</code> in commonMain is backed by the iOS run loop on the iOS target — a shared ViewModel that calls <code>withContext(Dispatchers.Main)</code> before updating UI state works correctly on both platforms without any platform-specific code.
+</div>
+
+</div>
+<div id="kmp-persistence-testing" class="subsection">
+<h3 class="subsection-title">Persistence & Testing in Shared Code</h3>
+
+<p>Two libraries do for "shared" what Room and DataStore do for Android alone — both compile against every KMP target from a single <code>commonMain</code> API.</p>
+
+<pre><code class="language-kotlin">// SQLDelight — write SQL once, get a typesafe Kotlin API on every platform
+// shared/src/commonMain/sqldelight/com/example/User.sq
+// selectAll:
+// SELECT * FROM User;
+//
+// insertUser:
+// INSERT INTO User(id, name) VALUES (?, ?);
+
+// Generated typesafe API, used identically from Android and iOS:
+class UserLocalDataSource(driver: SqlDriver) {
+    private val queries = AppDatabase(driver).userQueries
+    fun getAll(): List&lt;User&gt; = queries.selectAll().executeAsList()
+    fun insert(id: String, name: String) = queries.insertUser(id, name)
+}
+// The SqlDriver itself is still expect/actual or Koin-injected:
+// androidMain → AndroidSqliteDriver, iosMain → NativeSqliteDriver
+</code></pre>
+
+<pre><code class="language-kotlin">// Multiplatform Settings — the shared equivalent of SharedPreferences/NSUserDefaults
+// commonMain
+class UserPreferences(private val settings: Settings) {
+    var authToken: String?
+        get() = settings.getStringOrNull("auth_token")
+        set(value) { settings[/* key */ "auth_token"] = value }
+}
+// androidMain provides Settings backed by SharedPreferences,
+// iosMain provides Settings backed by NSUserDefaults — same commonMain call sites
+</code></pre>
+
+<pre><code class="language-kotlin">// commonTest — write the test once, it runs on BOTH the JVM (Android target)
+// and compiled natively (iOS targets) in CI
+class GetUsersUseCaseTest {
+    @Test
+    fun `returns mapped users from repository`() = runTest {
+        val fakeRepo = FakeUserRepository(listOf(User("1", "Ada")))
+        val result = GetUsersUseCase(fakeRepo)()
+        assertEquals(1, result.size)
+    }
+}
+// ./gradlew allTests   — runs commonTest against every registered target
+</code></pre>
+
+</div>
+<div id="kmp-ios-interop" class="subsection">
+<h3 class="subsection-title">Publishing to iOS — XCFrameworks & Swift Interop</h3>
+
+<p>Kotlin/Native compiles the shared module into a binary framework Xcode can link against directly — no source code crosses over, just a compiled <strong>XCFramework</strong> (a universal binary bundling device and simulator slices for both Intel and Apple Silicon).</p>
+
+<pre><code class="language-kotlin">// shared/build.gradle.kts — producing an XCFramework
+kotlin {
+    val xcf = XCFramework("Shared")
+    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
+        it.binaries.framework {
+            baseName = "Shared"
+            xcf.add(this)
+        }
+    }
+}
+// ./gradlew assembleSharedXCFramework
+// → produces shared/build/XCFrameworks/.../Shared.xcframework
+// Consumed from Xcode via a local reference, CocoaPods (the kotlin("native.cocoapods")
+// plugin can generate the podspec for you), or Swift Package Manager as a binary target
+</code></pre>
+
+<div class="callout callout-danger">
+<strong>Swift sees Kotlin through Objective-C interop, and it's lossy:</strong>
+<ul>
+<li>Kotlin default parameter values are dropped — every call site in Swift must pass every argument explicitly, or you hand-write Kotlin overloads for each combination you want to expose.</li>
+<li><code>suspend fun</code> is exposed to Swift as a completion-handler callback, not idiomatic <code>async</code>/<code>await</code> — usable, but it doesn't feel native to a Swift engineer.</li>
+<li>Kotlin sealed classes/enums lose Swift's exhaustive-<code>switch</code> checking unless specifically annotated, so a new case added on the Kotlin side can silently fail to be handled in Swift.</li>
+</ul>
+</div>
+
+<p>Third-party compiler plugins close most of this gap: <strong>SKIE</strong> regenerates the Kotlin framework's Swift-facing API to expose real <code>async</code>/<code>await</code>, exhaustive enums, and default arguments; <strong>KMP-NativeCoroutines</strong> specifically wraps Flows and suspend functions into Combine/async-await-friendly Swift equivalents. Most production KMP apps with a real iOS team adopt one of these rather than asking Swift engineers to write completion-handler code by hand.</p>
+
+</div>
+<div id="kmp-adoption" class="subsection">
+<h3 class="subsection-title">Adopting KMP in an Existing App — Migration Strategy</h3>
+
+<p>The highest-risk way to adopt KMP is a big-bang rewrite of the shared layer. The staff-level move is a strangler-fig migration: carve out one well-isolated, high-value slice of logic, prove it in production on both platforms, then expand.</p>
+
+<div class="diagram">
+<pre>
+Incremental KMP adoption:
+
+Step 1: Pick ONE slice with high duplication cost and low platform coupling.
+        Good first candidates: form/business-rule validation, pricing/discount
+        calculations, a single well-defined networking + serialization layer.
+        Bad first candidates: anything touching Camera/Bluetooth/push notifications,
+        anything with heavy existing platform-specific business logic already.
+
+Step 2: Extract it into :shared with expect/actual (or Koin) only where truly
+        platform-specific. Android consumes it first — lowest-risk platform,
+        since the whole team already reads Kotlin.
+
+Step 3: Ship the iOS side once, behind a feature flag if the org is risk-averse.
+        This is also where you validate the Swift interop story (SKIE etc.)
+        before it becomes load-bearing for the whole app.
+
+Step 4: Only after step 3 proves out — measure actual maintenance savings —
+        expand to the next slice. Resist "let's just share everything now."
+</pre>
+</div>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: What's the biggest non-technical blocker to introducing KMP into an existing native iOS codebase?</div>
+<div class="qa-a">
+<ul>
+<li>Organizational, not technical: the iOS team now has a Gradle/Kotlin toolchain dependency inside what was a pure Xcode project, and Kotlin/Native builds are noticeably slower to compile than the equivalent Swift. Get buy-in from the iOS team before writing code, not after — they're the ones who absorb the build-time and tooling cost.</li>
+<li>Debugging shared Kotlin code from Xcode is also weaker than debugging Swift — breakpoints and stepping through Kotlin/Native code in LLDB work, but the experience is rougher than either platform's native debugger. Set that expectation early.</li>
+</ul>
+</div>
+<div class="qa-q">Q: How do you decide whether a new product should start with KMP from day one vs bolt it on later?</div>
+<div class="qa-a">
+<ul>
+<li>Starting with KMP is easier than retrofitting it — there's no existing Android/iOS business logic duplication to reconcile, and the team builds shared-first habits from the start.</li>
+<li>The prerequisite isn't technical readiness, it's team readiness: at least one engineer comfortable owning the shared module's architecture, and both platform teams willing to review Kotlin code that isn't "their" language. Without that, KMP tends to become a lightly-maintained module one person understands — a bus-factor risk, not a productivity win.</li>
 </ul>
 </div>
 </div>
