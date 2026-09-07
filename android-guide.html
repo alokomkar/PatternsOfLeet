@@ -638,12 +638,18 @@
 <li class="toc-sub"><a href="#ai-workflows" class="toc-sub-link">AI-Assisted Development Workflows</a></li>
 <li class="toc-sub"><a href="#sdk-design" class="toc-sub-link">Internal SDK Design Principles</a></li>
 <li class="toc-sub"><a href="#app-bundle" class="toc-sub-link">App Bundle & Dynamic Delivery</a></li>
+<li class="toc-section"><a href="#payment-sdk" class="toc-section-link"><span class="toc-icon">💳</span><span class="toc-title">Building a Payment SDK</span></a></li>
+<li class="toc-sub"><a href="#sdk-module-basics" class="toc-sub-link">Library Modules vs App Modules — The Basics</a></li>
+<li class="toc-sub"><a href="#payment-sdk-anatomy" class="toc-sub-link">Anatomy of a Payment SDK — Module Breakdown</a></li>
+<li class="toc-sub"><a href="#payment-sdk-security" class="toc-sub-link">Security & PCI-DSS Scope Reduction</a></li>
+<li class="toc-sub"><a href="#payment-sdk-runtime-flow" class="toc-sub-link">Runtime Flow — Sessions, Tokenization & 3D Secure</a></li>
+<li class="toc-sub"><a href="#payment-sdk-testing-release" class="toc-sub-link">Testing, Versioning & Distribution</a></li>
     </ul>
   </div>
   <div class="sidebar-stats">
-    <div class="stat"><div class="stat-value">32</div><div class="stat-label">Topics</div></div>
-    <div class="stat"><div class="stat-value">67</div><div class="stat-label">Sections</div></div>
-    <div class="stat"><div class="stat-value">146+</div><div class="stat-label">Examples</div></div>
+    <div class="stat"><div class="stat-value">33</div><div class="stat-label">Topics</div></div>
+    <div class="stat"><div class="stat-value">72</div><div class="stat-label">Sections</div></div>
+    <div class="stat"><div class="stat-value">160+</div><div class="stat-label">Examples</div></div>
   </div>
 </nav>
 
@@ -8379,6 +8385,389 @@ splitInstallManager.startInstall(request)
         }, splitInstallManager.sessionStates)
     }
 </code></pre>
+
+</div>
+</section>
+<section id="payment-sdk" class="main-section">
+<h2 class="section-title"><span class="section-icon">💳</span>Building a Payment SDK — Library Module Deep Dive</h2>
+<div id="sdk-module-basics" class="subsection">
+<h3 class="subsection-title">Library Modules vs App Modules — The Basics</h3>
+
+<p>Before designing a payment SDK, understand the fundamental unit you're building it out of: a <strong>library module</strong>. An app module (<code>com.android.application</code>) compiles to an APK/AAB — something installable. A library module (<code>com.android.library</code>) compiles to an <strong>AAR</strong> (Android Archive) — compiled code, resources, and a manifest that another module or app depends on but can never run by itself.</p>
+
+<pre><code class="language-kotlin">// :payment-sdk/build.gradle.kts — a library module, not an application
+plugins {
+    id("com.android.library")           // produces an .aar, not an .apk
+    id("org.jetbrains.kotlin.android")
+    id("maven-publish")                  // so other apps/companies can depend on it
+}
+
+android {
+    namespace = "com.adyenlike.paymentsdk"
+    compileSdk = 35
+    defaultConfig {
+        minSdk = 24                      // an SDK usually supports a WIDER range than
+        // consumingLibrary = true       // your own app — you don't control the host app's minSdk
+    }
+    buildFeatures { compose = true }
+}
+</code></pre>
+
+<div class="callout callout-warning">
+<strong>An SDK module is not just "code you reused twice."</strong> An internal feature module lives in a repo you control, alongside the app that consumes it, released together. An SDK module ships to <em>host apps you don't control</em> — different Kotlin versions, different Compose versions, different minSdk, different ProGuard configs, released on their own schedule, possibly years after you built it. Every design decision below exists because of that one difference.
+</div>
+
+<p>The single most important Gradle decision in an SDK is <code>api</code> vs <code>implementation</code>:</p>
+
+<pre><code class="language-kotlin">dependencies {
+    // implementation: this dependency is hidden from consumers of your AAR.
+    // They can't accidentally use it, and you can swap it out in a minor version
+    // without breaking anyone. Use this for almost everything.
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // api: this dependency LEAKS into the host app's classpath and becomes
+    // part of your public contract. Only use it if a type from that library
+    // appears in one of YOUR public function signatures.
+    api("androidx.compose.runtime:runtime:1.6.0")   // if your public API returns @Composable
+}
+</code></pre>
+
+<div class="callout callout-danger">
+<strong>Common SDK mistake:</strong> exposing OkHttp or Retrofit types (<code>Response</code>, <code>Call</code>) on your public API using <code>api(...)</code>. Now every merchant app is forced onto your exact OkHttp version — a classic <em>dependency hell / diamond dependency</em> problem when the host app also uses OkHttp for its own networking. A well-designed SDK wraps every third-party type in its own public model (<code>PaymentResult</code>, not <code>retrofit2.Response</code>) so the host app never even knows OkHttp exists inside you.</div>
+
+</div>
+<div id="payment-sdk-anatomy" class="subsection">
+<h3 class="subsection-title">Anatomy of a Payment SDK — Module Breakdown</h3>
+
+<p>A real payment SDK (Adyen, Stripe, Braintree all follow this shape) is never one module — it's a small family of modules published together as one artifact group, so a merchant can pull in only what they need.</p>
+
+<div class="diagram">
+<pre>
+:payment-sdk (the facade — this is what merchants actually add as a dependency)
+   │
+   ├── :payment-core          ← PaymentMethod models, PaymentResult sealed class,
+   │                            configuration objects. Pure Kotlin, no Android, no UI.
+   │                            (This module is a "java-library", like :core:domain
+   │                             in the Modularization section above.)
+   │
+   ├── :payment-network       ← talks to the processor's API: tokenization,
+   │                            sessions, certificate pinning, retries.
+   │                            Depends on :payment-core. No UI.
+   │
+   ├── :payment-ui-components ← "Components" — individual drop-in Views/Composables:
+   │                            CardComponent, GooglePayComponent, iDEALComponent.
+   │                            Merchant builds their OWN checkout screen using these.
+   │
+   ├── :payment-actions       ← handles what happens AFTER submission: 3D Secure
+   │                            challenge WebView, redirect-to-bank-app, deep link
+   │                            re-entry. Isolated because it's the trickiest part.
+   │
+   └── :payment-dropin        ← "Drop-in" — one pre-built full checkout Activity/
+                                 Composable screen for merchants who want zero UI work.
+                                 Depends on :payment-ui-components + :payment-actions.
+
+Merchant choice:
+  implementation("com.adyenlike:dropin:3.4.0")       // fastest integration, least control
+  implementation("com.adyenlike:components:3.4.0")   // build own UI, use SDK's field logic
+  implementation("com.adyenlike:core:3.4.0")         // headless — server-driven flows only
+</pre>
+</div>
+
+<p>Everything a merchant can call is funneled through one small public facade. This is the <strong>Facade pattern</strong> applied to SDK design — the merchant should never need to know that five modules exist behind it.</p>
+
+<pre><code class="language-kotlin">// :payment-core — public API surface, this is your contract with the world
+sealed class PaymentResult {
+    data class Authorised(val pspReference: String) : PaymentResult()
+    data class Refused(val reason: RefusalReason) : PaymentResult()
+    data class Pending(val pspReference: String) : PaymentResult()   // e.g. bank transfer
+    object Cancelled : PaymentResult()
+    data class Error(val exception: PaymentException) : PaymentResult()
+}
+
+class PaymentConfiguration private constructor(
+    val environment: Environment,
+    val clientKey: String,
+    val amount: Amount,
+    val shopperLocale: Locale
+) {
+    enum class Environment { TEST, LIVE_EU, LIVE_US, LIVE_AU }
+
+    class Builder(private val clientKey: String, private val environment: Environment) {
+        private var amount: Amount = Amount.ZERO
+        private var shopperLocale: Locale = Locale.getDefault()
+
+        fun setAmount(amount: Amount) = apply { this.amount = amount }
+        fun setShopperLocale(locale: Locale) = apply { this.shopperLocale = locale }
+        fun build() = PaymentConfiguration(environment, clientKey, amount, shopperLocale)
+    }
+}
+
+// :payment-dropin — the facade merchants actually touch
+object PaymentSDK {
+    fun startPayment(
+        activity: Activity,
+        configuration: PaymentConfiguration,
+        session: PaymentSession           // short-lived token from the merchant's OWN backend
+    ) { /* wires up :payment-network + :payment-ui-components + :payment-actions internally */ }
+}
+
+interface PaymentResultListener {
+    fun onPaymentResult(result: PaymentResult)
+}
+</code></pre>
+
+<div class="callout callout-info">
+<strong>Note the shape of <code>PaymentConfiguration</code>:</strong> a private constructor plus a <code>Builder</code>. This is deliberate — it lets you add new configuration options in later versions (new builder methods with sensible defaults) without ever breaking a merchant's existing call site. It's the same non-breaking-change principle from <a href="#sdk-design">Internal SDK Design Principles</a>, applied at the API-shape level instead of just the function-signature level.</div>
+
+</div>
+<div id="payment-sdk-security" class="subsection">
+<h3 class="subsection-title">Security & PCI-DSS Scope Reduction</h3>
+
+<p>This is the part that makes payment SDKs categorically different from every other SDK you'll build. If a merchant's app or backend ever "touches" a raw card number (PAN), that merchant falls into a much heavier PCI-DSS compliance tier (audits, quarterly network scans, penetration tests). The entire point of your SDK's architecture is to keep the merchant out of scope by never letting raw card data leave your own code.</p>
+
+<div class="diagram">
+<pre>
+Where the PAN is allowed to exist:
+
+Merchant App UI  ──(renders)──▶  [ CardComponent — SDK-owned View/Composable ]
+                                          │
+                                          │ raw PAN typed here, INSIDE your SDK's
+                                          │ own View — merchant's Compose/View
+                                          │ tree never receives the characters
+                                          ▼
+                              SDK's own HTTPS client (cert-pinned)
+                                          │
+                                          ▼
+                          Payment processor's tokenization endpoint
+                                          │
+                                          ▼
+                          returns an opaque, single-use TOKEN
+                                          │
+                                          ▼
+        Token (NOT the PAN) is handed back to the merchant's app/backend
+
+Merchant's app and backend only ever see: the token, the last 4 digits,
+the card brand, and the final PaymentResult. Never the PAN, never the CVC.
+</pre>
+</div>
+
+<pre><code class="language-kotlin">// :payment-ui-components — the card field is the SDK's most security-sensitive View
+class CardInputView(context: Context) : LinearLayout(context) {
+    init {
+        // Card entry screens must never appear in the Recents thumbnail or screenshots
+        (context as? Activity)?.window?.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
+        panEditText.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO  // no keyboard/autofill leakage
+    }
+
+    fun clearSensitiveData() {
+        panEditText.text?.clear()
+        cvcEditText.text?.clear()   // never retain CVC in memory after submission — even in a String
+    }
+}
+</code></pre>
+
+<pre><code class="language-kotlin">// :payment-network — pin to the processor's certificate, not just "any valid TLS cert"
+val certificatePinner = CertificatePinner.Builder()
+    .add("checkout.adyenlike.com", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+    .build()
+
+val httpClient = OkHttpClient.Builder()
+    .certificatePinner(certificatePinner)
+    .build()
+// Full pinning setup (backup pins, rotation strategy) is covered in
+// Certificate Pinning, Biometric & Encrypted Storage — reuse it, don't reinvent it.
+</code></pre>
+
+<pre><code class="language-markdown"># :payment-sdk/consumer-rules.pro — shipped INSIDE the AAR automatically applied to host apps
+# Keep only the public API surface; obfuscate everything else so a merchant
+# (or an attacker who decompiles the merchant's APK) can't read your internals
+-keep public class com.adyenlike.paymentsdk.PaymentSDK { public *; }
+-keep public class com.adyenlike.paymentsdk.PaymentResult { *; }
+-keep public class com.adyenlike.paymentsdk.PaymentConfiguration { public *; }
+-keep public interface com.adyenlike.paymentsdk.PaymentResultListener { *; }
+# Everything else (internal networking, token handling) stays obfuscated —
+# consumer-rules.pro applies R8 rules to the HOST app's build automatically,
+# the merchant never has to configure ProGuard for your SDK to work.
+</code></pre>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: Why does the card input field live inside the SDK's own View instead of the SDK just giving the merchant a "get PAN" function?</div>
+<div class="qa-a">
+<ul>
+<li>PCI-DSS scope is determined by what code <em>can access</em> cardholder data, not just what it does with it. If the merchant's Activity/Composable hierarchy contains the EditText holding the PAN, the merchant's app is in scope even if they never read the string themselves.</li>
+<li>By making the card field an opaque View the SDK owns and renders (the merchant only positions it via layout params/modifiers), the PAN never crosses into code the merchant wrote — this is what lets most merchants qualify for the lightest PCI SAQ tier (SAQ A / A-EP) instead of the heaviest (SAQ D).</li>
+<li>This is also why "Components" still ships a real UI widget rather than just business-logic classes — for the card field specifically, UI ownership <em>is</em> the security boundary.</li>
+</ul>
+</div>
+<div class="qa-q">Q: The merchant asks you to add a callback that exposes the raw card number for their own analytics. Do you add it?</div>
+<div class="qa-a">
+<ul>
+<li>No — this is the kind of request to push back on architecturally, not just decline politely. Adding any public API that returns a PAN destroys the scope-reduction guarantee the entire module boundary exists to provide, for every merchant using the SDK, not just this one.</li>
+<li>Offer the actual underlying need instead: card brand, last 4 digits, and a bin-range-derived "card type" are already non-sensitive and usually satisfy the analytics use case.</li>
+</ul>
+</div>
+</div>
+
+</div>
+<div id="payment-sdk-runtime-flow" class="subsection">
+<h3 class="subsection-title">Runtime Flow — Sessions, Tokenization & 3D Secure</h3>
+
+<p>A payment SDK's runtime flow always involves three parties, not two: the merchant's app, the merchant's backend, and the payment processor's backend. The SDK's job is to orchestrate the app-side leg of that triangle correctly.</p>
+
+<div class="diagram">
+<pre>
+1. Merchant Backend ──creates session──▶ Processor Backend
+                                              │
+                    (server-to-server, uses the merchant's SECRET api key —
+                     this key must NEVER ship inside the Android SDK/app)
+                                              │
+2. Merchant Backend ◀───session token────────┘
+                       (short-lived, scoped to one payment amount/currency)
+        │
+        ▼
+3. Merchant App: PaymentSDK.startPayment(activity, configuration, session)
+        │
+        ▼
+4. SDK renders CardComponent, shopper enters card details
+        │
+        ▼
+5. SDK ──(tokenize, using PUBLIC clientKey only)──▶ Processor Backend
+        │
+        ▼
+6a. Processor returns "Authorised"           6b. Processor returns "Action Required"
+        │                                              │
+        ▼                                              ▼
+   PaymentResult.Authorised                :payment-actions module launches
+        │                                    3DS challenge WebView / redirects
+        │                                    to bank app, then deep-links back
+        │                                              │
+        │                                              ▼
+        │                                    PaymentResult.Authorised / Refused
+        ▼                                              │
+7. SDK calls host app's PaymentResultListener ◀─────────┘
+        │
+        ▼
+8. Merchant Backend independently confirms via a WEBHOOK from Processor Backend
+   (the source of truth — never trust step 7 alone to release goods/services)
+</pre>
+</div>
+
+<pre><code class="language-kotlin">// The public/secret key split matters: only the PUBLIC clientKey ever ships in the app
+class PaymentSession(
+    val sessionId: String,
+    val sessionData: String,     // opaque, short-lived, single-payment-scoped
+    val clientKey: String        // public — safe to embed, cannot authorize a charge alone
+)
+
+// :payment-actions — handling what comes back after tokenization
+object PaymentSDK {
+    // ...startPayment as before...
+
+    // Called from the host Activity's onNewIntent() when a bank app / browser
+    // redirects back into the merchant's app via a registered deep link
+    fun handleAction(intent: Intent) {
+        val redirectResult = intent.data?.getQueryParameter("redirectResult") ?: return
+        // resume the in-flight payment with the processor using redirectResult
+    }
+}
+</code></pre>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: Why does the merchant's backend need its own webhook if the SDK already delivers a <code>PaymentResultListener</code> callback to the app?</div>
+<div class="qa-a">
+<ul>
+<li>The client-side callback can be lost forever — the shopper's app crashes, gets force-closed, or loses network right after step 6a but before step 7 fires. If the merchant only released the purchased item on that callback, they'd have taken money without delivering (or in the reverse case, delivered on a payment that was later reversed).</li>
+<li>The server-to-server webhook is authenticated directly between the merchant's backend and the processor's backend — it cannot be spoofed by tampering with the app, and it is durable (the processor retries webhook delivery on failure). The client callback should only ever drive UX ("show a spinner", "show a success screen"), never authorize fulfillment.</li>
+</ul>
+</div>
+</div>
+
+</div>
+<div id="payment-sdk-testing-release" class="subsection">
+<h3 class="subsection-title">Testing, Versioning & Distribution</h3>
+
+<p>Shipping the module is only half the job — an SDK used by dozens of merchant apps you don't control needs a release process that catches breakage before a merchant does.</p>
+
+<div class="diagram">
+<pre>
+SDK testing pyramid (wider at the base than a normal app's):
+
+  Unit tests            :payment-core, :payment-network business logic,
+                         MockWebServer for the tokenization/session API
+                                        │
+  Contract tests         run against the processor's real TEST/sandbox
+                         environment in CI — catches when the processor
+                         changes their API before a merchant does
+                                        │
+  Sample app             a full, real Android app in the same repo that
+                         depends on the SDK exactly like a merchant would —
+                         this is where instrumented tests exercise the
+                         actual CardComponent UI and 3DS WebView
+                                        │
+  Binary compatibility   kotlinx-binary-compatibility-validator (or
+  check                  Metalava) runs in CI and FAILS THE BUILD if a
+                         public signature changed — the automated version
+                         of the "did I just break a merchant" question
+</pre>
+</div>
+
+<pre><code class="language-kotlin">// root build.gradle.kts — catch accidental breaking changes before they ship
+plugins {
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.14.0"
+}
+// ./gradlew apiCheck   — fails CI if the public API surface changed
+// ./gradlew apiDump    — intentionally accept the new surface (bumps the .api file)
+</code></pre>
+
+<pre><code class="language-kotlin">// :payment-sdk/build.gradle.kts — publishing the AAR
+publishing {
+    publications {
+        create&lt;MavenPublication&gt;("release") {
+            groupId = "com.adyenlike"
+            artifactId = "payment-sdk"
+            version = "3.4.0"            // semantic versioning — see Internal SDK Design Principles
+            afterEvaluate { from(components["release"]) }
+        }
+    }
+    repositories {
+        maven {
+            // A commercially licensed payment SDK is usually distributed via a
+            // private Artifactory/Nexus repo gated behind merchant credentials,
+            // NOT public Maven Central — you control exactly who can pull it.
+            url = uri("https://packages.adyenlike.com/android/release")
+            credentials { username = findProperty("repoUser") as String; password = findProperty("repoKey") as String }
+        }
+    }
+}
+</code></pre>
+
+<div class="callout callout-info">
+<strong>Release checklist for a payment SDK version bump:</strong>
+<ul>
+<li><code>apiCheck</code> passes, or the API diff was intentional and documented in the CHANGELOG</li>
+<li>Sample app builds and its instrumented tests (card entry, 3DS redirect, cancel flow) pass against the processor's sandbox</li>
+<li>Dokka-generated API docs regenerated and published alongside the AAR</li>
+<li>Deprecated APIs from N-1 releases are now actually removed only on a MAJOR bump — see the deprecation cycle in <a href="#sdk-design">Internal SDK Design Principles</a></li>
+</ul>
+</div>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: A processor adds a new required field to the tokenization response. How do you roll that out without breaking every merchant on the previous version?</div>
+<div class="qa-a">
+<ul>
+<li>Add it as a nullable/defaulted property on the existing public data class, never as a new required constructor parameter — this keeps it binary- and source-compatible, and <code>apiCheck</code> will confirm it.</li>
+<li>Ship it as a MINOR version, not a MAJOR one — merchants pick it up automatically on their next routine bump with zero code changes required on their side.</li>
+<li>Only force a MAJOR version (and a real migration) if the processor's change is itself a breaking change to the wire contract — e.g., a field that used to be optional becomes mandatory for the payment to succeed at all.</li>
+</ul>
+</div>
+</div>
 
 </div>
 </section>
