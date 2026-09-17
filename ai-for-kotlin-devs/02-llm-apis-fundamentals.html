@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM APIs Fundamentals - AI Engineering Topic 2</title>
+  <meta name="description" content="A practical guide to calling OpenAI, Gemini, and Claude from Python: chat completions, streaming, tokens, context windows, cost, and retries — for Kotlin/Android developers.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/02-llm-apis-fundamentals.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="01-python-for-kotlin-devs.html">&larr; Topic 1</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <span class="nav-cta" style="opacity:.5;pointer-events:none">Topic 3 &rarr; coming soon</span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 2 of 15 &middot; Foundations</div>
+        <h1>LLM APIs fundamentals.</h1>
+        <p class="hero-copy">OpenAI, Gemini, and Claude look like three different products. Underneath, their APIs are the same shape: send a list of role-tagged messages over HTTPS, get text back, pay per token. This lesson builds that shared mental model, then shows you the three SDKs side by side — streaming, tokens, cost, and the retry logic every production caller needs.</p>
+        <div class="actions">
+          <a class="button primary" href="#setup">Start with setup</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Call any of the three major LLM providers from Python, stream a response token by token, estimate the cost of a call before and after you make it, and handle the failures that happen in production.</p>
+        <div class="summary-grid">
+          <div><b>9</b><span>lesson sections</span></div>
+          <div><b>3</b><span>providers compared</span></div>
+          <div><b>1</b><span>capstone wrapper</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>One request shape, three vendors.</h2>
+        <p style="max-width:760px;color:var(--muted)">Think of an LLM API the way you'd think of a Retrofit endpoint: a request DTO goes out, a response DTO comes back, and the interesting behavior lives inside a service you don't control. The request DTO here is always a <b>list of messages</b> with a <b>role</b> (<code>system</code>, <code>user</code>, or <code>assistant</code>) and <b>content</b>. The response is text, metered by <b>tokens</b>, billed accordingly.</p>
+        <div class="diagram-visual">
+          <div class="diagram-node">Your app builds<br>a messages list</div>
+          <div class="diagram-node">POST to the<br>provider's API</div>
+          <div class="diagram-node hot">Model generates<br>tokens</div>
+          <div class="diagram-node">Response text +<br>token usage back</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#setup">0 Setup &amp; API keys</a>
+        <a href="#anatomy">1 Anatomy of a request</a>
+        <a href="#providers">2 Three providers, one shape</a>
+        <a href="#streaming">3 Streaming responses</a>
+        <a href="#tokens">4 Tokens &amp; context windows</a>
+        <a href="#cost">5 Cost math</a>
+        <a href="#params">6 Parameters that matter</a>
+        <a href="#errors">7 Errors &amp; retries</a>
+        <a href="#checkpoint">8 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="setup">
+          <div class="eyebrow">Section 0</div>
+          <h2>Setup &amp; API Keys</h2>
+          <p>Each provider issues an API key from its own console. Treat every one of these exactly like a database password — never hardcode it, never commit it, never log it.</p>
+          <table class="table">
+            <thead><tr><th>Provider</th><th>Get a key at</th><th>Python package</th></tr></thead>
+            <tbody>
+              <tr><td>OpenAI</td><td>platform.openai.com</td><td><code>pip install openai</code></td></tr>
+              <tr><td>Google Gemini</td><td>aistudio.google.com</td><td><code>pip install google-genai</code></td></tr>
+              <tr><td>Anthropic Claude</td><td>console.anthropic.com</td><td><code>pip install anthropic</code></td></tr>
+            </tbody>
+          </table>
+          <p>Load keys from environment variables, not from source code — this is the Python equivalent of keeping secrets out of <code>local.properties</code> / <code>BuildConfig</code> in an Android project.</p>
+          <pre class="code-card">pip install openai anthropic google-genai python-dotenv</pre>
+          <div class="file-tree">
+            <div>intent-ai/</div>
+            <div>  .env               <span style="opacity:.6"># never committed — add to .gitignore</span></div>
+            <div>  .gitignore</div>
+            <div>  main.py</div>
+          </div>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label python">.env</div>
+              <pre class="code-card">OPENAI_API_KEY=sk-...
+GEMINI_API_KEY=AIza...
+ANTHROPIC_API_KEY=sk-ant-...</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">main.py</div>
+              <pre class="code-card">from dotenv import load_dotenv
+import os
+
+load_dotenv()  # reads .env into the process environment
+api_key = os.environ["OPENAI_API_KEY"]  # raises KeyError if missing</pre>
+            </div>
+          </div>
+          <div class="checkpoint-box"><b>Checkpoint:</b> create accounts and API keys for at least OpenAI and one of Gemini/Claude, store them in a local <code>.env</code>, and confirm <code>.env</code> is listed in <code>.gitignore</code> before writing any code below.</div>
+        </section>
+
+        <section class="lesson" id="anatomy">
+          <div class="eyebrow">Section 1</div>
+          <h2>Anatomy of a Chat Completion Request</h2>
+          <p>OpenAI's <code>chat.completions</code> shape became the de facto pattern the rest of the industry converged on. Learn it first; everything else in this lesson is a variation on it.</p>
+          <pre class="code-card">from openai import OpenAI
+
+client = OpenAI()  # reads OPENAI_API_KEY from the environment automatically
+
+response = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[
+        {"role": "system", "content": "You are a concise Android engineering mentor."},
+        {"role": "user", "content": "Explain recursion in one sentence."},
+    ],
+    max_tokens=100,
+)
+
+print(response.choices[0].message.content)
+print(response.usage)  # prompt_tokens, completion_tokens, total_tokens</pre>
+          <div class="concept-visual">
+            <div class="concept-box"><b>system</b><span>Sets behavior and constraints for the whole conversation. Sent once, applies throughout — like a base class defining defaults.</span></div>
+            <div class="concept-box"><b>user</b><span>What the human (or your app, on their behalf) is asking right now.</span></div>
+            <div class="concept-box"><b>assistant</b><span>The model's prior replies. You send these back on the next call — the API is stateless; there is no server-side conversation memory.</span></div>
+          </div>
+          <div class="callout"><b>The stateless trap:</b> unlike a chat UI that "remembers" the conversation, the API itself has no memory between calls. Every request resends the <i>entire</i> message history. Forgetting this is the most common reason a "context-aware" bot suddenly loses context — the caller stopped appending prior turns to the list.</div>
+        </section>
+
+        <section class="lesson" id="providers">
+          <div class="eyebrow">Section 2</div>
+          <h2>Three Providers, One Shape</h2>
+          <p>Same prompt, same intent, three SDKs. The differences are mostly naming: where the system prompt goes, what the response field is called, and how token usage is reported.</p>
+          <div class="provider-grid">
+            <div class="compare-col">
+              <div class="compare-label openai">OpenAI</div>
+              <pre class="code-card">from openai import OpenAI
+client = OpenAI()
+
+r = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[
+        {"role": "system",
+         "content": "Be concise."},
+        {"role": "user",
+         "content": "Explain recursion "
+                     "in one sentence."},
+    ],
+)
+print(r.choices[0].message.content)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label gemini">Gemini</div>
+              <pre class="code-card">from google import genai
+client = genai.Client()
+
+r = client.models.generate_content(
+    model="gemini-2.5-flash",
+    config={"system_instruction":
+            "Be concise."},
+    contents="Explain recursion "
+             "in one sentence.",
+)
+print(r.text)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label claude">Claude</div>
+              <pre class="code-card">from anthropic import Anthropic
+client = Anthropic()
+
+r = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=100,
+    system="Be concise.",
+    messages=[
+        {"role": "user",
+         "content": "Explain recursion "
+                     "in one sentence."},
+    ],
+)
+print(r.content[0].text)</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Concept</th><th>OpenAI</th><th>Gemini</th><th>Claude</th></tr></thead>
+            <tbody>
+              <tr><td>System prompt</td><td><code>{"role": "system", ...}</code> in <code>messages</code></td><td><code>config.system_instruction</code>, separate</td><td><code>system</code> parameter, separate</td></tr>
+              <tr><td>User turns</td><td><code>messages</code> list</td><td><code>contents</code> (string or list)</td><td><code>messages</code> list</td></tr>
+              <tr><td><code>max_tokens</code></td><td>Optional</td><td>Optional (in <code>config</code>)</td><td><b>Required</b></td></tr>
+              <tr><td>Response text</td><td><code>r.choices[0].message.content</code></td><td><code>r.text</code></td><td><code>r.content[0].text</code></td></tr>
+              <tr><td>Token usage</td><td><code>r.usage.prompt_tokens</code> / <code>completion_tokens</code></td><td><code>r.usage_metadata</code></td><td><code>r.usage.input_tokens</code> / <code>output_tokens</code></td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Model name strings (<code>gpt-4.1-mini</code>, <code>gemini-2.5-flash</code>, <code>claude-sonnet-4-5</code>) change as providers ship new versions — always check the current model list in each provider's docs before shipping. Don't copy these literally into production without verifying.</div>
+        </section>
+
+        <section class="lesson" id="streaming">
+          <div class="eyebrow">Section 3</div>
+          <h2>Streaming Responses</h2>
+          <p>A non-streamed call waits for the entire response before returning anything — fine for short answers, bad for a chat UI where the user should see text appear as it's generated. Streaming is conceptually the same problem Kotlin's <code>Flow&lt;String&gt;</code> solves: emit values as they become available instead of collecting them all first.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin (the shape you know)</div>
+              <pre class="code-card">fun streamAnswer(prompt: String): Flow<String> = flow {
+    val chunks = fakeLlmStream(prompt)
+    chunks.collect { chunk -> emit(chunk) }
+}
+
+// caller
+streamAnswer("Explain recursion").collect { chunk ->
+    print(chunk)
+}</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python (OpenAI streaming)</div>
+              <pre class="code-card">stream = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[{"role": "user", "content": "Explain recursion"}],
+    stream=True,
+)
+
+for chunk in stream:
+    delta = chunk.choices[0].delta.content
+    if delta:
+        print(delta, end="", flush=True)</pre>
+            </div>
+          </div>
+          <p>Under the hood, this is <b>Server-Sent Events (SSE)</b>: one HTTP response, kept open, with the server pushing small JSON chunks as the model generates tokens. The SDK turns that into a plain Python iterator so you never touch raw SSE parsing.</p>
+          <table class="table">
+            <thead><tr><th>Provider</th><th>Enable streaming</th><th>Read a chunk</th></tr></thead>
+            <tbody>
+              <tr><td>OpenAI</td><td><code>stream=True</code></td><td><code>chunk.choices[0].delta.content</code></td></tr>
+              <tr><td>Gemini</td><td><code>generate_content_stream(...)</code></td><td><code>chunk.text</code></td></tr>
+              <tr><td>Claude</td><td><code>client.messages.stream(...)</code> as a context manager</td><td><code>event.text</code> inside <code>for event in stream.text_stream</code></td></tr>
+            </tbody>
+          </table>
+          <div class="checkpoint-box"><b>Async version:</b> Topic 7 (FastAPI) will stream these same chunks out over your own API. That needs the <i>async</i> client (<code>AsyncOpenAI</code>, <code>async for chunk in stream</code>) from Topic 1's Section 7 — sync streaming here is for scripts, async streaming is for services.</div>
+        </section>
+
+        <section class="lesson" id="tokens">
+          <div class="eyebrow">Section 4</div>
+          <h2>Tokens &amp; Context Windows</h2>
+          <p>A <b>token</b> is not a word or a character — it's a chunk of text the model's tokenizer produces, roughly 4 characters of English on average. "Recursion" might be one token; "antidisestablishmentarianism" might be six. Every request's <b>system + history + user message + expected response</b> must fit inside the model's <b>context window</b> — its maximum token budget.</p>
+          <pre class="code-card">import tiktoken
+
+enc = tiktoken.encoding_for_model("gpt-4.1-mini")
+tokens = enc.encode("Explain recursion in one sentence.")
+print(len(tokens))   # 8 — an approximate cost/size check before you call the API</pre>
+          <p>A running conversation eats into that budget with every turn, since you resend the whole history each time (Section 1). Here's what a growing conversation looks like against a 128K-token window:</p>
+          <div class="token-bar">
+            <div class="token-row"><span>System prompt</span><div class="token-track"><div class="token-fill" style="width:2%"></div></div><span>~600</span></div>
+            <div class="token-row"><span>10-turn history</span><div class="token-track"><div class="token-fill" style="width:12%"></div></div><span>~15K</span></div>
+            <div class="token-row"><span>+ retrieved docs (RAG)</span><div class="token-track"><div class="token-fill hot" style="width:35%"></div></div><span>~45K</span></div>
+            <div class="token-row"><span>Remaining budget</span><div class="token-track"><div class="token-fill" style="width:51%;background:#c7982e"></div></div><span>~67K</span></div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Model (example)</th><th>Approx. context window</th></tr></thead>
+            <tbody>
+              <tr><td>gpt-4.1-mini</td><td>128K tokens</td></tr>
+              <tr><td>gemini-2.5-flash</td><td>1M tokens</td></tr>
+              <tr><td>claude-sonnet-4-5</td><td>200K tokens</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">This is exactly why Topic 7 (RAG) exists: instead of stuffing an entire knowledge base into the context window every call, you retrieve only the few relevant chunks that fit the remaining budget.</div>
+        </section>
+
+        <section class="lesson" id="cost">
+          <div class="eyebrow">Section 5</div>
+          <h2>Cost Math</h2>
+          <p>Providers bill separately for <b>input tokens</b> (what you send) and <b>output tokens</b> (what the model generates), usually priced per million tokens, with output priced higher than input. Always check each provider's live pricing page before estimating a real budget — the numbers below are illustrative, not current pricing.</p>
+          <pre class="code-card">def estimate_cost(prompt_tokens: int, completion_tokens: int,
+                   price_per_1m_in: float, price_per_1m_out: float) -> float:
+    input_cost = (prompt_tokens / 1_000_000) * price_per_1m_in
+    output_cost = (completion_tokens / 1_000_000) * price_per_1m_out
+    return round(input_cost + output_cost, 6)
+
+# after a real call, using the SDK's reported usage:
+cost = estimate_cost(
+    prompt_tokens=response.usage.prompt_tokens,
+    completion_tokens=response.usage.completion_tokens,
+    price_per_1m_in=0.40,
+    price_per_1m_out=1.60,
+)
+print(f"${cost:.6f} for this call")</pre>
+          <div class="callout"><b>Habit to build now:</b> log <code>usage</code> on every call from day one, even in a throwaway script. A feature that "feels free" in dev can become a real line item at production traffic — the same instinct that makes you watch Firebase read/write counts on a database.</div>
+        </section>
+
+        <section class="lesson" id="params">
+          <div class="eyebrow">Section 6</div>
+          <h2>Parameters That Matter</h2>
+          <p>The biggest adjustment coming from deterministic APIs: the same input can produce a <i>different</i> output on every call. These parameters control how much.</p>
+          <table class="table">
+            <thead><tr><th>Parameter</th><th>What it does</th><th>Typical use</th></tr></thead>
+            <tbody>
+              <tr><td><code>temperature</code></td><td>0 = nearly deterministic, most-likely tokens only. Higher (up to ~2) = more randomness/creativity.</td><td><code>0</code>–<code>0.3</code> for extraction/classification, <code>0.7</code>+ for creative writing</td></tr>
+              <tr><td><code>max_tokens</code></td><td>Hard cap on response length. The call is truncated, not rejected, if the model hits it mid-thought.</td><td>Always set one — it's your cost ceiling per call</td></tr>
+              <tr><td><code>top_p</code></td><td>Nucleus sampling: only consider tokens within the top P cumulative probability. Alternative to temperature; usually tune one, not both.</td><td>Leave at default (1.0) unless you have a specific reason</td></tr>
+              <tr><td><code>stop</code></td><td>Sequence(s) that end generation immediately when produced.</td><td>Stopping a model from generating past a delimiter you parse on</td></tr>
+            </tbody>
+          </table>
+          <div class="checkpoint-box"><b>For anything you'll parse programmatically</b> (JSON, classification labels, function arguments — Topic 4), set <code>temperature=0</code>. Non-determinism is a feature for chat, a bug for structured extraction.</div>
+        </section>
+
+        <section class="lesson" id="errors">
+          <div class="eyebrow">Section 7</div>
+          <h2>Errors &amp; Retries</h2>
+          <p>This is Topic 1 Section 5 (error handling) applied to a specific, very real failure mode: LLM APIs rate-limit you, time out under load, and occasionally return server errors that have nothing to do with your request. Catch the SDK's specific exception types, not a bare <code>except:</code>.</p>
+          <pre class="code-card">import time
+from openai import OpenAI, RateLimitError, APIStatusError, APITimeoutError
+
+client = OpenAI()
+
+def ask_with_retry(prompt: str, retries: int = 3) -> str:
+    for attempt in range(retries):
+        try:
+            r = client.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": prompt}],
+                timeout=30,
+            )
+            return r.choices[0].message.content
+        except RateLimitError:
+            wait = 2 ** attempt  # exponential backoff: 1s, 2s, 4s
+            print(f"rate limited, retrying in {wait}s")
+            time.sleep(wait)
+        except APITimeoutError:
+            print("timed out, retrying")
+        except APIStatusError as e:
+            if e.status_code >= 500:
+                print(f"server error {e.status_code}, retrying")
+            else:
+                raise  # a 400 won't fix itself on retry — don't loop on it
+    raise RuntimeError(f"failed after {retries} attempts")</pre>
+          <div class="error-grid">
+            <div class="error-card"><b>Retrying a 4xx</b><span>A malformed request or bad API key returns the same error every time. Retry only on rate limits (429), timeouts, and 5xx server errors — retrying a 400 just burns time.</span></div>
+            <div class="error-card"><b>No backoff</b><span>Retrying immediately in a loop during a rate limit makes the rate limit worse. Exponential backoff (1s, 2s, 4s...) is not optional at any real traffic volume.</span></div>
+          </div>
+          <div class="callout">Production tip: the <a href="https://tenacity.readthedocs.io" style="color:var(--accent-2);font-weight:800">tenacity</a> library turns the loop above into a decorator (<code>@retry(...)</code>) — worth adopting once you're past the learning stage, using the decorator pattern from Topic 1 Section 6.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 8 &middot; Checkpoint</div>
+          <h2>Capstone: A Provider-Agnostic Ask Function</h2>
+          <p>Build a single function that streams a response from whichever provider you pass in, prints tokens as they arrive, and reports the estimated cost when it's done. This exact shape — one call site, swappable providers — is what Topic 14's capstone product builds on top of.</p>
+          <pre class="code-card">import os
+from dataclasses import dataclass
+from openai import OpenAI
+from anthropic import Anthropic
+
+# illustrative pricing per 1M tokens — verify against each provider's current pricing page
+PRICING = {
+    "openai": {"in": 0.40, "out": 1.60},
+    "claude": {"in": 3.00, "out": 15.00},
+}
+
+@dataclass
+class AskResult:
+    text: str
+    prompt_tokens: int
+    completion_tokens: int
+
+    def cost(self, provider: str) -> float:
+        rate = PRICING[provider]
+        return round(
+            (self.prompt_tokens / 1_000_000) * rate["in"]
+            + (self.completion_tokens / 1_000_000) * rate["out"],
+            6,
+        )
+
+
+def ask_openai(prompt: str) -> AskResult:
+    client = OpenAI()
+    chunks: list[str] = []
+    stream = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": prompt}],
+        stream=True,
+        stream_options={"include_usage": True},
+    )
+    usage = None
+    for chunk in stream:
+        if chunk.choices and chunk.choices[0].delta.content:
+            delta = chunk.choices[0].delta.content
+            print(delta, end="", flush=True)
+            chunks.append(delta)
+        if chunk.usage:
+            usage = chunk.usage
+    print()
+    return AskResult("".join(chunks), usage.prompt_tokens, usage.completion_tokens)
+
+
+def ask_claude(prompt: str) -> AskResult:
+    client = Anthropic()
+    chunks: list[str] = []
+    with client.messages.stream(
+        model="claude-sonnet-4-5",
+        max_tokens=300,
+        messages=[{"role": "user", "content": prompt}],
+    ) as stream:
+        for text in stream.text_stream:
+            print(text, end="", flush=True)
+            chunks.append(text)
+        final = stream.get_final_message()
+    print()
+    return AskResult("".join(chunks), final.usage.input_tokens, final.usage.output_tokens)
+
+
+def ask(provider: str, prompt: str) -> None:
+    result = ask_openai(prompt) if provider == "openai" else ask_claude(prompt)
+    print(f"\n[{provider}] tokens: {result.prompt_tokens} in / "
+          f"{result.completion_tokens} out — est. ${result.cost(provider):.6f}")
+
+
+if __name__ == "__main__":
+    ask("openai", "Explain recursion in one sentence, then give a Kotlin example.")</pre>
+          <div class="expected-result"><b>Expected behavior:</b> text prints token-by-token as it streams, then a final line reports input/output token counts and an estimated cost. Swap the last line to <code>ask("claude", ...)</code> and confirm it works against the second provider without changing anything else.</div>
+          <div class="checklist">
+            <li>Both <code>ask_openai</code> and <code>ask_claude</code> run against real API keys from your <code>.env</code></li>
+            <li>Response text visibly streams rather than appearing all at once</li>
+            <li>Cost estimate prints after each call, using real <code>usage</code> data from the response — not a guess</li>
+            <li>Wrapped at least one call in the retry logic from Section 7 and forced a failure (e.g. a bad model name) to see it raise instead of retry-looping forever</li>
+            <li>Can explain out loud why <code>max_tokens</code> is required for Claude but optional for OpenAI, and why that matters for cost control either way</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 3: Prompt &amp; Context Engineering</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">System prompts, few-shot examples, context windows, and the failure modes that show up once your prompts leave the demo stage. Coming soon.</p>
+        <a class="button" href="index.html">Back to series home</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 2</span>
+      <div><a href="01-python-for-kotlin-devs.html">Topic 1</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>
