@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python for Kotlin Developers - AI Engineering Topic 1</title>
+  <meta name="description" content="A practical Python tutorial for Kotlin/Android developers: syntax, types, collections, classes, null handling, async, and packaging, mapped side-by-side with Kotlin.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/01-python-for-kotlin-devs.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <span class="nav-cta" style="opacity:.5;pointer-events:none">Topic 2 &rarr; coming soon</span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 1 of 15 &middot; Foundations</div>
+        <h1>Python for Kotlin developers.</h1>
+        <p class="hero-copy">Every later topic in this series — LLM APIs, RAG, agents, LangGraph — is written in Python. This lesson is not "learn Python from scratch." It is a fast, precise bridge: for each Kotlin concept you already trust, here is its Python equivalent, where it behaves the same, and where it quietly doesn't.</p>
+        <div class="actions">
+          <a class="button primary" href="#setup">Start with setup</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Read and write everyday Python with the same confidence you have in Kotlin: types, classes, collections, error handling, and async code — the exact subset the rest of this series depends on.</p>
+        <div class="summary-grid">
+          <div><b>10</b><span>lesson sections</span></div>
+          <div><b>1</b><span>capstone rewrite</span></div>
+          <div><b>0</b><span>Python experience needed</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>Same ideas, different compiler guarantees.</h2>
+        <p style="max-width:760px;color:var(--muted)">Kotlin and Python are both high-level, garbage-collected, multi-paradigm languages. The big difference isn't features — it's when mistakes get caught. Kotlin's compiler catches type errors, null misuse, and unreachable branches before the app runs. Python catches almost all of that at runtime, or not at all, unless you add type hints and a checker. Keep that one fact in mind through this whole lesson.</p>
+        <div class="concept-visual">
+          <div class="concept-box"><b>Kotlin</b><span>Statically typed. The compiler is your first reviewer. Null safety is enforced in the type system.</span></div>
+          <div class="concept-box"><b>Python</b><span>Dynamically typed by default. Errors surface when the line actually executes. Type hints are optional and advisory.</span></div>
+          <div class="concept-box"><b>Consequence for you</b><span>Write more tests, run the script often, and lean on type hints (Section 10) once your code gets past throwaway size.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#setup">0 Setup &amp; tooling</a>
+        <a href="#syntax">1 Syntax &amp; types</a>
+        <a href="#collections">2 Collections</a>
+        <a href="#classes">3 Classes &amp; data classes</a>
+        <a href="#null">4 None vs null safety</a>
+        <a href="#errors">5 Error handling</a>
+        <a href="#functional">6 Functions &amp; decorators</a>
+        <a href="#async">7 Async &amp; concurrency</a>
+        <a href="#packaging">8 Packaging &amp; imports</a>
+        <a href="#typing">9 Type hints &amp; mypy</a>
+        <a href="#checkpoint">10 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="setup">
+          <div class="eyebrow">Section 0</div>
+          <h2>Setup &amp; Tooling</h2>
+          <p><b>Kotlin equivalent:</b> Gradle + the JVM, managed mostly by Android Studio. <b>Python equivalent:</b> a Python interpreter + a virtual environment, managed mostly by the command line.</p>
+          <div class="diagram-visual">
+            <div class="diagram-node">Install Python 3.12+</div>
+            <div class="diagram-node">Create a venv<br>per project</div>
+            <div class="diagram-node hot">Activate it in<br>your shell</div>
+            <div class="diagram-node">pip install<br>dependencies</div>
+          </div>
+          <p>A <b>virtual environment (venv)</b> is Python's answer to "which dependencies belong to which project" — the same problem Gradle's per-module dependency graph solves for you automatically. Without one, every project on your machine shares one global package list, which breaks fast.</p>
+          <pre class="code-card"># create a project folder and a virtual environment
+mkdir intent-ai && cd intent-ai
+python3 -m venv .venv
+
+# activate it (macOS/Linux) — do this every new terminal session
+source .venv/bin/activate
+
+# your prompt now shows (.venv) — installs are scoped to this project
+pip install requests
+
+# run a script
+python main.py
+
+# leave the venv
+deactivate</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> run <code>python3 --version</code> and confirm 3.12 or newer, then create and activate a venv before touching any code below. Every later topic in this series assumes an active venv.</div>
+          <table class="table" style="margin-top:18px">
+            <thead><tr><th>Task</th><th>Kotlin / Android</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td>Isolate dependencies per project</td><td>Gradle module + version catalog</td><td><code>venv</code> + <code>pip</code> / <code>uv</code></td></tr>
+              <tr><td>Declare dependencies</td><td><code>build.gradle.kts</code></td><td><code>requirements.txt</code> or <code>pyproject.toml</code></td></tr>
+              <tr><td>Run code</td><td>Build + install APK</td><td><code>python file.py</code> — no build step</td></tr>
+              <tr><td>REPL</td><td>Kotlin scratch file / <code>kotlinc</code></td><td><code>python</code> interactive shell</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="syntax">
+          <div class="eyebrow">Section 1</div>
+          <h2>Syntax &amp; Types</h2>
+          <p>No braces, no semicolons — Python uses <b>indentation</b> to define blocks. This is not a style choice you can ignore; wrong indentation is a syntax error.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">fun greet(name: String, loud: Boolean = false): String {
+    val message = "Hello, $name"
+    return if (loud) message.uppercase() else message
+}
+
+val x: Int = 5
+var y = 10.5   // inferred Double</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">def greet(name: str, loud: bool = False) -> str:
+    message = f"Hello, {name}"
+    return message.upper() if loud else message
+
+x: int = 5
+y = 10.5   # inferred float, but never enforced</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Concept</th><th>Kotlin</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td>Block delimiter</td><td><code>{ }</code></td><td>Indentation (4 spaces, be consistent)</td></tr>
+              <tr><td>Statement end</td><td><code>;</code> optional</td><td>Newline, no semicolon needed</td></tr>
+              <tr><td>String templates</td><td><code>"$name is $age"</code></td><td><code>f"{name} is {age}"</code></td></tr>
+              <tr><td>val / var</td><td>Enforced immutability with <code>val</code></td><td>No <code>val</code>. Everything is reassignable; convention is <code>UPPER_CASE</code> for constants</td></tr>
+              <tr><td>Type declaration</td><td>Required or inferred, always checked</td><td>Optional hint, <b>not enforced at runtime</b></td></tr>
+              <tr><td><code>if</code> as expression</td><td><code>val m = if (x) a else b</code></td><td><code>m = a if x else b</code> (ternary is an expression suffix)</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">There is no real <code>val</code> in Python. A variable you never intend to reassign is just a variable you don't reassign — the interpreter won't stop you. This is one of the biggest silent-bug sources coming from Kotlin; Section 9 (type hints) narrows but doesn't close this gap.</div>
+        </section>
+
+        <section class="lesson" id="collections">
+          <div class="eyebrow">Section 2</div>
+          <h2>Collections &amp; Comprehensions</h2>
+          <p>Python's list/dict/set map directly to Kotlin's <code>List</code>/<code>Map</code>/<code>Set</code>, but Python collections are <b>mutable by default</b> — there's no separate <code>MutableList</code> vs <code>List</code> distinction.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">val names = listOf("Rag", "Agent", "Tool")
+val upper = names.map { it.uppercase() }
+val long = names.filter { it.length > 4 }
+
+val scores = mapOf("rag" to 9, "agent" to 8)
+for ((k, v) in scores) println("$k -> $v")</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">names = ["Rag", "Agent", "Tool"]
+upper = [n.upper() for n in names]        # list comprehension
+long = [n for n in names if len(n) > 4]   # filter, inline
+
+scores = {"rag": 9, "agent": 8}
+for k, v in scores.items():
+    print(f"{k} -> {v}")</pre>
+            </div>
+          </div>
+          <p>The Python <b>list/dict comprehension</b> is the idiomatic replacement for Kotlin's chained <code>.map { }.filter { }</code>. It reads right-to-left inside out: <code>[expression for item in iterable if condition]</code>.</p>
+          <table class="table">
+            <thead><tr><th>Kotlin</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td><code>List&lt;T&gt;</code> / <code>MutableList&lt;T&gt;</code></td><td><code>list</code> (always mutable)</td></tr>
+              <tr><td><code>Map&lt;K, V&gt;</code></td><td><code>dict</code></td></tr>
+              <tr><td><code>Set&lt;T&gt;</code></td><td><code>set</code></td></tr>
+              <tr><td><code>listOf(1,2,3)</code> (immutable)</td><td><code>(1, 2, 3)</code> — a <code>tuple</code>, Python's actual immutable sequence</td></tr>
+              <tr><td><code>names.map { it.upper() }</code></td><td><code>[n.upper() for n in names]</code></td></tr>
+              <tr><td><code>names.firstOrNull { it == "x" }</code></td><td><code>next((n for n in names if n == "x"), None)</code></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="classes">
+          <div class="eyebrow">Section 3</div>
+          <h2>Classes &amp; Data Classes</h2>
+          <p>Python's <code>@dataclass</code> is the closest sibling to Kotlin's <code>data class</code>: both auto-generate <code>__init__</code>/constructor, <code>__repr__</code>/<code>toString</code>, and equality. This pattern shows up constantly once you're modeling LLM messages, tool calls, and API payloads later in this series.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">data class ChatMessage(
+    val role: String,
+    val content: String,
+    val tokens: Int = 0
+)
+
+val m = ChatMessage(role = "user", content = "hi")
+val m2 = m.copy(content = "hello")
+println(m)  // ChatMessage(role=user, content=hi, tokens=0)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">from dataclasses import dataclass, replace
+
+@dataclass
+class ChatMessage:
+    role: str
+    content: str
+    tokens: int = 0
+
+m = ChatMessage(role="user", content="hi")
+m2 = replace(m, content="hello")
+print(m)  # ChatMessage(role='user', content='hi', tokens=0)</pre>
+            </div>
+          </div>
+          <p>Regular classes look familiar too, with one habit to unlearn: every method's first parameter is an explicit <code>self</code> — Python never implies "this".</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">class Wallet(private var balance: Double) {
+    fun deposit(amount: Double) {
+        balance += amount
+    }
+    fun getBalance() = balance
+}</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">class Wallet:
+    def __init__(self, balance: float):
+        self._balance = balance
+
+    def deposit(self, amount: float) -> None:
+        self._balance += amount
+
+    def get_balance(self) -> float:
+        return self._balance</pre>
+            </div>
+          </div>
+          <div class="error-grid">
+            <div class="error-card"><b>Forgetting self</b><span>Every instance method needs <code>self</code> as the first parameter. Miss it and Python raises a confusing <code>TypeError</code> about argument counts.</span></div>
+            <div class="error-card"><b>No real private</b><span>A leading underscore (<code>_balance</code>) is convention only, not enforcement — unlike Kotlin's <code>private</code>. A double underscore triggers name-mangling, which is a workaround, not true privacy.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="null">
+          <div class="eyebrow">Section 4</div>
+          <h2>None vs Kotlin Null Safety</h2>
+          <p>This is the section to read twice. Kotlin's <code>?</code>/<code>?:</code>/<code>!!</code> system makes null a compile-time concern. Python has <code>None</code>, but nothing in the language stops you from calling a method on it — you find out at runtime, via <code>AttributeError</code>.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">fun findUser(id: String): User? = repo.get(id)
+
+val user = findUser("42")
+val name = user?.name ?: "unknown"
+
+// compiler refuses this unless user is smart-cast or null-checked:
+// println(user.name)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">from typing import Optional
+
+def find_user(id: str) -> Optional[User]:
+    return repo.get(id)
+
+user = find_user("42")
+name = user.name if user is not None else "unknown"
+
+# this compiles and runs fine until it doesn't:
+# print(user.name)  # AttributeError if user is None</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Kotlin</th><th>Python</th><th>Note</th></tr></thead>
+            <tbody>
+              <tr><td><code>String?</code></td><td><code>Optional[str]</code> or <code>str | None</code></td><td>Advisory only — a type checker like mypy enforces it, the interpreter does not</td></tr>
+              <tr><td><code>user?.name</code></td><td><code>user.name if user else None</code></td><td>No built-in safe-call operator</td></tr>
+              <tr><td><code>user ?: default</code></td><td><code>user or default</code> / <code>value if value is not None else default</code></td><td><code>or</code> also treats <code>0</code>, <code>""</code>, <code>[]</code> as falsy — a common bug; prefer explicit <code>is not None</code> checks</td></tr>
+              <tr><td><code>!!</code></td><td><code>assert user is not None</code>, or just let it raise</td><td>Python has no non-null assertion operator; failures surface as exceptions</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">The most common bug importing Kotlin habits into Python: using <code>or</code> for a default value. <code>tokens = data.get("tokens") or 0</code> looks like Kotlin's <code>?:</code>, but if <code>tokens</code> is legitimately <code>0</code>, this expression still falls through to the default — because <code>0</code> is falsy in Python. Use <code>data.get("tokens", 0)</code> or an explicit <code>is None</code> check instead.</div>
+        </section>
+
+        <section class="lesson" id="errors">
+          <div class="eyebrow">Section 5</div>
+          <h2>Error Handling</h2>
+          <p>Structurally identical to Kotlin's try/catch/finally — the difference is Python has no checked exceptions at all, not even the soft convention Kotlin inherited from Java. Nothing in a function signature tells you what it might throw.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">try {
+    val result = callLlmApi(prompt)
+    println(result)
+} catch (e: IOException) {
+    println("network error: ${e.message}")
+} catch (e: Exception) {
+    println("unexpected: ${e.message}")
+} finally {
+    closeClient()
+}</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">try:
+    result = call_llm_api(prompt)
+    print(result)
+except ConnectionError as e:
+    print(f"network error: {e}")
+except Exception as e:
+    print(f"unexpected: {e}")
+finally:
+    close_client()</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Kotlin</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td><code>try / catch / finally</code></td><td><code>try / except / finally</code></td></tr>
+              <tr><td><code>throw IllegalStateException(msg)</code></td><td><code>raise ValueError(msg)</code></td></tr>
+              <tr><td>Custom exception: <code>class ApiError(msg: String) : Exception(msg)</code></td><td><code>class ApiError(Exception): pass</code></td></tr>
+              <tr><td><code>Result&lt;T&gt;</code> / <code>runCatching { }</code></td><td>No stdlib equivalent — catch explicitly, or return a small result wrapper yourself</td></tr>
+              <tr><td>Checked exceptions (Java interop)</td><td>None — every exception is effectively unchecked; read the docs or the source to know what a call can raise</td></tr>
+            </tbody>
+          </table>
+          <div class="checkpoint-box"><b>Habit to build now:</b> catch the specific exception type, not a bare <code>except:</code>. A bare <code>except:</code> also swallows <code>KeyboardInterrupt</code> and <code>SystemExit</code> — the Python equivalent of catching <code>Throwable</code> in Kotlin.</div>
+        </section>
+
+        <section class="lesson" id="functional">
+          <div class="eyebrow">Section 6</div>
+          <h2>Functions, Lambdas &amp; Decorators</h2>
+          <p>Higher-order functions work the same way conceptually. The one genuinely new idea is the <b>decorator</b> — you'll see this constantly in FastAPI (Topic 11) and LangGraph (Topic 9), so it's worth internalizing now.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">fun retry(times: Int, block: () -> String): String {
+    repeat(times - 1) {
+        try { return block() } catch (_: Exception) {}
+    }
+    return block()
+}
+
+val square: (Int) -> Int = { it * it }
+val doubled = listOf(1, 2, 3).map { it * 2 }</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">def retry(times: int, block):
+    for _ in range(times - 1):
+        try:
+            return block()
+        except Exception:
+            pass
+    return block()
+
+square = lambda x: x * x          # single-expression only
+doubled = [x * 2 for x in [1, 2, 3]]</pre>
+            </div>
+          </div>
+          <p>A <b>decorator</b> wraps a function with extra behavior — the closest Kotlin analogue is an annotation-driven wrapper (like Retrofit's <code>@GET</code>) or manually wrapping a lambda, except in Python you can write the wrapping logic yourself in plain code.</p>
+          <pre class="code-card">import time
+from functools import wraps
+
+def timed(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = fn(*args, **kwargs)
+        print(f"{fn.__name__} took {time.time() - start:.3f}s")
+        return result
+    return wrapper
+
+@timed
+def call_llm_api(prompt: str) -> str:
+    ...
+    return "response"
+
+# equivalent to: call_llm_api = timed(call_llm_api)</pre>
+          <div class="callout">You will see <code>@app.get("/health")</code> (FastAPI) and <code>@tool</code> (agent frameworks) constantly from Topic 5 onward. They are ordinary decorators — a function that takes your function and returns a new one, run once when the module loads.</div>
+        </section>
+
+        <section class="lesson" id="async">
+          <div class="eyebrow">Section 7</div>
+          <h2>Async &amp; Concurrency</h2>
+          <p>This is the section that matters most for the rest of the series — every LLM API call is I/O-bound, and Python's LLM SDKs offer both sync and async clients. <code>asyncio</code>'s <code>async def</code> / <code>await</code> maps almost one-to-one onto Kotlin's <code>suspend fun</code> and coroutines, with one structural difference: Python needs an explicit event loop entry point.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">suspend fun fetchAnswer(prompt: String): String {
+    delay(200)               // suspends, doesn't block
+    return "answer for $prompt"
+}
+
+suspend fun fetchAll(prompts: List<String>): List<String> =
+    coroutineScope {
+        prompts.map { async { fetchAnswer(it) } }
+                .awaitAll()
+    }
+
+fun main() = runBlocking {
+    println(fetchAll(listOf("a", "b")))
+}</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card">import asyncio
+
+async def fetch_answer(prompt: str) -> str:
+    await asyncio.sleep(0.2)   # suspends, doesn't block
+    return f"answer for {prompt}"
+
+async def fetch_all(prompts: list[str]) -> list[str]:
+    tasks = [fetch_answer(p) for p in prompts]
+    return await asyncio.gather(*tasks)
+
+if __name__ == "__main__":
+    print(asyncio.run(fetch_all(["a", "b"])))</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Kotlin</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td><code>suspend fun</code></td><td><code>async def</code></td></tr>
+              <tr><td>calling a suspend fun</td><td><code>await</code> the coroutine call</td></tr>
+              <tr><td><code>async { }.await()</code></td><td><code>asyncio.gather(...)</code> / <code>asyncio.create_task(...)</code></td></tr>
+              <tr><td><code>runBlocking { }</code> entry point</td><td><code>asyncio.run(main())</code> entry point</td></tr>
+              <tr><td>Dispatchers (IO, Default)</td><td>One event loop by default; CPU-bound work needs <code>multiprocessing</code> or a thread pool, because of the GIL</td></tr>
+            </tbody>
+          </table>
+          <div class="callout"><b>Why this matters immediately:</b> Topic 2 (LLM APIs) uses these SDK clients directly — <code>client.chat.completions.create(...)</code> synchronously, or <code>await client.chat.completions.create(...)</code> with the async client when you're calling multiple models or handling concurrent requests in a FastAPI service (Topic 11). Mixing sync and async code incorrectly is the single most common Python bug for developers new to the language.</div>
+        </section>
+
+        <section class="lesson" id="packaging">
+          <div class="eyebrow">Section 8</div>
+          <h2>Packaging &amp; Imports</h2>
+          <p>Gradle's module + dependency-catalog system has no single Python equivalent — Python's story is simpler but less structured. A <b>module</b> is just a <code>.py</code> file; a <b>package</b> is a folder containing an <code>__init__.py</code> (optional since Python 3.3, but still good practice for clarity).</p>
+          <div class="file-tree">
+            <div>intent-ai/</div>
+            <div>  pyproject.toml        <span style="opacity:.6"># like build.gradle.kts</span></div>
+            <div>  main.py</div>
+            <div>  llm/</div>
+            <div>    __init__.py</div>
+            <div>    client.py</div>
+            <div>    prompts.py</div>
+          </div>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Kotlin</div>
+              <pre class="code-card">// build.gradle.kts
+dependencies {
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+}
+
+// import
+import com.squareup.retrofit2.Retrofit</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Python</div>
+              <pre class="code-card"># pyproject.toml
+[project]
+dependencies = ["openai>=1.0.0"]
+
+# import
+from llm.client import call_model
+import openai</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Kotlin</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td><code>build.gradle.kts</code></td><td><code>pyproject.toml</code> (modern) or <code>requirements.txt</code> (simple)</td></tr>
+              <tr><td>Maven Central</td><td>PyPI</td></tr>
+              <tr><td><code>implementation("group:artifact:version")</code></td><td><code>pip install package==version</code>, or listed in <code>pyproject.toml</code></td></tr>
+              <tr><td>Gradle module</td><td>A folder with <code>__init__.py</code> (a package)</td></tr>
+              <tr><td><code>import com.foo.Bar</code></td><td><code>from foo import Bar</code></td></tr>
+            </tbody>
+          </table>
+          <div class="callout"><b>Tooling note:</b> <code>pip</code> ships with Python and works fine for this series. If you want Gradle-like speed and lockfiles later, <a href="https://github.com/astral-sh/uv" style="color:var(--accent-2);font-weight:800">uv</a> is the modern, much faster drop-in — same commands, just prefix with <code>uv</code>.</div>
+        </section>
+
+        <section class="lesson" id="typing">
+          <div class="eyebrow">Section 9</div>
+          <h2>Type Hints &amp; mypy</h2>
+          <p>Type hints are Python's opt-in way to recover some of what Kotlin's compiler gives you for free. They do <b>nothing at runtime</b> — <code>def f(x: int)</code> happily accepts a string unless you run a separate checker.</p>
+          <pre class="code-card">def add(a: int, b: int) -> int:
+    return a + b
+
+add(2, "3")  # runs, then crashes inside + with a TypeError — Python never checked the hint
+
+# catch it before running, the way Kotlin's compiler would:
+#   pip install mypy
+#   mypy main.py
+#   main.py:4: error: Argument 2 to "add" has incompatible type "str"; expected "int"</pre>
+          <table class="table">
+            <thead><tr><th>Kotlin</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td>Compiler-enforced types</td><td><code>mypy</code> or <code>pyright</code>, run as a separate step (often in CI)</td></tr>
+              <tr><td><code>List&lt;String&gt;</code></td><td><code>list[str]</code></td></tr>
+              <tr><td><code>Map&lt;String, Int&gt;</code></td><td><code>dict[str, int]</code></td></tr>
+              <tr><td><code>String?</code></td><td><code>str | None</code></td></tr>
+              <tr><td>Sealed class / when</td><td><code>Union[A, B]</code> or <code>A | B</code>, narrowed with <code>isinstance</code></td></tr>
+            </tbody>
+          </table>
+          <div class="checkpoint-box"><b>Recommendation for this series:</b> write type hints on every function you author from here on, and run <code>mypy</code> before trusting a script. It's the closest thing to getting your Kotlin-trained instincts back.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 10 &middot; Checkpoint</div>
+          <h2>Capstone: Rewrite This Kotlin Model in Python</h2>
+          <p>This exact <code>ChatMessage</code> shape reappears in Topic 2 (LLM APIs), so it's worth getting comfortable with now. Rewrite the Kotlin below in Python before checking the answer.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Given: Kotlin</div>
+              <pre class="code-card">data class ChatMessage(
+    val role: String,
+    val content: String
+)
+
+class Conversation(private val history: MutableList<ChatMessage> = mutableListOf()) {
+
+    fun addMessage(role: String, content: String) {
+        history.add(ChatMessage(role, content))
+    }
+
+    fun lastUserMessage(): String? =
+        history.lastOrNull { it.role == "user" }?.content
+
+    fun totalChars(): Int =
+        history.sumOf { it.content.length }
+}
+
+fun main() {
+    val convo = Conversation()
+    convo.addMessage("user", "Summarize my week")
+    convo.addMessage("assistant", "Sure, one moment")
+    println(convo.lastUserMessage() ?: "no user message yet")
+    println(convo.totalChars())
+}</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">Your target: Python</div>
+              <pre class="code-card">from dataclasses import dataclass, field
+
+@dataclass
+class ChatMessage:
+    role: str
+    content: str
+
+class Conversation:
+    def __init__(self) -> None:
+        self.history: list[ChatMessage] = []
+
+    def add_message(self, role: str, content: str) -> None:
+        self.history.append(ChatMessage(role, content))
+
+    def last_user_message(self) -> str | None:
+        for msg in reversed(self.history):
+            if msg.role == "user":
+                return msg.content
+        return None
+
+    def total_chars(self) -> int:
+        return sum(len(m.content) for m in self.history)
+
+
+if __name__ == "__main__":
+    convo = Conversation()
+    convo.add_message("user", "Summarize my week")
+    convo.add_message("assistant", "Sure, one moment")
+    print(convo.last_user_message() or "no user message yet")
+    print(convo.total_chars())</pre>
+            </div>
+          </div>
+          <div class="expected-result"><b>Expected output:</b> <code>Summarize my week</code> then <code>34</code> — run it with <code>python conversation.py</code> inside your activated venv from Section 0.</div>
+          <div class="checklist">
+            <li>Ran <code>python3 -m venv .venv</code> and activated it</li>
+            <li>Wrote the <code>ChatMessage</code> dataclass and <code>Conversation</code> class from scratch, without copying</li>
+            <li>Used a list comprehension or generator expression for at least one method</li>
+            <li>Ran <code>mypy conversation.py</code> and fixed any reported issues</li>
+            <li>Can explain out loud why <code>or</code> was safe to use for <code>last_user_message()</code> here, but wouldn't be safe for a numeric default</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 2: LLM APIs Fundamentals</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Gemini, OpenAI, and Claude clients — calling a model, streaming responses, and understanding tokens and cost. Coming soon.</p>
+        <a class="button" href="index.html">Back to series home</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 1</span>
+      <div><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

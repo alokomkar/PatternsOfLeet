@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Engineering for Kotlin Developers - A Practical Tutorial Series</title>
+  <meta name="description" content="A hands-on AI engineering curriculum for Android/Kotlin developers: Python, LLM APIs, RAG, agents, LangGraph, evaluation, and production AI backends.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#foundations">Foundations</a>
+        <a href="#patterns">Core patterns</a>
+        <a href="#backend">Backend</a>
+        <a href="#capstone">Capstone</a>
+        <a class="nav-cta" href="01-python-for-kotlin-devs.html">Start Topic 1</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">AI engineering for Kotlin developers</div>
+        <h1>Learn the AI stack without leaving your Kotlin brain behind.</h1>
+        <p class="hero-copy">You already know Kotlin, Android architecture, and how to ship. This series builds the AI product engineering stack — Python, LLM APIs, RAG, tool calling, agents, LangGraph, evaluation, and deployment — on top of that foundation, one topic at a time, with runnable code and Kotlin-to-Python comparisons throughout.</p>
+        <div class="actions">
+          <a class="button primary" href="01-python-for-kotlin-devs.html">Start Topic 1: Python for Kotlin Devs</a>
+          <a class="button" href="#foundations">View full curriculum</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">How this series works</div>
+        <p>Each topic is a self-contained HTML lesson: concepts, side-by-side Kotlin/Python code, a diagram where it earns its place, and a small checkpoint exercise. Topics build on each other in order.</p>
+        <div class="summary-grid">
+          <div><b>15</b><span>topics</span></div>
+          <div><b>4</b><span>learning tracks</span></div>
+          <div><b>1</b><span>capstone product</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">Curriculum map</div>
+        <h2>Sourced directly from real AI product engineering work.</h2>
+        <table class="table">
+          <thead><tr><th>Track</th><th>Topics</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td>Foundations</td><td>Python bridge, LLM APIs, prompt/context engineering</td><td>You can call an LLM and control its output reliably.</td></tr>
+            <tr><td>Core patterns</td><td>Structured outputs, tool calling, embeddings, RAG, agents, LangGraph, evaluation</td><td>You can build a grounded, tool-using, evaluated AI feature.</td></tr>
+            <tr><td>Backend & deployment</td><td>FastAPI, pgvector, Docker/Cloud Run/Vertex AI</td><td>Your AI feature runs as a real, deployable service.</td></tr>
+            <tr><td>Capstone</td><td>End-to-end AI product, AI-assisted engineering workflows</td><td>A working decision-support product, and a faster dev loop.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="foundations">
+      <div class="shell">
+        <div class="eyebrow">Track 1</div>
+        <h2>Foundations</h2>
+        <div class="topic-list">
+          <a class="topic-row active" href="01-python-for-kotlin-devs.html">
+            <span class="topic-num">1</span>
+            <div><h3>Python for Kotlin Developers</h3><p>Syntax, types, collections, classes, null handling, async, and packaging — mapped from what you already know.</p></div>
+            <span class="topic-badge ready">Start here</span>
+          </a>
+          <div class="topic-row locked">
+            <span class="topic-num">2</span>
+            <div><h3>LLM APIs Fundamentals</h3><p>Gemini, OpenAI, and Claude: chat completions, streaming, tokens, and cost.</p></div>
+            <span class="topic-badge soon">Coming soon</span>
+          </div>
+          <div class="topic-row locked">
+            <span class="topic-num">3</span>
+            <div><h3>Prompt & Context Engineering</h3><p>System prompts, few-shot examples, context windows, and failure modes.</p></div>
+            <span class="topic-badge soon">Coming soon</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="patterns">
+      <div class="shell">
+        <div class="eyebrow">Track 2</div>
+        <h2>Core LLM app patterns</h2>
+        <div class="topic-list">
+          <div class="topic-row locked"><span class="topic-num">4</span><div><h3>Structured Outputs</h3><p>JSON mode and schema-constrained generation.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">5</span><div><h3>Function / Tool Calling</h3><p>Giving an LLM callable tools and closing the request/response loop.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">6</span><div><h3>Embeddings & Vector Search</h3><p>What embeddings are, similarity search, and pgvector basics.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">7</span><div><h3>RAG</h3><p>Chunking, retrieval, and grounding answers end-to-end.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">8</span><div><h3>Agentic Workflows</h3><p>Agent loops, planning, memory, and multi-step execution.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">9</span><div><h3>LangGraph</h3><p>Stateful graph-based orchestration for agents.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">10</span><div><h3>AI Evaluation</h3><p>Evaluating LLM outputs and RAG pipelines systematically.</p></div><span class="topic-badge soon">Coming soon</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="backend">
+      <div class="shell">
+        <div class="eyebrow">Track 3</div>
+        <h2>Backend & deployment</h2>
+        <div class="topic-list">
+          <div class="topic-row locked"><span class="topic-num">11</span><div><h3>FastAPI for AI Services</h3><p>Wrapping LLM logic in a real, testable API.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">12</span><div><h3>PostgreSQL + pgvector</h3><p>Running a vector database in production.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">13</span><div><h3>Docker, Cloud Run & Vertex AI</h3><p>Containerizing and deploying AI services.</p></div><span class="topic-badge soon">Coming soon</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="capstone">
+      <div class="shell">
+        <div class="eyebrow">Track 4</div>
+        <h2>Capstone</h2>
+        <div class="topic-list">
+          <div class="topic-row locked"><span class="topic-num">14</span><div><h3>Building an AI Product End-to-End</h3><p>RAG + tool calling + structured outputs + agents in one decision-support product.</p></div><span class="topic-badge soon">Coming soon</span></div>
+          <div class="topic-row locked"><span class="topic-num">15</span><div><h3>AI-Assisted Engineering Workflows</h3><p>Using Claude/Gemini/Codex and Mermaid diagrams in your own dev loop.</p></div><span class="topic-badge soon">Coming soon</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers</span>
+      <div><a href="../index.html">Home</a><a href="../android-complete-reference/index.html">Android reference</a></div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -41,8 +41,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/01-python-for-kotlin-devs.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sortedqueue.com/android-complete-reference/</loc>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/android-complete-reference/android-zero-to-one-modern.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/android-complete-reference/android-modern-complete-tutorial.html</loc>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sortedqueue.com/android-complete-reference/phase-1-foundations.html</loc>
