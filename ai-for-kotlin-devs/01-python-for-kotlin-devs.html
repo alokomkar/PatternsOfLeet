@@ -402,7 +402,7 @@ def call_llm_api(prompt: str) -> str:
     return "answer for $prompt"
 }
 
-suspend fun fetchAll(prompts: List<String>): List<String> =
+suspend fun fetchAll(prompts: List&lt;String&gt;): List&lt;String&gt; =
     coroutineScope {
         prompts.map { async { fetchAnswer(it) } }
                 .awaitAll()
@@ -527,7 +527,7 @@ add(2, "3")  # runs, then crashes inside + with a TypeError — Python never che
     val content: String
 )
 
-class Conversation(private val history: MutableList<ChatMessage> = mutableListOf()) {
+class Conversation(private val history: MutableList&lt;ChatMessage&gt; = mutableListOf()) {
 
     fun addMessage(role: String, content: String) {
         history.add(ChatMessage(role, content))

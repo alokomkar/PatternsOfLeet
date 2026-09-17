@@ -19,7 +19,7 @@
         <a href="01-python-for-kotlin-devs.html">&larr; Topic 1</a>
         <a href="#lesson">Lesson</a>
         <a href="#checkpoint">Checkpoint</a>
-        <span class="nav-cta" style="opacity:.5;pointer-events:none">Topic 3 &rarr; coming soon</span>
+        <a class="nav-cta" href="03-prompt-context-engineering.html">Topic 3 &rarr;</a>
       </nav>
     </div>
   </header>
@@ -214,7 +214,7 @@ print(r.content[0].text)</pre>
           <div class="compare-grid">
             <div class="compare-col">
               <div class="compare-label kotlin">Kotlin (the shape you know)</div>
-              <pre class="code-card">fun streamAnswer(prompt: String): Flow<String> = flow {
+              <pre class="code-card">fun streamAnswer(prompt: String): Flow&lt;String&gt; = flow {
     val chunks = fakeLlmStream(prompt)
     chunks.collect { chunk -> emit(chunk) }
 }
@@ -442,8 +442,11 @@ if __name__ == "__main__":
       <div class="shell" style="text-align:center">
         <div class="eyebrow">Next up</div>
         <h2>Topic 3: Prompt &amp; Context Engineering</h2>
-        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">System prompts, few-shot examples, context windows, and the failure modes that show up once your prompts leave the demo stage. Coming soon.</p>
-        <a class="button" href="index.html">Back to series home</a>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">System prompts, few-shot examples, context windows, and the failure modes that show up once your prompts leave the demo stage.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="03-prompt-context-engineering.html">Start Topic 3</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
       </div>
     </section>
   </main>
