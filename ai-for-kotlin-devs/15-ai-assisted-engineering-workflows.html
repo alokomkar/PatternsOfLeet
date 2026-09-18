@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Assisted Engineering Workflows - AI Engineering Topic 15</title>
+  <meta name="description" content="Using Claude, Gemini, and Codex-style assistants and generated Mermaid diagrams to speed up your own engineering workflow: PR summaries, architecture views, tests, and debugging.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/15-ai-assisted-engineering-workflows.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="14-building-ai-product-end-to-end.html">&larr; Topic 14</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <span class="nav-cta">Series complete</span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 15 of 15 &middot; Capstone</div>
+        <h1>AI-assisted engineering workflows.</h1>
+        <p class="hero-copy">Every prior topic pointed an LLM at a user-facing product. This last one turns the same skills inward: use Claude, Gemini, or a Codex-style assistant to make <i>your own</i> engineering loop faster — PR summaries, generated architecture diagrams, test-case discovery, and debugging — while staying honest about what still needs a human reviewer.</p>
+        <div class="actions">
+          <a class="button primary" href="#why">Start with why this is different</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Generate useful PR summaries and Mermaid architecture diagrams from a real diff, use an assistant for test-case discovery and debugging without over-trusting it, and measure whether any of this actually saves time.</p>
+        <div class="summary-grid">
+          <div><b>8</b><span>lesson sections</span></div>
+          <div><b>1</b><span>Mermaid generator</span></div>
+          <div><b>1</b><span>capstone CLI tool</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>The reviewer's job doesn't disappear — it moves.</h2>
+        <p style="max-width:760px;color:var(--muted)">Every technique below produces a draft, not a decision: a draft summary, a draft diagram, a draft test list. Your job shifts from writing the first version to verifying the LLM's first version — the same shift code review already asks of you when reviewing a teammate's PR, just with a much faster, much less contextually-aware "teammate." Treat its output exactly that skeptically.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#why">0 Why this is a different use case</a>
+        <a href="#prsummaries">1 PR summaries that are actually useful</a>
+        <a href="#mermaid">2 Generating architecture diagrams</a>
+        <a href="#tests">3 Test-case discovery</a>
+        <a href="#debugging">4 AI-assisted debugging</a>
+        <a href="#guardrails">5 Guardrails: don't trust, verify</a>
+        <a href="#measuring">6 Measuring whether it actually helps</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="why">
+          <div class="eyebrow">Section 0</div>
+          <h2>Why This Is a Different Use Case</h2>
+          <table class="table">
+            <thead><tr><th></th><th>Topics 1-14</th><th>This topic</th></tr></thead>
+            <tbody>
+              <tr><td>Who consumes the output</td><td>An end user of your product</td><td>You, or a teammate reviewing your PR</td></tr>
+              <tr><td>Cost of a wrong answer</td><td>Bounded by the product's guardrails (Topics 5, 8)</td><td>Bounded by your own judgment before you hit merge</td></tr>
+              <tr><td>What "shipping" means</td><td>A deployed feature (Topic 13)</td><td>A habit and maybe a small internal script</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Everything here is lower-stakes to experiment with than a production feature — there's no end user to protect, just your own time to not waste. It's the right place to try ideas before deciding whether they're worth formalizing into the kind of product Topic 14 describes.</div>
+        </section>
+
+        <section class="lesson" id="prsummaries">
+          <div class="eyebrow">Section 1</div>
+          <h2>PR Summaries That Are Actually Useful</h2>
+          <p>A generic "summarize this diff" prompt produces generic output — restating what changed line by line, which a reviewer can already see in the diff. Topic 3's system-prompt discipline applies directly: be explicit about what a summary needs to <i>add</i> beyond the diff itself.</p>
+          <pre class="code-card">SYSTEM_PROMPT = """Summarize this pull request diff for a reviewer who hasn't
+seen it. Don't restate the diff line by line — focus on:
+1. What behavior actually changes from a user's perspective
+2. Anything risky: new external calls, removed validation, changed error handling
+3. What's NOT covered by tests in this diff, if anything
+
+Keep it under 150 words. If the diff is purely mechanical (formatting,
+renames), say so in one line instead of padding the summary."""
+
+def summarize_pr(diff_text: str) -> str:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "system", "content": SYSTEM_PROMPT},
+                  {"role": "user", "content": f"&lt;diff&gt;\n{diff_text}\n&lt;/diff&gt;"}],
+        temperature=0.2,
+    )
+    return response.choices[0].message.content</pre>
+        </section>
+
+        <section class="lesson" id="mermaid">
+          <div class="eyebrow">Section 2</div>
+          <h2>Generating Architecture Diagrams</h2>
+          <p>This is the exact pattern behind the CV line this whole series grew out of: use code changes to generate a <a href="https://mermaid.js.org" style="color:var(--accent-2);font-weight:800">Mermaid</a> diagram of what actually changed structurally — new modules, new dependencies between them — so a reviewer gets a visual read on architectural impact instead of piecing it together from a file list.</p>
+          <pre class="code-card">DIAGRAM_PROMPT = """Given this diff, output ONLY a Mermaid flowchart (no
+explanation, no markdown fences) showing the new or changed relationships
+between modules/classes touched by this diff. Use short node labels.
+If the diff doesn't meaningfully change structure (e.g. a bug fix inside
+one function), output exactly: NO_STRUCTURAL_CHANGE"""
+
+def generate_diagram(diff_text: str) -> str | None:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "system", "content": DIAGRAM_PROMPT},
+                  {"role": "user", "content": f"&lt;diff&gt;\n{diff_text}\n&lt;/diff&gt;"}],
+        temperature=0,
+    )
+    output = response.choices[0].message.content.strip()
+    return None if output == "NO_STRUCTURAL_CHANGE" else output</pre>
+          <pre class="code-card">flowchart LR
+    Client -->|POST /extract-task| API[FastAPI service]
+    API --> Extractor[Task extractor]
+    Extractor -->|schema-constrained call| LLM[OpenAI]
+    API --> DB[(pgvector store)]</pre>
+          <div class="callout">Most Git hosting and IDE tooling renders Mermaid natively in a PR description or markdown preview — paste the generated block directly, no separate rendering step required. This one addition is what turned "read the diff" into "see the shape of the change" for the PR-review workflow this series' curriculum was built from.</div>
+        </section>
+
+        <section class="lesson" id="tests">
+          <div class="eyebrow">Section 3</div>
+          <h2>Test-Case Discovery</h2>
+          <p>Reuse Topic 10's test-set mindset, aimed at your own code instead of a prompt: ask the assistant to propose edge cases for a function, then <i>you</i> decide which are worth writing — this is brainstorming, not delegation.</p>
+          <pre class="code-card">EDGE_CASE_PROMPT = """Given this function, list 5-8 edge cases a test suite
+should cover, ranked by how likely they are to actually occur in production.
+For each, state the input and the behavior you'd expect. Don't write the
+test code — just the cases and expected behavior."""</pre>
+          <div class="checkpoint-box"><b>Where this earns its keep:</b> functions with non-obvious boundary conditions (off-by-one ranges, empty collections, concurrent access) — exactly the kind of case a tired reviewer skims past. It's weakest for business-logic correctness, where only you know the actual intended behavior.</div>
+        </section>
+
+        <section class="lesson" id="debugging">
+          <div class="eyebrow">Section 4</div>
+          <h2>AI-Assisted Debugging</h2>
+          <p>The highest-leverage debugging prompt isn't "fix this" — it's "here's the error, the relevant code, and what I've already ruled out; what haven't I considered?" This mirrors Topic 3's few-shot instinct: give the assistant the same context a senior engineer pairing with you would want before guessing.</p>
+          <pre class="code-card">DEBUG_PROMPT = """I'm seeing this error: {error}
+
+Relevant code:
+{code}
+
+I've already ruled out: {ruled_out}
+
+Don't repeat those. Suggest 2-3 specific things to check next, ranked by
+likelihood, with a concrete way to verify each one."""</pre>
+          <div class="error-grid">
+            <div class="error-card"><b>"Just fix it" prompts</b><span>Produce a plausible-looking patch that may address the symptom without touching the root cause — exactly the failure mode Topic 10's evaluation discipline exists to catch in a product; here, it's your own judgment doing that job in real time.</span></div>
+            <div class="error-card"><b>Omitting what you've ruled out</b><span>Without that context, you'll get the same first three suggestions you already tried, wasting the round trip.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="guardrails">
+          <div class="eyebrow">Section 5</div>
+          <h2>Guardrails: Don't Trust, Verify</h2>
+          <p>This entire series has argued for validating LLM output at every boundary — schemas (Topic 4), evaluation (Topic 10), injection defense (Topic 3). Applying that same skepticism to code and diagrams generated for your own workflow isn't optional just because the audience is now you.</p>
+          <table class="table">
+            <thead><tr><th>Output</th><th>Verify before trusting</th></tr></thead>
+            <tbody>
+              <tr><td>PR summary</td><td>Read the actual diff yourself before approving — the summary is a starting point for review, not a substitute for it</td></tr>
+              <tr><td>Generated diagram</td><td>Check it against the real module boundaries — a confidently wrong diagram is worse than no diagram</td></tr>
+              <tr><td>Suggested test cases</td><td>Confirm each one is actually reachable and meaningful for your domain, not a generic list</td></tr>
+              <tr><td>Debugging suggestions</td><td>Verify the root cause before applying a fix — the same "confirm, don't guess" discipline as Topic 7's grounding</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="measuring">
+          <div class="eyebrow">Section 6</div>
+          <h2>Measuring Whether It Actually Helps</h2>
+          <p>"Feels faster" is exactly the trap Topic 10 opened the series' evaluation topic warning against. If this is worth formalizing into a team workflow, measure it: PR review turnaround time before/after, or a simple survey of whether generated diagrams changed a reviewer's understanding. The CV line this topic mirrors — a 20% reduction in PR review friction — was a measured claim, not a felt one.</p>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: A PR Summary + Diagram CLI</h2>
+          <p>A small command-line tool that reads a real git diff and produces both a review-focused summary and a Mermaid diagram when the change is structural — combining Sections 1 and 2 into one script you can actually run against your own repo.</p>
+          <pre class="code-card">import subprocess
+from openai import OpenAI
+
+client = OpenAI()
+
+def get_diff(base: str = "main") -> str:
+    result = subprocess.run(
+        ["git", "diff", base, "--unified=3"],
+        capture_output=True, text=True, check=True,
+    )
+    return result.stdout
+
+def summarize_pr(diff_text: str) -> str:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[
+            {"role": "system", "content":
+                "Summarize this diff for a reviewer. Focus on behavior changes, "
+                "risk (new external calls, removed validation), and test coverage "
+                "gaps. Under 150 words. If purely mechanical, say so in one line."},
+            {"role": "user", "content": f"&lt;diff&gt;\n{diff_text}\n&lt;/diff&gt;"},
+        ],
+        temperature=0.2,
+    )
+    return response.choices[0].message.content
+
+def generate_diagram(diff_text: str) -> str | None:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[
+            {"role": "system", "content":
+                "Output ONLY a Mermaid flowchart (no explanation, no fences) "
+                "showing new/changed relationships between modules touched by "
+                "this diff. If nothing structural changed, output exactly: "
+                "NO_STRUCTURAL_CHANGE"},
+            {"role": "user", "content": f"&lt;diff&gt;\n{diff_text}\n&lt;/diff&gt;"},
+        ],
+        temperature=0,
+    )
+    output = response.choices[0].message.content.strip()
+    return None if output == "NO_STRUCTURAL_CHANGE" else output
+
+
+if __name__ == "__main__":
+    diff = get_diff()
+    if not diff.strip():
+        print("No changes against main.")
+    else:
+        print("## Summary\n")
+        print(summarize_pr(diff))
+        diagram = generate_diagram(diff)
+        if diagram:
+            print("\n## Architecture\n\n```mermaid")
+            print(diagram)
+            print("```")</pre>
+          <div class="expected-result"><b>Expected behavior:</b> run from inside a git branch with real changes — prints a focused summary, and a Mermaid block only when the diff actually touches structural relationships between files, not for a one-line bug fix.</div>
+          <div class="checklist">
+            <li>Ran the tool against a real branch in one of your own repos and judged whether the summary would have actually helped a reviewer</li>
+            <li>Ran it against a purely mechanical change (formatting, a rename) and confirmed the diagram step correctly outputs nothing</li>
+            <li>Deliberately fed it a large, multi-file diff and checked whether the summary still stayed useful and under 150 words, or started degrading — a live check of Topic 2's context-budget concerns</li>
+            <li>Read Section 5 again and, before trusting either output on a real PR, manually verified at least one summary or diagram against the actual diff</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Series complete</div>
+        <h2>All 15 topics done.</h2>
+        <p style="max-width:640px;margin:0 auto 24px;color:var(--muted)">From Python syntax to a deployed, evaluated, agentic AI product — and a faster way to review your own code along the way. Revisit any topic from the series hub whenever you need the reference back.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="index.html">Back to series home</a>
+          <a class="button" href="01-python-for-kotlin-devs.html">Start over from Topic 1</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 15</span>
+      <div><a href="14-building-ai-product-end-to-end.html">Topic 14</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -61,6 +61,50 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/05-function-tool-calling.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/06-embeddings-vector-search.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/07-rag.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/08-agentic-workflows.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/09-langgraph.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/10-ai-evaluation.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/11-fastapi-for-ai.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/12-postgres-pgvector.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/13-docker-cloudrun-vertexai.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/14-building-ai-product-end-to-end.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-for-kotlin-devs/15-ai-assisted-engineering-workflows.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sortedqueue.com/android-complete-reference/</loc>
     <priority>0.7</priority>
   </url>

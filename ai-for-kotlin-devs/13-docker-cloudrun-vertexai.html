@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker, Cloud Run & Vertex AI - AI Engineering Topic 13</title>
+  <meta name="description" content="A practical guide to containerizing and deploying an AI service: Dockerfile, secrets, Cloud Run deployment, Vertex AI as a managed alternative, and basic observability.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/13-docker-cloudrun-vertexai.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="12-postgres-pgvector.html">&larr; Topic 12</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="14-building-ai-product-end-to-end.html">Topic 14 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 13 of 15 &middot; Backend &amp; deployment</div>
+        <h1>Docker, Cloud Run &amp; Vertex AI.</h1>
+        <p class="hero-copy">Topic 11's service runs on your machine with <code>uvicorn</code>. This lesson gets it running anywhere: a Dockerfile that packages it reproducibly, a Cloud Run deployment that scales it without you managing servers, and a look at Vertex AI as a managed alternative to calling providers directly.</p>
+        <div class="actions">
+          <a class="button primary" href="#why">Start with why containerize</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Containerize the FastAPI service, manage secrets safely, deploy to Cloud Run, understand when Vertex AI earns its place, and wire up basic logging.</p>
+        <div class="summary-grid">
+          <div><b>7</b><span>lesson sections</span></div>
+          <div><b>1</b><span>live deployment</span></div>
+          <div><b>1</b><span>observability pass</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>Familiar territory — this part isn't AI-specific.</h2>
+        <p style="max-width:760px;color:var(--muted)">If you've containerized any backend service before, skim this lesson for the two AI-specific decisions (secrets handling for API keys, and Vertex AI vs direct provider calls) and move on — the Docker and Cloud Run mechanics are identical to deploying any other Python service. The AI part of this series was never in the deployment plumbing.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#why">0 Why containerize</a>
+        <a href="#dockerfile">1 Writing the Dockerfile</a>
+        <a href="#secrets">2 Environment variables &amp; secrets</a>
+        <a href="#local">3 Building &amp; running locally</a>
+        <a href="#cloudrun">4 Deploying to Cloud Run</a>
+        <a href="#vertexai">5 Vertex AI: when it earns its place</a>
+        <a href="#observability">6 Basic observability</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="why">
+          <div class="eyebrow">Section 0</div>
+          <h2>Why Containerize</h2>
+          <table class="table">
+            <thead><tr><th>Problem</th><th>What Docker fixes</th></tr></thead>
+            <tbody>
+              <tr><td>"Works on my machine"</td><td>The container bundles the exact Python version and dependencies — no environment drift between dev and production</td></tr>
+              <tr><td>Manual server management</td><td>Cloud Run runs the container and scales instances automatically based on traffic, including down to zero when idle</td></tr>
+              <tr><td>Onboarding a new engineer</td><td><code>docker build</code> reproduces the environment exactly, instead of a README with seventeen setup steps</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="dockerfile">
+          <div class="eyebrow">Section 1</div>
+          <h2>Writing the Dockerfile</h2>
+          <pre class="code-card">FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Cloud Run sets $PORT; default to 8080 for local runs
+ENV PORT=8080
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]</pre>
+          <pre class="code-card"># requirements.txt
+fastapi
+uvicorn[standard]
+openai
+pydantic</pre>
+          <div class="callout">Binding to <code>0.0.0.0</code> instead of <code>127.0.0.1</code> matters here — the default localhost binding only accepts connections from inside the container, which means Cloud Run's traffic can never reach it. This one detail is the most common "deployed fine, returns nothing" bug.</div>
+        </section>
+
+        <section class="lesson" id="secrets">
+          <div class="eyebrow">Section 2</div>
+          <h2>Environment Variables &amp; Secrets</h2>
+          <p>Topic 2 Section 0's <code>.env</code> file was fine on your laptop. It should never end up inside a container image — anyone who can pull the image can read every layer, including anything baked in at build time.</p>
+          <div class="error-grid">
+            <div class="error-card"><b>Baking secrets into the image</b><span><code>COPY .env .</code> in a Dockerfile puts the API key in the image itself — extractable by anyone with pull access, and permanently in the image's layer history even if a later layer deletes it.</span></div>
+            <div class="error-card"><b>The fix</b><span>Inject secrets at <i>runtime</i> — Cloud Run's <code>--set-secrets</code> flag (backed by Google Secret Manager) or plain environment variables set on the running service, never copied into the image.</span></div>
+          </div>
+          <pre class="code-card">echo -n "sk-..." | gcloud secrets create openai-api-key --data-file=-
+
+gcloud run deploy ai-service \
+  --set-secrets=OPENAI_API_KEY=openai-api-key:latest \
+  ...</pre>
+        </section>
+
+        <section class="lesson" id="local">
+          <div class="eyebrow">Section 3</div>
+          <h2>Building &amp; Running Locally</h2>
+          <pre class="code-card">docker build -t ai-service .
+
+docker run -p 8080:8080 \
+  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+  ai-service
+
+curl http://localhost:8080/health</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> confirm <code>/health</code> and <code>/extract-task</code> from Topic 11's service both work through the container before moving to a cloud deployment — debugging a broken container locally is dramatically faster than debugging one already deployed.</div>
+        </section>
+
+        <section class="lesson" id="cloudrun">
+          <div class="eyebrow">Section 4</div>
+          <h2>Deploying to Cloud Run</h2>
+          <pre class="code-card">gcloud run deploy ai-service \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-secrets=OPENAI_API_KEY=openai-api-key:latest \
+  --memory 512Mi \
+  --max-instances 10</pre>
+          <table class="table">
+            <thead><tr><th>Flag</th><th>Why it matters for an LLM-backed service</th></tr></thead>
+            <tbody>
+              <tr><td><code>--allow-unauthenticated</code></td><td>Only for a public endpoint with its own auth layer (Topic 11's job) — omit it and use IAM if the caller is another internal service</td></tr>
+              <tr><td><code>--max-instances</code></td><td>A hard ceiling on concurrent scale-out — protects against a traffic spike (or an attack) turning into an unbounded LLM API bill</td></tr>
+              <tr><td><code>--memory</code></td><td>LLM calls are I/O-bound, not memory-hungry — start small and raise it only if profiling says otherwise</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="vertexai">
+          <div class="eyebrow">Section 5</div>
+          <h2>Vertex AI: When It Earns Its Place</h2>
+          <p>Vertex AI is Google Cloud's managed platform for accessing models (including Gemini, and hosted open-weight models) with enterprise features layered on — it's an alternative front door to some of the same models from Topic 2, not a different product category.</p>
+          <table class="table">
+            <thead><tr><th>Situation</th><th>Direct provider API (Topic 2)</th><th>Vertex AI</th></tr></thead>
+            <tbody>
+              <tr><td>Small team, prototyping fast</td><td>Simpler, fewer moving parts</td><td>More setup for little immediate benefit</td></tr>
+              <tr><td>Already deep in Google Cloud (IAM, VPC, billing)</td><td>A separate API key and billing relationship to manage</td><td>Unified IAM, billing, and networking with the rest of your GCP infrastructure</td></tr>
+              <tr><td>Need enterprise data residency / compliance controls</td><td>Depends on the provider's own offering</td><td>Often stronger guarantees, built for enterprise procurement</td></tr>
+              <tr><td>Want to swap between Gemini and other hosted models easily</td><td>Separate SDKs per provider (Topic 2's comparison)</td><td>More unified access, still provider-specific model behavior underneath</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Don't add Vertex AI on day one just because it's available — it's an infrastructure and procurement decision, not a capability the direct SDKs from Topic 2 lack. Reach for it when the organizational reasons (IAM, billing, compliance) actually apply to your situation.</div>
+        </section>
+
+        <section class="lesson" id="observability">
+          <div class="eyebrow">Section 6</div>
+          <h2>Basic Observability</h2>
+          <p>Cloud Run captures stdout/stderr as logs automatically — the minimum useful step is logging enough about each LLM call to debug and cost-track it in production, extending Topic 2 Section 5's "log usage on every call" habit from a script to a service.</p>
+          <pre class="code-card">import logging
+logger = logging.getLogger("ai-service")
+
+@app.post("/extract-task", response_model=TaskResponse)
+async def extract(request: ExtractRequest, client: AsyncOpenAI = Depends(get_client)):
+    completion = await client.beta.chat.completions.parse(...)
+    logger.info("extract_task", extra={
+        "prompt_tokens": completion.usage.prompt_tokens,
+        "completion_tokens": completion.usage.completion_tokens,
+        "model": completion.model,
+    })
+    ...</pre>
+          <div class="callout">This is the seed of what Topic 10's evaluation harness needs in production: without logged token usage and outcomes, you can measure quality in a test set but not track whether it's holding up against real traffic.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: Deploy Topic 11's Service</h2>
+          <p>Take the FastAPI service from Topic 11's checkpoint, containerize it, and deploy it to Cloud Run with a secret-backed API key.</p>
+          <pre class="code-card"># Dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+ENV PORT=8080
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]</pre>
+          <pre class="code-card"># deploy.sh
+echo -n "$OPENAI_API_KEY" | gcloud secrets create openai-api-key --data-file=- \
+  || echo "secret already exists, skipping create"
+
+gcloud run deploy ai-service \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-secrets=OPENAI_API_KEY=openai-api-key:latest \
+  --memory 512Mi \
+  --max-instances 10
+
+SERVICE_URL=$(gcloud run services describe ai-service --region us-central1 --format 'value(status.url)')
+curl "$SERVICE_URL/health"</pre>
+          <div class="expected-result"><b>Expected behavior:</b> the deploy command prints a live HTTPS URL, and the final <code>curl</code> to <code>/health</code> returns <code>{"status": "ok"}</code> from the deployed instance, not localhost.</div>
+          <div class="checklist">
+            <li>Built and ran the container locally first (Section 3) before attempting a cloud deployment</li>
+            <li>Confirmed the API key never appears in <code>docker history ai-service</code> — only injected at runtime via the secret</li>
+            <li>Deployed to Cloud Run and called <code>/extract-task</code> against the live URL, not localhost</li>
+            <li>Set <code>--max-instances</code> deliberately low (e.g. 1) and confirmed the reasoning for why that cap exists rather than leaving it unbounded</li>
+            <li>Can explain out loud, without re-reading Section 5, one concrete reason a team might choose Vertex AI over calling OpenAI/Gemini/Claude directly — and one reason they might not</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 14: Building an AI Product End-to-End</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">The capstone — combine everything into one working decision-support product.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="14-building-ai-product-end-to-end.html">Start Topic 14</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 13</span>
+      <div><a href="12-postgres-pgvector.html">Topic 12</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

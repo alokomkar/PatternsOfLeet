@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostgreSQL + pgvector - AI Engineering Topic 12</title>
+  <meta name="description" content="A practical guide to running vector search in production with PostgreSQL and pgvector: schema design, indexes, hybrid metadata filtering, and connecting from Python.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/12-postgres-pgvector.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="11-fastapi-for-ai.html">&larr; Topic 11</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="13-docker-cloudrun-vertexai.html">Topic 13 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 12 of 15 &middot; Backend &amp; deployment</div>
+        <h1>PostgreSQL + pgvector.</h1>
+        <p class="hero-copy">Topic 6's <code>TinySearchIndex</code> rebuilds every embedding on every process start and lives only in memory. This lesson replaces it with a real, persistent store: the <code>pgvector</code> extension adds vector columns and similarity search directly to PostgreSQL — very likely a database you already run.</p>
+        <div class="actions">
+          <a class="button primary" href="#why">Start with why Postgres</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Set up pgvector, design a schema for embeddings, run indexed similarity search in SQL, combine it with metadata filters, and connect from an async FastAPI service.</p>
+        <div class="summary-grid">
+          <div><b>7</b><span>lesson sections</span></div>
+          <div><b>1</b><span>indexed search query</span></div>
+          <div><b>1</b><span>capstone migration</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>One more column type, not a new database to operate.</h2>
+        <p style="max-width:760px;color:var(--muted)">A dedicated vector database is a real option, but for most products it's an extra system to run, monitor, and keep in sync with your primary data — when a normal Postgres extension does the job. <code>pgvector</code> adds a <code>vector</code> column type and a similarity operator to SQL you already know, so embeddings live right next to the rows they describe, in the same transactions, with the same backups.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#why">0 Why Postgres over a dedicated DB</a>
+        <a href="#setup">1 Setting up pgvector</a>
+        <a href="#schema">2 Schema design</a>
+        <a href="#inserting">3 Inserting embeddings</a>
+        <a href="#search">4 Similarity search &amp; indexes</a>
+        <a href="#hybrid">5 Combining with metadata filters</a>
+        <a href="#python">6 Connecting from Python</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="why">
+          <div class="eyebrow">Section 0</div>
+          <h2>Why Postgres Over a Dedicated Vector DB</h2>
+          <table class="table">
+            <thead><tr><th>Situation</th><th>Reach for</th></tr></thead>
+            <tbody>
+              <tr><td>Already running Postgres for the rest of the app</td><td><code>pgvector</code> — one fewer system to operate, backups and transactions already solved</td></tr>
+              <tr><td>Need to join vector search with relational data (user permissions, timestamps)</td><td><code>pgvector</code> — it's SQL, so <code>JOIN</code> and <code>WHERE</code> work normally</td></tr>
+              <tr><td>Truly massive scale (100M+ vectors) with vector search as the primary workload</td><td>A dedicated vector database (Pinecone, Weaviate, Qdrant) — purpose-built for this at that scale</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Start with <code>pgvector</code> by default. Most products that think they need a dedicated vector database never actually reach the scale where Postgres becomes the bottleneck.</div>
+        </section>
+
+        <section class="lesson" id="setup">
+          <div class="eyebrow">Section 1</div>
+          <h2>Setting Up pgvector</h2>
+          <pre class="code-card">docker run -d --name pg-vector \
+  -e POSTGRES_PASSWORD=devpassword \
+  -p 5432:5432 \
+  ankane/pgvector:latest</pre>
+          <pre class="code-card">-- run once, inside the database
+CREATE EXTENSION IF NOT EXISTS vector;</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> confirm the extension loaded with <code>SELECT * FROM pg_extension WHERE extname = 'vector';</code> before writing any schema.</div>
+        </section>
+
+        <section class="lesson" id="schema">
+          <div class="eyebrow">Section 2</div>
+          <h2>Schema Design</h2>
+          <p>A <code>vector(n)</code> column stores fixed-length embeddings — <code>n</code> must match your embedding model's output size exactly (1536 for OpenAI's <code>text-embedding-3-small</code>, 768 for Gemini's default). Store the embedding right alongside the text and metadata it came from, in one row.</p>
+          <pre class="code-card">CREATE TABLE document_chunks (
+    id SERIAL PRIMARY KEY,
+    document_id TEXT NOT NULL,
+    content TEXT NOT NULL,
+    embedding VECTOR(1536) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);</pre>
+          <div class="callout">This is the same "schema as a contract" instinct as Topic 4's Pydantic models, now expressed in SQL — get the vector dimension wrong and every insert fails loudly at the database level, not silently at query time.</div>
+        </section>
+
+        <section class="lesson" id="inserting">
+          <div class="eyebrow">Section 3</div>
+          <h2>Inserting Embeddings</h2>
+          <p>The ingestion phase from Topic 7 Section 0, now writing to a real table instead of an in-memory list.</p>
+          <pre class="code-card">import psycopg
+from openai import OpenAI
+
+client = OpenAI()
+
+def get_embedding(text: str) -> list[float]:
+    return client.embeddings.create(model="text-embedding-3-small", input=text).data[0].embedding
+
+def ingest_chunk(conn: psycopg.Connection, document_id: str, content: str) -> None:
+    embedding = get_embedding(content)
+    conn.execute(
+        "INSERT INTO document_chunks (document_id, content, embedding) VALUES (%s, %s, %s)",
+        (document_id, content, embedding),
+    )
+    conn.commit()</pre>
+        </section>
+
+        <section class="lesson" id="search">
+          <div class="eyebrow">Section 4</div>
+          <h2>Similarity Search &amp; Indexes</h2>
+          <p><code>pgvector</code> adds distance operators directly to SQL — <code>&lt;=&gt;</code> for cosine distance (1 minus Topic 6's cosine similarity, so smaller is more similar). Without an index this is Topic 6's brute-force scan, just running inside the database instead of Python.</p>
+          <pre class="code-card">SELECT content, 1 - (embedding &lt;=&gt; %(query_embedding)s) AS similarity
+FROM document_chunks
+ORDER BY embedding &lt;=&gt; %(query_embedding)s
+LIMIT 4;</pre>
+          <p>For real scale, add an <b>ANN index</b> — this is where Topic 6 Section 4's "brute force stops scaling" gets solved concretely.</p>
+          <pre class="code-card">CREATE INDEX ON document_chunks
+USING hnsw (embedding vector_cosine_ops);
+-- HNSW: better query speed and recall, slower to build — the default good choice
+-- IVFFlat is the faster-to-build, slightly lower-recall alternative for very large tables</pre>
+          <div class="callout">An ANN index makes search approximate, trading a small amount of recall for a large speed gain — the same tradeoff Topic 6 Section 4 introduced conceptually, now something you configure with an index type instead of reasoning about abstractly.</div>
+        </section>
+
+        <section class="lesson" id="hybrid">
+          <div class="eyebrow">Section 5</div>
+          <h2>Combining with Metadata Filters</h2>
+          <p>Because this is still SQL, you get something an in-memory vector search doesn't hand you for free: filtering by ordinary columns <i>before or alongside</i> the vector search — "find similar chunks, but only from documents this user can access."</p>
+          <pre class="code-card">SELECT content, 1 - (embedding &lt;=&gt; %(query_embedding)s) AS similarity
+FROM document_chunks
+WHERE document_id = ANY(%(allowed_document_ids)s)   -- ordinary SQL filter
+ORDER BY embedding &lt;=&gt; %(query_embedding)s
+LIMIT 4;</pre>
+          <div class="callout">This single query replaces a common and fragile pattern: retrieving top-k first and filtering by permission afterward, which can silently return fewer than <code>k</code> results — or leak the existence of documents a user can't see through similarity scores alone. Filter in the same query.</div>
+        </section>
+
+        <section class="lesson" id="python">
+          <div class="eyebrow">Section 6</div>
+          <h2>Connecting from Python</h2>
+          <pre class="code-card">pip install psycopg[binary] pgvector</pre>
+          <pre class="code-card">import psycopg
+from pgvector.psycopg import register_vector
+
+conn = psycopg.connect("postgresql://postgres:devpassword@localhost:5432/postgres")
+register_vector(conn)  # lets psycopg send/receive Python lists as VECTOR directly
+
+def search(conn: psycopg.Connection, query: str, top_k: int = 4) -> list[tuple[str, float]]:
+    query_embedding = get_embedding(query)
+    rows = conn.execute(
+        """SELECT content, 1 - (embedding <=> %s) AS similarity
+           FROM document_chunks ORDER BY embedding <=> %s LIMIT %s""",
+        (query_embedding, query_embedding, top_k),
+    ).fetchall()
+    return rows</pre>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: Migrate Topic 7's RAG Store to pgvector</h2>
+          <p>Replace Topic 7's <code>TinySearchIndex</code> with a Postgres-backed version — same public interface, real persistence underneath.</p>
+          <pre class="code-card">import psycopg
+from pgvector.psycopg import register_vector
+from openai import OpenAI
+
+client = OpenAI()
+
+def get_embedding(text: str) -> list[float]:
+    return client.embeddings.create(model="text-embedding-3-small", input=text).data[0].embedding
+
+class PgVectorIndex:
+    def __init__(self, dsn: str):
+        self.conn = psycopg.connect(dsn)
+        register_vector(self.conn)
+        self.conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS document_chunks (
+                id SERIAL PRIMARY KEY,
+                content TEXT NOT NULL,
+                embedding VECTOR(1536) NOT NULL
+            )""")
+        self.conn.commit()
+
+    def add_documents(self, documents: list[str]) -> None:
+        for doc in documents:
+            embedding = get_embedding(doc)
+            self.conn.execute(
+                "INSERT INTO document_chunks (content, embedding) VALUES (%s, %s)",
+                (doc, embedding),
+            )
+        self.conn.commit()
+
+    def search(self, query: str, top_k: int = 4) -> list[tuple[str, float]]:
+        query_embedding = get_embedding(query)
+        rows = self.conn.execute(
+            """SELECT content, 1 - (embedding <=> %s) AS similarity
+               FROM document_chunks ORDER BY embedding <=> %s LIMIT %s""",
+            (query_embedding, query_embedding, top_k),
+        ).fetchall()
+        return [(content, float(score)) for content, score in rows]
+
+
+if __name__ == "__main__":
+    index = PgVectorIndex("postgresql://postgres:devpassword@localhost:5432/postgres")
+    index.add_documents([
+        "Reset your password from the account settings page.",
+        "Our refund policy allows returns within 30 days of purchase.",
+        "The mobile app supports offline mode since version 4.2.",
+    ])
+    for content, score in index.search("can I get my money back"):
+        print(f"{score:.3f}  {content}")</pre>
+          <div class="expected-result"><b>Expected behavior:</b> identical ranking behavior to Topic 6's in-memory version, but the data survives a process restart — run the script twice without re-adding documents and confirm <code>search()</code> still works on the second run using previously stored rows.</div>
+          <div class="checklist">
+            <li>Ran pgvector locally via Docker and confirmed the extension is installed</li>
+            <li>Ingested the same documents from Topic 6/7's examples and confirmed matching search rankings</li>
+            <li>Restarted the Python process (not the database) and confirmed search still returns results without re-ingesting</li>
+            <li>Added the HNSW index from Section 4 and re-ran <code>EXPLAIN ANALYZE</code> on the search query to see the index actually being used instead of a sequential scan</li>
+            <li>Can explain out loud why <code>PgVectorIndex</code> exposes the same <code>search()</code> method signature as Topic 6's <code>TinySearchIndex</code> — what does that let Topic 7's <code>answer_question()</code> function do unchanged</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 13: Docker, Cloud Run &amp; Vertex AI</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Containerize the Topic 11 service and deploy it — including a look at Vertex AI as a managed alternative to calling providers directly.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="13-docker-cloudrun-vertexai.html">Start Topic 13</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 12</span>
+      <div><a href="11-fastapi-for-ai.html">Topic 11</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

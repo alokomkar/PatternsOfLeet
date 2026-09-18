@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Function / Tool Calling - AI Engineering Topic 5</title>
+  <meta name="description" content="A practical guide to LLM tool calling: defining tools with Pydantic schemas, the tool-calling loop, OpenAI/Gemini/Claude comparison, parallel calls, and security for Kotlin/Android developers.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/05-function-tool-calling.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="04-structured-outputs.html">&larr; Topic 4</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="06-embeddings-vector-search.html">Topic 6 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 5 of 15 &middot; Core patterns</div>
+        <h1>Function / tool calling.</h1>
+        <p class="hero-copy">Topic 4 constrained what the model outputs. This lesson constrains what it can <i>do</i> with that output: give the model a menu of callable functions, let it decide which one to call and with what arguments, execute the function yourself, and hand the result back. Every agent in this series — Topic 8 onward — is built on this one loop.</p>
+        <div class="actions">
+          <a class="button primary" href="#anatomy">Start with tool anatomy</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Define tools with a schema, run the full request-execute-respond loop against real APIs, handle parallel tool calls, and reason about the security implications of giving a model the ability to trigger real actions.</p>
+        <div class="summary-grid">
+          <div><b>9</b><span>lesson sections</span></div>
+          <div><b>1</b><span>full agent loop</span></div>
+          <div><b>1</b><span>security section</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>The model doesn't call your function. It asks you to.</h2>
+        <p style="max-width:760px;color:var(--muted)">This is the single most important thing to internalize before writing any tool-calling code: the LLM never executes anything. It returns a structured request — "call <code>get_weather</code> with <code>{"city": "Bengaluru"}</code>" — and your code is the one that actually runs it, the same way a server receiving a Retrofit-shaped request still has to implement the handler. The model proposes; your code disposes.</p>
+        <div class="diagram-visual">
+          <div class="diagram-node">You send messages<br>+ a list of tools</div>
+          <div class="diagram-node hot">Model responds with<br>a tool call request</div>
+          <div class="diagram-node">Your code executes<br>the real function</div>
+          <div class="diagram-node">You send the result<br>back as a new message</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#anatomy">0 Anatomy of a tool</a>
+        <a href="#loop">1 The tool-calling loop</a>
+        <a href="#providers">2 Three providers, one loop</a>
+        <a href="#multiple">3 Multiple tools &amp; tool choice</a>
+        <a href="#parallel">4 Parallel tool calls</a>
+        <a href="#errors">5 Errors inside a tool</a>
+        <a href="#security">6 Security: least privilege</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="anatomy">
+          <div class="eyebrow">Section 0</div>
+          <h2>Anatomy of a Tool</h2>
+          <p>A tool definition is exactly the schema work from Topic 4, described from the other direction: instead of shaping the model's <i>output</i>, you're shaping the arguments to a function the model can <i>request</i>. Same Pydantic model, new job.</p>
+          <pre class="code-card">from pydantic import BaseModel, Field
+
+class GetWeatherArgs(BaseModel):
+    city: str = Field(description="City name, e.g. 'Bengaluru'")
+    unit: str = Field(default="celsius", description="'celsius' or 'fahrenheit'")
+
+def get_weather(city: str, unit: str = "celsius") -> dict:
+    """The real implementation — a fake lookup here, a real API call in production."""
+    return {"city": city, "temp": 28, "unit": unit, "condition": "clear"}
+
+# OpenAI's SDK can derive the JSON schema straight from the Pydantic model
+tool_schema = {
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "description": "Get the current weather for a city.",
+        "parameters": GetWeatherArgs.model_json_schema(),
+    },
+}</pre>
+          <div class="concept-visual">
+            <div class="concept-box"><b>name</b><span>What the model refers to when requesting the call — must match the key you dispatch on in your own code.</span></div>
+            <div class="concept-box"><b>description</b><span>The single biggest lever on whether the model picks this tool correctly. Vague descriptions cause wrong-tool selection the same way a vague system prompt causes wrong behavior (Topic 3).</span></div>
+            <div class="concept-box"><b>parameters</b><span>A JSON Schema — usually generated from a Pydantic model, exactly like Topic 4's <code>response_format</code>.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="loop">
+          <div class="eyebrow">Section 1</div>
+          <h2>The Tool-Calling Loop</h2>
+          <p>One call is rarely the whole story. The full loop: send messages + tools, check if the model wants to call something, execute it, append the result, call again — until the model responds with text instead of a tool call.</p>
+          <pre class="code-card">import json
+from openai import OpenAI
+
+client = OpenAI()
+TOOLS = {"get_weather": get_weather}  # dispatch table: name -> real function
+
+messages = [{"role": "user", "content": "What's the weather in Bengaluru right now?"}]
+
+while True:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=messages,
+        tools=[tool_schema],
+    )
+    message = response.choices[0].message
+    messages.append(message)  # the model's turn, including any tool_calls
+
+    if not message.tool_calls:
+        print(message.content)  # final answer — exit the loop
+        break
+
+    for call in message.tool_calls:
+        args = json.loads(call.function.arguments)
+        result = TOOLS[call.function.name](**args)  # your code actually runs it
+        messages.append({
+            "role": "tool",
+            "tool_call_id": call.id,
+            "content": json.dumps(result),
+        })</pre>
+          <div class="callout">Notice the shape: this is structurally identical to a recursive Retrofit retry loop, except the "retry decision" is made by the model instead of your error-handling code. The <code>tool_call_id</code> matters — it's how the model matches your result back to the specific call it made, especially once Section 4 introduces multiple calls in one turn.</div>
+        </section>
+
+        <section class="lesson" id="providers">
+          <div class="eyebrow">Section 2</div>
+          <h2>Three Providers, One Loop</h2>
+          <p>The shape is the same everywhere: describe tools, get a request back, execute, send the result. The field names differ.</p>
+          <div class="provider-grid">
+            <div class="compare-col">
+              <div class="compare-label openai">OpenAI</div>
+              <pre class="code-card">r = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=messages,
+    tools=[tool_schema],
+)
+call = r.choices[0].message.tool_calls[0]
+name = call.function.name
+args = json.loads(
+    call.function.arguments)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label gemini">Gemini</div>
+              <pre class="code-card">r = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=contents,
+    config={"tools": [{
+        "function_declarations":
+            [gemini_schema]}]},
+)
+call = r.candidates[0].content.parts[0]
+    .function_call
+name, args = call.name, dict(call.args)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label claude">Claude</div>
+              <pre class="code-card">r = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=300,
+    tools=[claude_tool_schema],
+    messages=messages,
+)
+call = next(b for b in r.content
+            if b.type == "tool_use")
+name, args = call.name, call.input</pre>
+            </div>
+          </div>
+          <table class="table">
+            <thead><tr><th>Provider</th><th>Sending the result back</th></tr></thead>
+            <tbody>
+              <tr><td>OpenAI</td><td><code>{"role": "tool", "tool_call_id": ..., "content": ...}</code></td></tr>
+              <tr><td>Gemini</td><td>A <code>function_response</code> part appended to the next <code>contents</code> turn</td></tr>
+              <tr><td>Claude</td><td>A <code>tool_result</code> content block, keyed by the call's <code>id</code>, in the next user turn</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="multiple">
+          <div class="eyebrow">Section 3</div>
+          <h2>Multiple Tools &amp; Tool Choice</h2>
+          <p>Real assistants offer several tools at once and let the model pick — or you can force a specific one, the same way Topic 4's Claude example forced a single tool for structured extraction.</p>
+          <table class="table">
+            <thead><tr><th><code>tool_choice</code> value</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr><td><code>"auto"</code> (default)</td><td>Model decides whether to call a tool at all, and which one.</td></tr>
+              <tr><td><code>"none"</code></td><td>Model must respond with text only, even if tools are listed — useful for A/B testing whether tools help.</td></tr>
+              <tr><td><code>"required"</code></td><td>Model must call some tool, but picks which one.</td></tr>
+              <tr><td><code>{"type": "function", "function": {"name": "get_weather"}}</code></td><td>Force this exact tool — the Topic 4 structured-extraction trick.</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">More tools listed isn't free — each one's name, description, and schema costs prompt tokens on <i>every</i> call, and too many similar tools measurably hurts selection accuracy. Five well-described tools usually outperform twenty vague ones.</div>
+        </section>
+
+        <section class="lesson" id="parallel">
+          <div class="eyebrow">Section 4</div>
+          <h2>Parallel Tool Calls</h2>
+          <p>Modern models can request several tool calls in a single turn — "get the weather in Bengaluru <i>and</i> Mumbai" produces two <code>tool_calls</code> at once instead of two separate round trips. Your loop from Section 1 already handles this: it iterates <code>message.tool_calls</code>, so multiple calls just mean multiple loop iterations before the next model turn.</p>
+          <pre class="code-card">for call in message.tool_calls:            # could be 1, could be 5
+    args = json.loads(call.function.arguments)
+    result = TOOLS[call.function.name](**args)
+    messages.append({"role": "tool", "tool_call_id": call.id,
+                      "content": json.dumps(result)})
+# send all results back together in the next request — not one at a time</pre>
+          <div class="checkpoint-box"><b>Performance tip:</b> if your tool functions are I/O-bound (an HTTP call, a DB query), run them concurrently with the <code>asyncio.gather</code> pattern from Topic 1 Section 7 instead of a plain <code>for</code> loop — otherwise five parallel tool calls from the model become five sequential round trips in your code, defeating the point.</div>
+        </section>
+
+        <section class="lesson" id="errors">
+          <div class="eyebrow">Section 5</div>
+          <h2>Errors Inside a Tool</h2>
+          <p>When a tool call fails — bad arguments, a downstream API timeout, a not-found result — don't let the exception crash the loop. Send the error back to the model <i>as the tool result</i>, the same way an API returns a 404 body instead of dropping the connection. The model can often recover: retry with different arguments, apologize, or try a different tool.</p>
+          <pre class="code-card">for call in message.tool_calls:
+    args = json.loads(call.function.arguments)
+    try:
+        result = TOOLS[call.function.name](**args)
+        content = json.dumps(result)
+    except Exception as e:
+        content = json.dumps({"error": str(e)})  # let the model see and react to this
+    messages.append({"role": "tool", "tool_call_id": call.id, "content": content})</pre>
+          <div class="error-grid">
+            <div class="error-card"><b>Letting exceptions propagate</b><span>An unhandled exception inside the loop kills the whole conversation. The model never gets a chance to say "let me try a different city name."</span></div>
+            <div class="error-card"><b>Infinite retry loops</b><span>If the model keeps calling the same failing tool, cap total iterations (e.g. 5-10) and break with a fallback message — the same guardrail Topic 8's agents need more formally.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="security">
+          <div class="eyebrow">Section 6</div>
+          <h2>Security: Least Privilege</h2>
+          <p>This is where Topic 3's prompt injection section stops being theoretical. Once a model can call tools, injected text doesn't just make it say something wrong — it can make it <i>do</i> something wrong: send an email, delete a record, transfer data. The defense is the same principle every backend engineer already applies to a service account.</p>
+          <table class="table">
+            <thead><tr><th>Principle</th><th>Applied to tool calling</th></tr></thead>
+            <tbody>
+              <tr><td>Least privilege</td><td>Only give the model tools it needs for the current task. Don't wire up a general-purpose <code>run_sql(query)</code> tool when the task is "look up an order status."</td></tr>
+              <tr><td>Read vs write separation</td><td>Prefer separate, narrowly-scoped tools (<code>get_order_status</code>) over broad ones (<code>update_database</code>) — a narrow tool bounds the blast radius of a bad decision or an injection attempt.</td></tr>
+              <tr><td>Human confirmation for destructive actions</td><td>For anything hard to reverse (send, delete, pay — the same category this session's own safety rules treat carefully), surface the proposed action to a human before executing, don't auto-execute.</td></tr>
+              <tr><td>Validate arguments server-side</td><td>Never trust that the model's arguments are safe just because they matched your schema's types — a syntactically valid <code>city: str</code> can still contain a SQL injection payload if you're not careful downstream.</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Threat-model this explicitly before shipping: "if an attacker could fully control the text this model reads, what's the worst tool call they could trigger?" If the answer is unacceptable, the fix is fewer/narrower tools and a human approval step — not a better prompt.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: A Two-Tool Assistant</h2>
+          <p>Build the full loop from Section 1 with two tools, forcing at least one multi-step exchange (Section 4's parallel calls or a sequential follow-up) and proper error handling (Section 5).</p>
+          <pre class="code-card">import json
+from pydantic import BaseModel, Field
+from openai import OpenAI
+
+class GetWeatherArgs(BaseModel):
+    city: str = Field(description="City name")
+
+class CalculateArgs(BaseModel):
+    expression: str = Field(description="A simple arithmetic expression, e.g. '28 - 4'")
+
+def get_weather(city: str) -> dict:
+    fake_data = {"Bengaluru": 28, "Mumbai": 32, "Delhi": 24}
+    if city not in fake_data:
+        raise ValueError(f"no weather data for {city}")
+    return {"city": city, "temp_celsius": fake_data[city]}
+
+def calculate(expression: str) -> dict:
+    allowed = set("0123456789+-*/(). ")
+    if not set(expression) <= allowed:
+        raise ValueError("expression contains disallowed characters")
+    return {"result": eval(expression)}  # safe here only because of the allowlist above
+
+TOOLS = {"get_weather": get_weather, "calculate": calculate}
+TOOL_SCHEMAS = [
+    {"type": "function", "function": {"name": "get_weather",
+        "description": "Get current temperature for a city.",
+        "parameters": GetWeatherArgs.model_json_schema()}},
+    {"type": "function", "function": {"name": "calculate",
+        "description": "Evaluate a simple arithmetic expression.",
+        "parameters": CalculateArgs.model_json_schema()}},
+]
+
+def run_assistant(user_message: str) -> str:
+    client = OpenAI()
+    messages = [{"role": "user", "content": user_message}]
+
+    for _ in range(6):  # guardrail: cap iterations, per Section 5
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini", messages=messages, tools=TOOL_SCHEMAS,
+        )
+        message = response.choices[0].message
+        messages.append(message)
+
+        if not message.tool_calls:
+            return message.content
+
+        for call in message.tool_calls:
+            args = json.loads(call.function.arguments)
+            try:
+                result = TOOLS[call.function.name](**args)
+                content = json.dumps(result)
+            except Exception as e:
+                content = json.dumps({"error": str(e)})
+            messages.append({"role": "tool", "tool_call_id": call.id, "content": content})
+
+    return "gave up after too many tool calls"
+
+
+if __name__ == "__main__":
+    print(run_assistant(
+        "What's the temperature difference between Bengaluru and Mumbai?"
+    ))</pre>
+          <div class="expected-result"><b>Expected behavior:</b> the model calls <code>get_weather</code> twice (once per city, possibly in parallel), then calls <code>calculate</code> with the difference, then returns a final text answer like "Mumbai is 4°C warmer than Bengaluru."</div>
+          <div class="checklist">
+            <li>Ran the assistant and confirmed it made at least two tool calls before answering</li>
+            <li>Broke it on purpose by asking about a city not in <code>fake_data</code> and confirmed the error comes back as a tool result the model can react to, not a crash</li>
+            <li>Lowered the iteration cap to 1 and confirmed it fails gracefully with the fallback message instead of hanging</li>
+            <li>Can explain out loud why <code>calculate</code>'s character allowlist matters — what would go wrong if it just called <code>eval()</code> on the raw model-provided string with no check</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 6: Embeddings &amp; Vector Search</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">What embeddings are, how similarity search works, and the foundation RAG (Topic 7) is built on.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="06-embeddings-vector-search.html">Start Topic 6</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 5</span>
+      <div><a href="04-structured-outputs.html">Topic 4</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

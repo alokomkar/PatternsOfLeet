@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastAPI for AI Services - AI Engineering Topic 11</title>
+  <meta name="description" content="A practical guide to wrapping LLM logic in a FastAPI service: request/response models, streaming SSE endpoints, async clients, dependency injection, and calling from Android.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/11-fastapi-for-ai.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="10-ai-evaluation.html">&larr; Topic 10</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="12-postgres-pgvector.html">Topic 12 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 11 of 15 &middot; Backend &amp; deployment</div>
+        <h1>FastAPI for AI services.</h1>
+        <p class="hero-copy">Everything so far has run as a script on your machine, with your API keys, in your terminal. A real product needs this logic behind an HTTP endpoint an Android or web client can call safely — keys stay server-side, and the client just sends a request and gets a response (or a stream). This lesson wraps Topic 4's task extractor as a real service.</p>
+        <div class="actions">
+          <a class="button primary" href="#why">Start with why wrap it</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Build request/response models, stream tokens over HTTP, use the async LLM client correctly, inject dependencies, and call the service from an Android client.</p>
+        <div class="summary-grid">
+          <div><b>8</b><span>lesson sections</span></div>
+          <div><b>1</b><span>streaming endpoint</span></div>
+          <div><b>1</b><span>capstone service</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>The backend you'd build anyway, with an LLM call inside a handler.</h2>
+        <p style="max-width:760px;color:var(--muted)">Strip away the AI framing and this is exactly the backend work a Kotlin engineer building a Retrofit-consuming client already expects to exist somewhere: routes, request/response DTOs (Topic 4's Pydantic models again), dependency injection, and error handling. FastAPI is intentionally close to that mental model — path operations look like annotated interface methods, and Pydantic does the serialization Moshi or kotlinx.serialization would do on the Android side.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#why">0 Why wrap it in an API</a>
+        <a href="#anatomy">1 Minimal app anatomy</a>
+        <a href="#models">2 Request/response models</a>
+        <a href="#streaming">3 Streaming endpoints (SSE)</a>
+        <a href="#async">4 Async endpoints</a>
+        <a href="#di">5 Dependency injection</a>
+        <a href="#errors">6 Errors &amp; status codes</a>
+        <a href="#cors">7 CORS &amp; calling from Android</a>
+        <a href="#checkpoint">8 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="why">
+          <div class="eyebrow">Section 0</div>
+          <h2>Why Wrap It in an API</h2>
+          <table class="table">
+            <thead><tr><th>Script (Topics 1-10)</th><th>Service (this topic)</th></tr></thead>
+            <tbody>
+              <tr><td>API keys live in your local <code>.env</code></td><td>API keys live only on the server — never shipped inside an Android app or a web bundle</td></tr>
+              <tr><td>You run it manually</td><td>Runs continuously, handles concurrent requests from many users</td></tr>
+              <tr><td>Output printed to a terminal</td><td>Output is JSON or a stream a mobile/web client parses</td></tr>
+              <tr><td>No auth, no rate limiting</td><td>Auth, per-user rate limits, and cost controls sit in front of every LLM call</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Never call an LLM provider directly from an Android app with an embedded API key — it's extractable from the APK and effectively a public key at that point. Every LLM call from a client app should go through a server you control.</div>
+        </section>
+
+        <section class="lesson" id="anatomy">
+          <div class="eyebrow">Section 1</div>
+          <h2>Minimal App Anatomy</h2>
+          <pre class="code-card">pip install fastapi uvicorn[standard]</pre>
+          <pre class="code-card">from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+def health() -> dict:
+    return {"status": "ok"}
+
+# run with: uvicorn main:app --reload
+# visit http://localhost:8000/docs for auto-generated interactive API docs</pre>
+          <div class="callout">The <code>/docs</code> page is free — FastAPI generates interactive OpenAPI documentation from your route signatures and Pydantic models automatically. This is the closest thing Python has to Retrofit's compile-time-checked interface, just discovered at the boundary instead of compiled into the client.</div>
+        </section>
+
+        <section class="lesson" id="models">
+          <div class="eyebrow">Section 2</div>
+          <h2>Request/Response Models</h2>
+          <p>Exactly Topic 4's Pydantic models, now describing the HTTP contract instead of the LLM's output shape — often the same models, reused directly.</p>
+          <pre class="code-card">from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class ExtractRequest(BaseModel):
+    text: str
+
+class TaskResponse(BaseModel):
+    title: str
+    priority: str
+    due_date: str | None
+    confidence: float
+
+@app.post("/extract-task", response_model=TaskResponse)
+def extract(request: ExtractRequest) -> TaskResponse:
+    task = extract_task(request.text)  # Topic 4's capstone function
+    return TaskResponse(
+        title=task.title, priority=task.priority.value,
+        due_date=task.due_date, confidence=task.confidence,
+    )</pre>
+          <div class="callout">FastAPI validates the incoming request body against <code>ExtractRequest</code> automatically — a malformed request gets a 422 response before your function body ever runs, the same boundary-validation instinct as Topic 4's schema enforcement, now applied at the HTTP layer.</div>
+        </section>
+
+        <section class="lesson" id="streaming">
+          <div class="eyebrow">Section 3</div>
+          <h2>Streaming Endpoints (SSE)</h2>
+          <p>Topic 2 Section 3 streamed tokens into a terminal with <code>print()</code>. Streaming them to an HTTP client uses the same idea over a persistent response — a <code>StreamingResponse</code> that yields chunks as they arrive from the provider.</p>
+          <pre class="code-card">from fastapi.responses import StreamingResponse
+from openai import OpenAI
+
+client = OpenAI()
+
+@app.post("/chat/stream")
+def chat_stream(request: ExtractRequest):
+    def token_generator():
+        stream = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[{"role": "user", "content": request.text}],
+            stream=True,
+        )
+        for chunk in stream:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield f"data: {delta}\n\n"  # the SSE wire format from Topic 2 Section 3
+
+    return StreamingResponse(token_generator(), media_type="text/event-stream")</pre>
+          <div class="callout">An Android client consumes this with an OkHttp <code>EventSource</code> listener or a Ktor SSE client — the same "read chunks as they arrive" pattern as Kotlin's <code>Flow</code>, just carried over HTTP instead of in-process.</div>
+        </section>
+
+        <section class="lesson" id="async">
+          <div class="eyebrow">Section 4</div>
+          <h2>Async Endpoints</h2>
+          <p>Topic 1 Section 7 flagged this: sync streaming is fine for a script, but a service handling concurrent requests needs the async client, or one slow LLM call blocks every other request on the same worker.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label" style="background:#9d321e">Blocks other requests</div>
+              <pre class="code-card">from openai import OpenAI
+client = OpenAI()
+
+@app.post("/extract-task")
+def extract(request: ExtractRequest):
+    task = extract_task(request.text)  # sync call — blocks this worker
+    return task</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label" style="background:#227c70">Handles concurrency</div>
+              <pre class="code-card">from openai import AsyncOpenAI
+client = AsyncOpenAI()
+
+@app.post("/extract-task")
+async def extract(request: ExtractRequest):
+    task = await extract_task_async(request.text)  # frees the worker while waiting
+    return task</pre>
+            </div>
+          </div>
+          <div class="callout">A route defined with <code>def</code> instead of <code>async def</code> runs in FastAPI's thread pool, which still works but caps concurrency at the pool size. Use <code>async def</code> with the async client for anything that calls an LLM — it's the difference between a handful and thousands of concurrent in-flight requests on the same process.</div>
+        </section>
+
+        <section class="lesson" id="di">
+          <div class="eyebrow">Section 5</div>
+          <h2>Dependency Injection</h2>
+          <p>FastAPI's <code>Depends()</code> is conceptually close to Hilt/Dagger's constructor injection — declare what a route needs, and the framework provides it, rather than constructing it inline every time.</p>
+          <pre class="code-card">from fastapi import Depends
+from functools import lru_cache
+
+@lru_cache
+def get_openai_client() -> AsyncOpenAI:
+    return AsyncOpenAI()  # created once, reused across requests
+
+@app.post("/extract-task")
+async def extract(request: ExtractRequest,
+                   client: AsyncOpenAI = Depends(get_openai_client)):
+    ...</pre>
+          <div class="callout">This matters beyond convenience: in tests, you override <code>get_openai_client</code> with a fake that returns canned responses, so your route tests don't make real API calls — the same seam Hilt gives you for swapping a fake repository in an Android test.</div>
+        </section>
+
+        <section class="lesson" id="errors">
+          <div class="eyebrow">Section 6</div>
+          <h2>Errors &amp; Status Codes</h2>
+          <p>Topic 2 Section 7's retry logic still lives inside the route — the new piece is translating internal failures into the right HTTP status, so the client can react correctly instead of treating every failure the same way.</p>
+          <pre class="code-card">from fastapi import HTTPException
+
+@app.post("/extract-task", response_model=TaskResponse)
+async def extract(request: ExtractRequest,
+                   client: AsyncOpenAI = Depends(get_openai_client)):
+    if not request.text.strip():
+        raise HTTPException(status_code=400, detail="text must not be empty")
+    try:
+        task = await extract_task_async(request.text, client)
+    except RateLimitError:
+        raise HTTPException(status_code=503, detail="upstream provider is rate limiting us")
+    except Exception:
+        raise HTTPException(status_code=502, detail="extraction failed")
+    return task</pre>
+          <table class="table">
+            <thead><tr><th>Status</th><th>Meaning here</th></tr></thead>
+            <tbody>
+              <tr><td>400</td><td>Bad request from the client — retrying the same request won't help (Topic 2 Section 7's 4xx rule)</td></tr>
+              <tr><td>502 / 503</td><td>The upstream LLM provider failed or rate-limited — the client can retry with backoff</td></tr>
+              <tr><td>422</td><td>Pydantic validation failure — handled automatically by FastAPI before your code runs</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="cors">
+          <div class="eyebrow">Section 7</div>
+          <h2>CORS &amp; Calling from Android</h2>
+          <p>Android clients aren't affected by CORS — that's a browser-only restriction, so a Kotlin/Retrofit client just needs the URL and, typically, an auth header your server checks. A web client calling this same API from a browser does need CORS configured.</p>
+          <pre class="code-card">from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://yourapp.com"],  # never "*" once real users hit this
+    allow_methods=["POST"],
+    allow_headers=["*"],
+)</pre>
+          <pre class="code-card">// Retrofit interface on the Android side — the client's view of Section 2's contract
+interface AiService {
+    @POST("extract-task")
+    suspend fun extractTask(@Body request: ExtractRequest): TaskResponse
+}
+
+data class ExtractRequest(val text: String)
+data class TaskResponse(val title: String, val priority: String,
+                         val dueDate: String?, val confidence: Double)</pre>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 8 &middot; Checkpoint</div>
+          <h2>Capstone: A Real Task Extraction Service</h2>
+          <p>Combine every section: async endpoint, DI, proper error handling, and a streaming variant, wrapping Topic 4's extractor.</p>
+          <pre class="code-card">from functools import lru_cache
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import StreamingResponse
+from openai import AsyncOpenAI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class ExtractRequest(BaseModel):
+    text: str
+
+class TaskResponse(BaseModel):
+    title: str
+    priority: str
+    due_date: str | None
+    confidence: float
+
+@lru_cache
+def get_client() -> AsyncOpenAI:
+    return AsyncOpenAI()
+
+@app.get("/health")
+def health() -> dict:
+    return {"status": "ok"}
+
+@app.post("/extract-task", response_model=TaskResponse)
+async def extract(request: ExtractRequest,
+                   client: AsyncOpenAI = Depends(get_client)) -> TaskResponse:
+    if not request.text.strip():
+        raise HTTPException(status_code=400, detail="text must not be empty")
+    try:
+        completion = await client.beta.chat.completions.parse(
+            model="gpt-4.1-mini",
+            messages=[{"role": "user", "content": request.text}],
+            response_format=Task,  # Topic 4's Pydantic model
+            temperature=0,
+        )
+    except Exception:
+        raise HTTPException(status_code=502, detail="extraction failed")
+
+    task = completion.choices[0].message.parsed
+    if task is None:
+        raise HTTPException(status_code=502, detail="model returned no result")
+    return TaskResponse(title=task.title, priority=task.priority.value,
+                         due_date=task.due_date, confidence=task.confidence)
+
+@app.post("/chat/stream")
+async def chat_stream(request: ExtractRequest,
+                       client: AsyncOpenAI = Depends(get_client)):
+    async def token_generator():
+        stream = await client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[{"role": "user", "content": request.text}],
+            stream=True,
+        )
+        async for chunk in stream:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield f"data: {delta}\n\n"
+
+    return StreamingResponse(token_generator(), media_type="text/event-stream")
+
+# run with: uvicorn main:app --reload</pre>
+          <div class="expected-result"><b>Expected behavior:</b> <code>GET /health</code> returns <code>{"status": "ok"}</code>; <code>POST /extract-task</code> with <code>{"text": "..."}</code> returns a validated <code>TaskResponse</code> or a proper error status; <code>POST /chat/stream</code> streams text incrementally, visible with <code>curl -N</code>.</div>
+          <div class="checklist">
+            <li>Ran <code>uvicorn main:app --reload</code> and opened <code>/docs</code> to see the auto-generated interface</li>
+            <li>Called <code>/extract-task</code> with an empty <code>text</code> and confirmed a 400, not a 500 or a hang</li>
+            <li>Called <code>/chat/stream</code> with <code>curl -N http://localhost:8000/chat/stream -d '{"text":"count to 5"}' -H "Content-Type: application/json"</code> and watched tokens arrive incrementally rather than all at once</li>
+            <li>Can explain out loud why <code>get_client</code> is wrapped in <code>@lru_cache</code> instead of constructing a new <code>AsyncOpenAI()</code> inside every request</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 12: PostgreSQL + pgvector</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Give this service a real database — persist embeddings and run vector search at production scale.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="12-postgres-pgvector.html">Start Topic 12</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 11</span>
+      <div><a href="10-ai-evaluation.html">Topic 10</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

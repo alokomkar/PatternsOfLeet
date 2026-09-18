@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG (Retrieval-Augmented Generation) - AI Engineering Topic 7</title>
+  <meta name="description" content="A practical guide to building a RAG pipeline: chunking, embedding, retrieval, grounded prompting, citations, and common failure modes — for Kotlin/Android developers.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/07-rag.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="06-embeddings-vector-search.html">&larr; Topic 6</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="08-agentic-workflows.html">Topic 8 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 7 of 15 &middot; Core patterns</div>
+        <h1>RAG: Retrieval-Augmented Generation.</h1>
+        <p class="hero-copy">Topic 6 built a search function. This lesson wraps an LLM around it: retrieve the few documents actually relevant to a question, hand them to the model as delimited context (Topic 3), and instruct it to answer only from what it was given. This is how you answer questions about your own data without retraining anything.</p>
+        <div class="actions">
+          <a class="button primary" href="#pipeline">Start with the pipeline</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Build a complete retrieve-then-generate pipeline with citations, recognize the specific ways RAG fails, and know when hybrid search or re-ranking earns its complexity.</p>
+        <div class="summary-grid">
+          <div><b>8</b><span>lesson sections</span></div>
+          <div><b>1</b><span>full pipeline</span></div>
+          <div><b>1</b><span>capstone Q&amp;A system</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>Open-book, not closed-book.</h2>
+        <p style="max-width:760px;color:var(--muted)">A plain LLM call answers from what it memorized during training — a closed-book exam. RAG turns it into an open-book exam: before answering, you hand it the specific pages relevant to the question, and instruct it to answer <i>only</i> from those pages. This is why RAG reduces hallucination on your own data without any fine-tuning — the model isn't guessing from memory, it's reading what you gave it.</p>
+        <div class="diagram-visual">
+          <div class="diagram-node">Chunk &amp; embed<br>your documents</div>
+          <div class="diagram-node">Store vectors<br>(Topic 6/12)</div>
+          <div class="diagram-node hot">Retrieve top-k<br>for the query</div>
+          <div class="diagram-node">Generate an answer<br>grounded in those chunks</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#pipeline">0 The full pipeline</a>
+        <a href="#chunking">1 Chunking strategy</a>
+        <a href="#retrieval">2 Retrieval: top-k search</a>
+        <a href="#augmenting">3 Augmenting the prompt</a>
+        <a href="#grounding">4 Grounding &amp; citations</a>
+        <a href="#failures">5 Failure modes</a>
+        <a href="#advanced">6 Hybrid search &amp; re-ranking</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="pipeline">
+          <div class="eyebrow">Section 0</div>
+          <h2>The Full Pipeline</h2>
+          <p>RAG splits cleanly into two phases that run at very different times: <b>ingestion</b> (once, or whenever your source documents change) and <b>query time</b> (every single user question). Keeping this split in your head prevents a common mistake — re-embedding your whole document set on every request.</p>
+          <table class="table">
+            <thead><tr><th>Phase</th><th>Steps</th><th>Runs</th></tr></thead>
+            <tbody>
+              <tr><td>Ingestion</td><td>Chunk documents &rarr; embed each chunk &rarr; store vectors + text</td><td>Once per document, or on update</td></tr>
+              <tr><td>Query time</td><td>Embed the query &rarr; retrieve top-k chunks &rarr; build a grounded prompt &rarr; generate</td><td>Every user question</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="chunking">
+          <div class="eyebrow">Section 1</div>
+          <h2>Chunking Strategy</h2>
+          <p>Topic 6 used a naive character-count chunker to build intuition. Production chunking respects the structure of the content, because retrieval quality is bounded by chunk quality — you can't retrieve a good answer out of a badly-cut chunk.</p>
+          <table class="table">
+            <thead><tr><th>Strategy</th><th>When it fits</th></tr></thead>
+            <tbody>
+              <tr><td>Fixed-size with overlap</td><td>Unstructured text (transcripts, freeform notes) — Topic 6's approach, good enough as a baseline</td></tr>
+              <tr><td>Paragraph / section-based</td><td>Structured docs (markdown, HTML, PDFs with headers) — split on natural boundaries, not arbitrary character counts</td></tr>
+              <tr><td>One chunk per logical unit</td><td>FAQs, support tickets, product entries — each item is already the right retrieval granularity, don't split further</td></tr>
+              <tr><td>Semantic chunking</td><td>Long-form prose where topic shifts mid-document — split where embedding similarity between adjacent sentences drops, not on a fixed count</td></tr>
+            </tbody>
+          </table>
+          <div class="callout"><b>Size tradeoff:</b> chunks too small lose context (a sentence fragment retrieved with no surrounding meaning); chunks too large dilute relevance (a 2,000-word chunk where only one sentence answers the question, burning context budget on the rest). 200-500 tokens per chunk is a common starting range — tune it against your own content and queries.</div>
+        </section>
+
+        <section class="lesson" id="retrieval">
+          <div class="eyebrow">Section 2</div>
+          <h2>Retrieval: Top-K Search</h2>
+          <p>Exactly Topic 6's <code>search()</code> function, with one new decision: how many chunks to retrieve. Too few and the answer might be missing the right fact; too many and you're back to Topic 2's context-budget and "lost in the middle" problems from Topic 3.</p>
+          <pre class="code-card">def retrieve(index: TinySearchIndex, query: str, top_k: int = 4,
+             min_score: float = 0.3) -> list[str]:
+    results = index.search(query, top_k=top_k)
+    # drop anything below a relevance floor — a "best available" match
+    # that's still unrelated is worse than no context at all
+    return [doc for doc, score in results if score >= min_score]</pre>
+          <div class="checkpoint-box"><b>The empty-retrieval case matters:</b> what happens when <i>nothing</i> clears <code>min_score</code>? This isn't an edge case to handle later — it's the case Section 3's prompt has to explicitly instruct the model to say "I don't know" for, tying directly back to Topic 3 Section 1's unhappy-path rule.</div>
+        </section>
+
+        <section class="lesson" id="augmenting">
+          <div class="eyebrow">Section 3</div>
+          <h2>Augmenting the Prompt</h2>
+          <p>This is Topic 3's delimiter pattern, applied to retrieved chunks instead of a single document — numbered so the model (and your citation logic in Section 4) can refer back to a specific source.</p>
+          <pre class="code-card">def build_rag_prompt(query: str, chunks: list[str]) -> list[dict]:
+    if not chunks:
+        context = "No relevant documents were found."
+    else:
+        context = "\n\n".join(f"[{i+1}] {chunk}" for i, chunk in enumerate(chunks))
+
+    system = """Answer the user's question using ONLY the numbered sources below.
+Cite sources inline using [1], [2] etc. matching the source numbers.
+If the sources don't contain the answer, say "I don't have that information"
+instead of guessing. Never use knowledge outside the provided sources.
+
+Sources:
+""" + context
+
+    return [
+        {"role": "system", "content": system},
+        {"role": "user", "content": query},
+    ]</pre>
+        </section>
+
+        <section class="lesson" id="grounding">
+          <div class="eyebrow">Section 4</div>
+          <h2>Grounding &amp; Citations</h2>
+          <p>"Grounded" means every claim in the answer traces back to a retrieved source. Citations aren't just a UI nicety — they're a verification mechanism: a user (or an eval harness, Topic 10) can check whether <code>[2]</code> actually says what the model claims it says.</p>
+          <pre class="code-card">response = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=build_rag_prompt(query, retrieved_chunks),
+    temperature=0,  # factual retrieval task — determinism matters, per Topic 2 Section 6
+)
+answer = response.choices[0].message.content
+# answer now looks like: "Refunds are allowed within 30 days [1]."
+# — [1] is traceable back to retrieved_chunks[0] for display or verification</pre>
+          <div class="callout">A citation the model produces is still just generated text — it can cite the wrong number, or cite correctly while still slightly misrepresenting the source. Citations make grounding <i>checkable</i>, not guaranteed. Topic 10's faithfulness evaluation is how you actually measure whether citations are trustworthy at scale.</div>
+        </section>
+
+        <section class="lesson" id="failures">
+          <div class="eyebrow">Section 5</div>
+          <h2>Failure Modes</h2>
+          <div class="error-grid">
+            <div class="error-card"><b>Retrieval miss</b><span>The right document exists but didn't score high enough to make top-k — often a chunking or phrasing mismatch between how the doc is written and how users ask. Fix: better chunking, or Section 6's hybrid search.</span></div>
+            <div class="error-card"><b>Irrelevant-but-retrieved</b><span>A chunk scores above your threshold but isn't actually useful for this specific question — the model may still try to use it, producing a technically-grounded but unhelpful answer.</span></div>
+            <div class="error-card"><b>Hallucination despite context</b><span>The model ignores the provided sources and answers from its own training knowledge anyway — usually fixed by strengthening the system prompt's "ONLY use the sources" instruction and testing with <code>temperature=0</code>.</span></div>
+            <div class="error-card"><b>Stale index</b><span>Source documents changed but the vector store wasn't re-ingested — the system confidently cites information that's no longer true. This is an operational problem, not a prompting one.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="advanced">
+          <div class="eyebrow">Section 6</div>
+          <h2>Hybrid Search &amp; Re-ranking</h2>
+          <p>Two upgrades worth knowing about before you need them — don't add either until plain vector search demonstrably isn't good enough for your data.</p>
+          <table class="table">
+            <thead><tr><th>Technique</th><th>Solves</th></tr></thead>
+            <tbody>
+              <tr><td>Hybrid search</td><td>Combines vector similarity with traditional keyword search (BM25) — catches cases like exact product codes or acronyms that embeddings alone can blur together.</td></tr>
+              <tr><td>Re-ranking</td><td>Retrieve a larger candidate set cheaply (e.g. top-20 by vector similarity), then run a more expensive, more accurate re-ranking model over just those 20 to pick the final top-4 — better precision at a fraction of the cost of scoring everything that way.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: A Grounded Q&amp;A System</h2>
+          <p>Combine Topic 6's <code>TinySearchIndex</code> with this topic's retrieval threshold, grounded prompt, and citations into one callable function.</p>
+          <pre class="code-card">from openai import OpenAI
+
+client = OpenAI()
+
+def answer_question(index: TinySearchIndex, query: str,
+                     top_k: int = 4, min_score: float = 0.3) -> str:
+    results = index.search(query, top_k=top_k)
+    chunks = [doc for doc, score in results if score >= min_score]
+
+    if not chunks:
+        context = "No relevant documents were found."
+    else:
+        context = "\n\n".join(f"[{i+1}] {chunk}" for i, chunk in enumerate(chunks))
+
+    system = """Answer using ONLY the numbered sources below, citing them
+inline as [1], [2] etc. If the sources don't contain the answer, say
+"I don't have that information." Never use outside knowledge.
+
+Sources:
+""" + context
+
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "system", "content": system},
+                  {"role": "user", "content": query}],
+        temperature=0,
+    )
+    return response.choices[0].message.content
+
+
+if __name__ == "__main__":
+    index = TinySearchIndex([
+        "Reset your password from the account settings page.",
+        "Our refund policy allows returns within 30 days of purchase.",
+        "The mobile app supports offline mode since version 4.2.",
+        "You can export your data as a CSV from the settings menu.",
+    ])
+    print(answer_question(index, "can I get my money back"))
+    print(answer_question(index, "does the app support dark mode"))</pre>
+          <div class="expected-result"><b>Expected output:</b> the first call answers correctly with a <code>[1]</code>-style citation pointing at the refund chunk. The second call — asking about something not in the index — should return "I don't have that information," not a plausible-sounding guess.</div>
+          <div class="checklist">
+            <li>Ran both example queries and confirmed the second one refuses rather than hallucinates</li>
+            <li>Lowered <code>min_score</code> to <code>0</code> and observed the second query's behavior change — connects retrieval threshold directly to hallucination risk</li>
+            <li>Added a document with content that contradicts an existing one, asked a question both could plausibly answer, and inspected which one gets cited and why</li>
+            <li>Can explain out loud, without re-reading this page, what the difference is between a "retrieval miss" and "hallucination despite context" — they look identical to a user but need different fixes</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 8: Agentic Workflows</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Turn Topic 5's tool-calling loop into a goal-directed agent that plans, acts, and knows when to stop.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="08-agentic-workflows.html">Start Topic 8</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 7</span>
+      <div><a href="06-embeddings-vector-search.html">Topic 6</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

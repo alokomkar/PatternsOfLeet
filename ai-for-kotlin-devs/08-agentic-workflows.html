@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Workflows - AI Engineering Topic 8</title>
+  <meta name="description" content="A practical guide to building LLM agents: the ReAct pattern, planning, memory, guardrails, and when a simpler chain beats an agent — for Kotlin/Android developers.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/08-agentic-workflows.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="07-rag.html">&larr; Topic 7</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="09-langgraph.html">Topic 9 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 8 of 15 &middot; Core patterns</div>
+        <h1>Agentic workflows.</h1>
+        <p class="hero-copy">Topic 5's tool-calling loop already does something agent-like — it keeps calling tools until it has enough to answer. An <i>agent</i> is that same loop given a goal instead of a single question, the freedom to decide its own next step, and explicit limits on how far it's allowed to wander before you make it stop.</p>
+        <div class="actions">
+          <a class="button primary" href="#what">Start with what makes it "agentic"</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Build a goal-directed agent loop from scratch, reason about memory and planning, set real guardrails, and know when an agent is the wrong tool for the job.</p>
+        <div class="summary-grid">
+          <div><b>8</b><span>lesson sections</span></div>
+          <div><b>1</b><span>ReAct pattern</span></div>
+          <div><b>1</b><span>capstone research agent</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>A while loop with judgment instead of a condition.</h2>
+        <p style="max-width:760px;color:var(--muted)">A regular program's control flow is decided by your code: <code>if</code>, <code>while</code>, fixed pipelines. An agent's control flow is decided <i>by the model</i>, turn by turn — it looks at where it is, decides the next action, and only your guardrails (Section 5) keep it from running forever. This is a real tradeoff, not a free upgrade: you're trading predictability for the ability to handle tasks you didn't fully anticipate.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#what">0 What makes it agentic</a>
+        <a href="#react">1 The ReAct pattern</a>
+        <a href="#loop">2 Building the loop</a>
+        <a href="#memory">3 Memory: short vs long-term</a>
+        <a href="#planning">4 Planning</a>
+        <a href="#guardrails">5 Stopping conditions &amp; guardrails</a>
+        <a href="#whennot">6 When not to use an agent</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="what">
+          <div class="eyebrow">Section 0</div>
+          <h2>What Makes It Agentic</h2>
+          <table class="table">
+            <thead><tr><th>Pattern</th><th>Who decides the next step</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td>Single call</td><td>You, entirely — one prompt in, one response out</td><td>Topic 2's chat completion</td></tr>
+              <tr><td>Fixed chain</td><td>You, at design time — a hardcoded sequence of calls</td><td>Topic 7's retrieve-then-generate pipeline</td></tr>
+              <tr><td>Tool-calling loop</td><td>The model, per turn, but bounded to a known tool set</td><td>Topic 5's weather/calculator loop</td></tr>
+              <tr><td>Agent</td><td>The model, across many turns, toward an open-ended goal</td><td>"Research X and summarize the findings" — the number and order of steps isn't known in advance</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">There's no hard line between "tool-calling loop" and "agent" — it's a spectrum of how much autonomy you hand over. Topic 5's loop becomes agentic the moment the task is open-ended enough that you can't predict the sequence of tool calls in advance.</div>
+        </section>
+
+        <section class="lesson" id="react">
+          <div class="eyebrow">Section 1</div>
+          <h2>The ReAct Pattern</h2>
+          <p><b>ReAct</b> (Reason + Act) is the foundational agent pattern: at each step, the model explicitly reasons about what it knows and what it needs, then takes one action, observes the result, and repeats. Making the reasoning explicit — not just the action — is what makes the process inspectable and debuggable.</p>
+          <div class="diagram-visual">
+            <div class="diagram-node">Thought: what do<br>I need next?</div>
+            <div class="diagram-node hot">Action: call<br>a tool</div>
+            <div class="diagram-node">Observation:<br>read the result</div>
+            <div class="diagram-node">Repeat, or give<br>a final answer</div>
+          </div>
+          <pre class="code-card">system_prompt = """You are a research assistant. For each step, think about
+what you need, take one action using an available tool, then observe the
+result before deciding the next step. When you have enough information,
+give a final answer instead of calling another tool."""</pre>
+          <div class="callout">Modern tool-calling APIs (Topic 5) implement this pattern for you structurally — the model's tool call <i>is</i> the action, and the message you append back <i>is</i> the observation. You rarely hand-write "Thought:/Action:/Observation:" text anymore; the loop mechanics from Topic 5 already encode ReAct.</div>
+        </section>
+
+        <section class="lesson" id="loop">
+          <div class="eyebrow">Section 2</div>
+          <h2>Building the Loop</h2>
+          <p>This is Topic 5 Section 1's loop again, with one change: the stopping condition is no longer "the model didn't call a tool" alone — it's that, <i>or</i> a guardrail from Section 5 kicking in.</p>
+          <pre class="code-card">def run_agent(goal: str, tools: dict, tool_schemas: list[dict],
+              max_steps: int = 8) -> str:
+    client = OpenAI()
+    messages = [
+        {"role": "system", "content": "Work toward the goal step by step, "
+                                       "using tools as needed. Stop and answer "
+                                       "once you have enough information."},
+        {"role": "user", "content": goal},
+    ]
+
+    for step in range(max_steps):
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini", messages=messages, tools=tool_schemas,
+        )
+        message = response.choices[0].message
+        messages.append(message)
+
+        if not message.tool_calls:
+            return message.content  # the model decided it's done
+
+        for call in message.tool_calls:
+            args = json.loads(call.function.arguments)
+            result = tools[call.function.name](**args)
+            messages.append({"role": "tool", "tool_call_id": call.id,
+                              "content": json.dumps(result)})
+
+    return "Reached the step limit without a final answer."</pre>
+        </section>
+
+        <section class="lesson" id="memory">
+          <div class="eyebrow">Section 3</div>
+          <h2>Memory: Short-Term vs Long-Term</h2>
+          <table class="table">
+            <thead><tr><th>Kind</th><th>What it is</th><th>Where it lives</th></tr></thead>
+            <tbody>
+              <tr><td>Short-term (working)</td><td>The current run's <code>messages</code> list — everything said and done so far in this task</td><td>In memory, discarded when the run ends, bounded by the context window (Topic 2 Section 4)</td></tr>
+              <tr><td>Long-term</td><td>Facts, past interactions, or documents that should persist <i>across</i> runs</td><td>A vector store (Topic 6/12) the agent retrieves from as one of its tools</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Long-term memory is just RAG (Topic 7) called from inside an agent loop: a <code>search_past_notes(query)</code> tool that retrieves relevant history and hands it back as an observation, exactly like any other tool result.</div>
+        </section>
+
+        <section class="lesson" id="planning">
+          <div class="eyebrow">Section 4</div>
+          <h2>Planning</h2>
+          <p>For genuinely multi-step goals, letting the model plan explicitly before acting — write out the steps, then execute them one at a time — improves reliability over pure step-by-step improvisation, for the same reason Topic 3's chain-of-thought section improved single-call reasoning.</p>
+          <pre class="code-card">PLANNING_PROMPT = """Before taking any action, write a short numbered plan
+for how you'll achieve the goal. Then execute it one step at a time,
+revising the plan if a step's result changes what's needed."""</pre>
+          <div class="callout">Planning is a prompting technique, not a different architecture — it still runs through the same loop from Section 2. The plan itself is just more context the model reasons over on each turn, the same way few-shot examples (Topic 3) are context that shapes behavior without changing the request shape.</div>
+        </section>
+
+        <section class="lesson" id="guardrails">
+          <div class="eyebrow">Section 5</div>
+          <h2>Stopping Conditions &amp; Guardrails</h2>
+          <p>An agent with no limits is a <code>while(true)</code> with an API bill attached. Every production agent needs explicit, code-enforced limits — never rely on the model to decide to stop on its own.</p>
+          <table class="table">
+            <thead><tr><th>Guardrail</th><th>Protects against</th></tr></thead>
+            <tbody>
+              <tr><td>Max steps (Section 2's <code>max_steps</code>)</td><td>Infinite tool-call loops</td></tr>
+              <tr><td>Cost cap (sum token usage per run, per Topic 2 Section 5)</td><td>A single runaway task burning an unbounded budget</td></tr>
+              <tr><td>Timeout (wall-clock, not just step count)</td><td>Slow tool calls stalling the whole run</td></tr>
+              <tr><td>Tool allowlist per task (Topic 5 Section 6)</td><td>An agent reaching for a destructive tool it doesn't need for this goal</td></tr>
+              <tr><td>Repetition detection (same tool + same args twice in a row)</td><td>The model stuck retrying an approach that isn't working</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="lesson" id="whennot">
+          <div class="eyebrow">Section 6</div>
+          <h2>When Not to Use an Agent</h2>
+          <div class="error-grid">
+            <div class="error-card"><b>The steps are actually known</b><span>If you can write the sequence of calls yourself — retrieve, then generate (Topic 7) — a fixed chain is more reliable, cheaper, and easier to debug than letting the model rediscover the same sequence every run.</span></div>
+            <div class="error-card"><b>Latency or cost is tight</b><span>Each agent step is a full round trip to the model. A task an agent solves in 6 steps, a fixed pipeline often solves in 1-2 calls.</span></div>
+          </div>
+          <div class="callout">Default to the simplest pattern that solves the problem: single call &rarr; fixed chain &rarr; tool-calling loop &rarr; agent, in that order. Reach for the next level of autonomy only when the previous one demonstrably can't handle the task's variability.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: A Small Research Agent</h2>
+          <p>An agent with two tools — a fake web search and Topic 6's semantic search over a small knowledge base — that has to combine both to answer a question neither tool alone can fully answer.</p>
+          <pre class="code-card">import json
+from openai import OpenAI
+
+def fake_web_search(query: str) -> dict:
+    fake_results = {
+        "pgvector release date": "pgvector was first released in 2021.",
+    }
+    match = next((v for k, v in fake_results.items() if k in query.lower()), None)
+    return {"result": match or "No web results found."}
+
+def search_notes(query: str) -> dict:
+    index = TinySearchIndex([  # from Topic 6
+        "Our team adopted pgvector for the RAG pipeline in March 2024.",
+        "The support team uses a separate ticketing system, not covered here.",
+    ])
+    results = index.search(query, top_k=1)
+    return {"result": results[0][0] if results else "No notes found."}
+
+TOOLS = {"web_search": fake_web_search, "search_notes": search_notes}
+TOOL_SCHEMAS = [
+    {"type": "function", "function": {"name": "web_search",
+        "description": "Search the public web for general facts.",
+        "parameters": {"type": "object", "properties":
+            {"query": {"type": "string"}}, "required": ["query"]}}},
+    {"type": "function", "function": {"name": "search_notes",
+        "description": "Search our team's internal notes.",
+        "parameters": {"type": "object", "properties":
+            {"query": {"type": "string"}}, "required": ["query"]}}},
+]
+
+def run_agent(goal: str, max_steps: int = 6) -> str:
+    client = OpenAI()
+    messages = [
+        {"role": "system", "content": "Answer using both web_search and "
+                                       "search_notes as needed. Combine facts "
+                                       "from both if the question needs it."},
+        {"role": "user", "content": goal},
+    ]
+    for _ in range(max_steps):
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini", messages=messages, tools=TOOL_SCHEMAS,
+        )
+        message = response.choices[0].message
+        messages.append(message)
+        if not message.tool_calls:
+            return message.content
+        for call in message.tool_calls:
+            args = json.loads(call.function.arguments)
+            result = TOOLS[call.function.name](**args)
+            messages.append({"role": "tool", "tool_call_id": call.id,
+                              "content": json.dumps(result)})
+    return "Reached the step limit without a final answer."
+
+
+if __name__ == "__main__":
+    print(run_agent(
+        "How long had pgvector existed before our team started using it?"
+    ))</pre>
+          <div class="expected-result"><b>Expected behavior:</b> the agent calls <code>web_search</code> for the release date, <code>search_notes</code> for the adoption date, and combines both into a final answer ("about 3 years") — a fact neither tool alone contains.</div>
+          <div class="checklist">
+            <li>Ran the agent and confirmed it called <i>both</i> tools before answering, not just one</li>
+            <li>Set <code>max_steps=1</code> and confirmed it hits the guardrail message instead of a partial or hallucinated answer</li>
+            <li>Asked a question answerable from only one tool and confirmed it doesn't waste a call on the other</li>
+            <li>Can explain out loud why this task needed an agent rather than a fixed two-step chain — what specifically about it is unpredictable in advance</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 9: LangGraph</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Rebuild this topic's hand-rolled loop as a graph with explicit state, branching, and persistence.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="09-langgraph.html">Start Topic 9</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 8</span>
+      <div><a href="07-rag.html">Topic 7</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

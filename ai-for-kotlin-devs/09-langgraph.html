@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LangGraph - AI Engineering Topic 9</title>
+  <meta name="description" content="A practical guide to LangGraph: state, nodes, edges, conditional branching, cycles, and persistence for building agents as graphs instead of hand-rolled loops.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/09-langgraph.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="08-agentic-workflows.html">&larr; Topic 8</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="10-ai-evaluation.html">Topic 10 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 9 of 15 &middot; Core patterns</div>
+        <h1>LangGraph.</h1>
+        <p class="hero-copy">Topic 8's <code>while</code> loop works, but it hides its own structure inside Python control flow — hard to visualize, hard to pause and resume, hard to extend with branches. LangGraph makes that structure explicit: a graph of nodes and edges, with state that flows between them, that you can inspect, branch, persist, and interrupt.</p>
+        <div class="actions">
+          <a class="button primary" href="#why">Start with why a graph</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Build a stateful graph with conditional edges and a cycle, persist state across runs, and know when LangGraph's structure earns its complexity over Topic 8's plain loop.</p>
+        <div class="summary-grid">
+          <div><b>8</b><span>lesson sections</span></div>
+          <div><b>1</b><span>graph rebuild of Topic 8</span></div>
+          <div><b>1</b><span>persistence example</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>State machine, not script.</h2>
+        <p style="max-width:760px;color:var(--muted)">If you've built a Compose UI with a sealed-class UI state and explicit transitions, this will feel familiar: LangGraph asks you to name your states and transitions up front, instead of letting control flow emerge implicitly from nested <code>if</code>/<code>while</code> logic. The payoff is the same as it is in Compose — the state machine is inspectable, testable in isolation, and resumable, because it's data, not just code that already ran.</p>
+        <div class="diagram-visual">
+          <div class="diagram-node">State: a typed dict/<br>model threaded through</div>
+          <div class="diagram-node hot">Nodes: functions that<br>read &amp; update state</div>
+          <div class="diagram-node">Edges: fixed or<br>conditional transitions</div>
+          <div class="diagram-node">Compiled graph:<br>runnable, resumable</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#why">0 Why a graph</a>
+        <a href="#concepts">1 State, nodes, edges</a>
+        <a href="#building">2 Building a simple graph</a>
+        <a href="#conditional">3 Conditional edges</a>
+        <a href="#cycles">4 Cycles for agent loops</a>
+        <a href="#persistence">5 Persistence &amp; checkpointing</a>
+        <a href="#humanloop">6 Human-in-the-loop</a>
+        <a href="#checkpoint">7 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="why">
+          <div class="eyebrow">Section 0</div>
+          <h2>Why a Graph Instead of a Loop</h2>
+          <table class="table">
+            <thead><tr><th>Need</th><th>Topic 8's <code>while</code> loop</th><th>LangGraph</th></tr></thead>
+            <tbody>
+              <tr><td>Simple tool-calling loop</td><td>Perfectly fine — don't add a dependency you don't need</td><td>Overkill for this alone</td></tr>
+              <tr><td>Branch on outcome (success path vs retry path vs escalate)</td><td>Nested <code>if</code>s that get hard to follow past 2-3 branches</td><td>A named conditional edge per branch — visible in the graph's shape</td></tr>
+              <tr><td>Pause mid-run and resume later</td><td>You'd have to hand-roll serialization of loop state</td><td>Built-in checkpointing (Section 5)</td></tr>
+              <tr><td>Multiple cooperating sub-agents</td><td>Gets tangled fast</td><td>Each sub-agent is its own subgraph or node</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Don't reach for LangGraph on day one. Start with Topic 8's loop; move to a graph when branching or persistence genuinely earns the added structure — the same judgment call as reaching for a state machine library over a few well-placed <code>when</code> expressions in Kotlin.</div>
+        </section>
+
+        <section class="lesson" id="concepts">
+          <div class="eyebrow">Section 1</div>
+          <h2>State, Nodes, Edges</h2>
+          <div class="concept-visual">
+            <div class="concept-box"><b>State</b><span>A typed structure (often a <code>TypedDict</code> or Pydantic model — Topic 4 again) that flows through the whole graph. Every node reads it and returns updates to it.</span></div>
+            <div class="concept-box"><b>Node</b><span>A plain Python function: takes the current state, does something (call an LLM, run a tool, query a database), returns a partial state update.</span></div>
+            <div class="concept-box"><b>Edge</b><span>A connection between nodes — fixed ("always go from A to B") or conditional ("go to B or C depending on state").</span></div>
+          </div>
+          <pre class="code-card">pip install langgraph</pre>
+        </section>
+
+        <section class="lesson" id="building">
+          <div class="eyebrow">Section 2</div>
+          <h2>Building a Simple Graph</h2>
+          <pre class="code-card">from typing import TypedDict
+from langgraph.graph import StateGraph, END
+
+class State(TypedDict):
+    question: str
+    answer: str
+
+def generate_answer(state: State) -> dict:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": state["question"]}],
+    )
+    return {"answer": response.choices[0].message.content}
+
+builder = StateGraph(State)
+builder.add_node("generate", generate_answer)
+builder.set_entry_point("generate")
+builder.add_edge("generate", END)
+
+graph = builder.compile()
+result = graph.invoke({"question": "What is a vector embedding?", "answer": ""})
+print(result["answer"])</pre>
+          <div class="callout">Node functions only return the <i>fields they changed</i> — LangGraph merges updates into the running state rather than requiring you to pass the whole object back each time, similar to a Kotlin <code>copy()</code> on a data class but handled by the framework.</div>
+        </section>
+
+        <section class="lesson" id="conditional">
+          <div class="eyebrow">Section 3</div>
+          <h2>Conditional Edges</h2>
+          <p>A conditional edge is a function that inspects the current state and returns the name of the next node — this is where branching logic that would be nested <code>if</code>s in Topic 8's loop becomes a named, visible part of the graph's shape.</p>
+          <pre class="code-card">class State(TypedDict):
+    question: str
+    answer: str
+    needs_escalation: bool
+
+def route_after_answer(state: State) -> str:
+    return "escalate" if state["needs_escalation"] else END
+
+builder = StateGraph(State)
+builder.add_node("generate", generate_answer)
+builder.add_node("escalate", escalate_to_human)
+builder.set_entry_point("generate")
+builder.add_conditional_edges("generate", route_after_answer, {
+    "escalate": "escalate",
+    END: END,
+})</pre>
+        </section>
+
+        <section class="lesson" id="cycles">
+          <div class="eyebrow">Section 4</div>
+          <h2>Cycles for Agent Loops</h2>
+          <p>Topic 8's <code>while</code> loop becomes a cycle: an edge that points back to an earlier node. This is exactly how LangGraph represents the tool-calling loop from Topic 5 and Topic 8 — "call the model, maybe call a tool, go back and call the model again" is a two-node cycle with a conditional exit.</p>
+          <pre class="code-card">def route_after_model(state: State) -> str:
+    last_message = state["messages"][-1]
+    return "tools" if last_message.tool_calls else END
+
+builder = StateGraph(AgentState)
+builder.add_node("model", call_model)
+builder.add_node("tools", execute_tools)
+builder.set_entry_point("model")
+builder.add_conditional_edges("model", route_after_model, {"tools": "tools", END: END})
+builder.add_edge("tools", "model")  # the cycle: tool result goes back to the model</pre>
+          <div class="callout">This is precisely Topic 8's <code>while</code> loop, redrawn as a graph — same two logical steps (call model, execute tools), same exit condition. The <code>max_steps</code> guardrail from Topic 8 Section 5 becomes a <code>recursion_limit</code> passed to <code>graph.invoke()</code>.</div>
+        </section>
+
+        <section class="lesson" id="persistence">
+          <div class="eyebrow">Section 5</div>
+          <h2>Persistence &amp; Checkpointing</h2>
+          <p>LangGraph can save state after every node runs, keyed by a thread ID — the mechanism that makes "pause this agent run and resume it tomorrow" or "keep memory across separate conversations" possible without hand-rolled serialization.</p>
+          <pre class="code-card">from langgraph.checkpoint.memory import MemorySaver
+
+checkpointer = MemorySaver()  # swap for a Postgres-backed saver in production (Topic 12)
+graph = builder.compile(checkpointer=checkpointer)
+
+config = {"configurable": {"thread_id": "user-42-conversation-7"}}
+graph.invoke({"question": "What's pgvector?"}, config=config)
+# ... later, possibly a different process entirely ...
+graph.invoke({"question": "How does that relate to what I asked before?"}, config=config)
+# resumes with full prior state, because it's keyed by the same thread_id</pre>
+        </section>
+
+        <section class="lesson" id="humanloop">
+          <div class="eyebrow">Section 6</div>
+          <h2>Human-in-the-Loop</h2>
+          <p>Combine persistence with an explicit interrupt point: the graph pauses before a specific node — typically the one Topic 5 Section 6 flagged as destructive — and waits for a human decision before continuing.</p>
+          <pre class="code-card">graph = builder.compile(checkpointer=checkpointer, interrupt_before=["send_email"])
+
+state = graph.invoke({"draft": "..."}, config=config)
+# graph paused right before send_email — a human reviews state["draft"] here
+# ... after approval ...
+graph.invoke(None, config=config)  # resumes from exactly where it paused</pre>
+          <div class="callout">This is the code-level version of Topic 5 Section 6's "human confirmation for destructive actions" — the graph structure makes the pause-and-resume mechanics a solved problem instead of something you'd otherwise build by hand with a job queue.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 7 &middot; Checkpoint</div>
+          <h2>Capstone: Rebuild Topic 8's Agent as a Graph</h2>
+          <p>Take the two-tool research agent from Topic 8's checkpoint and redraw its loop as a LangGraph graph with an explicit cycle and exit condition.</p>
+          <pre class="code-card">import json
+from typing import TypedDict, Annotated
+from operator import add
+from langgraph.graph import StateGraph, END
+from openai import OpenAI
+
+client = OpenAI()
+
+class AgentState(TypedDict):
+    messages: Annotated[list, add]  # accumulates across nodes instead of overwriting
+
+TOOLS = {"web_search": fake_web_search, "search_notes": search_notes}  # from Topic 8
+
+def call_model(state: AgentState) -> dict:
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini", messages=state["messages"], tools=TOOL_SCHEMAS,
+    )
+    return {"messages": [response.choices[0].message]}
+
+def execute_tools(state: AgentState) -> dict:
+    last_message = state["messages"][-1]
+    results = []
+    for call in last_message.tool_calls:
+        args = json.loads(call.function.arguments)
+        result = TOOLS[call.function.name](**args)
+        results.append({"role": "tool", "tool_call_id": call.id,
+                         "content": json.dumps(result)})
+    return {"messages": results}
+
+def route(state: AgentState) -> str:
+    return "tools" if state["messages"][-1].tool_calls else END
+
+builder = StateGraph(AgentState)
+builder.add_node("model", call_model)
+builder.add_node("tools", execute_tools)
+builder.set_entry_point("model")
+builder.add_conditional_edges("model", route, {"tools": "tools", END: END})
+builder.add_edge("tools", "model")
+graph = builder.compile()
+
+if __name__ == "__main__":
+    result = graph.invoke(
+        {"messages": [
+            {"role": "system", "content": "Answer using both tools as needed."},
+            {"role": "user", "content":
+                "How long had pgvector existed before our team started using it?"},
+        ]},
+        config={"recursion_limit": 12},  # the graph's equivalent of Topic 8's max_steps
+    )
+    print(result["messages"][-1].content)</pre>
+          <div class="expected-result"><b>Expected behavior:</b> identical output to Topic 8's checkpoint — same tool calls, same final answer — but the control flow is now a compiled, inspectable graph instead of a plain loop.</div>
+          <div class="checklist">
+            <li>Ran the graph and confirmed it produces the same answer as Topic 8's hand-rolled loop</li>
+            <li>Set <code>recursion_limit</code> very low (e.g. 2) and confirmed the graph raises rather than silently truncating</li>
+            <li>Added a <code>MemorySaver</code> checkpointer and confirmed a second <code>invoke()</code> with the same <code>thread_id</code> has access to the first run's messages</li>
+            <li>Can explain out loud, in one or two sentences, what this graph version buys you over Topic 8's loop for <i>this specific</i> two-tool agent — and be honest if the answer is "not much yet"</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 10: AI Evaluation</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Move past "it seems to work" — build a real test set and measure prompt, RAG, and agent quality systematically.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="10-ai-evaluation.html">Start Topic 10</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 9</span>
+      <div><a href="08-agentic-workflows.html">Topic 8</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>

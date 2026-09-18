@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embeddings & Vector Search - AI Engineering Topic 6</title>
+  <meta name="description" content="A practical guide to embeddings and semantic search: generating vectors, cosine similarity, brute-force search in Python, and why vector indexes exist — for Kotlin/Android developers.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/06-embeddings-vector-search.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="05-function-tool-calling.html">&larr; Topic 5</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <a class="nav-cta" href="07-rag.html">Topic 7 &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 6 of 15 &middot; Core patterns</div>
+        <h1>Embeddings &amp; vector search.</h1>
+        <p class="hero-copy">Every RAG system (Topic 7) rests on one idea: turn text into a list of numbers such that "similar meaning" becomes "nearby points." This lesson builds that idea from first principles — generate embeddings, measure similarity, search a small set by hand — before Topic 12 hands the heavy lifting to a real database.</p>
+        <div class="actions">
+          <a class="button primary" href="#what">Start with what an embedding is</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Generate embeddings from OpenAI and Gemini, compute similarity between them, and build a small semantic search function entirely in Python with no database.</p>
+        <div class="summary-grid">
+          <div><b>7</b><span>lesson sections</span></div>
+          <div><b>1</b><span>similarity formula</span></div>
+          <div><b>1</b><span>capstone search function</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>A point in space that means something.</h2>
+        <p style="max-width:760px;color:var(--muted)">An embedding model turns a string into a fixed-length list of floats — typically 768 to 3072 numbers. That list is a coordinate in a very high-dimensional space, positioned so that texts with similar <i>meaning</i> land near each other, regardless of exact wording. "How do I reset my password" and "I forgot my login" end up close together; "How do I reset my password" and "What's the weather today" end up far apart. Nothing here is a lookup table or a keyword match — it's geometry.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#what">0 What an embedding is</a>
+        <a href="#generating">1 Generating embeddings</a>
+        <a href="#similarity">2 Measuring similarity</a>
+        <a href="#bruteforce">3 Brute-force search in Python</a>
+        <a href="#scale">4 Why brute force stops scaling</a>
+        <a href="#chunking">5 Chunking text before embedding</a>
+        <a href="#checkpoint">6 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="what">
+          <div class="eyebrow">Section 0</div>
+          <h2>What an Embedding Is</h2>
+          <p>Structurally, an embedding is just a <code>list[float]</code> — the Kotlin equivalent would be a <code>DoubleArray</code>. What makes it useful isn't the type, it's how it was produced: a model trained so that semantic closeness in meaning becomes geometric closeness in this list of numbers.</p>
+          <div class="concept-visual">
+            <div class="concept-box"><b>Not a hash</b><span>A hash scrambles input so similar strings produce wildly different outputs. An embedding does the opposite on purpose — similar meaning stays close.</span></div>
+            <div class="concept-box"><b>Not keyword matching</b><span>"Car" and "automobile" share zero characters but land close together — embeddings capture meaning, not spelling.</span></div>
+            <div class="concept-box"><b>Fixed length</b><span>A 500-word document and a 3-word query from the same model produce vectors of the <i>same</i> length — the model compresses everything to one fixed-size representation.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="generating">
+          <div class="eyebrow">Section 1</div>
+          <h2>Generating Embeddings</h2>
+          <p>Same request shape as Topic 2's chat completions, simpler payload: text in, a vector out. No message roles, no conversation — just an input and its coordinate.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label openai">OpenAI</div>
+              <pre class="code-card">from openai import OpenAI
+client = OpenAI()
+
+r = client.embeddings.create(
+    model="text-embedding-3-small",
+    input="How do I reset my password?",
+)
+vector = r.data[0].embedding
+print(len(vector))  # 1536</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label gemini">Gemini</div>
+              <pre class="code-card">from google import genai
+client = genai.Client()
+
+r = client.models.embed_content(
+    model="gemini-embedding-001",
+    contents="How do I reset my password?",
+)
+vector = r.embeddings[0].values
+print(len(vector))  # 768 (default)</pre>
+            </div>
+          </div>
+          <div class="callout">Embedding models are billed and rate-limited like chat models but are far cheaper per call — batching many texts into one request (both SDKs accept a list of strings) is the normal pattern rather than one call per string, especially when embedding an entire document set for Topic 7.</div>
+        </section>
+
+        <section class="lesson" id="similarity">
+          <div class="eyebrow">Section 2</div>
+          <h2>Measuring Similarity</h2>
+          <p><b>Cosine similarity</b> is the standard measure: it compares the <i>angle</i> between two vectors, ignoring their length, and returns a value from -1 (opposite meaning) to 1 (identical meaning). Most embedding models normalize vectors to unit length, which makes cosine similarity equivalent to a plain dot product — cheaper to compute.</p>
+          <pre class="code-card">import numpy as np
+
+def cosine_similarity(a: list[float], b: list[float]) -> float:
+    a, b = np.array(a), np.array(b)
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+password_reset = get_embedding("How do I reset my password?")
+forgot_login = get_embedding("I forgot my login")
+weather = get_embedding("What's the weather today?")
+
+print(cosine_similarity(password_reset, forgot_login))  # ~0.7-0.9 — related
+print(cosine_similarity(password_reset, weather))        # ~0.0-0.2 — unrelated</pre>
+          <table class="table">
+            <thead><tr><th>Score range</th><th>Interpretation</th></tr></thead>
+            <tbody>
+              <tr><td>0.8 – 1.0</td><td>Near-duplicate meaning</td></tr>
+              <tr><td>0.5 – 0.8</td><td>Related / same topic</td></tr>
+              <tr><td>0.2 – 0.5</td><td>Loosely related at best</td></tr>
+              <tr><td>Below 0.2</td><td>Effectively unrelated</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">These bands are a rough guide, not a law — the right similarity threshold for "relevant enough to retrieve" (Topic 7) depends on your embedding model and your data, and should be tuned against real examples rather than assumed.</div>
+        </section>
+
+        <section class="lesson" id="bruteforce">
+          <div class="eyebrow">Section 3</div>
+          <h2>Brute-Force Search in Python</h2>
+          <p>For a handful to a few thousand items, comparing a query against every stored vector directly is simple, correct, and fast enough — no database required. This is the entire mechanism a vector database automates and accelerates.</p>
+          <pre class="code-card">documents = [
+    "Reset your password from the account settings page.",
+    "Our refund policy allows returns within 30 days.",
+    "The mobile app supports offline mode since version 4.2.",
+]
+doc_vectors = [get_embedding(doc) for doc in documents]  # do this once, cache it
+
+def search(query: str, top_k: int = 2) -> list[tuple[str, float]]:
+    query_vector = get_embedding(query)
+    scored = [(doc, cosine_similarity(query_vector, vec))
+              for doc, vec in zip(documents, doc_vectors)]
+    scored.sort(key=lambda pair: pair[1], reverse=True)
+    return scored[:top_k]
+
+for doc, score in search("how do I get my money back"):
+    print(f"{score:.3f}  {doc}")
+# 0.71  Our refund policy allows returns within 30 days.
+# 0.31  The mobile app supports offline mode since version 4.2.</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> run this against at least five documents you write yourself, including one deliberately unrelated one, and confirm the ranking matches your intuition about relevance before moving on.</div>
+        </section>
+
+        <section class="lesson" id="scale">
+          <div class="eyebrow">Section 4</div>
+          <h2>Why Brute Force Stops Scaling</h2>
+          <p>Section 3's search is <b>O(n)</b> — every query compares against every stored vector. Fine at a few thousand documents, unworkable at a few million: that's where <b>Approximate Nearest Neighbor (ANN)</b> indexes come in, trading a small amount of accuracy for a massive speed gain by not checking every vector.</p>
+          <table class="table">
+            <thead><tr><th>Scale</th><th>Approach</th></tr></thead>
+            <tbody>
+              <tr><td>Up to ~10K vectors</td><td>Brute-force cosine similarity in memory (Section 3) — often faster to build than to argue about</td></tr>
+              <tr><td>10K – millions</td><td>An ANN index (HNSW, IVFFlat) inside a vector database</td></tr>
+              <tr><td>Millions+, filtered search</td><td>A vector database with metadata filtering, sharding, and index tuning</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Topic 12 builds the "millions" tier using PostgreSQL's <code>pgvector</code> extension, which adds exactly this kind of ANN index to a database you likely already run. Don't reach for a dedicated vector database on day one — most products never outgrow Postgres for this.</div>
+        </section>
+
+        <section class="lesson" id="chunking">
+          <div class="eyebrow">Section 5</div>
+          <h2>Chunking Text Before Embedding</h2>
+          <p>Embedding models have an input length limit, and — more importantly — a single vector represents a single "topic" poorly once the text covers many unrelated things. A 50-page document embedded as one vector produces a blurry average that matches nothing well. Split it into smaller pieces first.</p>
+          <pre class="code-card">def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = start + chunk_size
+        chunks.append(text[start:end])
+        start = end - overlap  # overlap keeps context from being cut mid-thought
+    return chunks</pre>
+          <div class="callout">This is a deliberately simple character-count chunker to build the intuition. Topic 7 covers smarter strategies — splitting on paragraph or sentence boundaries, and sizing chunks around the retrieval unit that actually makes sense for your content (a FAQ entry, a support ticket, a doc section).</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 6 &middot; Checkpoint</div>
+          <h2>Capstone: A Tiny Semantic Search Engine</h2>
+          <p>Combine embedding generation, cosine similarity, and chunking into one reusable search function over a small set of documents — the exact shape Topic 7 wraps an LLM around.</p>
+          <pre class="code-card">import numpy as np
+from openai import OpenAI
+
+client = OpenAI()
+
+def get_embedding(text: str) -> list[float]:
+    r = client.embeddings.create(model="text-embedding-3-small", input=text)
+    return r.data[0].embedding
+
+def cosine_similarity(a: list[float], b: list[float]) -> float:
+    a, b = np.array(a), np.array(b)
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+class TinySearchIndex:
+    def __init__(self, documents: list[str]):
+        self.documents = documents
+        self.vectors = [get_embedding(doc) for doc in documents]
+
+    def search(self, query: str, top_k: int = 3) -> list[tuple[str, float]]:
+        query_vector = get_embedding(query)
+        scored = [(doc, cosine_similarity(query_vector, vec))
+                  for doc, vec in zip(self.documents, self.vectors)]
+        scored.sort(key=lambda pair: pair[1], reverse=True)
+        return scored[:top_k]
+
+
+if __name__ == "__main__":
+    index = TinySearchIndex([
+        "Reset your password from the account settings page.",
+        "Our refund policy allows returns within 30 days of purchase.",
+        "The mobile app supports offline mode since version 4.2.",
+        "You can export your data as a CSV from the settings menu.",
+        "Support is available Monday through Friday, 9am to 6pm IST.",
+    ])
+    for doc, score in index.search("can I get a refund"):
+        print(f"{score:.3f}  {doc}")</pre>
+          <div class="expected-result"><b>Expected output:</b> the refund policy document ranks first with a noticeably higher score than the others, even though the query shares no exact words with it beyond "refund."</div>
+          <div class="checklist">
+            <li>Built <code>TinySearchIndex</code> and ran at least three different queries against it</li>
+            <li>Tried a query using completely different wording than any document (e.g. "get my cash back" instead of "refund") and confirmed the right document still ranks first</li>
+            <li>Added a sixth, deliberately unrelated document and confirmed it consistently scores lowest across your test queries</li>
+            <li>Can explain out loud why this index rebuilds embeddings for every document on every startup, and why that becomes a problem — Topic 12 fixes exactly this by persisting vectors in a real database</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Next up</div>
+        <h2>Topic 7: RAG</h2>
+        <p style="max-width:600px;margin:0 auto 24px;color:var(--muted)">Wrap this topic's search function with an LLM to build grounded, cited answers over your own documents.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="07-rag.html">Start Topic 7</a>
+          <a class="button" href="index.html">Back to series home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 6</span>
+      <div><a href="05-function-tool-calling.html">Topic 5</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>
