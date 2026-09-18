@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG on Android - AI Engineering Topic 16</title>
+  <meta name="description" content="A practical guide to building document Q&A on Android: picking and extracting documents, wiring a client to a FastAPI/pgvector RAG backend, streaming answers, citations, and on-device RAG.">
+  <link rel="canonical" href="https://sortedqueue.com/ai-for-kotlin-devs/16-rag-on-android.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Series home</a>
+        <a href="15-ai-assisted-engineering-workflows.html">&larr; Topic 15</a>
+        <a href="#lesson">Lesson</a>
+        <a href="#checkpoint">Checkpoint</a>
+        <span class="nav-cta">Bonus topic</span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Topic 16 of 16 &middot; Bonus &middot; Android</div>
+        <h1>RAG on Android.</h1>
+        <p class="hero-copy">"Upload a document, ask questions about it" is Retrieval-Augmented Generation with a mobile front end — the retrieval, embedding, and generation from Topics 6, 7, 11, and 12 don't change. What's new here is entirely on the Kotlin side: picking a file, extracting its text, uploading it, and rendering a streamed, cited answer in a chat UI.</p>
+        <div class="actions">
+          <a class="button primary" href="#flavors">Start with the two flavors</a>
+          <a class="button" href="#checkpoint">Jump to checkpoint</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What you will be able to do</div>
+        <p>Build the full Android side of a document Q&amp;A feature against your Topic 11/12 backend, stream answers with citations, and know when on-device RAG is worth the added complexity.</p>
+        <div class="summary-grid">
+          <div><b>8</b><span>lesson sections</span></div>
+          <div><b>2</b><span>architectures compared</span></div>
+          <div><b>1</b><span>capstone chat screen</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">The mental model</div>
+        <h2>Same RAG pipeline. The client just got a file picker.</h2>
+        <p style="max-width:760px;color:var(--muted)">Nothing about retrieval or grounding changes because the caller is a phone instead of a script. The only genuinely new problems are mobile-specific: reading a PDF/DOCX the user picked from their device, keeping a large upload off the main thread, and rendering a stream of tokens into a chat bubble instead of a terminal. Everything else is Topic 7's pipeline behind a FastAPI wall, exactly as Topic 11 built it.</p>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="lesson">
+      <aside class="side-nav">
+        <a href="#flavors">0 Two flavors of RAG on Android</a>
+        <a href="#picking">1 Picking &amp; extracting documents</a>
+        <a href="#uploading">2 Chunking &amp; uploading</a>
+        <a href="#ingestion">3 Backend ingestion</a>
+        <a href="#asking">4 Asking a question</a>
+        <a href="#streaming">5 Streaming into a chat UI</a>
+        <a href="#citations">6 Citations back to the source</a>
+        <a href="#ondevice">7 On-device RAG</a>
+        <a href="#checkpoint">8 Checkpoint capstone</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="flavors">
+          <div class="eyebrow">Section 0</div>
+          <h2>Two Flavors of RAG on Android</h2>
+          <table class="table">
+            <thead><tr><th></th><th>Cloud-backed RAG</th><th>On-device RAG</th></tr></thead>
+            <tbody>
+              <tr><td>Where embedding/retrieval/generation run</td><td>Your server (Topics 6, 7, 11, 12)</td><td>Entirely on the phone</td></tr>
+              <tr><td>Works offline</td><td>No</td><td>Yes</td></tr>
+              <tr><td>Model quality</td><td>Full-size frontier models</td><td>Smaller on-device models — noticeably weaker</td></tr>
+              <tr><td>Device support</td><td>Any device with network access</td><td>Limited to devices with NPU/AICore support (e.g. Gemini Nano)</td></tr>
+              <tr><td>Data leaves the device</td><td>Yes — a privacy and compliance consideration</td><td>No</td></tr>
+              <tr><td>Backend to build and run</td><td>Yes (Topics 11-13)</td><td>None</td></tr>
+            </tbody>
+          </table>
+          <div class="callout">Default to cloud-backed unless offline capability or on-device privacy is an explicit product requirement — it reuses everything already built in this series and isn't constrained to specific hardware. Section 7 covers the on-device path for when those requirements apply.</div>
+        </section>
+
+        <section class="lesson" id="picking">
+          <div class="eyebrow">Section 1</div>
+          <h2>Picking &amp; Extracting Documents</h2>
+          <p>The Storage Access Framework hands you a <code>content://</code> URI, not a file path — Android's sandboxing means you read through <code>ContentResolver</code>, not <code>File</code>. Extract text off the main thread; a multi-page PDF is real parsing work.</p>
+          <pre class="code-card">val pickDocument = rememberLauncherForActivityResult(
+    ActivityResultContracts.OpenDocument()
+) { uri: Uri? ->
+    uri?.let { viewModel.onDocumentPicked(it) }
+}
+
+Button(onClick = {
+    pickDocument.launch(arrayOf("application/pdf", "text/plain"))
+}) {
+    Text("Upload a document")
+}</pre>
+          <pre class="code-card">// build.gradle.kts
+dependencies {
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
+}</pre>
+          <pre class="code-card">suspend fun extractText(context: Context, uri: Uri): String = withContext(Dispatchers.IO) {
+    context.contentResolver.openInputStream(uri)?.use { stream ->
+        PDDocument.load(stream).use { document ->
+            PDFTextStripper().getText(document)
+        }
+    } ?: throw IOException("Could not open document")
+}</pre>
+          <div class="error-grid">
+            <div class="error-card"><b>Parsing on the main thread</b><span>A large PDF can take seconds to parse — <code>withContext(Dispatchers.IO)</code> is not optional here, the same discipline as any other slow I/O in an Android app.</span></div>
+            <div class="error-card"><b>Trusting the file extension</b><span>A <code>content://</code> URI's display name can lie about the actual format. Check the resolver's reported MIME type, and handle a parse failure gracefully rather than crashing.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="uploading">
+          <div class="eyebrow">Section 2</div>
+          <h2>Chunking &amp; Uploading</h2>
+          <p>Send the extracted text as-is and let the backend chunk it (Topic 6 Section 5) — chunking strategy is something you'll tune server-side, and duplicating that logic in Kotlin just means keeping two implementations in sync for no benefit.</p>
+          <pre class="code-card">interface RagApi {
+    @Multipart
+    @POST("documents")
+    suspend fun uploadDocument(
+        @Part("title") title: RequestBody,
+        @Part file: MultipartBody.Part,
+    ): DocumentResponse
+
+    @POST("ask")
+    suspend fun ask(@Body request: AskRequest): AskResponse
+}
+
+data class DocumentResponse(val documentId: String, val chunkCount: Int)
+data class AskRequest(val documentId: String, val question: String)
+data class AskResponse(val answer: String, val citations: List&lt;Citation&gt;)
+data class Citation(val index: Int, val text: String, val page: Int?)</pre>
+          <pre class="code-card">suspend fun uploadDocument(context: Context, uri: Uri, title: String): DocumentResponse {
+    val text = extractText(context, uri)
+    val requestBody = text.toRequestBody("text/plain".toMediaType())
+    val filePart = MultipartBody.Part.createFormData("file", "$title.txt", requestBody)
+    return ragApi.uploadDocument(title.toRequestBody("text/plain".toMediaType()), filePart)
+}</pre>
+        </section>
+
+        <section class="lesson" id="ingestion">
+          <div class="eyebrow">Section 3</div>
+          <h2>Backend Ingestion</h2>
+          <p>Exactly Topic 11's FastAPI patterns and Topic 12's pgvector store, with one addition: track which chunks belong to which <code>document_id</code> so retrieval (Section 4) can be scoped to the document — or documents — the user is actually asking about.</p>
+          <pre class="code-card">from fastapi import FastAPI, UploadFile, Form
+import uuid
+
+app = FastAPI()
+
+@app.post("/documents")
+async def upload_document(title: str = Form(...), file: UploadFile = None,
+                           index: PgVectorIndex = Depends(get_index)):
+    text = (await file.read()).decode("utf-8")
+    document_id = str(uuid.uuid4())
+    chunks = chunk_text(text, chunk_size=400)  # Topic 6 Section 5
+
+    for chunk in chunks:
+        embedding = get_embedding(chunk)
+        index.conn.execute(
+            """INSERT INTO document_chunks (document_id, title, content, embedding)
+               VALUES (%s, %s, %s, %s)""",
+            (document_id, title, chunk, embedding),
+        )
+    index.conn.commit()
+    return {"documentId": document_id, "chunkCount": len(chunks)}</pre>
+        </section>
+
+        <section class="lesson" id="asking">
+          <div class="eyebrow">Section 4</div>
+          <h2>Asking a Question</h2>
+          <p>Topic 7's <code>answer_question</code>, scoped to one document via the metadata filter from Topic 12 Section 5, returning citations the client can render — same request/response contract from Section 2's Retrofit interface, now implemented.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-label kotlin">Android request</div>
+              <pre class="code-card">val response = ragApi.ask(
+    AskRequest(
+        documentId = documentId,
+        question = "What's the refund window?",
+    )
+)
+println(response.answer)
+println(response.citations)</pre>
+            </div>
+            <div class="compare-col">
+              <div class="compare-label python">FastAPI handler</div>
+              <pre class="code-card">@app.post("/ask", response_model=AskResponse)
+async def ask(request: AskRequest,
+              index: PgVectorIndex = Depends(get_index)):
+    results = index.search(
+        request.question, top_k=4,
+        filter={"document_id": request.document_id},
+    )
+    chunks = [c for c, score in results if score >= 0.3]
+    answer, citations = generate_grounded_answer(
+        request.question, chunks)  # Topic 7 Section 3-4
+    return AskResponse(answer=answer, citations=citations)</pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson" id="streaming">
+          <div class="eyebrow">Section 5</div>
+          <h2>Streaming Into a Chat UI</h2>
+          <p>Topic 11 Section 3's SSE endpoint, consumed on Android with OkHttp's <code>EventSource</code> — tokens arrive incrementally and get appended to a mutable chat message, the same "emit as it arrives" idea as a Kotlin <code>Flow</code> from Topic 1 Section 7.</p>
+          <pre class="code-card">// build.gradle.kts
+dependencies {
+    implementation("com.squareup.okhttp3:okhttp-sse:4.12.0")
+}</pre>
+          <pre class="code-card">fun streamAnswer(question: String, documentId: String, onToken: (String) -> Unit) {
+    val request = Request.Builder()
+        .url("$baseUrl/ask/stream")
+        .post(Json.encodeToString(AskRequest(documentId, question))
+            .toRequestBody("application/json".toMediaType()))
+        .build()
+
+    EventSources.createFactory(okHttpClient).newEventSource(
+        request,
+        object : EventSourceListener() {
+            override fun onEvent(source: EventSource, id: String?, type: String?, data: String) {
+                onToken(data)  // append this chunk to the current chat bubble
+            }
+            override fun onFailure(source: EventSource, t: Throwable?, response: Response?) {
+                Log.e("RagChat", "stream failed", t)
+            }
+        },
+    )
+}</pre>
+          <pre class="code-card">// ViewModel: accumulate streamed tokens into the last message's state
+fun ask(question: String) {
+    val placeholder = ChatMessage(role = "assistant", content = "")
+    _messages.update { it + placeholder }
+
+    streamAnswer(question, documentId) { token ->
+        _messages.update { messages ->
+            val last = messages.last().copy(content = messages.last().content + token)
+            messages.dropLast(1) + last
+        }
+    }
+}</pre>
+          <div class="callout">Route the callback back onto the main thread before touching Compose state — <code>EventSourceListener</code> callbacks arrive on an OkHttp dispatcher thread, not the main thread, the same rule as any other background callback in Android.</div>
+        </section>
+
+        <section class="lesson" id="citations">
+          <div class="eyebrow">Section 6</div>
+          <h2>Citations Back to the Source</h2>
+          <p>Topic 7 Section 4's numbered citations become tappable in a mobile UI — the payoff of returning structured <code>Citation</code> objects (Section 2) instead of citation markers baked into plain text.</p>
+          <pre class="code-card">@Composable
+fun AnswerWithCitations(answer: String, citations: List&lt;Citation&gt;, onCitationClick: (Citation) -> Unit) {
+    Column {
+        Text(answer)
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            citations.forEach { citation ->
+                AssistChip(
+                    onClick = { onCitationClick(citation) },
+                    label = { Text("[${citation.index}]" + citation.page?.let { " p.$it" }.orEmpty()) },
+                )
+            }
+        }
+    }
+}</pre>
+          <div class="callout">Tapping a citation chip is a good moment to show the actual retrieved chunk text (Section 4's <code>Citation.text</code>) in a bottom sheet — letting the user verify the answer against the source directly, the same "grounding should be checkable" principle from Topic 7 Section 4, made concrete in the UI.</div>
+        </section>
+
+        <section class="lesson" id="ondevice">
+          <div class="eyebrow">Section 7</div>
+          <h2>On-Device RAG</h2>
+          <p>Every server-side piece from Sections 3-4 gets replaced with a local equivalent. Worth doing when offline capability or on-device privacy is a hard requirement — not as a default.</p>
+          <table class="table">
+            <thead><tr><th>Cloud piece</th><th>On-device replacement</th></tr></thead>
+            <tbody>
+              <tr><td>OpenAI/Gemini embeddings (Topic 6 Section 1)</td><td>An on-device embedding model via <a href="https://developers.google.com/ml-kit" style="color:var(--accent-2);font-weight:800">ML Kit</a> or a small ONNX/LiteRT model bundled with the app</td></tr>
+              <tr><td>pgvector (Topic 12)</td><td>A local vector store — <a href="https://objectbox.io" style="color:var(--accent-2);font-weight:800">ObjectBox</a> has native on-device vector search, or brute-force cosine similarity (Topic 6 Section 3) for small personal document sets</td></tr>
+              <tr><td>OpenAI/Gemini/Claude chat completion (Topic 2)</td><td>Gemini Nano via Android's AICore, exposed through ML Kit GenAI APIs</td></tr>
+              <tr><td>FastAPI service (Topic 11)</td><td>Nothing — the app calls its local model and store directly</td></tr>
+            </tbody>
+          </table>
+          <pre class="code-card">// Illustrative — ML Kit GenAI's on-device API shape
+val generativeModel = GenerativeModel.getClient(context)
+val prompt = buildGroundedPrompt(question, retrievedChunks)  // same shape as Topic 7 Section 3
+val response = generativeModel.generateContent(prompt)
+onToken(response.text)</pre>
+          <div class="callout">The prompt construction, grounding instructions, and injection-defense delimiting from Topics 3 and 7 don't change at all moving on-device — only where the embedding, storage, and generation calls physically execute. This is the same architecture, with different implementations behind the same seams.</div>
+        </section>
+
+        <section class="lesson" id="checkpoint">
+          <div class="eyebrow">Section 8 &middot; Checkpoint</div>
+          <h2>Capstone: A Document Q&amp;A Chat Screen</h2>
+          <p>Combine Sections 1, 2, 5, and 6 into one Compose screen: pick a document, upload it, ask questions, and see streamed, cited answers.</p>
+          <pre class="code-card">@Composable
+fun DocumentChatScreen(viewModel: DocumentChatViewModel) {
+    val state by viewModel.uiState.collectAsState()
+    val pickDocument = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri -> uri?.let { viewModel.onDocumentPicked(it) } }
+
+    Column(Modifier.fillMaxSize().padding(16.dp)) {
+        if (state.documentId == null) {
+            Button(onClick = { pickDocument.launch(arrayOf("application/pdf", "text/plain")) }) {
+                Text("Upload a document")
+            }
+        } else {
+            LazyColumn(Modifier.weight(1f)) {
+                items(state.messages) { message ->
+                    if (message.role == "assistant") {
+                        AnswerWithCitations(
+                            answer = message.content,
+                            citations = message.citations,
+                            onCitationClick = viewModel::onCitationClick,
+                        )
+                    } else {
+                        Text(message.content, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+            var input by remember { mutableStateOf("") }
+            Row {
+                TextField(value = input, onValueChange = { input = it }, modifier = Modifier.weight(1f))
+                Button(onClick = { viewModel.ask(input); input = "" }) { Text("Ask") }
+            }
+        }
+        if (state.error != null) {
+            Text(state.error, color = MaterialTheme.colorScheme.error)
+        }
+    }
+}
+
+class DocumentChatViewModel(private val ragApi: RagApi, private val context: Context) : ViewModel() {
+    private val _uiState = MutableStateFlow(ChatUiState())
+    val uiState: StateFlow&lt;ChatUiState&gt; = _uiState.asStateFlow()
+
+    fun onDocumentPicked(uri: Uri) = viewModelScope.launch {
+        try {
+            val text = extractText(context, uri)
+            val response = ragApi.uploadDocument(
+                "document".toRequestBody("text/plain".toMediaType()),
+                MultipartBody.Part.createFormData(
+                    "file", "document.txt",
+                    text.toRequestBody("text/plain".toMediaType()),
+                ),
+            )
+            _uiState.update { it.copy(documentId = response.documentId) }
+        } catch (e: IOException) {
+            _uiState.update { it.copy(error = "Could not read that document") }
+        }
+    }
+
+    fun ask(question: String) {
+        val documentId = _uiState.value.documentId ?: return
+        _uiState.update { it.copy(messages = it.messages + ChatMessage("user", question)) }
+        val placeholder = ChatMessage("assistant", "")
+        _uiState.update { it.copy(messages = it.messages + placeholder) }
+
+        streamAnswer(question, documentId) { token ->
+            _uiState.update { state ->
+                val last = state.messages.last().copy(content = state.messages.last().content + token)
+                state.copy(messages = state.messages.dropLast(1) + last)
+            }
+        }
+    }
+
+    fun onCitationClick(citation: Citation) { /* show citation.text in a bottom sheet */ }
+}
+
+data class ChatUiState(
+    val documentId: String? = null,
+    val messages: List&lt;ChatMessage&gt; = emptyList(),
+    val error: String? = null,
+)
+data class ChatMessage(val role: String, val content: String, val citations: List&lt;Citation&gt; = emptyList())</pre>
+          <div class="expected-result"><b>Expected behavior:</b> pick a PDF, see it upload, ask a question about its content, and watch the answer stream in with tappable citation chips — backed entirely by the Topic 11/12 service running locally or deployed via Topic 13.</div>
+          <div class="checklist">
+            <li>Ran the FastAPI ingestion and ask endpoints from Sections 3-4 locally, confirmed with <code>curl</code> before wiring up the Android client</li>
+            <li>Uploaded a real PDF from the Android app and confirmed <code>chunkCount</code> in the response is greater than zero</li>
+            <li>Asked a question with a clear answer in the document and confirmed the response streams token-by-token, not all at once</li>
+            <li>Asked a question <i>not</i> covered by the document and confirmed it says so rather than inventing an answer — Topic 7 Section 2's retrieval floor, now visible in a real UI</li>
+            <li>Can explain out loud what would need to change to scope questions across <i>multiple</i> uploaded documents instead of one — which section's filter logic handles that</li>
+          </div>
+        </section>
+      </article>
+    </section>
+
+    <section class="band">
+      <div class="shell" style="text-align:center">
+        <div class="eyebrow">Series complete</div>
+        <h2>All 16 topics done.</h2>
+        <p style="max-width:640px;margin:0 auto 24px;color:var(--muted)">From Python syntax to a deployed RAG backend to a working Android client that talks to it. Revisit any topic from the series hub whenever you need the reference back.</p>
+        <div class="actions" style="justify-content:center">
+          <a class="button primary" href="index.html">Back to series home</a>
+          <a class="button" href="01-python-for-kotlin-devs.html">Start over from Topic 1</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>AI Engineering for Kotlin Developers &middot; Topic 16</span>
+      <div><a href="15-ai-assisted-engineering-workflows.html">Topic 15</a><a href="index.html">Series home</a><a href="../index.html">SortedQueue home</a></div>
+    </div>
+  </footer>
+</body>
+</html>
