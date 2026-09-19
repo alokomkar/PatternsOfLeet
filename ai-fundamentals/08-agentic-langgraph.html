@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>08. Agentic Workflows & State Machines (LangGraph) | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="07-tool-calling.html">&larr; Module 07: Tool Calling</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 08 of 12</a></span>
+      <a href="09-fastapi-cloud-run.html">Next: FastAPI & Cloud Run &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>08. Agentic Workflows & State Machines (LangGraph)</h1>
+      <p class="meta-subtitle">Cyclic execution graphs, checkpointing persistence, human-in-the-loop gates, and
+        deterministic state reduction.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        Linear AI pipelines resemble classic imperative procedures: Step A &rarr; Step B &rarr; Step C. Real-world tasks
+        fail when Step B fails or requires iterative refinement.
+        Agentic workflows (like <strong>LangGraph</strong>) are identical to an <strong>MVI (Model-View-Intent)
+          unidirectional state machine</strong> driven by a Reducer. State is immutable. Nodes act as pure transformer
+        functions (or side-effect dispatchers). Edges evaluate conditions to determine whether to transition to the next
+        state, loop back to self-correct, or pause execution waiting for external user input.
+      </div>
+
+      <h2>1. The ReAct (Reason + Act) Graph Cycle</h2>
+      <p>
+        The core engine of an autonomous agent is the cyclic loop: evaluating the current state, deciding whether to
+        invoke tools, mutating the state with tool outputs, and looping until completion conditions are met.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart TD
+          START([Graph Entry]) --> AGENT[Agent Reasoning Node: LLM Evaluation]
+          AGENT --> COND{Conditional Edge:<br />Tool Required?}
+          COND -- Yes: Invoke Tool --> TOOLS[Tool Execution Node]
+          TOOLS -->|Reducer: Append Tool Message| AGENT
+          COND -- No: Task Completed --> END_NODE([Graph Exit: Return State])
+        </div>
+      </div>
+
+      <h2>2. Core Components of LangGraph</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>System Role</th>
+              <th>Android / MVI Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>State Schema</strong></td>
+              <td>A typed dictionary/dataclass representing the single source of truth across the graph lifecycle.</td>
+              <td><code>UiState</code> / <code>ViewState</code> immutable data class.</td>
+            </tr>
+            <tr>
+              <td><strong>Nodes</strong></td>
+              <td>Python functions or Kotlin suspend routines that receive the current state and return partial state
+                updates.</td>
+              <td>State Reducers / Interactors / Use Cases.</td>
+            </tr>
+            <tr>
+              <td><strong>Edges & Conditional Edges</strong></td>
+              <td>Routing functions that inspect state keys to determine the next destination node.</td>
+              <td>Navigation Graphs or sealed class branch matching (<code>when(event)</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Checkpointers</strong></td>
+              <td>Persistence engines (Postgres, Redis, SQLite) that snapshot graph state at every step for replay and
+                recovery.</td>
+              <td><code>SavedStateHandle</code> or Room DB transaction logs.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Human-in-the-Loop (HITL) Interruption Pattern</h2>
+      <p>
+        High-stakes operations (such as issuing financial refunds, deleting database tables, or sending emails) should
+        not run autonomously. LangGraph introduces interruption boundaries that suspend graph execution, yield control
+        to the caller, and resume when external authorization is received.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          sequenceDiagram
+          autonumber
+          participant Engine as LangGraph Runner
+          participant DB as Postgres Checkpointer
+          participant User as Admin Reviewer (Android UI)
+
+          Engine->>Engine: Node: Propose Refund Transaction ($500)
+          Engine->>DB: Checkpoint State (Status: PENDING_APPROVAL)
+          Engine-->>User: Interrupt! Yield state to UI for review
+          Note over User: Admin reviews details in UI<br />and taps 'Approve'
+          User->>Engine: Resume Graph with Approval Payload
+          Engine->>DB: Hydrate State from Checkpoint
+          Engine->>Engine: Node: Execute Financial Transfer API
+          Engine-->>User: Emitted State: Transaction Complete
+        </div>
+      </div>
+
+      <h2>4. Dual-Stack Implementations: State Machine Agent Loop</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-langgraph')">Python (LangGraph
+            StateGraph)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-mvi')">Kotlin (Coroutines MVI Engine)</button>
+        </div>
+
+        <div id="python-langgraph" class="tab-content active">
+          <pre><code>from typing import Annotated, TypedDict
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import add_messages
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+
+# 1. Define State with Reducer (add_messages appends instead of overwriting)
+class AgentState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    iteration_count: int
+
+# 2. Define Worker Nodes
+def reasoner_node(state: AgentState) -> dict:
+    msgs = state["messages"]
+    count = state.get("iteration_count", 0) + 1
+    # Simulated model decision
+    if count &lt; 2:
+        return {"messages": [AIMessage(content="CALL_TOOL: verify_inventory")], "iteration_count": count}
+    return {"messages": [AIMessage(content="Task complete: All items verified.")], "iteration_count": count}
+
+def action_node(state: AgentState) -> dict:
+    return {"messages": [HumanMessage(content="TOOL_OUTPUT: Inventory count is 42 units.")]}
+
+# 3. Define Conditional Routing
+def route_next(state: AgentState) -> str:
+    last_msg = state["messages"][-1].content
+    if "CALL_TOOL" in last_msg:
+        return "action_node"
+    return END
+
+# 4. Build and Compile Graph
+workflow = StateGraph(AgentState)
+workflow.add_node("reasoner_node", reasoner_node)
+workflow.add_node("action_node", action_node)
+
+workflow.add_edge(START, "reasoner_node")
+workflow.add_conditional_edges("reasoner_node", route_next)
+workflow.add_edge("action_node", "reasoner_node")
+
+app = workflow.compile()
+
+# Execute graph
+initial_state = {"messages": [HumanMessage(content="Verify stock for SKU-901")], "iteration_count": 0}
+result = app.invoke(initial_state)
+
+for m in result["messages"]:
+    print(f"[{m.type}]: {m.content}")</code></pre>
+        </div>
+
+        <div id="kotlin-mvi" class="tab-content">
+          <pre><code>import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+// 1. Immutable State Contract
+data class AgentState(
+    val messages: List&lt;String&gt; = emptyList(),
+    val iterationCount: Int = 0,
+    val isComplete: Boolean = false
+)
+
+// 2. Sealed Intents / Node Transitions
+sealed interface AgentIntent {
+    data class Reason(val prompt: String) : AgentIntent
+    data class ExecuteTool(val toolName: String) : AgentIntent
+}
+
+class AgentStateMachine {
+    private val _state = MutableStateFlow(AgentState())
+    val state = _state.asStateFlow()
+
+    // 3. Reducer Cycle
+    suspend fun process(intent: AgentIntent) {
+        when (intent) {
+            is AgentIntent.Reason -> {
+                val currentCount = _state.value.iterationCount + 1
+                if (currentCount &lt; 2) {
+                    _state.update {
+                        it.copy(
+                            messages = it.messages + "CALL_TOOL: verify_inventory",
+                            iterationCount = currentCount
+                        )
+                    }
+                    // Conditional Edge: Transition to Tool
+                    process(AgentIntent.ExecuteTool("verify_inventory"))
+                } else {
+                    _state.update {
+                        it.copy(
+                            messages = it.messages + "Task complete: All items verified.",
+                            iterationCount = currentCount,
+                            isComplete = true
+                        )
+                    }
+                }
+            }
+            is AgentIntent.ExecuteTool -> {
+                // Execute Local Routine and route back to Reasoner
+                val toolResult = "TOOL_OUTPUT: Inventory count is 42 units."
+                _state.update { it.copy(messages = it.messages + toolResult) }
+                process(AgentIntent.Reason(toolResult))
+            }
+        }
+    }
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Android / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>State Reducer</strong></td>
+              <td>A pure function that takes the current state and a partial update to calculate the next immutable
+                state.</td>
+              <td>MVI Reducer pattern or Redux <code>reduce(state, action)</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>Cyclic Graph</strong></td>
+              <td>A directed execution flow that allows loops and backtracking rather than strictly moving forward
+                (DAG).</td>
+              <td>A finite state machine handling screen state retries and pagination loops.</td>
+            </tr>
+            <tr>
+              <td><strong>Checkpointing</strong></td>
+              <td>Serializing the entire execution snapshot to persistent storage at graph node transitions.</td>
+              <td>Android <code>onSaveInstanceState()</code> / <code>SavedStateHandle</code> snapshotting.</td>
+            </tr>
+            <tr>
+              <td><strong>HITL (Human-in-the-Loop)</strong></td>
+              <td>Suspending graph execution at critical nodes until an external human approval payload is received.
+              </td>
+              <td>Presenting an Android Runtime Permission Dialog or Biometric prompt before continuing.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>LangChain / LangGraph Architecture Documentation: StateGraph and Multi-Agent Orchestration</li>
+        <li>Yao et al.: ReAct: Synergizing Reasoning and Acting in Language Models (ICLR)</li>
+        <li>Google Research: Building Stateful Multi-Agent Systems on Cloud Run</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="07-tool-calling.html" class="btn">&larr; Module 07: Tool Calling</a>
+        <a href="09-fastapi-cloud-run.html" class="btn">Proceed to Module 09: FastAPI & Cloud Run &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 08</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

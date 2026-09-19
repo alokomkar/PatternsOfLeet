@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>07. Function Calling & Tool Execution | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="06-postgres-pgvector.html">&larr; Module 06: Postgres & pgvector</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 07 of 12</a></span>
+      <a href="08-agentic-langgraph.html">Next: Agentic Workflows &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>07. Function Calling & Tool Execution</h1>
+      <p class="meta-subtitle">Extending model agency with dynamic schema definitions, multi-turn loop orchestration,
+        sandboxed execution, and safe exception bubbling.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        Large language models do not execute code or run SQL queries themselves. Function calling is identical to
+        <strong>Android Intent Resolution and Deep-Link Dispatch</strong>. Your app defines intent filters with specific
+        expected extras. When an action occurs, the OS resolves the intent, constructs the bundle arguments, and hands
+        execution back to the registered Activity or BroadcastReceiver. In AI systems, the LLM merely acts as an
+        intelligent router deciding <em>which</em> function to invoke and emitting serialized JSON parameters matching
+        your schema.
+      </div>
+
+      <h2>1. The Tool Execution Loop</h2>
+      <p>
+        A tool execution sequence requires a multi-turn lifecycle. The LLM acts as an orchestrator, signaling tool calls
+        back to the application server for physical execution before ingesting the returned payload to formulate a final
+        user-facing response.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          sequenceDiagram
+          autonumber
+          participant App as Backend Host (FastAPI / Ktor)
+          participant LLM as Model Inference (Gemini / GPT)
+          participant Tool as Tool Dispatcher / Local Service
+
+          App->>LLM: User Prompt + Registered Tool JSON Schemas
+          Note over LLM: Evaluates intent against schemas.<br />Selects tool & generates JSON arguments.
+          LLM-->>App: Stop Reason: tool_calls [name, args_json, call_id]
+
+          App->>Tool: Execute function locally with parsed args
+          Tool-->>App: Execution Output Payload (JSON / String)
+
+          App->>LLM: Append Tool Result Turn (role='tool', call_id, content)
+          Note over LLM: Synthesizes final answer<br />incorporating tool data.
+          LLM-->>App: Final Natural Language / Structured Response
+        </div>
+      </div>
+
+      <h2>2. Tool Declaration Schema Architecture</h2>
+      <p>
+        Tools are declared using JSON Schema specifications. The model reads the descriptions to determine suitability
+        during inference:
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Schema Element</th>
+              <th>System Function</th>
+              <th>Design Best Practice</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>name</code></td>
+              <td>Unique identifier used by the router to route execution to a handler.</td>
+              <td>Use snake_case action verbs: <code>get_user_account_balance</code>.</td>
+            </tr>
+            <tr>
+              <td><code>description</code></td>
+              <td>Semantic documentation read by the model to decide whether to call the tool.</td>
+              <td>Explicitly document edge cases and required formats (e.g., ISO-8601 dates).</td>
+            </tr>
+            <tr>
+              <td><code>parameters</code></td>
+              <td>JSON schema object defining types, descriptions, and required keys.</td>
+              <td>Mark mandatory parameters in the <code>required</code> list; provide strict enums where applicable.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Parallel Tool Calling vs. Sequential Execution</h2>
+      <p>
+        Modern models support <strong>Parallel Tool Calling</strong>, emitting multiple tool invocations within a single
+        inference response.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart TD
+          Q["User: 'Compare release metrics for build 102 and build 105'"] --> LLM["LLM Router Engine"]
+          LLM --> CALL1["Tool Call 1: fetch_metrics(build_id=102)"]
+          LLM --> CALL2["Tool Call 2: fetch_metrics(build_id=105)"]
+
+          subgraph HostConcur["Host Execution (Dispatchers.IO / asyncio.gather)"]
+          CALL1 --> EXEC1["HTTP Fetch 102"]
+          CALL2 --> EXEC2["HTTP Fetch 105"]
+          end
+
+          EXEC1 --> COMB["Aggregate Results"]
+          EXEC2 --> COMB
+          COMB --> LLM_SYNTH["LLM Synthesis Turn"]
+          LLM_SYNTH --> RESP["Comparative Summary Response"]
+        </div>
+      </div>
+
+      <h2>4. Dual-Stack Implementations: Full Function Calling Loop</h2>
+      <p>Registering a mock database lookup tool, processing the model's call request, executing the handler, and
+        returning the final synthesized answer:</p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-tools')">Python (OpenAI Tool
+            Calling)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-tools')">Kotlin (LangChain4j @Tool)</button>
+        </div>
+
+        <div id="python-tools" class="tab-content active">
+          <pre><code>import json
+from openai import OpenAI
+
+client = OpenAI()
+
+# 1. Local Tool Implementation
+def query_user_tier(user_id: str) -> dict:
+    # Simulated database lookup
+    database = {"usr_42": {"tier": "PLATINUM", "retention_score": 0.94}}
+    return database.get(user_id, {"tier": "FREE", "retention_score": 0.10})
+
+# 2. Tool Schema Declaration
+tools = [{
+    "type": "function",
+    "function": {
+        "name": "query_user_tier",
+        "description": "Fetch user loyalty tier and retention metrics by user ID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "user_id": {"type": "string", "description": "The unique user identifier (e.g. usr_42)"}
+            },
+            "required": ["user_id"]
+        }
+    }
+}]
+
+# 3. Initial Inference Turn
+messages = [{"role": "user", "content": "What is the membership tier of usr_42?"}]
+response = client.chat.completions.create(model="gpt-4o-mini", messages=messages, tools=tools)
+choice = response.choices[0]
+
+# 4. Handle Tool Calling Loop
+if choice.message.tool_calls:
+    messages.append(choice.message) # Append assistant's tool-request turn
+    
+    for tool_call in choice.message.tool_calls:
+        if tool_call.function.name == "query_user_tier":
+            args = json.loads(tool_call.function.arguments)
+            result = query_user_tier(args["user_id"])
+            
+            # Append tool result turn
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": json.dumps(result)
+            })
+
+    # 5. Final Synthesis
+    final_response = client.chat.completions.create(model="gpt-4o-mini", messages=messages)
+    print(final_response.choices[0].message.content)</code></pre>
+        </div>
+
+        <div id="kotlin-tools" class="tab-content">
+          <pre><code>import dev.langchain4j.agent.tool.Tool
+import dev.langchain4j.memory.chat.MessageWindowChatMemory
+import dev.langchain4j.model.openai.OpenAiChatModel
+import dev.langchain4j.service.AiServices
+
+// 1. Define Tool Service with Annotations
+class UserMembershipTools {
+    @Tool("Fetch user loyalty tier and retention metrics by user ID")
+    fun queryUserTier(userId: String): String {
+        return if (userId == "usr_42") {
+            """{"tier": "PLATINUM", "retention_score": 0.94}"""
+        } else {
+            """{"tier": "FREE", "retention_score": 0.10}"""
+        }
+    }
+}
+
+// 2. High-Level AI Service Interface
+interface CustomerSupportAgent {
+    fun chat(message: String): String
+}
+
+fun main() {
+    val chatModel = OpenAiChatModel.builder()
+        .apiKey(System.getenv("OPENAI_API_KEY"))
+        .modelName("gpt-4o-mini")
+        .build()
+
+    // 3. Bind Service with Reflective Tool Dispatch
+    val agent = AiServices.builder(CustomerSupportAgent::class.java)
+        .chatLanguageModel(chatModel)
+        .tools(UserMembershipTools())
+        .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
+        .build()
+
+    // LangChain4j automatically extracts JSON schema, detects tool calls, 
+    // runs queryUserTier() on JVM, and feeds the response back to the LLM.
+    val response = agent.chat("What is the membership tier of usr_42?")
+    println(response)
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>5. Exception Handling & Sandboxed Execution</h2>
+      <ul>
+        <li><strong>Graceful Degradation:</strong> If a downstream tool (such as a database query or external REST API)
+          fails with a 500 error or timeout, do not crash the LLM conversation loop. Package the exception into a JSON
+          error response: <code>{"error": "Database query timed out after 3000ms"}</code> and pass it back in the tool
+          turn. The model can then apologize to the user or attempt an alternate strategy.</li>
+        <li><strong>Least Privilege Execution:</strong> Tools should never run un-sanitized raw arbitrary SQL or shell
+          commands. Wrap operations in typed functions with strict parameter bounds to avoid privilege escalation.</li>
+      </ul>
+
+      <h2>6. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Mobile / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tool Calling</strong></td>
+              <td>Inference mode where the model returns an operational command and typed parameters instead of text.
+              </td>
+              <td>Android Explicit Intent creation with serialized Bundle arguments.</td>
+            </tr>
+            <tr>
+              <td><strong>Tool Call ID</strong></td>
+              <td>A unique transaction token pairing an LLM tool request with its subsequent execution output.</td>
+              <td><code>requestCode</code> in <code>startActivityForResult()</code> or a Coroutine Job handle.</td>
+            </tr>
+            <tr>
+              <td><strong>Parallel Tool Calling</strong></td>
+              <td>Emitting multiple tool requests in a single forward pass to execute independent side-effects
+                concurrently.</td>
+              <td><code>kotlinx.coroutines.awaitAll()</code> over multiple concurrent async network requests.</td>
+            </tr>
+            <tr>
+              <td><strong>Tool Choice Constraint</strong></td>
+              <td>Forcing the model to invoke a specific tool (<code>tool_choice: {"name": "..."}</code>) or generate
+                plain text (<code>tool_choice: "none"</code>).</td>
+              <td>Explicit Intent targeting an exact ComponentName vs. Implicit Intent broadcast resolution.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>OpenAI Developer Platform: Function Calling and Structured Tool Execution</li>
+        <li>Anthropic Documentation: Tool Use (Function Calling) Implementation Patterns</li>
+        <li>LangChain4j Architecture: Declarative Tool Annotations and Dispatch Loop</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="06-postgres-pgvector.html" class="btn">&larr; Module 06: Postgres & pgvector</a>
+        <a href="08-agentic-langgraph.html" class="btn">Proceed to Module 08: Agentic Workflows &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 07</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

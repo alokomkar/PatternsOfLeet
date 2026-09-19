@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10. AI Evaluation & System Observability | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="09-fastapi-cloud-run.html">&larr; Module 09: FastAPI &amp; Cloud Run</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 10 of 12</a></span>
+      <a href="11-edge-ai-android.html">Next: Edge AI &amp; SLMs &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>10. AI Evaluation & System Observability</h1>
+      <p class="meta-subtitle">Automated benchmark testing, the RAG Triad, LLM-as-a-Judge guardrails, latency tracing,
+        and telemetry pipelines.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        In mobile platforms, code quality is guarded by deterministic test runners (JUnit, Espresso) and CI/CD quality
+        gates (SonarQube, Crashlytics, Firebase Performance). If an assertion fails, the build breaks immediately.
+        In generative AI systems, testing is probabilistic: identical prompts can yield varying syntactic phrasing while
+        maintaining semantic correctness.
+        <strong>AI Evaluation (Evals)</strong> replaces binary assertions with statistical confidence scoring, semantic
+        similarity assertions, and <strong>LLM-as-a-Judge</strong> automated test harnesses to prevent silent
+        performance regressions.
+      </div>
+
+      <h2>1. The RAG Evaluation Triad</h2>
+      <p>
+        Evaluating an AI application by reading final responses leads to misleading conclusions. The industry standard
+        framework evaluates three decoupled vectors of the pipeline:
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart TD
+          subgraph Triad["The RAG Triad Architecture"]
+          Q["User Query"]
+          C["Retrieved Context Chunks"]
+          A["Model Answer Output"]
+          end
+
+          Q -->|Context Relevance: Is context relevant to the query?| C
+          C -->|Groundedness / Faithfulness: Is answer derived ONLY from context?| A
+          Q -->|Answer Relevance: Does answer address the query?| A
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluation Metric</th>
+              <th>Evaluation Formula / Objective</th>
+              <th>Root Cause When Score Drops</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Context Relevance</strong></td>
+              <td>Fraction of retrieved chunks that contain direct evidence for the query.</td>
+              <td>Poor embedding model, improper chunk sizing, or poor vector indexing.</td>
+            </tr>
+            <tr>
+              <td><strong>Groundedness (Faithfulness)</strong></td>
+              <td>Percentage of claims in the generated answer that can be traced to retrieved context.</td>
+              <td>Model hallucination, weak system prompt rules, or high temperature ($T > 0.3$).</td>
+            </tr>
+            <tr>
+              <td><strong>Answer Relevance</strong></td>
+              <td>Degree to which the final response matches the user's explicit question.</td>
+              <td>Model drifted, produced verbose fluff, or misidentified intent.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>2. Latency Anatomy & Tracing</h2>
+      <p>
+        Evaluating performance in an AI streaming gateway requires tracking two distinct latency components:
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          gantt
+          title AI Request Lifecycle Telemetry
+          dateFormat X
+          axisFormat %s ms
+          section Pre-Processing
+          Auth & Rate Limit :0, 150
+          Vector Embedding & Retrieval :150, 450
+          section Upstream Inference
+          TTFT (Time-to-First-Token) :450, 1200
+          Inter-Token Latency (Streaming Delivery) :1200, 3200
+          section Post-Processing
+          Telemetry Export & Metric Logging :3200, 3250
+        </div>
+      </div>
+
+      <ul>
+        <li><strong>Time-to-First-Token (TTFT):</strong> Measures retrieval latency + prompt ingestion + first logit
+          forward pass. Target: <code>&lt; 800ms</code>.</li>
+        <li><strong>Inter-Token Latency (ITL):</strong> The duration between subsequent token emissions. Target:
+          <code>&lt; 30ms/token</code> (matching natural reading speed).</li>
+      </ul>
+
+      <h2>3. Dual-Stack Implementations: LLM-as-a-Judge Evaluation Test</h2>
+      <p>An automated CI/CD evaluation harness checking whether an AI response introduces ungrounded hallucinations:</p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-eval')">Python (Pytest + LLM Judge)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-eval')">Kotlin (JUnit 5 + LangChain4j)</button>
+        </div>
+
+        <div id="python-eval" class="tab-content active">
+          <pre><code>import pytest
+from pydantic import BaseModel, Field
+from openai import OpenAI
+
+client = OpenAI()
+
+class FaithfulnessJudge(BaseModel):
+    is_grounded: bool = Field(description="True if all claims exist in context; False if hallucinated.")
+    reasoning: str = Field(description="Step-by-step evidence justification.")
+
+def evaluate_faithfulness(context: str, answer: str) -> FaithfulnessJudge:
+    prompt = f"""You are a strict QA auditor evaluating an AI response.
+Determine whether EVERY claim in the candidate answer is directly supported by the context.
+
+&lt;context&gt;
+{context}
+&lt;/context&gt;
+
+&lt;answer&gt;
+{answer}
+&lt;/answer&gt;
+"""
+    completion = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        response_format=FaithfulnessJudge,
+        temperature=0.0
+    )
+    return completion.choices[0].message.parsed
+
+def test_rag_faithfulness_ci_gate():
+    context = "Android WorkManager is intended for deferrable, guaranteed background work."
+    # Candidate answer contains an ungrounded hallucination
+    untrusted_answer = "WorkManager is guaranteed, but drops tasks when battery saver is on."
+
+    eval_result = evaluate_faithfulness(context, untrusted_answer)
+    
+    print(f"Audit Result: {eval_result.reasoning}")
+    assert eval_result.is_grounded, f"CI Gate Failed: Hallucination detected! {eval_result.reasoning}"</code></pre>
+        </div>
+
+        <div id="kotlin-eval" class="tab-content">
+          <pre><code>import dev.langchain4j.model.openai.OpenAiChatModel
+import dev.langchain4j.service.AiServices
+import dev.langchain4j.service.SystemMessage
+import dev.langchain4j.service.UserMessage
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
+data class EvalVerdict(val isGrounded: Boolean, val score: Double, val reason: String)
+
+interface FaithfulnessAuditor {
+    @SystemMessage("You are a strict CI test judge. Verify if the answer is completely supported by the context.")
+    @UserMessage("Context:\n{{context}}\n\nAnswer:\n{{answer}}\n\nRespond ONLY with: PASS or FAIL")
+    fun audit(context: String, answer: String): String
+}
+
+class AiSystemRegressionTest {
+
+    @Test
+    fun `verify RAG answer does not hallucinate beyond context`() {
+        val chatModel = OpenAiChatModel.builder()
+            .apiKey(System.getenv("OPENAI_API_KEY"))
+            .modelName("gpt-4o-mini")
+            .temperature(0.0)
+            .build()
+
+        val auditor = AiServices.builder(FaithfulnessAuditor::class.java)
+            .chatLanguageModel(chatModel)
+            .build()
+
+        val context = "Android WorkManager is intended for deferrable, guaranteed background work."
+        val candidateAnswer = "WorkManager provides guaranteed background execution."
+
+        val verdict = auditor.audit(context, candidateAnswer).trim()
+
+        assertTrue(verdict.contains("PASS"), "Regression Failure: Answer contains ungrounded claims.")
+    }
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>4. Production Tracing & Observability Standards</h2>
+      <p>
+        Just as mobile apps emit Crashlytics non-fatals and performance traces, AI backends instrument spans using
+        <strong>OpenTelemetry (OTel)</strong> or specialized frameworks (Langfuse, Arize Phoenix).
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Span / Metric</th>
+              <th>Data Logged</th>
+              <th>Alerting Threshold</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>gen_ai.prompt.tokens</code></td>
+              <td>Exact token count consumed by input prompts and context chunks.</td>
+              <td>Alert when single-request tokens exceed 80% of budget.</td>
+            </tr>
+            <tr>
+              <td><code>gen_ai.completion.tokens</code></td>
+              <td>Tokens emitted by inference engine.</td>
+              <td>Alert on runaway generations hitting <code>max_tokens</code> limit.</td>
+            </tr>
+            <tr>
+              <td><code>gen_ai.server.ttft</code></td>
+              <td>Latency until first byte arrives from foundation provider.</td>
+              <td>P95 &gt; 1500ms requires model fallback or caching review.</td>
+            </tr>
+            <tr>
+              <td><code>gen_ai.evaluation.score</code></td>
+              <td>Rolling average of user thumbs-up/down or async LLM audit score.</td>
+              <td>Drop below 0.90 triggers canary rollout rollback.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Mobile / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>LLM-as-a-Judge</strong></td>
+              <td>Using an advanced, deterministic LLM to grade and audit the responses of another pipeline or model.
+              </td>
+              <td>Automated static analysis linters (SonarQube / Android Lint) inspecting source code.</td>
+            </tr>
+            <tr>
+              <td><strong>Golden Dataset</strong></td>
+              <td>A curated benchmark set of questions, reference contexts, and ground-truth answers for regression
+                testing.</td>
+              <td>Espresso UI mock test fixtures with validated assertions.</td>
+            </tr>
+            <tr>
+              <td><strong>Semantic Drift</strong></td>
+              <td>Gradual divergence in model behavior caused by underlying foundation model updates or prompt
+                modifications.</td>
+              <td>API contract degradation across backward-incompatible library version bumps.</td>
+            </tr>
+            <tr>
+              <td><strong>Trace Span</strong></td>
+              <td>A structured unit of contiguous work capturing input parameters, execution time, and output metadata
+                in a request pipeline.</td>
+              <td>Android <code>Trace.beginSection()</code> / <code>Trace.endSection()</code> performance profiling
+                tags.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>Ragas: Automated Evaluation Framework for Retrieval Augmented Generation</li>
+        <li>OpenTelemetry Specification: Semantic Conventions for Generative AI Systems</li>
+        <li>TruEra / TruLens: The RAG Triad for Evaluating LLM Applications</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="09-fastapi-cloud-run.html" class="btn">&larr; Module 09: FastAPI &amp; Cloud Run</a>
+        <a href="11-edge-ai-android.html" class="btn">Proceed to Module 11: Edge AI &amp; SLMs &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 10</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>09. Asynchronous AI Serving with FastAPI & Cloud Run | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="08-agentic-langgraph.html">&larr; Module 08: Agentic Workflows</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 09 of 12</a></span>
+      <a href="10-evals-observability.html">Next: Evals & Observability &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>09. Asynchronous AI Serving with FastAPI & Cloud Run</h1>
+      <p class="meta-subtitle">High-throughput token streaming architectures, handling socket aborts, containerization,
+        and autoscaling serverless infrastructure.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        In mobile UI development, blocking the Main Looper drops frames and causes ANRs (Application Not Responding).
+        Similarly, synchronous HTTP servers (like Flask with standard workers) dedicate an entire OS process/thread to a
+        single incoming request. Because LLM generation can take 5–15 seconds, a blocking server exhausts its connection
+        thread pool almost immediately under minimal load.
+        Asynchronous gateways (FastAPI ASGI or Ktor Netty) operate like <strong>Kotlin structured concurrency
+          (Coroutines)</strong>: IO-bound inference requests suspend execution without monopolizing underlying threads,
+        allowing a single lightweight container instance to handle hundreds of concurrent streaming sessions.
+      </div>
+
+      <h2>1. The Streaming Gateway Topology</h2>
+      <p>
+        The AI gateway acts as the secure intermediary between external client applications and upstream foundation
+        models. It authenticates users, injects system prompt constraints, negotiates rate limits, and streams tokens
+        over Server-Sent Events (SSE).
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart LR
+          subgraph Clients["Client Tier (Android / Web)"]
+          CLI["Android OkHttp SSE Listener"]
+          end
+
+          subgraph Gateway["Serverless Edge (Cloud Run / FastAPI)"]
+          AUTH["Auth & Rate Limiter Middleware"]
+          DISC["Socket Disconnect Watchdog"]
+          ASYNC["Async Event Generator (ASGI)"]
+          end
+
+          subgraph LLM["Upstream Model Provider"]
+          VAI["Vertex AI / OpenAI SSE Stream"]
+          end
+
+          CLI -->|HTTP/2 POST /stream| AUTH
+          AUTH --> ASYNC
+          ASYNC -->|Non-blocking gRPC/HTTP/2| VAI
+          VAI -->|Raw Tokens| ASYNC
+          ASYNC -->|SSE data: chunk| CLI
+          DISC -.->|Monitors Socket| CLI
+          DISC -->|On Client Drop: Cancel Coroutine/Task| ASYNC
+        </div>
+      </div>
+
+      <h2>2. Handling Client Disconnects & Runaway Costs</h2>
+      <p>
+        If an Android user navigates away or loses cellular connectivity mid-stream, standard HTTP endpoints often
+        continue executing in the background until the LLM completes generation. In AI systems, where inference cost is
+        calculated per output token, this leads to significant resource waste.
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Architecture Strategy</th>
+              <th>System Mechanism</th>
+              <th>Impact on Compute & Spend</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Unmonitored Generator</strong></td>
+              <td>Server continues pulling tokens from LLM API even after the TCP connection to the mobile device
+                terminates.</td>
+              <td>Wastes compute and money; burns API tokens for responses that are never displayed.</td>
+            </tr>
+            <tr>
+              <td><strong>Socket Polling / Cancellation</strong></td>
+              <td>Engine checks <code>request.is_disconnected()</code> on every generated token chunk and cancels the
+                upstream context.</td>
+              <td>Immediately aborts the LLM API call, terminating token generation and freeing memory.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Dual-Stack Implementations: Streaming AI Server</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-fastapi')">Python (FastAPI +
+            AsyncOpenAI)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-ktor')">Kotlin (Ktor Server + SSE)</button>
+        </div>
+
+        <div id="python-fastapi" class="tab-content active">
+          <pre><code>from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import StreamingResponse
+from openai import AsyncOpenAI
+import asyncio
+
+app = FastAPI(title="AI Gateway")
+ai_client = AsyncOpenAI()
+
+async def event_generator(prompt: str, request: Request):
+    try:
+        # Request stream from inference engine
+        stream = await ai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            stream=True
+        )
+
+        async for chunk in stream:
+            # Check if the client closed connection
+            if await request.is_disconnected():
+                print("Client disconnected. Aborting upstream generation.")
+                break
+
+            content = chunk.choices[0].delta.content
+            if content:
+                # Emit Server-Sent Events (SSE) standard protocol
+                yield f"data: {content}\n\n"
+                
+        yield "data: [DONE]\n\n"
+
+    except asyncio.CancelledError:
+        print("Task explicitly cancelled by gateway.")
+        raise
+
+@app.post("/v1/stream")
+async def stream_inference(request: Request):
+    body = await request.json()
+    prompt = body.get("prompt")
+    if not prompt:
+        raise HTTPException(status_code=400, detail="Missing prompt parameter")
+
+    return StreamingResponse(
+        event_generator(prompt, request),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no" # Prevents proxy buffering (NGINX/Cloudflare)
+        }
+    )</code></pre>
+        </div>
+
+        <div id="kotlin-ktor" class="tab-content">
+          <pre><code>import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.request.*
+import io.ktor.http.*
+import io.ktor.utils.io.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
+fun Application.aiModule() {
+    routing {
+        post("/v1/stream") {
+            val parameters = call.receive&lt;Map&lt;String, String&gt;&gt;()
+            val prompt = parameters["prompt"] ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            call.response.cacheControl(CacheControl.NoCache(null))
+            call.respondTextWriter(contentType = ContentType.Text.EventStream) {
+                try {
+                    // Simulated asynchronous model token stream Flow
+                    mockModelTokenStream(prompt).collect { token ->
+                        write("data: $token\n\n")
+                        flush()
+                    }
+                    write("data: [DONE]\n\n")
+                    flush()
+                } catch (e: CancellationException) {
+                    // Triggered when client socket closes mid-stream
+                    println("Ktor client disconnected. Coroutine cancelled.")
+                    throw e
+                }
+            }
+        }
+    }
+}
+
+fun mockModelTokenStream(prompt: String): Flow&lt;String&gt; = flow {
+    val tokens = listOf("Structured ", "concurrency ", "powers ", "scalable ", "gateways.")
+    for (token in tokens) {
+        delay(100) // Simulating network generation interval
+        emit(token)
+    }
+}.flowOn(Dispatchers.IO)</code></pre>
+        </div>
+      </div>
+
+      <h2>4. Containerization & Cloud Run Tuning</h2>
+      <p>
+        A lightweight production Docker container paired with optimized Google Cloud Run configurations ensures minimal
+        cold-start times and high concurrency.
+      </p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'docker-spec')">Dockerfile (Multi-stage
+            Python)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'gcloud-deploy')">Cloud Run CLI Deployment</button>
+        </div>
+
+        <div id="docker-spec" class="tab-content active">
+          <pre><code>FROM python:3.11-slim as base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080
+
+WORKDIR /app
+
+# Install runtime dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Run with Uvicorn ASGI server
+CMD exec uvicorn main:app --host 0.0.0.0 --port ${PORT} --workers 2 --timeout-keep-alive 65</code></pre>
+        </div>
+
+        <div id="gcloud-deploy" class="tab-content">
+          <pre><code># Deploy service to Cloud Run with optimized streaming concurrency
+gcloud run deploy ai-serving-gateway \
+    --image gcr.io/my-project/ai-gateway:latest \
+    --platform managed \
+    --region us-central1 \
+    --allow-unauthenticated \
+    --concurrency 80 \
+    --cpu 2 \
+    --memory 2Gi \
+    --min-instances 1 \
+    --max-instances 20 \
+    --timeout 300</code></pre>
+        </div>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Android / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ASGI</strong></td>
+              <td>Asynchronous Server Gateway Interface: the modern asynchronous Python standard for handling concurrent
+                HTTP and WebSockets.</td>
+              <td>Kotlin Coroutines <code>Dispatchers.IO</code> replacing legacy single-threaded handlers.</td>
+            </tr>
+            <tr>
+              <td><strong>Concurrency Limit</strong></td>
+              <td>The maximum number of simultaneous HTTP requests a single Cloud Run container instance can process
+                concurrently.</td>
+              <td>OkHttp <code>Dispatcher.maxRequestsPerHost</code> connection pool ceiling.</td>
+            </tr>
+            <tr>
+              <td><strong>Cold Start</strong></td>
+              <td>The latency delay incurred when a serverless platform boots up a new container image from zero
+                instances.</td>
+              <td>Android Application Cold Launch (Application class initialization before first frame).</td>
+            </tr>
+            <tr>
+              <td><strong>Proxy Buffering</strong></td>
+              <td>Intermediate proxies (NGINX, Cloudflare) holding partial chunks until a large buffer is full before
+                sending to client.</td>
+              <td>A bad custom Flow operator collecting all emissions before emitting down the chain.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>FastAPI Documentation: Asynchronous Streaming Responses & Background Tasks</li>
+        <li>Google Cloud Run Architecture: Optimizing Concurrency for Generative AI Applications</li>
+        <li>W3C Working Group: Server-Sent Events (SSE) Standard Protocol</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="08-agentic-langgraph.html" class="btn">&larr; Module 08: Agentic Workflows</a>
+        <a href="10-evals-observability.html" class="btn">Proceed to Module 10: Evals & Observability &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 09</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

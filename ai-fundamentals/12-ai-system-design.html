@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12. AI System Design, Semantic Caching & Cost Architecture | AI Systems Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'neutral',
+                securityLevel: 'loose',
+                logLevel: 'error'
+            });
+        });
+    </script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-card: #273549;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #7dd3fc;
+            --border: #334155;
+            --code-bg: #090d16;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .meta-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin: 2.5rem 0 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.4rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            margin: 1.5rem 0 0.5rem;
+            color: #fff;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .analogy-callout {
+            background: var(--code-bg);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .analogy-callout strong {
+            color: var(--accent);
+        }
+
+        .diagram-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-tabs {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .tab-header {
+            display: flex;
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 0.6rem 1.2rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: var(--bg-surface);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        pre {
+            background: var(--code-bg);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            margin: 0;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+            color: var(--accent-hover);
+        }
+
+        pre code {
+            color: inherit;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-card);
+            color: var(--accent);
+        }
+
+        ul {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 3rem 0 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <nav>
+            <a href="11-edge-ai-android.html">&larr; Module 11: Edge AI &amp; SLMs</a>
+            <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 12 of 12</a></span>
+            <a href="index.html">Curriculum Complete &bull; Index &rarr;</a>
+        </nav>
+
+        <header>
+            <h1>12. AI System Design, Semantic Caching &amp; Cost Architecture</h1>
+            <p class="meta-subtitle">Semantic caching architectures, prompt prefix KV-cache reuse, token bucket rate
+                limiting, and RAG vs. Fine-Tuning trade-off matrices.</p>
+        </header>
+
+        <main>
+            <div class="analogy-callout">
+                <strong>Android Architecture Mental Model:</strong>
+                In high-scale consumer apps, you would never make duplicate network requests to a billing or search API
+                if an identical request was fulfilled 2 seconds ago—you use OkHttp HTTP cache interceptors or in-memory
+                LRU caches.
+                In generative AI, traditional string-hash caching fails because queries like <em>"How to cancel my
+                    membership?"</em> and <em>"Where do I terminate my subscription?"</em> share 0% string overlap.
+                <strong>Semantic Caching</strong> checks vector similarity against previous query embeddings: if cosine
+                similarity exceeds a threshold (e.g. $&gt; 0.96$), the gateway returns the cached response in &lt; 20ms
+                at zero API cost.
+            </div>
+
+            <h2>1. The Semantic Caching Lifecycle</h2>
+            <p>
+                A semantic cache sits in front of the LLM inference engine, saving latency and token expenses on common
+                queries:
+            </p>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    flowchart TD
+                    REQ["Inbound User Prompt"] --> EMB["Embed Query (Fast Embedding Model)"]
+                    EMB --> LOOKUP[("Semantic Cache: Redis / pgvector")]
+                    LOOKUP --> CHECK{"Nearest Vector Distance &lt;= Threshold? (e.g. &lt;= 0.05)"}
+                    CHECK -- Yes: Cache Hit --> CACHED["Return Cached Response (&lt; 25ms, $0.00 cost)"]
+                    CHECK -- No: Cache Miss --> LLM["Execute Foundation Model Inference"]
+                    LLM --> STORE[("Store New Query Vector + Response")]
+                    STORE --> RESP["Return Generated Stream"]
+                </div>
+            </div>
+
+            <h2>2. Prompt Prefix Caching (Hardware KV-Cache Optimization)</h2>
+            <p>
+                Modern foundation models (Anthropic Claude, Google Gemini, OpenAI) support <strong>Prompt
+                    Caching</strong>. When large system prompts, extensive documentation, or few-shot examples remain
+                identical across calls, the server hardware preserves the pre-computed Key-Value (KV) attention states:
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Standard Non-Cached Call</th>
+                            <th>Prompt Caching Enabled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Token Cost</strong></td>
+                            <td>100% of input token price billed on every call.</td>
+                            <td><strong>Up to 90% discount</strong> on cached prefix tokens.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Inference TTFT</strong></td>
+                            <td>Full quadratic attention re-computed for prefix tokens.</td>
+                            <td><strong>Up to 80% reduction</strong> in Time-to-First-Token.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Requirement</strong></td>
+                            <td>None.</td>
+                            <td>Prefix tokens must match exactly (deterministic ordering required).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>3. The Architectural Decision Matrix: Prompting vs. RAG vs. Fine-Tuning</h2>
+            <p>
+                Engineering leaders often face the question: <em>"Should we fine-tune our own model?"</em> The answer is
+                usually no. This matrix guides architectural choices:
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dimension</th>
+                            <th>In-Context Prompting</th>
+                            <th>Retrieval-Augmented Gen (RAG)</th>
+                            <th>Fine-Tuning (PEFT / LoRA)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Primary Objective</strong></td>
+                            <td>Guiding style, formatting, and single-turn task instructions.</td>
+                            <td>Injecting dynamic, real-time, or private external knowledge.</td>
+                            <td>Specialized domain jargon, nuanced tone, or latency reduction.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Knowledge Recency</strong></td>
+                            <td>Static (bounded by model training date).</td>
+                            <td><strong>Real-time</strong> (updates instantly as documents are indexed).</td>
+                            <td>Static (requires periodic retraining runs).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hallucination Risk</strong></td>
+                            <td>Moderate to High.</td>
+                            <td><strong>Lowest</strong> (answers are strictly grounded in citations).</td>
+                            <td>Moderate (model internalizes facts into weights).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Engineering Overhead</strong></td>
+                            <td>Lowest (immediate prompt changes).</td>
+                            <td>Moderate (vector store and ingestion pipeline management).</td>
+                            <td>High (training datasets, GPU infrastructure, evals).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>4. Dual-Stack Implementations: Semantic Caching Engine</h2>
+
+            <div class="code-tabs">
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="switchTab(event, 'python-cache')">Python (pgvector Semantic
+                        Cache)</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'kotlin-cache')">Kotlin (In-Memory Vector
+                        Cache)</button>
+                </div>
+
+                <div id="python-cache" class="tab-content active">
+                    <pre><code>import psycopg
+from openai import OpenAI
+
+client = OpenAI()
+DB_URL = "postgresql://postgres:postgres@localhost:5432/ai_db"
+
+def get_embedding(text: str) -> list[float]:
+    res = client.embeddings.create(input=[text], model="text-embedding-3-small")
+    return res.data[0].embedding
+
+def get_semantic_cached_answer(query: str, threshold: float = 0.05) -> str | None:
+    query_vector = get_embedding(query)
+    
+    with psycopg.connect(DB_URL) as conn:
+        with conn.cursor() as cur:
+            # Query the nearest cosine distance (<=>)
+            cur.execute("""
+                SELECT response, embedding &lt;=&gt; %s::vector AS distance
+                FROM prompt_semantic_cache
+                ORDER BY distance ASC
+                LIMIT 1;
+            """, (query_vector,))
+            row = cur.fetchone()
+            
+            if row and row[1] &lt;= threshold:
+                print(f"[CACHE HIT] Cosine distance: {row[1]:.4f}")
+                return row[0]
+                
+    return None # Cache Miss</code></pre>
+                </div>
+
+                <div id="kotlin-cache" class="tab-content">
+                    <pre><code>import kotlin.math.sqrt
+
+data class CachedEntry(val query: String, val vector: FloatArray, val response: String)
+
+class SemanticCache(private val similarityThreshold: Float = 0.95f) {
+    private val cache = mutableListOf&lt;CachedEntry&gt;()
+
+    fun get(queryVector: FloatArray): String? {
+        for (entry in cache) {
+            val similarity = cosineSimilarity(queryVector, entry.vector)
+            if (similarity &gt;= similarityThreshold) {
+                println("[CACHE HIT] Similarity: $similarity")
+                return entry.response
+            }
+        }
+        return null // Cache Miss
+    }
+
+    fun put(query: String, queryVector: FloatArray, response: String) {
+        cache.add(CachedEntry(query, queryVector, response))
+    }
+
+    private fun cosineSimilarity(v1: FloatArray, v2: FloatArray): Float {
+        var dot = 0f; var nA = 0f; var nB = 0f
+        for (i in v1.indices) {
+            dot += v1[i] * v2[i]
+            nA += v1[i] * v1[i]
+            nB += v2[i] * v2[i]
+        }
+        return dot / (sqrt(nA) * sqrt(nB))
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <h2>5. Progressive Glossary</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Technical Definition</th>
+                            <th>Android / Systems Analogy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Semantic Cache</strong></td>
+                            <td>A cache keyed on vector similarity distance rather than identical raw text strings.</td>
+                            <td>Fuzzy search caching with threshold-based hit validation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prompt Caching</strong></td>
+                            <td>Server infrastructure reusing the attention Key-Value state of static prompt prefixes.
+                            </td>
+                            <td>Reusing compiled DEX bytecode or static resources without re-parsing.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PEFT / LoRA</strong></td>
+                            <td>Parameter-Efficient Fine-Tuning: freezing base model weights and training small low-rank
+                                adapter matrices.</td>
+                            <td>Android dynamic feature modules or runtime plugin patching.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Token Bucket Limiter</strong></td>
+                            <td>A rate-limiting algorithm enforcing maximum Requests-Per-Minute (RPM) and
+                                Tokens-Per-Minute (TPM).</td>
+                            <td>Network interceptors throttling background WorkManager request bursts.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Sources &amp; Reference Standards</h2>
+            <ul>
+                <li>Anthropic Technical Guides: Prompt Caching Architecture and Economics</li>
+                <li>Hu et al.: LoRA: Low-Rank Adaptation of Large Language Models (ICLR)</li>
+                <li>Redis Open Source: High-Throughput Semantic Caching with Vector Sets</li>
+            </ul>
+
+            <div class="nav-buttons">
+                <a href="11-edge-ai-android.html" class="btn">&larr; Module 11: Edge AI &amp; SLMs</a>
+                <a href="index.html" class="btn">Curriculum Complete &bull; Return to Index &rarr;</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>SortedQueue AI Systems Curriculum &bull; Module 12</p>
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(evt, tabId) {
+            const container = evt.target.closest('.code-tabs');
+            container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            evt.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

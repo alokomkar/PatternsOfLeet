@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11. Edge AI & On-Device Small Language Models | AI Systems Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'neutral',
+                securityLevel: 'loose',
+                logLevel: 'error'
+            });
+        });
+    </script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-card: #273549;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #7dd3fc;
+            --border: #334155;
+            --code-bg: #090d16;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .meta-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin: 2.5rem 0 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.4rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            margin: 1.5rem 0 0.5rem;
+            color: #fff;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .analogy-callout {
+            background: var(--code-bg);
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .analogy-callout strong {
+            color: var(--accent);
+        }
+
+        .diagram-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-tabs {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .tab-header {
+            display: flex;
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 0.6rem 1.2rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: var(--bg-surface);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        pre {
+            background: var(--code-bg);
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            margin: 0;
+        }
+
+        code {
+            font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+            color: var(--accent-hover);
+        }
+
+        pre code {
+            color: inherit;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-card);
+            color: var(--accent);
+        }
+
+        ul {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 3rem 0 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <nav>
+            <a href="10-evals-observability.html">&larr; Module 10: Evals &amp; Observability</a>
+            <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 11 of 12</a></span>
+            <a href="12-ai-system-design.html">Next: System Design &amp; Caching &rarr;</a>
+        </nav>
+
+        <header>
+            <h1>11. Edge AI &amp; On-Device Small Language Models</h1>
+            <p class="meta-subtitle">Quantized weights, Android LiteRT / MediaPipe runtime execution, NPU hardware
+                acceleration, and hybrid edge-cloud orchestration.</p>
+        </header>
+
+        <main>
+            <div class="analogy-callout">
+                <strong>Android Architecture Mental Model:</strong>
+                Cloud-only AI architectures break down under mobile realities: cellular dead zones, airplane mode,
+                battery constraints, and strict data privacy regulations.
+                Edge AI brings inference directly to Android runtime silicon (Qualcomm Hexagon NPU, ARM Mali GPU). Just
+                as an <strong>offline-first Room repository</strong> serves local cached data instantly and syncs
+                changes in the background via WorkManager, an edge SLM (Small Language Model) runs sub-100ms intent
+                classification and document parsing on-device, calling out to cloud models only when high-compute
+                reasoning is required.
+            </div>
+
+            <h2>1. The Hybrid Edge-Cloud Routing Topology</h2>
+            <p>
+                Production architectures do not force a binary choice between edge and cloud. A local edge router
+                inspects task complexity, network availability, and privacy tags before deciding execution targets:
+            </p>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    flowchart TD
+                    INPUT["User Request (Android Client)"] --> ROUTER{"Edge Routing Engine<br />(Task Complexity &amp;
+                    Network State)"}
+                    ROUTER -->|Offline OR Sensitive PII OR Low Complexity| EDGE["On-Device SLM (Gemma 2B / LiteRT)"]
+                    ROUTER -->|Online AND Complex Multi-Step Task| CLOUD["Cloud Run Gateway (Frontier Model)"]
+                    EDGE -->|Immediate Local Response| UI["Jetpack Compose UI"]
+                    CLOUD -->|Grounded Structured SSE Stream| UI
+                </div>
+            </div>
+
+            <h2>2. Weight Quantization: Compressing Models for Mobile RAM</h2>
+            <p>
+                A 2-billion parameter model stored in standard 32-bit floating point (FP32) requires:
+            </p>
+            <p style="text-align: center; font-family: monospace; color: var(--accent);">
+                2,000,000,000 &times; 4 bytes = 8.0 GB RAM
+            </p>
+            <p>
+                This exceeds the total available memory ceiling on most mobile devices, triggering Android Low Memory
+                Killer (LMK). <strong>Quantization</strong> maps continuous floating-point weights into low-bit discrete
+                integers:
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Precision</th>
+                            <th>RAM Footprint (2B Model)</th>
+                            <th>Android Target Hardware</th>
+                            <th>Quality &amp; Perplexity Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>FP16</strong> (16-bit Float)</td>
+                            <td>~4.0 GB</td>
+                            <td>High-end flagship GPUs only.</td>
+                            <td>Baseline ground-truth reference quality.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>INT8</strong> (8-bit Integer)</td>
+                            <td>~2.0 GB</td>
+                            <td>Standard Android GPUs &amp; Mid-tier SOCs.</td>
+                            <td>&lt; 1% degradation in benchmark accuracy.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>INT4</strong> (4-bit Integer)</td>
+                            <td>~1.1 GB to 1.3 GB</td>
+                            <td>Qualcomm / MediaTek NPUs &amp; Mobile CPUs.</td>
+                            <td>Optimal production balance: 3&times; faster token generation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>3. Android Edge Acceleration: CPU vs. GPU vs. NPU</h2>
+            <p>
+                Google LiteRT (formerly TensorFlow Lite) and MediaPipe GenAI runtimes map model operators to hardware
+                acceleration delegates via the Android Neural Networks API (NNAPI) or native hardware drivers:
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Compute Unit</th>
+                            <th>Throughput Profile</th>
+                            <th>Thermal &amp; Battery Impact</th>
+                            <th>Deployment Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CPU (Neon SIMD)</strong></td>
+                            <td>~3 - 6 tokens/second</td>
+                            <td>High CPU utilization; quickly causes thermal throttling.</td>
+                            <td>Universal fallback when hardware acceleration fails.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPU (OpenCL / Vulkan)</strong></td>
+                            <td>~12 - 25 tokens/second</td>
+                            <td>Moderate power draw; good memory bandwidth.</td>
+                            <td>Standard delegate for mid-range and premium devices.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NPU (Hexagon / DaVinci)</strong></td>
+                            <td>~35 - 60+ tokens/second</td>
+                            <td>Dedicated silicon; lowest battery draw per generated token.</td>
+                            <td>Optimal runtime delegate for continuous on-device inference.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>4. Dual-Stack Implementations: On-Device Inference</h2>
+
+            <div class="code-tabs">
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="switchTab(event, 'kotlin-edge')">Kotlin (Android MediaPipe
+                        GenAI)</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'python-quant')">Python (Quantization Export via
+                        Hugging Face)</button>
+                </div>
+
+                <div id="kotlin-edge" class="tab-content active">
+                    <pre><code>import android.content.Context
+import com.google.mediapipe.tasks.genai.llminference.LlmInference
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+class OnDeviceAiEngine(private val context: Context) {
+
+    private var llmInference: LlmInference? = null
+
+    suspend fun initialize(modelPath: String) = withContext(Dispatchers.IO) {
+        val options = LlmInference.LlmInferenceOptions.builder()
+            .setModelPath(modelPath) // Path to quantized .bin file (e.g. gemma-2b-it-cpu-int4.bin)
+            .setMaxTokens(512)
+            .setTemperature(0.2f)
+            .build()
+        llmInference = LlmInference.createFromOptions(context, options)
+    }
+
+    // Non-blocking token streaming via Coroutines Flow directly on-device
+    fun generateStreaming(prompt: String): Flow&lt;String&gt; = callbackFlow {
+        val inferenceEngine = llmInference 
+            ?: throw IllegalStateException("Model runtime not initialized")
+
+        inferenceEngine.generateResponseAsync(prompt) { partialResult, done -&gt;
+            trySend(partialResult)
+            if (done) {
+                channel.close()
+            }
+        }
+        awaitClose { /* Free native delegate allocations if cancelled */ }
+    }
+}</code></pre>
+                </div>
+
+                <div id="python-quant" class="tab-content">
+                    <pre><code># Preparing and quantizing an SLM for edge deployment using BitsAndBytes & ONNX
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_id = "google/gemma-2b-it"
+
+# 1. Load weights in 4-bit NormalFloat (NF4)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    device_map="auto",
+    load_in_4bit=True,
+    torch_dtype=torch.float16
+)
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+print(f"Model successfully loaded and quantized. Footprint: {model.get_memory_footprint() / 1e6:.2f} MB")
+
+# Ready for conversion to LiteRT / ExecuTorch runtime format</code></pre>
+                </div>
+            </div>
+
+            <h2>5. Progressive Glossary</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Technical Definition</th>
+                            <th>Android / Systems Analogy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SLM</strong></td>
+                            <td>Small Language Model: architectures under 4B parameters designed for low-memory
+                                environments.</td>
+                            <td>A specialized microservice vs. a massive monolith.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quantization</strong></td>
+                            <td>Converting neural network weights from continuous 32-bit floats to discrete 4-bit or
+                                8-bit integers.</td>
+                            <td>Downsampling 32-bit ARGB_8888 Bitmaps to RGB_565 to avoid OOM errors.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LiteRT</strong></td>
+                            <td>Google's high-performance runtime for on-device ML deployment (formerly TensorFlow
+                                Lite).</td>
+                            <td>The Android ART runtime or Android NDK executing native compiled code.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NPU</strong></td>
+                            <td>Neural Processing Unit: specialized silicon tailored for matrix dot-product operations.
+                            </td>
+                            <td>The GPU handling hardware-accelerated Compose UI render nodes.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Sources &amp; Reference Standards</h2>
+            <ul>
+                <li>Google MediaPipe Documentation: LLM Inference Tasks on Android</li>
+                <li>Google Developers: LiteRT Architecture and Hardware Acceleration</li>
+                <li>Qualcomm AI Stack: Accelerating Edge Foundation Models on Snapdragon NPU</li>
+            </ul>
+
+            <div class="nav-buttons">
+                <a href="10-evals-observability.html" class="btn">&larr; Module 10: Evals &amp; Observability</a>
+                <a href="12-ai-system-design.html" class="btn">Proceed to Module 12: AI System Design &amp; Caching
+                    &rarr;</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>SortedQueue AI Systems Curriculum &bull; Module 11</p>
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(evt, tabId) {
+            const container = evt.target.closest('.code-tabs');
+            container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            evt.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
