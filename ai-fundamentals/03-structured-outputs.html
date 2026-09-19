@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>03. Structured Outputs & Schema Enforcement | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin: 1rem 0;
+      color: #e2e8f0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul,
+    ol {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="02-prompt-engineering.html">&larr; Module 02: Prompt Engineering</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 03 of 12</a></span>
+      <a href="04-embeddings-vector-search.html">Next: Embeddings & Vector Search &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>03. Structured Outputs & Schema Enforcement</h1>
+      <p class="meta-subtitle">Deterministic serialization, JSON Schema injection, constrained grammar sampling, and
+        Pydantic validation layers.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        In mobile platforms, raw HTTP strings are deserialized into typed Kotlin data classes using
+        <code>kotlinx.serialization</code> or Moshi. If the backend drops a key or changes a type, your parser throws a
+        <code>JsonDataException</code> and crashes the view. In generative AI, natural language responses are inherently
+        non-deterministic. Structured output generation acts as a <strong>compile-time type checker and serializer for
+          LLM token emissions</strong>, guaranteeing that output payloads conform strictly to an exact schema before
+        hitting downstream business logic.
+      </div>
+
+      <h2>1. The Non-Deterministic Parsing Problem</h2>
+      <p>
+        Historically, developers instructed models via prompts: <em>"Respond in JSON format without markdown
+          ticks"</em>. This frequently broke down in production:
+      </p>
+      <ul>
+        <li>Models prepended conversational fluff: <code>"Sure! Here is the JSON: {...}"</code>.</li>
+        <li>Models hallucinated invalid trailing commas or unescaped nested quotes.</li>
+        <li>Key names dynamically mutated across inference passes (e.g., swapping <code>userId</code> for
+          <code>user_id</code> or <code>id</code>).
+        </li>
+      </ul>
+
+      <p>
+        Modern production systems achieve 100% syntactic schema compliance through two distinct architectural tiers:
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart TD
+          subgraph EngineTier["Tier 1: Constrained Decoding (Grammar Masking)"]
+          A["Next Token Prediction Logits"] --> B["JSON Grammar Engine / Masking"]
+          B -->|Mask illegal tokens with -inf logit| C["Select ONLY Valid Syntax Tokens"]
+          C --> D["Guaranteed Valid JSON Syntax Token"]
+          end
+
+          subgraph AppTier["Tier 2: Application Type Hydration"]
+          D --> E["FastAPI Pydantic Validator"]
+          E -->|Schema Validated| F["Domain Model / Kotlin Client DTO"]
+          E -->|Validation Error| G["Reflection & Self-Correction Turn"]
+          end
+        </div>
+      </div>
+
+      <h2>2. Constrained Decoding vs. Prompted Schemas</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Mechanism</th>
+              <th>How It Operates</th>
+              <th>Reliability</th>
+              <th>Latency / Compute Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Prompted JSON Mode</strong></td>
+              <td>Instructs model via System Prompt to output JSON. Uses soft penalty if output isn't parsable.</td>
+              <td>~85–92% (prone to schema drifts and invalid types on edge inputs).</td>
+              <td>Zero engine overhead; normal token generation speed.</td>
+            </tr>
+            <tr>
+              <td><strong>JSON Schema / Strict Mode</strong></td>
+              <td>Inference engine builds a Context-Free Grammar (CFG) / Finite State Machine (FSM) from the schema.
+              </td>
+              <td>100% syntactic compliance; zero syntax errors possible.</td>
+              <td>Minor initial compilation overhead to compute the grammar FSM for the first token.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. End-to-End Implementation: Dual-Stack Schema Enforcement</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-pydantic')">Python (Pydantic V2 + OpenAI
+            Parse)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-serialization')">Kotlin (kotlinx.serialization +
+            DTO)</button>
+        </div>
+
+        <div id="python-pydantic" class="tab-content active">
+          <pre><code>from typing import List, Literal
+from pydantic import BaseModel, Field
+from openai import OpenAI
+
+client = OpenAI()
+
+# 1. Enforced Pydantic Schema Specification
+class FeatureFlagEvaluation(BaseModel):
+    feature_key: str = Field(description="The unique identifier for the feature")
+    enabled: bool = Field(description="Target rollout state for the user")
+    variant: Literal["A", "B", "CONTROL"] = Field(description="Bucket allocation")
+    reasons: List[str] = Field(description="Telemetry explanation for decision")
+
+# 2. Strict Engine Parsing
+response = client.beta.chat.completions.parse(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a backend configuration allocator."},
+        {"role": "user", "content": "Evaluate rollout for user_12948 on android_checkout_v2"}
+    ],
+    response_format=FeatureFlagEvaluation,
+    temperature=0.0
+)
+
+# Guaranteed typed instance matching schema exactly
+evaluation: FeatureFlagEvaluation = response.choices[0].message.parsed
+print(f"Key: {evaluation.feature_key}, Enabled: {evaluation.enabled}, Variant: {evaluation.variant}")</code></pre>
+        </div>
+
+        <div id="kotlin-serialization" class="tab-content">
+          <pre><code>import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.Json
+
+// 1. Mirroring the contract in Kotlin
+@Serializable
+data class FeatureFlagEvaluationDto(
+    @SerialName("feature_key") val featureKey: String,
+    @SerialName("enabled") val enabled: Boolean,
+    @SerialName("variant") val variant: VariantType,
+    @SerialName("reasons") val reasons: List&lt;String&gt;
+)
+
+@Serializable
+enum class VariantType {
+    @SerialName("A") A,
+    @SerialName("B") B,
+    @SerialName("CONTROL") CONTROL
+}
+
+// 2. Safe Parsing from API Gateway Response
+val jsonParser = Json { 
+    ignoreUnknownKeys = false 
+    coerceInputValues = false 
+}
+
+fun hydrateEvaluation(rawJson: String): FeatureFlagEvaluationDto {
+    // Fails fast if the schema violates strict types
+    return jsonParser.decodeFromString&lt;FeatureFlagEvaluationDto&gt;(rawJson)
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>4. The Self-Correction & Repair Pipeline</h2>
+      <p>
+        While constrained decoding guarantees syntactic validity (e.g., braces match and keys exist), it cannot
+        guarantee semantic validity (e.g., an <code>age</code> property parsed as <code>-50</code>, or a non-existent
+        category code). When validation fails, a structured error reflection loop repairs the object.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          sequenceDiagram
+          autonumber
+          participant App as App Engine
+          participant LLM as Model Inference
+          participant Val as Pydantic / Schema Engine
+
+          App->>LLM: Ingest User Request + Schema Spec
+          LLM-->>App: Emits JSON Payload
+          App->>Val: Validate against Schema Types
+          alt Validation Succeeded
+          Val-->>App: Valid DTO Object Emitted
+          else Validation Failed (e.g., String in Integer Field)
+          Val-->>App: ValidationError: field 'count' must be int
+          App->>LLM: Follow-up Turn: Previous JSON failed with [ValidationError]. Fix and re-emit.
+          LLM-->>App: Corrected Compliant JSON
+          App->>Val: Re-validate
+          Val-->>App: Valid DTO Object Emitted
+          end
+        </div>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Android / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>JSON Schema</strong></td>
+              <td>A declarative standard defining structure, required fields, and data types for JSON objects.</td>
+              <td>OpenAPI / Swagger spec or Protobuf <code>.proto</code> contract definitions.</td>
+            </tr>
+            <tr>
+              <td><strong>Constrained Decoding</strong></td>
+              <td>An algorithmic mask applied during inference preventing tokens that violate grammar from being
+                selected.</td>
+              <td>Input filters on Android <code>EditText</code> (e.g., <code>DigitsKeyListener</code> blocking
+                non-numeric input).</td>
+            </tr>
+            <tr>
+              <td><strong>Pydantic</strong></td>
+              <td>Python data validation and parsing library that enforces strict type hints at runtime.</td>
+              <td><code>kotlinx.serialization</code> or Moshi parsing with custom <code>JsonAdapter</code> validation.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Grammar Masking</strong></td>
+              <td>Zeroing out unallowed token logits by setting their score to $-\infty$ during sampling forward passes.
+              </td>
+              <td>State-driven UI button enabling/disabling via Jetpack Compose State.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>OpenAI Engineering: Introducing Structured Outputs in the API</li>
+        <li>Pydantic Documentation: Data Validation and Settings Management for Python</li>
+        <li>Outlines & Guidance Libraries: Efficient Guided Generation with Formal Grammars</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="02-prompt-engineering.html" class="btn">&larr; Module 02: Prompt Engineering</a>
+        <a href="04-embeddings-vector-search.html" class="btn">Proceed to Module 04: Embeddings & Vector Search
+          &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 03</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

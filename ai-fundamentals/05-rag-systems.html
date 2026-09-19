@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05. Production RAG Architecture | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="04-embeddings-vector-search.html">&larr; Module 04: Embeddings</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 05 of 12</a></span>
+      <a href="06-postgres-pgvector.html">Next: Postgres & pgvector &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>05. Production RAG Architecture</h1>
+      <p class="meta-subtitle">Retrieval pipelines, bi-encoder retrieval vs. cross-encoder reranking, context assembly,
+        and hallucination reduction.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        RAG is identical to the <strong>Offline-First Repository Pattern</strong> in Android Clean Architecture. When a
+        ViewModel requests domain data, the repository doesn't rely solely on static in-memory parameters; it fetches
+        fresh raw data from a local Room database or remote Retrofit API, filters and transforms the DTOs into a clean
+        UI state, and binds it to the screen. In RAG, the LLM is merely the presentation engine; external vector storage
+        and rerankers act as the local cache and query planner providing ground truth.
+      </div>
+
+      <h2>1. The End-to-End RAG Topology</h2>
+      <p>
+        A production RAG pipeline consists of two decoupled operational phases: the asynchronous <strong>Ingestion
+          Pipeline</strong> (data preparation) and the synchronous <strong>Query Pipeline</strong> (runtime retrieval
+        and generation).
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart TD
+          subgraph Ingestion["Phase 1: Ingestion Pipeline (Offline/Async)"]
+          DOC["Raw Knowledge Base (Markdown, PDFs, Code)"] --> CHUNK["Chunker Engine (512 tokens + 64 overlap)"]
+          CHUNK --> EMB1["Embedding Model (text-embedding-3-small)"]
+          EMB1 --> VDB[("Vector DB (pgvector / HNSW)")]
+          end
+
+          subgraph Runtime["Phase 2: Query & Inference Pipeline (Real-Time)"]
+          USER["Client Query (Android App)"] --> EMB2["Query Embedding Generator"]
+          EMB2 --> VSEARCH["Dense Retrieval (Top-K ~ 20)"]
+          VDB -.->|Index Scan| VSEARCH
+          VSEARCH --> RERANK["Cross-Encoder Reranker (Top-N ~ 4)"]
+          RERANK --> PROMPT["Context Assembly (System + Context + Query)"]
+          PROMPT --> LLM["LLM Inference Engine (Gemini / Claude / GPT)"]
+          LLM --> CLIENT["Streaming Grounded Response"]
+          end
+        </div>
+      </div>
+
+      <h2>2. Dense Retrieval vs. Cross-Encoder Reranking</h2>
+      <p>
+        Naive RAG retrieves the top $K$ chunks using cosine similarity and immediately dumps them into the LLM prompt.
+        This frequently injects low-relevance noise. Production systems use a two-stage retrieval pipeline:
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Architecture</th>
+              <th>Bi-Encoder (First Stage)</th>
+              <th>Cross-Encoder Reranker (Second Stage)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Mechanism</strong></td>
+              <td>Encodes Query and Document separately into dense vectors ($\mathbf{u}$ and $\mathbf{v}$); computes dot
+                product.</td>
+              <td>Feeds Query and Document simultaneously into the model layers; cross-attention scores relevance
+                directly.</td>
+            </tr>
+            <tr>
+              <td><strong>Speed / Throughput</strong></td>
+              <td>Extremely fast ($O(1)$ lookup with vector index). Searches millions of rows in milliseconds.</td>
+              <td>Computationally expensive; scales linearly with candidates ($O(N)$ forward passes).</td>
+            </tr>
+            <tr>
+              <td><strong>Role in Pipeline</strong></td>
+              <td>Candidate generation: narrows 1,000,000 documents down to Top 20–50 candidates.</td>
+              <td>Precision filtering: scores and resorts the Top 20 down to the 3–5 most relevant chunks.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. The Context Assembly Contract</h2>
+      <p>
+        Retrieval context must be formatted deterministically with strict boundary tags. This isolates user inputs,
+        reinforces source attribution, and resists prompt injection.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart LR
+          SYS["System Invariants:<br />Answer ONLY using provided sources."] --> PROMPT["Final Prompt Envelope"]
+          CTX["Retrieved & Reranked Context:<br />&lt;context&gt;...&lt;/context&gt;"] --> PROMPT
+          Q["User Query:<br />&lt;question&gt;...&lt;/question&gt;"] --> PROMPT
+          PROMPT --> LLM["LLM Engine"]
+        </div>
+      </div>
+
+      <h2>4. Dual-Stack Implementations: Minimal RAG Pipeline</h2>
+      <p>Executing candidate retrieval, prompt formatting, and grounded generation:</p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-rag')">Python (OpenAI + In-Memory
+            Search)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-rag')">Kotlin (LangChain4j)</button>
+        </div>
+
+        <div id="python-rag" class="tab-content active">
+          <pre><code>import numpy as np
+from openai import OpenAI
+
+client = OpenAI()
+
+# 1. Mock Vector Store
+corpus = [
+    {"id": "doc_1", "text": "WorkManager handles deferrable, guaranteed background work in Android."},
+    {"id": "doc_2", "text": "Coroutines with Dispatchers.Main should only be used for UI interactions."},
+    {"id": "doc_3", "text": "pgvector adds vector similarity search capabilities directly to PostgreSQL."}
+]
+
+def get_embedding(text: str) -> list[float]:
+    res = client.embeddings.create(input=[text], model="text-embedding-3-small")
+    return res.data[0].embedding
+
+# Pre-compute corpus vectors
+for doc in corpus:
+    doc["vector"] = get_embedding(doc["text"])
+
+def retrieve(query: str, top_k: int = 2) -> list[dict]:
+    q_vec = np.array(get_embedding(query))
+    scored = []
+    for doc in corpus:
+        score = np.dot(q_vec, np.array(doc["vector"]))
+        scored.append((score, doc))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [doc for _, doc in scored[:top_k]]
+
+def generate_grounded_answer(query: str) -> str:
+    retrieved_docs = retrieve(query, top_k=1)
+    context_str = "\n".join([f"- {d['text']}" for d in retrieved_docs])
+
+    prompt = f"""Use ONLY the following context to answer the user request.
+If the answer cannot be found in the context, say 'I cannot find that in the documents.'
+
+&lt;context&gt;
+{context_str}
+&lt;/context&gt;
+
+User Question: {query}"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.0
+    )
+    return response.choices[0].message.content
+
+print(generate_grounded_answer("How should I execute guaranteed background tasks in Android?"))</code></pre>
+        </div>
+
+        <div id="kotlin-rag" class="tab-content">
+          <pre><code>import dev.langchain4j.data.segment.TextSegment
+import dev.langchain4j.model.openai.OpenAiChatModel
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel
+import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
+
+fun main() {
+    val apiKey = System.getenv("OPENAI_API_KEY")
+    val embeddingModel = OpenAiEmbeddingModel.builder().apiKey(apiKey).modelName("text-embedding-3-small").build()
+    val chatModel = OpenAiChatModel.builder().apiKey(apiKey).modelName("gpt-4o-mini").temperature(0.0).build()
+    
+    val store = InMemoryEmbeddingStore&lt;TextSegment&gt;()
+
+    // 1. Ingestion Phase
+    val docs = listOf(
+        "WorkManager handles deferrable, guaranteed background work in Android.",
+        "Coroutines with Dispatchers.Main should only be used for UI interactions.",
+        "pgvector adds vector similarity search capabilities directly to PostgreSQL."
+    )
+    docs.forEach { text -&gt;
+        val segment = TextSegment.from(text)
+        val embedding = embeddingModel.embed(segment).content()
+        store.add(embedding, segment)
+    }
+
+    // 2. Query & Retrieval Phase
+    val query = "How should I execute guaranteed background tasks in Android?"
+    val queryEmbedding = embeddingModel.embed(query).content()
+    val matches = store.findRelevant(queryEmbedding, 1)
+
+    val context = matches.joinToString("\n") { "- ${it.embedded().text()}" }
+
+    // 3. Grounded Synthesis
+    val prompt = """
+        Use ONLY the following context to answer the question.
+        &lt;context&gt;
+        $context
+        &lt;/context&gt;
+        Question: $query
+    """.trimIndent()
+
+    val answer = chatModel.generate(prompt)
+    println(answer)
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Mobile / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Bi-Encoder</strong></td>
+              <td>Model that embeds queries and documents into separate vectors for independent comparison.</td>
+              <td>Generating distinct SHA-256 hashes for two entities to quickly check inequality.</td>
+            </tr>
+            <tr>
+              <td><strong>Cross-Encoder</strong></td>
+              <td>Model that passes query and candidate pairs together through full multi-head attention.</td>
+              <td>Deep property-by-property equality comparison via custom <code>equals()</code> logic.</td>
+            </tr>
+            <tr>
+              <td><strong>Hallucination</strong></td>
+              <td>An output where the model asserts false facts with high linguistic confidence.</td>
+              <td>A dangling pointer or stale UI state rendering data from an invalid cursor snapshot.</td>
+            </tr>
+            <tr>
+              <td><strong>Grounding</strong></td>
+              <td>Constraining the LLM's response generation exclusively to explicit context provided in the prompt.
+              </td>
+              <td>Validating user view states strictly against local Room DB entities without inventing state.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>Lewis et al.: Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (NeurIPS)</li>
+        <li>Cohere Architecture Whitepaper: Rerankers and Cross-Encoder Scoring</li>
+        <li>LangChain4j / LangChain Architecture Documentation: Retrieval Systems</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="04-embeddings-vector-search.html" class="btn">&larr; Module 04: Embeddings</a>
+        <a href="06-postgres-pgvector.html" class="btn">Proceed to Module 06: Postgres & pgvector &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 05</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

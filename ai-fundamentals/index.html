@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Systems & Architecture Engineering | Curriculum Index</title>
+  <link rel="canonical" href="https://sortedqueue.com/ai-fundamentals/index.html">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    header {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      padding: 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      margin: 2rem 0 1rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .module-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .module-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .module-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+
+    .analogy {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.4rem 0.6rem;
+      margin-bottom: 1rem;
+      border-radius: 0 4px 4px 0;
+      color: #cbd5e1;
+    }
+
+    .module-link {
+      display: inline-block;
+      text-decoration: none;
+      background-color: var(--accent);
+      color: #041019;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 6px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .module-link:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .glossary-table-container {
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    footer {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <nav style="margin-bottom: 1rem;">
+      <a href="../index.html" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 600;">&larr; Back to SortedQueue Home</a>
+    </nav>
+    <h1>AI Systems & Architecture Curriculum</h1>
+    <p>Comprehensive curriculum targeting Staff Android Engineers transitioning to AI Platform Architecture and
+      Edge-to-Cloud AI Engineering.</p>
+  </header>
+
+  <main>
+    <div class="diagram-container">
+      <div class="mermaid">
+        flowchart TD
+        subgraph ClientTier["Client / Edge Layer (Kotlin / Android)"]
+        UI["Jetpack Compose UI"]
+        SLM["On-Device SLM (LiteRT / Gemma 2B)"]
+        ROUTER{"Hybrid Edge-Cloud Router"}
+        ROOM[("Room Cache / Vector Store")]
+        end
+
+        subgraph EdgeGateway["Distributed Gateway & Caching (FastAPI / Cloud Run)"]
+        GW["API Gateway / Auth"]
+        SCACHE[("Semantic Cache (Redis / pgvector)")]
+        end
+
+        subgraph ReasoningTier["Agentic Orchestration & Tools"]
+        ORCH["LangGraph State Engine"]
+        TOOLS["Tool Execution Service"]
+        end
+
+        subgraph StorageInference["Persistence & Frontier Models"]
+        PGVEC[("PostgreSQL + pgvector")]
+        FRONTIER["Frontier LLM (Claude / Gemini)"]
+        end
+
+        UI --> ROUTER
+        ROUTER -->|Low Latency / Offline| SLM
+        ROUTER -->|Complex Query| GW
+        GW --> SCACHE
+        SCACHE -->|Cache Hit &gt; 0.95| GW
+        SCACHE -->|Cache Miss| ORCH
+        ORCH --> PGVEC
+        ORCH --> FRONTIER
+        FRONTIER --> TOOLS
+        TOOLS --> FRONTIER
+        FRONTIER --> GW
+        GW --> UI
+      </div>
+    </div>
+
+    <h2 class="section-title">Track 1: Foundation & Inference Mechanics</h2>
+    <div class="card-grid">
+
+      <div class="module-card">
+        <div>
+          <h3>01. LLM API Protocols & Token Mechanics</h3>
+          <p>Tokenization, context window budget sizing, temperature, top-p/top-k sampling, and asynchronous SSE
+            response streams.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Frame-budget limits in Compose; streaming SSE tokens
+            like reactive <code>Flow&lt;String&gt;</code> payloads.</div>
+        </div>
+        <a href="01-llm-fundamentals.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>02. Prompt & Context Engineering</h3>
+          <p>Deterministic prompt templates, role separation (System/User/Assistant), few-shot conditioning, and
+            chain-of-thought prompting.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> API contract specifications and Retrofit request body
+            builders.</div>
+        </div>
+        <a href="02-prompt-engineering.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>03. Structured Outputs & Schema Enforcement</h3>
+          <p>Validating LLM outputs with Pydantic, JSON schemas, constrained grammar decoding, and self-correction
+            loops.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Strict type serialization matching Kotlin Serialization
+            or Moshi schemas.</div>
+        </div>
+        <a href="03-structured-outputs.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>04. Embeddings & Vector Search Foundations</h3>
+          <p>High-dimensional semantic vectors, cosine similarity, Euclidean distance, chunking strategies, and token
+            overlap.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Room FTS4/SQLite indexing, but operating on geometric
+            coordinate space.</div>
+        </div>
+        <a href="04-embeddings-vector-search.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">Track 2: Retrieval & Relational Vectors</h2>
+    <div class="card-grid">
+
+      <div class="module-card">
+        <div>
+          <h3>05. Production RAG Architecture</h3>
+          <p>End-to-end ingestion, bi-encoder retrieval vs. cross-encoder reranking, and dynamic prompt envelope
+            assembly.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Offline-First Repository Pattern coordinating local
+            Room caches and remote APIs.</div>
+        </div>
+        <a href="05-rag-systems.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>06. Vector Databases: PostgreSQL + pgvector</h3>
+          <p>Schema setup, HNSW vs. IVFFlat indexing trade-offs, distance operators, and hybrid metadata pre-filtering.
+          </p>
+          <div class="analogy"><strong>Android Analogy:</strong> Room custom type converters and native SQLite query
+            planner optimization.</div>
+        </div>
+        <a href="06-postgres-pgvector.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">Track 3: Agentic Workflows & Serving Systems</h2>
+    <div class="card-grid">
+
+      <div class="module-card">
+        <div>
+          <h3>07. Function Calling & Tool Execution</h3>
+          <p>JSON schema tool declarations, multi-turn tool loops, sandboxed execution, and parallel tool dispatching.
+          </p>
+          <div class="analogy"><strong>Android Analogy:</strong> Android Intent resolution and deep-link command
+            dispatching.</div>
+        </div>
+        <a href="07-tool-calling.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>08. Agentic Workflows & State Machines (LangGraph)</h3>
+          <p>Cyclic agent graphs, state checkpointing, human-in-the-loop approvals, and conditional state reduction.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Reactive MVI state reducers and lifecycle-aware
+            WorkManager orchestration.</div>
+        </div>
+        <a href="08-agentic-langgraph.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>09. Asynchronous AI Serving with FastAPI & Cloud Run</h3>
+          <p>ASGI event loops, SSE streaming protocols, client socket disconnect handling, and Cloud Run scaling.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Thread concurrency management via Kotlin Coroutines
+            <code>Dispatchers.IO</code>.
+          </div>
+        </div>
+        <a href="09-fastapi-cloud-run.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>10. AI Evaluation & System Observability</h3>
+          <p>The RAG triad (Faithfulness, Relevance, Precision), latency anatomy (TTFT vs. ITL), and LLM-as-a-Judge test
+            gates.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Unit/UI integration suites, Sonar quality gates, and
+            Firebase Crashlytics.</div>
+        </div>
+        <a href="10-evals-observability.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">Track 4: Edge AI & Systems Architecture</h2>
+    <div class="card-grid">
+
+      <div class="module-card">
+        <div>
+          <h3>11. Edge AI & On-Device Small Language Models</h3>
+          <p>Running quantized SLMs (Gemma 2B / Llama 3.2) locally via LiteRT & MediaPipe, NPU acceleration, and hybrid
+            edge-cloud routing.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> Offline Room database serving immediate UI state while
+            background sync handles remote data.</div>
+        </div>
+        <a href="11-edge-ai-android.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+      <div class="module-card">
+        <div>
+          <h3>12. AI System Design, Semantic Caching & Cost Architecture</h3>
+          <p>Semantic caching with vector distance thresholds, prompt KV-cache reuse, token bucket rate limiters, and
+            PEFT/LoRA vs. RAG matrices.</p>
+          <div class="analogy"><strong>Android Analogy:</strong> HTTP OkHttp cache interceptors, memory LRU caches, and
+            network throttle policies.</div>
+        </div>
+        <a href="12-ai-system-design.html" class="module-link">View Module &rarr;</a>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">Progressive Engineering Glossary</h2>
+    <div class="glossary-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>AI Concept</th>
+            <th>System Definition</th>
+            <th>Mobile / Systems Equivalency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Token</strong></td>
+            <td>Sub-word text chunks used by LLMs to compute probabilities (~0.75 words).</td>
+            <td>Byte buffer allocation or payload serialization packets.</td>
+          </tr>
+          <tr>
+            <td><strong>Embedding</strong></td>
+            <td>A dense vector representation capturing semantic meaning in N-dimensional space.</td>
+            <td>A deterministic hash code mapping semantic similarity rather than collision avoidance.</td>
+          </tr>
+          <tr>
+            <td><strong>RAG</strong></td>
+            <td>Retrieval-Augmented Generation: dynamic grounding of LLM prompts via external search.</td>
+            <td>Local database lookup before executing a remote backend fetch.</td>
+          </tr>
+          <tr>
+            <td><strong>Quantization (INT4 / INT8)</strong></td>
+            <td>Compressing model weights from FP32/FP16 floats to 4-bit/8-bit integers to fit in edge RAM.</td>
+            <td>Image bitmap subsampling (<code>inSampleSize</code>) and Proguard dead-code shrinking.</td>
+          </tr>
+          <tr>
+            <td><strong>Semantic Cache</strong></td>
+            <td>Caching query-response pairs keyed by vector cosine similarity rather than exact string hashing.</td>
+            <td>OkHttp cache interceptor with fuzzy semantic key evaluation.</td>
+          </tr>
+          <tr>
+            <td><strong>Stateful Agent</strong></td>
+            <td>An LLM looped within an iterative graph that mutates state across intermediate turns.</td>
+            <td>A reactive MVI State Machine managing UI and side-effects.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Primary Sources & Standards</h2>
+    <ul style="color: var(--text-muted); font-size: 0.9rem; padding-left: 1.2rem; margin-bottom: 2rem;">
+      <li>Google LiteRT & MediaPipe: Edge AI Model Execution on Android</li>
+      <li>Anthropic Protocol Guides: Prompt Engineering and Prompt Caching Specs</li>
+      <li>Google DeepMind / Vertex AI Architecture Whitepapers: Gemini Technical Reports</li>
+      <li>PostgreSQL pgvector Documentation: HNSW and IVFFlat Indexing Mechanics</li>
+    </ul>
+  </main>
+
+  <footer>
+    <p><a href="../index.html" style="color: var(--accent); text-decoration: none;">SortedQueue</a> AI Systems Curriculum &bull; Designed for Static Hosting</p>
+  </footer>
+
+</body>
+
+</html>

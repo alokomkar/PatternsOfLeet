@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04. Embeddings & Vector Search Foundations | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+      --tab-active: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="03-structured-outputs.html">&larr; Module 03: Structured Outputs</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 04 of 12</a></span>
+      <a href="05-rag-systems.html">Next: Production RAG &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>04. Embeddings & Vector Search Foundations</h1>
+      <p class="meta-subtitle">Dense geometric representations, similarity distance metrics, chunking strategies, and
+        dual-stack Python/Kotlin implementations.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        Traditional mobile search relies on exact keyword indexing via SQLite / Room FTS4/FTS5 (Full-Text Search). If a
+        user queries "flight delay," FTS matches literal string tokens; it completely misses documents saying "plane
+        departure postponed."
+        An <strong>embedding</strong> transforms an arbitrary text string into a fixed-length array of floats
+        ($\mathbb{R}^N$), mapping concepts into coordinates in geometric space. Searching is no longer string
+        matching—it is finding the $K$-nearest geometric neighbors using vector trigonometry.
+      </div>
+
+      <h2>1. The Embedding Space Pipeline</h2>
+      <p>
+        An embedding model (such as OpenAI <code>text-embedding-3-small</code> or Google
+        <code>text-embedding-004</code>) maps varying sequence lengths into a deterministic, normalized coordinate array
+        of fixed dimensions (e.g., 768 or 1536 floats).
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart LR
+          A["Raw Document Chunk"] --> B["Tokenizer Engine"]
+          B --> C["Transformer Encoder Layers"]
+          C --> D["Dense Vector Float Array<br />[0.021, -0.093, 0.441, ... 1536 dims]"]
+          D --> E[("Vector Storage / Memory Index")]
+        </div>
+      </div>
+
+      <h2>2. Mathematical Distance Metrics</h2>
+      <p>
+        To evaluate semantic similarity between a user query vector ($\mathbf{u}$) and an indexed document vector
+        ($\mathbf{v}$), vector search engines calculate geometric distance:
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Mathematical Definition</th>
+              <th>Computational Profile & Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cosine Similarity</strong></td>
+              <td>$$\cos(\theta) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|_2 \|\mathbf{v}\|_2} = \frac{\sum
+                u_i v_i}{\sqrt{\sum u_i^2} \sqrt{\sum v_i^2}}$$</td>
+              <td>Evaluates angular alignment regardless of vector magnitude. Normalized vectors produce scores from
+                -1.0 to 1.0 (1.0 = identical direction).</td>
+            </tr>
+            <tr>
+              <td><strong>Dot Product (Inner Product)</strong></td>
+              <td>$$\mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^{N} u_i v_i$$</td>
+              <td>Cheapest computational profile. Identical to Cosine Similarity when embedding vectors are
+                pre-normalized to unit length ($\|\mathbf{u}\| = 1$).</td>
+            </tr>
+            <tr>
+              <td><strong>Euclidean Distance ($L_2$)</strong></td>
+              <td>$$d(\mathbf{u}, \mathbf{v}) = \sqrt{\sum_{i=1}^{N} (u_i - v_i)^2}$$</td>
+              <td>Measures spatial distance between two vector tips. Lower is closer (0.0 = identical coordinates).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Text Chunking Architectures</h2>
+      <p>
+        Embedding an entire 100-page document into a single vector flattens granular information into an unusable
+        average. Ingestion pipelines apply chunking strategies before computing vectors:
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Mechanism</th>
+              <th>Trade-off</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fixed Token Chunking</strong></td>
+              <td>Slices text strictly every $N$ tokens (e.g., 512) with an overlap window (e.g., 64 tokens).</td>
+              <td>Simple and deterministic, but frequently cuts sentences or code blocks mid-thought.</td>
+            </tr>
+            <tr>
+              <td><strong>Recursive Structural Chunking</strong></td>
+              <td>Splits hierarchically by paragraph breaks (<code>\n\n</code>), lines (<code>\n</code>), then sentence
+                boundaries.</td>
+              <td>Preserves complete semantic concepts and paragraphs within chunk bounds.</td>
+            </tr>
+            <tr>
+              <td><strong>Document-Aware Chunking</strong></td>
+              <td>Parses structural nodes (Markdown headers, Kotlin functions, JSON keys).</td>
+              <td>Highest retrieval relevance; requires custom parsers per file format.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>4. Dual-Stack Implementations: Vector Similarity</h2>
+      <p>Generating an embedding and executing a pure in-memory Cosine Similarity search over candidate vectors:</p>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-code')">Python (OpenAI / NumPy)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-code')">Kotlin (LangChain4j / KMP)</button>
+        </div>
+
+        <div id="python-code" class="tab-content active">
+          <pre><code>import numpy as np
+from openai import OpenAI
+
+client = OpenAI()
+
+def compute_cosine_similarity(v1: list[float], v2: list[float]) -> float:
+    a = np.array(v1)
+    b = np.array(v2)
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+# 1. Generate Query & Document Embeddings
+docs = [
+    "Coroutines dispatch tasks across background threads using Dispatchers.IO.",
+    "FastAPI provides asynchronous server endpoints using Python type hints.",
+    "Jetpack Compose is a declarative UI toolkit for Android."
+]
+
+doc_res = client.embeddings.create(input=docs, model="text-embedding-3-small")
+doc_vectors = [item.embedding for item in doc_res.data]
+
+query = "How to run background threads on Android?"
+query_vector = client.embeddings.create(input=[query], model="text-embedding-3-small").data[0].embedding
+
+# 2. Rank by Cosine Similarity
+scores = [compute_cosine_similarity(query_vector, dv) for dv in doc_vectors]
+best_idx = int(np.argmax(scores))
+
+print(f"Top Match (Score: {scores[best_idx]:.4f}): {docs[best_idx]}")</code></pre>
+        </div>
+
+        <div id="kotlin-code" class="tab-content">
+          <pre><code>import kotlin.math.sqrt
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel
+
+// Pure Kotlin Cosine Similarity without heavy native C dependencies
+fun cosineSimilarity(v1: FloatArray, v2: FloatArray): Float {
+    require(v1.size == v2.size) { "Vector dimensions must match" }
+    var dotProduct = 0.0f
+    var normA = 0.0f
+    var normB = 0.0f
+
+    for (i in v1.indices) {
+        dotProduct += v1[i] * v2[i]
+        normA += v1[i] * v1[i]
+        normB += v2[i] * v2[i]
+    }
+    return dotProduct / (sqrt(normA) * sqrt(normB))
+}
+
+fun main() {
+    val model = OpenAiEmbeddingModel.builder()
+        .apiKey(System.getenv("OPENAI_API_KEY"))
+        .modelName("text-embedding-3-small")
+        .build()
+
+    val docs = listOf(
+        "Coroutines dispatch tasks across background threads using Dispatchers.IO.",
+        "FastAPI provides asynchronous server endpoints using Python type hints.",
+        "Jetpack Compose is a declarative UI toolkit for Android."
+    )
+
+    // 1. Generate Embeddings via JVM Engine
+    val docResponses = docs.map { model.embed(it).content().vector() }
+    val queryVector = model.embed("How to run background threads on Android?").content().vector()
+
+    // 2. Rank by Similarity
+    val ranked = docs.indices.map { i ->
+        docs[i] to cosineSimilarity(queryVector, docResponses[i])
+    }.maxByOrNull { it.second }
+
+    println("Top Match (Score: ${ranked?.second}): ${ranked?.first}")
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Mobile / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Dense Vector</strong></td>
+              <td>An array of continuous real numbers where almost all entries are non-zero.</td>
+              <td>Matrix transformation arrays or Canvas coordinate geometry arrays.</td>
+            </tr>
+            <tr>
+              <td><strong>Dimensionality</strong></td>
+              <td>The number of floating-point values in the embedding vector (e.g., 768, 1536).</td>
+              <td>Number of columns in an indexed database table schema.</td>
+            </tr>
+            <tr>
+              <td><strong>Chunk Overlap</strong></td>
+              <td>Number of shared boundary tokens between consecutive chunks to preserve sentence context.</td>
+              <td>Sliding window buffers or Paging 3 pre-fetch distance margins.</td>
+            </tr>
+            <tr>
+              <td><strong>Approximate Nearest Neighbors (ANN)</strong></td>
+              <td>Algorithmic heuristics (HNSW, ScaNN) that find top-k vectors in sub-linear time $O(\log N)$ instead of
+                brute-force $O(N)$.</td>
+              <td>B-Tree index traversal replacing a full table scan in SQLite.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>Hugging Face: Dense Retrieval and Sentence Transformers Guide</li>
+        <li>OpenAI API Documentation: Vector Embeddings & Similarity Benchmarks</li>
+        <li>Malkov & Yashunin: Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable
+          Small World (HNSW) Graphs</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="03-structured-outputs.html" class="btn">&larr; Module 03: Structured Outputs</a>
+        <a href="05-rag-systems.html" class="btn">Proceed to Module 05: Production RAG &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 04</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>01. LLM API Protocols & Token Mechanics | AI Engineering</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+      --tag-bg: #1e3a5f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin: 1rem 0;
+      color: #e2e8f0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, "Courier New", Courier, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul,
+    ol {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="index.html">&larr; Overview / Index</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 01 of 12</a></span>
+      <a href="02-prompt-engineering.html">Next Module &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>01. LLM API Protocols & Token Mechanics</h1>
+      <p class="meta-subtitle">Understanding foundation model transport layers, token serialization, inference sampling,
+        and streaming event semantics.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        In mobile platforms, text is represented as UTF-8 or UTF-16 character sequences, and memory bottlenecks surface
+        via Binder transaction buffer exhaustion (the 1MB IPC limit) or Garbage Collection pressure. In Large Language
+        Models (LLMs), text does not exist at runtime—models operate entirely on discrete <strong>integer token
+          IDs</strong>. Passing input to an LLM is analogous to dispatching a streaming network request through OkHttp
+        with strict body byte limits, where every single sub-word chunk incurs discrete compute latency and monetary
+        cost.
+      </div>
+
+      <h2>1. Tokenization Fundamentals</h2>
+      <p>
+        Neural networks cannot process raw strings. Tokenization is the preprocessing step that parses continuous text
+        into discrete integer representations using algorithms like <strong>Byte-Pair Encoding (BPE)</strong>.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart LR
+          A["Input String:<br />'Structured concurrency in Kotlin'"] --> B["BPE Tokenizer Engine"]
+          B --> C["Token Array:<br />['Struct', 'ured', ' concurrency', ' in', ' Kot', 'lin']"]
+          C --> D["Token IDs:<br />[14205, 1142, 45129, 294, 38102, 1109]"]
+          D --> E["Embedding Layer Matrix Lookup"]
+        </div>
+      </div>
+
+      <p>Key properties of tokens:</p>
+      <ul>
+        <li><strong>Sub-word decomposition:</strong> Common words map to a single token (e.g., "the" &rarr; ID
+          <code>1820</code>), while uncommon or specialized code identifiers are split into multiple fragments (e.g.,
+          <code>CoroutineScope</code> &rarr; <code>["Cor", "outine", "Scope"]</code>).
+        </li>
+        <li><strong>Token Rule of Thumb:</strong> In English text, 1 token &asymp; 0.75 words, or approximately 4
+          characters. 1,000 tokens represent ~750 words.</li>
+        <li><strong>Language bias:</strong> Non-English languages and code blocks often produce significantly more
+          tokens per character due to lower occurrence in base BPE vocabulary dictionaries.</li>
+      </ul>
+
+      <h2>2. Model Sampling Hyperparameters</h2>
+      <p>
+        At each generation step, the model computes raw numerical logits across its entire vocabulary (e.g., 32k to 128k
+        distinct tokens). A Softmax function converts logits to probabilities. Hyperparameters determine which token is
+        chosen next.
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>System Mechanism</th>
+              <th>Low Value Impact</th>
+              <th>High Value Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Temperature</strong> ($T$)</td>
+              <td>Divides logits before Softmax: $P(w_i) = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}$.</td>
+              <td>$T \to 0$: Deterministic argmax choice. Ideal for structured JSON and code generation.</td>
+              <td>$T \ge 1.0$: Flattens probability curve. Increases diversity, creativity, and hallucination risk.</td>
+            </tr>
+            <tr>
+              <td><strong>Top-P (Nucleus)</strong></td>
+              <td>Selects dynamically from the smallest candidate pool whose cumulative probability exceeds $P$.</td>
+              <td>Tight candidate pool; discards low-probability tail tokens. Highly stable.</td>
+              <td>Considers longer-tail tokens; prevents repetitive loops in open-ended generation.</td>
+            </tr>
+            <tr>
+              <td><strong>Top-K</strong></td>
+              <td>Hard-truncates candidate set to the top $K$ absolute highest-probability tokens.</td>
+              <td>$K=1$: Exact greedy decoding. Extremely predictable.</td>
+              <td>Broader token options, balancing variety with sensible alternatives.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Asynchronous Streaming &amp; SSE Protocols</h2>
+      <p>
+        Generating 500 tokens takes several seconds because LLMs generate text auto-regressively (one token per forward
+        pass). Standard synchronous blocking HTTP creates high Time-to-First-Token (TTFT) latency, degrading UX.
+        Production systems use <strong>Server-Sent Events (SSE)</strong> over HTTP/2.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          sequenceDiagram
+          autonumber
+          participant App as Android Client (ViewModel)
+          participant Engine as AI Backend Gateway (FastAPI)
+          participant LLM as Inference Engine (Vertex AI / Claude)
+
+          App->>Engine: POST /v1/chat/completions (stream=true)
+          Engine->>LLM: Stream Inference Request
+          loop Token Generation
+          LLM-->>Engine: Raw Token Logit -> Token String
+          Engine-->>App: SSE data: {"delta": {"content": "token"}}
+          Note over App: Emit to Flow&lt;String&gt;, Render in UI
+          end
+          LLM-->>Engine: [DONE]
+          Engine-->>App: SSE data: [DONE]
+        </div>
+      </div>
+
+      <h3>Dual-Stack Implementations: Consuming SSE Streams</h3>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'python-stream')">Python (Async OpenAI /
+            httpx)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-stream')">Kotlin (OkHttp + Coroutines Flow)</button>
+        </div>
+
+        <div id="python-stream" class="tab-content active">
+          <pre><code>import asyncio
+from openai import AsyncOpenAI
+
+client = AsyncOpenAI()
+
+async def stream_tokens(prompt: str):
+    response = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a concise technical architect."},
+            {"role": "user", "content": prompt}
+        ],
+        stream=True,
+        temperature=0.2
+    )
+
+    # Asynchronously iterate over arriving SSE deltas
+    async for chunk in response:
+        delta = chunk.choices[0].delta.content
+        if delta:
+            print(delta, end="", flush=True)
+
+if __name__ == "__main__":
+    asyncio.run(stream_tokens("Explain structured concurrency in 2 sentences."))</code></pre>
+        </div>
+
+        <div id="kotlin-stream" class="tab-content">
+          <pre><code>import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.Dispatchers
+import okhttp3.*
+import okhttp3.sse.EventSource
+import okhttp3.sse.EventSourceListener
+import okhttp3.sse.EventSources
+import java.io.IOException
+
+fun streamModelResponse(okHttpClient: OkHttpClient, request: Request): Flow&lt;String&gt; = callbackFlow {
+    val eventSourceListener = object : EventSourceListener() {
+        override fun onEvent(eventSource: EventSource, id: String?, type: String?, data: String) {
+            if (data == "[DONE]") {
+                channel.close()
+                return
+            }
+            // Parse partial delta token from raw JSON
+            val token = parseDeltaFromJson(data)
+            trySend(token)
+        }
+
+        override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
+            channel.close(t ?: IOException("SSE connection dropped"))
+        }
+    }
+
+    val eventSource = EventSources.createFactory(okHttpClient)
+        .newEventSource(request, eventSourceListener)
+
+    awaitClose { eventSource.cancel() }
+}.flowOn(Dispatchers.IO)</code></pre>
+        </div>
+      </div>
+
+      <h2>4. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Android / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Autoregressive</strong></td>
+              <td>Inference mode where each generated token is appended to the context window to predict the next token
+                sequentially.</td>
+              <td>Recursive list accumulator emitting partial items down a reactive stream.</td>
+            </tr>
+            <tr>
+              <td><strong>Context Window</strong></td>
+              <td>The absolute token limit (input prompt + output generation) processed in a single inference cycle.
+              </td>
+              <td>Heap memory allocation limit or SQLite maximum SQLite query parameter count.</td>
+            </tr>
+            <tr>
+              <td><strong>TTFT</strong></td>
+              <td>Time To First Token: Duration between user dispatch and the arrival of the first generated token.</td>
+              <td>Time to Initial Display (TTID) in Android app performance benchmarking.</td>
+            </tr>
+            <tr>
+              <td><strong>Logits</strong></td>
+              <td>Raw, unnormalized score vectors output by the final transformer layer before probability mapping.</td>
+              <td>Unmapped domain entities before domain-to-UI DTO transformation.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>5. Architecture Trade-offs & Production Considerations</h2>
+      <ul>
+        <li><strong>Client Connection Lifecycle:</strong> When an Android device enters the background or loses network
+          connection, the OkHttp client terminates the socket. Backend gateways must capture this
+          <code>ClientDisconnect</code> to terminate the upstream LLM inference call; otherwise, upstream token
+          generation continues running and incurring cost.
+        </li>
+        <li><strong>Context Window Degradation:</strong> Larger context windows (e.g., 1M+ tokens in Gemini 1.5) enable
+          wide context ingestion, but retrieval accuracy ("needle-in-a-haystack") degrades if critical prompts are
+          buried in the middle of long documents.</li>
+      </ul>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>Anthropic Documentation: Claude API Architecture & Token Mechanics</li>
+        <li>Google Vertex AI Architecture Guide: Gemini Foundational Capabilities</li>
+        <li>OpenAI Developer Platform: Understanding Tokens & Latency Optimization</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="index.html" class="btn">&larr; Back to Curriculum</a>
+        <a href="02-prompt-engineering.html" class="btn">Proceed to Module 02: Prompt Engineering &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 01</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06. Vector Databases: PostgreSQL + pgvector | AI Systems Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral',
+        securityLevel: 'loose',
+        logLevel: 'error'
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #273549;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --border: #334155;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .meta-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #fff;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    .analogy-callout {
+      background: var(--code-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .analogy-callout strong {
+      color: var(--accent);
+    }
+
+    .diagram-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .code-tabs {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      color: var(--accent-hover);
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--accent);
+    }
+
+    ul {
+      margin: 0 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="05-rag-systems.html">&larr; Module 05: Production RAG</a>
+      <span><a href="index.html" style="color: var(--text-muted); text-decoration: none;" title="Curriculum Index">Module 06 of 12</a></span>
+      <a href="07-tool-calling.html">Next: Tool & Function Calling &rarr;</a>
+    </nav>
+
+    <header>
+      <h1>06. Vector Databases: PostgreSQL + pgvector</h1>
+      <p class="meta-subtitle">Embedding persistence, HNSW vs. IVFFlat index tuning, vector distance operators, and
+        relational-semantic hybrid queries.</p>
+    </header>
+
+    <main>
+      <div class="analogy-callout">
+        <strong>Android Architecture Mental Model:</strong>
+        Specialized standalone vector databases (like Pinecone or Chroma) introduce the distributed dual-write problem:
+        you store relational user metadata in one database and vector embeddings in another, requiring fragile two-phase
+        commit logic. <code>pgvector</code> is analogous to adding an official Room type converter or SQLite C-extension
+        directly inside your existing relational database. Your operational relational tables (Users, Tenants, Auth IDs)
+        sit in the exact same schema and transaction boundary as your dense vector arrays.
+      </div>
+
+      <h2>1. The pgvector Data Architecture</h2>
+      <p>
+        <code>pgvector</code> registers a first-class <code>vector(N)</code> data type inside PostgreSQL. Embeddings are
+        stored contiguously as IEEE 754 floating-point numbers on disk, allowing standard SQL queries to perform
+        trigonometric scans alongside relational <code>WHERE</code> clauses.
+      </p>
+
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart TD
+          subgraph PostgresEngine["PostgreSQL Runtime Engine"]
+          ROW["Row Record: id, tenant_id, created_at, content"]
+          VEC["vector(1536): [0.012, -0.043, 0.921, ...]"]
+          INDEX["HNSW Index (Layered Geometric Graph)"]
+          FILTER["Relational B-Tree (WHERE tenant_id = 'tenant_1')"]
+          end
+
+          CLIENT["SQL Query: SELECT content FROM docs WHERE tenant_id = 'tenant_1' ORDER BY embedding &lt;=&gt; '[...]'
+          LIMIT 5"]
+          CLIENT --> FILTER
+          FILTER --> INDEX
+          INDEX --> RESULT["Top-K Candidate Rows"]
+        </div>
+      </div>
+
+      <h2>2. Vector Distance Operators in PostgreSQL</h2>
+      <p>
+        <code>pgvector</code> introduces three primary geometric distance operators:
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Operator</th>
+              <th>Distance Type</th>
+              <th>SQL Calculation</th>
+              <th>Optimal Index Setting</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>&lt;=&gt;</code></td>
+              <td>Cosine Distance</td>
+              <td>$1 - \text{Cosine Similarity}$</td>
+              <td><code>vector_cosine_ops</code></td>
+            </tr>
+            <tr>
+              <td><code>&lt;#&gt;</code></td>
+              <td>Negative Dot Product</td>
+              <td>$-\mathbf{u} \cdot \mathbf{v}$ (multiplied by -1 for ascending sort)</td>
+              <td><code>vector_ip_ops</code> (Unit-normalized vectors)</td>
+            </tr>
+            <tr>
+              <td><code>&lt;-&gt;</code></td>
+              <td>Euclidean Distance ($L_2$)</td>
+              <td>$\sqrt{\sum (u_i - v_i)^2}$</td>
+              <td><code>vector_l2_ops</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Index Tuning: HNSW vs. IVFFlat</h2>
+      <p>
+        Without an index, Postgres performs an exact sequential scan ($O(N)$), comparing the query vector against every
+        record. For production tables ($&gt;100k$ rows), an Approximate Nearest Neighbor (ANN) index is required.
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Index Parameter</th>
+              <th>IVFFlat (Inverted File Flat)</th>
+              <th>HNSW (Hierarchical Navigable Small World)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Mechanism</strong></td>
+              <td>Partitions vectors into $K$ Voronoi centroid clusters; searches only vectors in the nearest centroids.
+              </td>
+              <td>Builds a multi-layer geometric graph structure (skip-list concept in N-dimensional space).</td>
+            </tr>
+            <tr>
+              <td><strong>Build Time & RAM</strong></td>
+              <td>Very fast to construct; lowest memory footprint.</td>
+              <td>Slower index build time; higher RAM requirements.</td>
+            </tr>
+            <tr>
+              <td><strong>Recall & Latency</strong></td>
+              <td>Decent recall, but requires retraining centroids when distribution shifts.</td>
+              <td><strong>Highest recall (&gt;98%)</strong> and fast millisecond query throughput. Production standard.
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DDL Definition</strong></td>
+              <td><code>CREATE INDEX ON docs USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);</code></td>
+              <td>
+                <code>CREATE INDEX ON docs USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64);</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>4. Dual-Stack Implementations: Schema & Vector Query</h2>
+
+      <div class="code-tabs">
+        <div class="tab-header">
+          <button class="tab-btn active" onclick="switchTab(event, 'sql-schema')">SQL Schema & Migration</button>
+          <button class="tab-btn" onclick="switchTab(event, 'python-pg')">Python (psycopg3 + pgvector)</button>
+          <button class="tab-btn" onclick="switchTab(event, 'kotlin-pg')">Kotlin (JDBC / HikariCP)</button>
+        </div>
+
+        <div id="sql-schema" class="tab-content active">
+          <pre><code>-- 1. Enable extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- 2. Define relational table with dense vector column
+CREATE TABLE document_embeddings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id VARCHAR(64) NOT NULL,
+    content TEXT NOT NULL,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    embedding vector(1536) NOT NULL
+);
+
+-- 3. Construct HNSW ANN Index for Cosine Distance
+CREATE INDEX idx_docs_hnsw_cosine 
+ON document_embeddings 
+USING hnsw (embedding vector_cosine_ops) 
+WITH (m = 16, ef_construction = 64);
+
+-- 4. Compound index for filtered queries
+CREATE INDEX idx_docs_tenant ON document_embeddings (tenant_id);</code></pre>
+        </div>
+
+        <div id="python-pg" class="tab-content">
+          <pre><code>import psycopg
+from pgvector.psycopg import register_vector
+
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/ai_db"
+
+def search_documents(query_vector: list[float], tenant_id: str, limit: int = 5):
+    with psycopg.connect(DATABASE_URL) as conn:
+        # Register pgvector type codec
+        register_vector(conn)
+        with conn.cursor() as cur:
+            query = """
+                SELECT id, content, embedding &lt;=&gt; %s AS distance
+                FROM document_embeddings
+                WHERE tenant_id = %s
+                ORDER BY distance ASC
+                LIMIT %s;
+            """
+            cur.execute(query, (query_vector, tenant_id, limit))
+            results = cur.fetchall()
+            return [{"id": r[0], "content": r[1], "score": 1 - r[2]} for r in results]</code></pre>
+        </div>
+
+        <div id="kotlin-pg" class="tab-content">
+          <pre><code>import java.sql.Connection
+import java.sql.DriverManager
+import com.pgvector.PGvector
+
+data class SearchResult(val id: String, val content: String, val score: Double)
+
+class PgVectorRepository(private val dbUrl: String) {
+
+    fun searchSimilar(queryVector: FloatArray, tenantId: String, limit: Int): List&lt;SearchResult&gt; {
+        val sql = """
+            SELECT id, content, embedding &lt;=&gt; ? AS distance
+            FROM document_embeddings
+            WHERE tenant_id = ?
+            ORDER BY distance ASC
+            LIMIT ?;
+        """.trimIndent()
+
+        val results = mutableListOf&lt;SearchResult&gt;()
+
+        DriverManager.getConnection(dbUrl).use { conn -&gt;
+            // Register PGvector type codec on JDBC connection
+            PGvector.addVectorType(conn)
+            
+            conn.prepareStatement(sql).use { stmt -&gt;
+                stmt.setObject(1, PGvector(queryVector))
+                stmt.setString(2, tenantId)
+                stmt.setInt(3, limit)
+
+                stmt.executeQuery().use { rs -&gt;
+                    while (rs.next()) {
+                        val distance = rs.getDouble("distance")
+                        results.add(
+                            SearchResult(
+                                id = rs.getString("id"),
+                                content = rs.getString("content"),
+                                score = 1.0 - distance
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        return results
+    }
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>5. Progressive Glossary</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Technical Definition</th>
+              <th>Mobile / Systems Analogy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>HNSW</strong></td>
+              <td>Hierarchical Navigable Small World: a graph-based data structure executing logarithmic ANN searches.
+              </td>
+              <td>Skip-lists or hierarchical spatial quad-trees used for GIS rendering in Google Maps.</td>
+            </tr>
+            <tr>
+              <td><strong>$m$ Parameter</strong></td>
+              <td>Maximum number of bi-directional connection links per node in an HNSW graph (typically 16–64).</td>
+              <td>Connection pool bounds or graph adjacency list capacity limits.</td>
+            </tr>
+            <tr>
+              <td><strong>$ef\_construction$</strong></td>
+              <td>Size of dynamic candidate list examined during HNSW index construction.</td>
+              <td>Compiler optimization flags (e.g., `-O3` compilation effort vs. build duration).</td>
+            </tr>
+            <tr>
+              <td><strong>Iterative Pre-Filtering</strong></td>
+              <td>Executing hard metadata SQL constraints (`WHERE tenant_id = X`) before vector distance traversal.</td>
+              <td>Applying Room `@Query` filters prior to sorting elements in memory.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Sources & Reference Standards</h2>
+      <ul>
+        <li>pgvector Open Source Project: Vector Similarity Search for PostgreSQL</li>
+        <li>PostgreSQL Official Documentation: Index Types & Extension Development</li>
+        <li>Pinecone / pgvector Benchmarking: Performance and Trade-offs of In-Engine Vector Search</li>
+      </ul>
+
+      <div class="nav-buttons">
+        <a href="05-rag-systems.html" class="btn">&larr; Module 05: Production RAG</a>
+        <a href="07-tool-calling.html" class="btn">Proceed to Module 07: Tool Calling &rarr;</a>
+      </div>
+    </main>
+
+    <footer>
+      <p>SortedQueue AI Systems Curriculum &bull; Module 06</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(evt, tabId) {
+      const container = evt.target.closest('.code-tabs');
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      evt.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>
