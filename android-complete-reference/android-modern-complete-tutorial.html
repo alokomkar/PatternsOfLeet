@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Android Complete Course - Kotlin, Compose, Coroutines, Flow, LiveData, Architecture, DI, KMP, ML, CI/CD</title>
+  <meta name="description" content="A detailed modern Android course for absolute beginners covering Kotlin, Jetpack Compose, Coroutines, Flow, LiveData, MVVM, MVI, Dagger 2, Hilt, KMP, LiteRT/TensorFlow, testing, and CI/CD.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/android-modern-complete-tutorial.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Roadmap</a>
+        <a href="#course">Course</a>
+        <a href="#labs">Labs</a>
+        <a href="android-zero-to-one-modern.html">Capstone</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Modern Android complete course</div>
+        <h1>A serious 0 to advanced Android course, not a checklist.</h1>
+        <p class="hero-copy">This page is structured as a complete course. Each module tells you what to build, which files to touch, which dependencies are needed, what code to write, how to test it, and what usually breaks. XML layouts are intentionally excluded; the path is Kotlin and Jetpack Compose first.</p>
+        <div class="actions">
+          <a class="button primary" href="#course">Start Module 0</a>
+          <a class="button" href="#labs">Interactive checks</a>
+          <a class="button" href="android-zero-to-one-modern.html">One-app capstone version</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">What complete means here</div>
+        <p>Not “one snippet per topic.” Every topic has setup, files, implementation, explanation, tests, common failures, and a checkpoint. Some advanced topics use focused mini-projects because forcing everything into one app hides the actual concept.</p>
+        <div class="summary-grid">
+          <div><b>14</b><span>modules</span></div>
+          <div><b>13</b><span>test angles</span></div>
+          <div><b>0</b><span>XML labs</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">Course architecture</div>
+        <h2>Build mental models before adding libraries.</h2>
+        <table class="table">
+          <thead><tr><th>Stage</th><th>Modules</th><th>Output</th></tr></thead>
+          <tbody>
+            <tr><td>Foundation</td><td>Project setup, Kotlin, Gradle, Compose</td><td>Runnable Compose app with local state.</td></tr>
+            <tr><td>Async state</td><td>Coroutines, Flow, StateFlow, LiveData</td><td>Async app state that survives real loading/error behavior.</td></tr>
+            <tr><td>Architecture</td><td>MVVM, MVI, repositories</td><td>Screen behavior separated from data and reducers.</td></tr>
+            <tr><td>Dependency graph</td><td>Dagger 2, Hilt</td><td>Constructed graph and Android-integrated DI.</td></tr>
+            <tr><td>Advanced platform</td><td>KMP, LiteRT/TensorFlow</td><td>Shared rules and on-device inference seam.</td></tr>
+            <tr><td>Delivery</td><td>Testing, CI/CD</td><td>Automated quality gate for every change.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="course">
+      <aside class="side-nav">
+        <a href="#module-0">0 Setup</a>
+        <a href="#module-1">1 Kotlin</a>
+        <a href="#module-2">2 Compose</a>
+        <a href="#module-3">3 State</a>
+        <a href="#module-4">4 Coroutines</a>
+        <a href="#module-5">5 Flow</a>
+        <a href="#module-6">6 LiveData</a>
+        <a href="#module-7">7 MVVM</a>
+        <a href="#module-8">8 MVI</a>
+        <a href="#module-9">9 Dagger</a>
+        <a href="#module-10">10 Hilt</a>
+        <a href="#module-11">11 KMP</a>
+        <a href="#module-12">12 LiteRT</a>
+        <a href="#module-13">13 Testing</a>
+        <a href="#module-14">14 CI/CD</a>
+      </aside>
+
+      <article>
+        <section class="lesson" id="module-0">
+          <div class="eyebrow">Module 0</div>
+          <h2>Project Setup, Gradle, and Course Rules</h2>
+          <p><b>Build:</b> a clean Compose app named <code>ModernAndroidCourse</code>. The first rule is simple: the app must compile after every module.</p>
+          <div class="file-tree">
+            <div>ModernAndroidCourse/</div>
+            <div>  app/build.gradle.kts</div>
+            <div>  app/src/main/java/com/example/modernandroid/</div>
+            <div>    MainActivity.kt</div>
+            <div>    model/</div>
+            <div>    ui/</div>
+            <div>    data/</div>
+            <div>    architecture/</div>
+            <div>    di/</div>
+            <div>    ml/</div>
+            <div>  app/src/test/java/com/example/modernandroid/</div>
+            <div>  app/src/androidTest/java/com/example/modernandroid/</div>
+          </div>
+          <h3>Baseline dependencies</h3>
+          <pre class="code-card">plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "com.example.modernandroid"
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = "com.example.modernandroid"
+        minSdk = 26
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+    }
+}
+
+dependencies {
+    implementation(platform("androidx.compose:compose-bom:2026.08.00"))
+    implementation("androidx.activity:activity-compose:1.12.0")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> run the app before writing course code. If the starter fails, fix Gradle, SDK, or emulator first.</div>
+          <div class="error-grid">
+            <div class="error-card"><b>Version mismatch</b><span>Use Android Studio's suggested stable versions if these versions are newer than your installed tooling supports.</span></div>
+            <div class="error-card"><b>Course rule</b><span>Never add Dagger, Hilt, KMP, or LiteRT before the simpler version works.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="module-1">
+          <div class="eyebrow">Module 1</div>
+          <h2>Kotlin: Types, Data Classes, Null Safety, and Sealed Models</h2>
+          <p><b>Build:</b> a pure Kotlin expense model. This module has no Android UI. That is intentional: app correctness starts before the screen.</p>
+          <div class="file-tree"><div>model/Expense.kt</div><div>model/ExpenseRules.kt</div><div>src/test/.../ExpenseRulesTest.kt</div></div>
+          <pre class="code-card">package com.example.modernandroid.model
+
+data class Expense(
+    val id: Long,
+    val title: String,
+    val amount: Double,
+    val category: ExpenseCategory,
+    val note: String? = null
+)
+
+sealed interface ExpenseCategory {
+    data object Food : ExpenseCategory
+    data object Travel : ExpenseCategory
+    data object Medical : ExpenseCategory
+    data object Education : ExpenseCategory
+    data object Other : ExpenseCategory
+}
+
+sealed interface ValidationResult {
+    data object Valid : ValidationResult
+    data class Invalid(val reason: String) : ValidationResult
+}
+
+object ExpenseRules {
+    fun validate(title: String, amount: Double): ValidationResult {
+        return when {
+            title.trim().length &lt; 3 -&gt; ValidationResult.Invalid("Title must have at least 3 characters")
+            amount &lt;= 0.0 -&gt; ValidationResult.Invalid("Amount must be greater than zero")
+            amount &gt; 1_000_000.0 -&gt; ValidationResult.Invalid("Amount is unusually high")
+            else -&gt; ValidationResult.Valid
+        }
+    }
+}</pre>
+          <pre class="code-card">class ExpenseRulesTest {
+    @Test fun rejectsShortTitle() {
+        val result = ExpenseRules.validate("No", 100.0)
+        assertTrue(result is ValidationResult.Invalid)
+    }
+
+    @Test fun acceptsValidExpense() {
+        val result = ExpenseRules.validate("Clinic visit", 800.0)
+        assertEquals(ValidationResult.Valid, result)
+    }
+}</pre>
+          <div class="expected-result"><b>Expected result:</b> Kotlin unit tests pass without launching an emulator.</div>
+        </section>
+
+        <section class="lesson" id="module-2">
+          <div class="eyebrow">Module 2</div>
+          <h2>Jetpack Compose: Layout, Lists, Forms, and Events</h2>
+          <p><b>Build:</b> an expense entry screen with a form, list, empty state, and stable item keys.</p>
+          <div class="file-tree"><div>ui/ExpenseScreen.kt</div><div>MainActivity.kt</div></div>
+          <div class="code-split">
+            <pre class="code-card">@Composable
+fun ExpenseScreen(
+    expenses: List&lt;Expense&gt;,
+    title: String,
+    amount: String,
+    onTitleChange: (String) -&gt; Unit,
+    onAmountChange: (String) -&gt; Unit,
+    onAdd: () -&gt; Unit
+) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text("Expense Tracker", style = MaterialTheme.typography.headlineMedium)
+        OutlinedTextField(value = title, onValueChange = onTitleChange, label = { Text("Title") })
+        OutlinedTextField(value = amount, onValueChange = onAmountChange, label = { Text("Amount") })
+        Button(onClick = onAdd, enabled = title.length &gt;= 3 && amount.toDoubleOrNull() != null) {
+            Text("Add expense")
+        }
+
+        if (expenses.isEmpty()) {
+            Text("No expenses yet.")
+        } else {
+            LazyColumn {
+                items(expenses, key = { it.id }) { expense -&gt;
+                    ExpenseRow(expense)
+                }
+            }
+        }
+    }
+}</pre>
+            <div class="mini-phone-screen"><div class="mini-status"></div><div class="mini-input"></div><div class="mini-input"></div><div class="mini-card"><div class="mini-bar"></div><div class="mini-bar short"></div></div></div>
+          </div>
+          <pre class="code-card">@Composable
+fun ExpenseRow(expense: Expense) {
+    Card(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(expense.title, fontWeight = FontWeight.Bold)
+            Text("₹${expense.amount}")
+        }
+    }
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> the screen supports text input, disabled button for invalid values, empty state, and a visible list after adding data.</div>
+        </section>
+
+        <section class="lesson" id="module-3">
+          <div class="eyebrow">Module 3</div>
+          <h2>Compose State: remember, State Hoisting, and Recomposition</h2>
+          <p><b>Build:</b> a local-state version before introducing ViewModel. This teaches what state is before architecture hides it.</p>
+          <pre class="code-card">@Composable
+fun LocalExpenseApp() {
+    var nextId by remember { mutableStateOf(1L) }
+    var title by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+    var expenses by remember { mutableStateOf(emptyList&lt;Expense&gt;()) }
+
+    ExpenseScreen(
+        expenses = expenses,
+        title = title,
+        amount = amount,
+        onTitleChange = { title = it },
+        onAmountChange = { amount = it },
+        onAdd = {
+            val parsedAmount = amount.toDoubleOrNull() ?: return@ExpenseScreen
+            expenses = expenses + Expense(nextId++, title, parsedAmount, ExpenseCategory.Other)
+            title = ""
+            amount = ""
+        }
+    )
+}</pre>
+          <div class="diagram-visual"><div class="diagram-node">User types</div><div class="diagram-node hot">State changes</div><div class="diagram-node">Composable re-runs</div><div class="diagram-node">UI updates</div></div>
+          <div class="error-grid">
+            <div class="error-card"><b>State disappears</b><span>You used a plain local variable instead of remember state.</span></div>
+            <div class="error-card"><b>Child owns too much</b><span>Hoist state when parent needs to coordinate multiple child composables.</span></div>
+          </div>
+        </section>
+
+        <section class="lesson" id="module-4">
+          <div class="eyebrow">Module 4</div>
+          <h2>Coroutines: suspend, scopes, dispatchers, and structured concurrency</h2>
+          <p><b>Build:</b> a repository that simulates loading from disk or network without blocking the UI.</p>
+          <div class="file-tree"><div>data/ExpenseRepository.kt</div><div>data/FakeExpenseRepository.kt</div></div>
+          <pre class="code-card">interface ExpenseRepository {
+    suspend fun loadExpenses(): List&lt;Expense&gt;
+    suspend fun saveExpense(expense: Expense)
+}
+
+class FakeExpenseRepository : ExpenseRepository {
+    private val items = mutableListOf&lt;Expense&gt;()
+
+    override suspend fun loadExpenses(): List&lt;Expense&gt; {
+        delay(300)
+        return items.toList()
+    }
+
+    override suspend fun saveExpense(expense: Expense) {
+        delay(100)
+        items += expense
+    }
+}</pre>
+          <pre class="code-card">class ExpenseRepositoryTest {
+    @Test fun saveThenLoadReturnsExpense() = runTest {
+        val repository = FakeExpenseRepository()
+        repository.saveExpense(Expense(1, "Bus ticket", 40.0, ExpenseCategory.Travel))
+
+        val result = repository.loadExpenses()
+
+        assertEquals("Bus ticket", result.single().title)
+    }
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> no `Thread.sleep()` appears in production code or tests.</div>
+        </section>
+
+        <section class="lesson" id="module-5">
+          <div class="eyebrow">Module 5</div>
+          <h2>Flow, StateFlow, SharedFlow, and Channels</h2>
+          <p><b>Build:</b> a reactive store. Use StateFlow for current state. Use SharedFlow for one-off events such as snackbars. Use Channel only when exactly-one-consumer delivery is required.</p>
+          <pre class="code-card">class ExpenseStore {
+    private val _expenses = MutableStateFlow&lt;List&lt;Expense&gt;&gt;(emptyList())
+    val expenses: StateFlow&lt;List&lt;Expense&gt;&gt; = _expenses.asStateFlow()
+
+    private val _messages = MutableSharedFlow&lt;String&gt;()
+    val messages: SharedFlow&lt;String&gt; = _messages.asSharedFlow()
+
+    suspend fun add(expense: Expense) {
+        _expenses.update { current -&gt; current + expense }
+        _messages.emit("Expense added")
+    }
+}</pre>
+          <pre class="code-card">@Test fun addEmitsUpdatedList() = runTest {
+    val store = ExpenseStore()
+    store.add(Expense(1, "Book", 300.0, ExpenseCategory.Education))
+
+    assertEquals(1, store.expenses.value.size)
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> explain why screen state uses StateFlow and snackbars use SharedFlow.</div>
+        </section>
+
+        <section class="lesson" id="module-6">
+          <div class="eyebrow">Module 6</div>
+          <h2>LiveData: reading and maintaining existing Android apps</h2>
+          <p><b>Build:</b> a small LiveData bridge. You need this because many mature apps still expose LiveData from ViewModels or Room DAOs.</p>
+          <pre class="code-card">class LegacySummaryViewModel : ViewModel() {
+    private val _total = MutableLiveData(0.0)
+    val total: LiveData&lt;Double&gt; = _total
+
+    fun update(expenses: List&lt;Expense&gt;) {
+        _total.value = expenses.sumOf { it.amount }
+    }
+}
+
+@Composable
+fun TotalSummary(viewModel: LegacySummaryViewModel) {
+    val total by viewModel.total.observeAsState(0.0)
+    Text("Total: ₹$total")
+}</pre>
+          <div class="callout">Do not introduce LiveData into new Compose code just because it exists. Use it when integrating with lifecycle-aware existing code or APIs already built around it.</div>
+        </section>
+
+        <section class="lesson" id="module-7">
+          <div class="eyebrow">Module 7</div>
+          <h2>MVVM: ViewModel, UI State, Repository</h2>
+          <p><b>Build:</b> production-shaped state ownership. The screen renders `ExpenseUiState`; the ViewModel owns transitions; repository owns data.</p>
+          <pre class="code-card">data class ExpenseUiState(
+    val isLoading: Boolean = false,
+    val title: String = "",
+    val amount: String = "",
+    val expenses: List&lt;Expense&gt; = emptyList(),
+    val error: String? = null
+)
+
+class ExpenseViewModel(
+    private val repository: ExpenseRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(ExpenseUiState())
+    val uiState: StateFlow&lt;ExpenseUiState&gt; = _uiState.asStateFlow()
+
+    fun load() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        runCatching { repository.loadExpenses() }
+            .onSuccess { items -&gt; _uiState.update { it.copy(isLoading = false, expenses = items) } }
+            .onFailure { error -&gt; _uiState.update { it.copy(isLoading = false, error = error.message) } }
+    }
+}</pre>
+          <div class="diagram-visual"><div class="diagram-node">Compose</div><div class="diagram-node hot">ViewModel</div><div class="diagram-node">Repository</div><div class="diagram-node">Data source</div></div>
+        </section>
+
+        <section class="lesson" id="module-8">
+          <div class="eyebrow">Module 8</div>
+          <h2>MVI: Intents, Reducer, Effects</h2>
+          <p><b>Build:</b> a reducer for screens with many user actions. MVI should make behavior easier to audit, not harder.</p>
+          <pre class="code-card">sealed interface ExpenseIntent {
+    data class TitleChanged(val value: String) : ExpenseIntent
+    data class AmountChanged(val value: String) : ExpenseIntent
+    data object AddClicked : ExpenseIntent
+}
+
+sealed interface ExpenseEffect {
+    data class ShowMessage(val text: String) : ExpenseEffect
+}
+
+fun reduce(state: ExpenseUiState, intent: ExpenseIntent): ExpenseUiState {
+    return when (intent) {
+        is ExpenseIntent.TitleChanged -&gt; state.copy(title = intent.value)
+        is ExpenseIntent.AmountChanged -&gt; state.copy(amount = intent.value)
+        ExpenseIntent.AddClicked -&gt; state.copy(isLoading = true)
+    }
+}</pre>
+          <pre class="code-card">@Test fun titleIntentUpdatesTitle() {
+    val result = reduce(ExpenseUiState(), ExpenseIntent.TitleChanged("Clinic"))
+
+    assertEquals("Clinic", result.title)
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> all user actions can be listed as intents. Reducer tests do not need Android.</div>
+        </section>
+
+        <section class="lesson" id="module-9">
+          <div class="eyebrow">Module 9</div>
+          <h2>Dagger 2: the dependency graph underneath Hilt</h2>
+          <p><b>Build:</b> a plain Dagger graph. This teaches what Hilt later automates.</p>
+          <pre class="code-card">@Module
+class DataModule {
+    @Provides
+    fun provideExpenseRepository(): ExpenseRepository {
+        return FakeExpenseRepository()
+    }
+}
+
+@Component(modules = [DataModule::class])
+interface AppComponent {
+    fun expenseRepository(): ExpenseRepository
+}</pre>
+          <div class="diagram-visual"><div class="diagram-node">Provider method</div><div class="diagram-node hot">Component</div><div class="diagram-node">Repository</div><div class="diagram-node">Consumer</div></div>
+          <div class="error-grid"><div class="error-card"><b>Dagger feels abstract</b><span>Read it as a compile-time object factory with a graph.</span></div><div class="error-card"><b>Hidden new calls</b><span>If classes still construct dependencies manually, the graph is incomplete.</span></div></div>
+        </section>
+
+        <section class="lesson" id="module-10">
+          <div class="eyebrow">Module 10</div>
+          <h2>Hilt: Android dependency injection</h2>
+          <p><b>Build:</b> Android-integrated DI for Application, ViewModel, and repository.</p>
+          <pre class="code-card">@HiltAndroidApp
+class ModernAndroidApp : Application()
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    @Provides
+    fun provideExpenseRepository(): ExpenseRepository = FakeExpenseRepository()
+}
+
+@HiltViewModel
+class ExpenseViewModel @Inject constructor(
+    private val repository: ExpenseRepository
+) : ViewModel()</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> ViewModel constructor has dependencies; it does not instantiate repository, database, network client, or classifier.</div>
+        </section>
+
+        <section class="lesson" id="module-11">
+          <div class="eyebrow">Module 11</div>
+          <h2>Kotlin Multiplatform: shared business rules</h2>
+          <p><b>Build:</b> a shared validation module. Do not start KMP by sharing UI. Start with deterministic rules that both Android and another platform can reuse.</p>
+          <div class="file-tree"><div>shared/src/commonMain/kotlin/ExpenseRules.kt</div><div>shared/src/commonTest/kotlin/ExpenseRulesTest.kt</div></div>
+          <pre class="code-card">object SharedExpenseRules {
+    fun validateAmount(value: Double): ValidationResult {
+        return when {
+            value &lt;= 0.0 -&gt; ValidationResult.Invalid("Amount must be positive")
+            value &gt; 1_000_000.0 -&gt; ValidationResult.Invalid("Amount requires review")
+            else -&gt; ValidationResult.Valid
+        }
+    }
+}</pre>
+          <div class="expected-result"><b>Expected result:</b> common tests run without Android emulator. Android app calls the same validation rule.</div>
+        </section>
+
+        <section class="lesson" id="module-12">
+          <div class="eyebrow">Module 12</div>
+          <h2>TensorFlow / LiteRT: on-device classification</h2>
+          <p><b>Build:</b> a classifier seam first, then plug in LiteRT. The interface matters because models change.</p>
+          <pre class="code-card">interface ExpenseClassifier {
+    suspend fun classify(text: String): ExpenseLabel
+}
+
+enum class ExpenseLabel { Medical, Education, Travel, Food, General }
+
+class RuleBasedExpenseClassifier : ExpenseClassifier {
+    override suspend fun classify(text: String): ExpenseLabel {
+        val value = text.lowercase()
+        return when {
+            "clinic" in value || "doctor" in value -&gt; ExpenseLabel.Medical
+            "school" in value || "course" in value -&gt; ExpenseLabel.Education
+            "bus" in value || "train" in value -&gt; ExpenseLabel.Travel
+            "hotel" in value || "meal" in value -&gt; ExpenseLabel.Food
+            else -&gt; ExpenseLabel.General
+        }
+    }
+}</pre>
+          <pre class="code-card">class LiteRtExpenseClassifier(
+    private val modelPath: String
+) : ExpenseClassifier {
+    override suspend fun classify(text: String): ExpenseLabel {
+        // 1. Tokenize or vectorize input text.
+        // 2. Run LiteRT interpreter or generated model API.
+        // 3. Map model output index to ExpenseLabel.
+        // Keep this class isolated from ViewModel and Compose.
+        return ExpenseLabel.General
+    }
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> tests use fake/rule-based classifier; production wiring can later swap in LiteRT.</div>
+        </section>
+
+        <section class="lesson" id="module-13">
+          <div class="eyebrow">Module 13</div>
+          <h2>Testing the whole stack</h2>
+          <p><b>Build:</b> a test matrix. A serious Android tutorial must say which concept is tested where.</p>
+          <table class="table">
+            <thead><tr><th>Layer</th><th>Test</th><th>Failure caught</th></tr></thead>
+            <tbody>
+              <tr><td>Kotlin rules</td><td>JVM unit test</td><td>Invalid amount accepted.</td></tr>
+              <tr><td>Reducer</td><td>Pure unit test</td><td>Intent creates wrong state.</td></tr>
+              <tr><td>Coroutine repository</td><td>`runTest`</td><td>Save/load behavior wrong.</td></tr>
+              <tr><td>Flow store</td><td>Emission test</td><td>Collectors do not receive updates.</td></tr>
+              <tr><td>ViewModel</td><td>Fake repository</td><td>Loading/error state regression.</td></tr>
+              <tr><td>Compose screen</td><td>UI test</td><td>Button enabled for invalid form.</td></tr>
+              <tr><td>DI</td><td>Fake module or constructor injection</td><td>Real dependency leaks into tests.</td></tr>
+              <tr><td>KMP</td><td>commonTest</td><td>Shared rule differs from Android rule.</td></tr>
+              <tr><td>ML</td><td>Fake classifier or model fixture</td><td>Wrong label mapping.</td></tr>
+            </tbody>
+          </table>
+          <pre class="code-card">@Test fun addButtonDisabledForInvalidAmount() {
+    composeTestRule.setContent {
+        ExpenseScreen(
+            expenses = emptyList(),
+            title = "Clinic",
+            amount = "abc",
+            onTitleChange = {},
+            onAmountChange = {},
+            onAdd = {}
+        )
+    }
+
+    composeTestRule.onNodeWithText("Add expense").assertIsNotEnabled()
+}</pre>
+        </section>
+
+        <section class="lesson" id="module-14">
+          <div class="eyebrow">Module 14</div>
+          <h2>CI/CD: automated verification</h2>
+          <p><b>Build:</b> a GitHub Actions workflow that compiles and runs unit tests. Add emulator UI tests only after the unit gate is stable.</p>
+          <div class="file-tree"><div>.github/workflows/android.yml</div></div>
+          <pre class="code-card">name: Android CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew testDebugUnitTest
+      - run: ./gradlew assembleDebug</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> intentionally break one unit test and confirm CI blocks the change.</div>
+        </section>
+
+        <section class="lesson" id="labs">
+          <div class="eyebrow">Interactive labs</div>
+          <h2>Quizzes, matching, and drag-and-drop code blocks</h2>
+          <div class="quiz-shell">
+            <div class="quiz-card" data-modern-quiz="responsibility">
+              <p><b>Multi-select:</b> Which statements are correct?</p>
+              <label class="quiz-option"><input type="checkbox" value="correct"> Compose renders state and emits events.</label>
+              <label class="quiz-option"><input type="checkbox" value="wrong"> Repositories should call composables directly.</label>
+              <label class="quiz-option"><input type="checkbox" value="correct"> Reducer tests can run as pure JVM tests.</label>
+              <label class="quiz-option"><input type="checkbox" value="correct"> Hilt can provide ViewModel dependencies.</label>
+              <div class="quiz-actions"><button class="button primary" type="button" data-modern-check="responsibility">Check</button></div>
+              <div class="quiz-feedback" id="modern-responsibility-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-card">
+              <p><b>Drag order:</b> Arrange the MVI loop.</p>
+              <div class="code-order" id="modern-order-zone">
+                <div class="drag-item" draggable="true" data-order="4">StateFlow emits new ExpenseUiState</div>
+                <div class="drag-item" draggable="true" data-order="1">User taps Add</div>
+                <div class="drag-item" draggable="true" data-order="3">Reducer creates updated state</div>
+                <div class="drag-item" draggable="true" data-order="5">Compose recomposes</div>
+                <div class="drag-item" draggable="true" data-order="2">ViewModel receives ExpenseIntent.AddClicked</div>
+              </div>
+              <div class="quiz-actions"><button class="button" type="button" data-modern-move="up">Move selected up</button><button class="button" type="button" data-modern-move="down">Move selected down</button><button class="button primary" type="button" data-modern-check="order">Check order</button><button class="button" type="button" data-modern-reset="order">Reset</button></div>
+              <div class="quiz-feedback" id="modern-order-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-card">
+              <p><b>Matching:</b> Pick the best tool.</p>
+              <div class="match-grid">
+                <label>Current Compose screen state<select data-modern-match="state"><option value="">Choose</option><option value="stateflow">StateFlow</option><option value="dagger">Dagger component</option><option value="ci">GitHub Actions</option></select></label>
+                <label>Existing lifecycle-aware app state<select data-modern-match="legacy"><option value="">Choose</option><option value="livedata">LiveData</option><option value="ml">LiteRT</option><option value="compose">Card</option></select></label>
+                <label>Shared amount validation<select data-modern-match="shared"><option value="">Choose</option><option value="kmp">KMP commonMain</option><option value="hilt">Hilt module</option><option value="flow">SharedFlow</option></select></label>
+                <label>On-device category prediction<select data-modern-match="classifier"><option value="">Choose</option><option value="ml">LiteRT/TensorFlow</option><option value="ci">CI job</option><option value="livedata">LiveData</option></select></label>
+              </div>
+              <div class="quiz-actions"><button class="button primary" type="button" data-modern-check="match">Check matches</button></div>
+              <div class="quiz-feedback" id="modern-match-feedback" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson">
+          <div class="eyebrow">References</div>
+          <h2>Primary sources used for factual grounding</h2>
+          <div class="reference-list">
+            <a href="https://developer.android.com/develop/ui/compose/documentation">Jetpack Compose documentation</a>
+            <a href="https://developer.android.com/kotlin/coroutines">Android coroutines guide</a>
+            <a href="https://kotlinlang.org/docs/coroutines-overview.html">Kotlin coroutines overview</a>
+            <a href="https://developer.android.com/topic/libraries/architecture/viewmodel">ViewModel overview</a>
+            <a href="https://developer.android.com/topic/libraries/architecture/livedata">LiveData overview</a>
+            <a href="https://dagger.dev/dev-guide/">Dagger developer guide</a>
+            <a href="https://developer.android.com/training/dependency-injection/hilt-android">Hilt dependency injection</a>
+            <a href="https://developer.android.com/kotlin/multiplatform">Kotlin Multiplatform for Android</a>
+            <a href="https://developers.google.com/edge/litert/android">LiteRT for Android</a>
+            <a href="https://developer.android.com/training/testing">Android testing guide</a>
+            <a href="https://docs.github.com/en/actions/tutorials/build-and-test-code/java-with-gradle">GitHub Actions Gradle CI guide</a>
+          </div>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>Modern Android Complete Course - SortedQueue</span>
+      <div><a href="index.html">Android reference</a><a href="android-zero-to-one-modern.html">Capstone app</a><a href="../index.html">Home</a></div>
+    </div>
+  </footer>
+  <script src="android-modern-complete-tutorial.js"></script>
+</body>
+</html>

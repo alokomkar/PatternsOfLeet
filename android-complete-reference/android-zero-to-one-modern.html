@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android 0 to 1 - Kotlin, Compose, Coroutines, Architecture, DI, KMP, ML, CI/CD</title>
+  <meta name="description" content="A modern Android 0 to 1 tutorial for absolute beginners covering Kotlin, Jetpack Compose, Coroutines, Flow, LiveData, MVVM, MVI, KMP, LiteRT/TensorFlow, Dagger, Hilt, testing, and CI/CD.">
+  <link rel="canonical" href="https://sortedqueue.com/android-complete-reference/android-zero-to-one-modern.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="../index.html">SortedQueue<span>.</span></a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Roadmap</a>
+        <a href="#modules">Modules</a>
+        <a href="#labs">Interactive labs</a>
+        <a href="../android-guide.html">Advanced guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow">Modern Android 0 to 1</div>
+        <h1>Build one Android app while learning the full modern stack.</h1>
+        <p class="hero-copy">This tutorial ignores XML layout paths and teaches Kotlin, Jetpack Compose, Coroutines, Flow, LiveData, MVVM, MVI, Dagger 2, Hilt, KMP, on-device ML with LiteRT/TensorFlow, testing, and CI/CD through one capstone app: <b>Field Notes</b>.</p>
+        <div class="actions">
+          <a class="button primary" href="#setup">Start the tutorial</a>
+          <a class="button" href="#labs">Open interactive labs</a>
+          <a class="button" href="index.html">Back to Android reference</a>
+        </div>
+      </div>
+      <aside class="summary-card">
+        <div class="eyebrow">Capstone app</div>
+        <p><b>Field Notes</b> is a notes/tasks app for field workers. It starts as a local Compose app, then gains async loading, reactive streams, MVVM, MVI, dependency injection, shared KMP validation, on-device label classification, tests, and CI.</p>
+        <div class="summary-grid">
+          <div><b>12</b><span>modules</span></div>
+          <div><b>1</b><span>app thread</span></div>
+          <div><b>4</b><span>quiz types</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="band" id="modules">
+      <div class="shell">
+        <div class="eyebrow">Learning map</div>
+        <h2>Everything is taught through one build path.</h2>
+        <div class="track-map">
+          <div class="track-chip"><b>01 Kotlin</b><span>Types, functions, data classes, sealed interfaces.</span></div>
+          <div class="track-chip"><b>02 Compose</b><span>Composable UI, state, layout, navigation.</span></div>
+          <div class="track-chip"><b>03 Async</b><span>Coroutines, Flow, StateFlow, LiveData bridge.</span></div>
+          <div class="track-chip"><b>04 Architecture</b><span>MVVM, MVI, repositories, state reducers.</span></div>
+          <div class="track-chip"><b>05 DI</b><span>Dagger 2 concepts, Hilt implementation.</span></div>
+          <div class="track-chip"><b>06 Testing</b><span>Unit, coroutine, ViewModel, Compose UI tests.</span></div>
+          <div class="track-chip"><b>07 KMP</b><span>Shared validation and business rules.</span></div>
+          <div class="track-chip"><b>08 ML + CI</b><span>LiteRT inference seam and GitHub Actions pipeline.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="eyebrow">One app end to end</div>
+        <h2>The whole tutorial builds Field Notes incrementally.</h2>
+        <p class="hero-copy">Field Notes is a field-worker note app. A user creates notes, labels them, syncs them through a repository boundary, observes state reactively, validates business rules from shared KMP code, classifies note content on-device, and protects the workflow with tests and CI.</p>
+        <div class="visual-grid">
+          <article class="visual-card">
+            <div class="mini-phone-screen"><div class="mini-status"></div><div class="mini-input"></div><div class="mini-card"><div class="mini-bar"></div><div class="mini-bar short"></div></div><div class="mini-card alt"><div class="mini-bar"></div><div class="mini-bar short"></div></div></div>
+            <h3>Milestone 1</h3><p>Kotlin model plus Compose note list and form.</p>
+          </article>
+          <article class="visual-card">
+            <div class="diagram-visual"><div class="diagram-node">Compose</div><div class="diagram-node hot">ViewModel</div><div class="diagram-node">Repository</div><div class="diagram-node">Classifier</div></div>
+            <h3>Milestone 2</h3><p>MVVM/MVI, coroutines, Flow, DI, and fake ML seam.</p>
+          </article>
+          <article class="visual-card">
+            <div class="file-tree"><div>shared/NoteRules.kt</div><div>app/ml/NoteClassifier.kt</div><div>app/di/AppModule.kt</div><div>.github/workflows/android.yml</div></div>
+            <h3>Milestone 3</h3><p>KMP validation, LiteRT integration point, tests, and CI/CD.</p>
+          </article>
+        </div>
+        <table class="table">
+          <thead><tr><th>Feature added to Field Notes</th><th>Concept learned</th><th>Proof</th></tr></thead>
+          <tbody>
+            <tr><td>Create note model</td><td>Kotlin data classes, sealed interfaces</td><td>Pure validation function and unit test.</td></tr>
+            <tr><td>Render note list</td><td>Jetpack Compose, state, LazyColumn</td><td>Form, add button, empty state, stable row keys.</td></tr>
+            <tr><td>Load/save notes asynchronously</td><td>Coroutines</td><td>No blocking UI while repository simulates latency.</td></tr>
+            <tr><td>Observe note updates</td><td>Flow and StateFlow</td><td>Adding a note updates all collectors.</td></tr>
+            <tr><td>Support existing architecture</td><td>LiveData bridge</td><td>Legacy LiveData state can still render in Compose.</td></tr>
+            <tr><td>Own screen behavior</td><td>MVVM and MVI</td><td>State, intents, reducer, and ViewModel are explicit.</td></tr>
+            <tr><td>Inject dependencies</td><td>Dagger 2 concepts and Hilt implementation</td><td>ViewModel receives repository/classifier instead of creating them.</td></tr>
+            <tr><td>Share rules</td><td>KMP</td><td>Validation lives in common code and is tested outside Android.</td></tr>
+            <tr><td>Auto-label notes</td><td>TensorFlow/LiteRT seam</td><td>Fake classifier first, real model later behind same interface.</td></tr>
+            <tr><td>Protect delivery</td><td>Testing and CI/CD</td><td>Unit, coroutine, ViewModel, Compose UI tests run in GitHub Actions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="shell page-layout" id="setup">
+      <aside class="side-nav">
+        <a href="#setup">Setup</a>
+        <a href="#kotlin">Kotlin</a>
+        <a href="#compose">Compose</a>
+        <a href="#coroutines">Coroutines</a>
+        <a href="#flow">Flow</a>
+        <a href="#livedata">LiveData</a>
+        <a href="#mvvm">MVVM</a>
+        <a href="#mvi">MVI</a>
+        <a href="#di">DI</a>
+        <a href="#testing">Testing</a>
+        <a href="#kmp">KMP</a>
+        <a href="#ml">TensorFlow</a>
+        <a href="#cicd">CI/CD</a>
+        <a href="#labs">Labs</a>
+      </aside>
+
+      <article>
+        <section class="lesson">
+          <div class="eyebrow">Module 0</div>
+          <h2>Project setup and file map</h2>
+          <p>Create a new Android Studio project using <b>Empty Activity</b>, Kotlin, and Jetpack Compose. Name it <b>FieldNotes</b>. Run the default app once before adding architecture, networking, DI, KMP, or ML.</p>
+          <div class="file-tree">
+            <div>FieldNotes/</div>
+            <div>  app/src/main/java/com/example/fieldnotes/</div>
+            <div>    MainActivity.kt</div>
+            <div>    ui/NotesScreen.kt</div>
+            <div>    ui/NotesViewModel.kt</div>
+            <div>    state/NotesContract.kt</div>
+            <div>    data/NotesRepository.kt</div>
+            <div>    di/AppModule.kt</div>
+            <div>    ml/NoteClassifier.kt</div>
+            <div>  shared/src/commonMain/kotlin/</div>
+            <div>    NoteRules.kt</div>
+            <div>  .github/workflows/android.yml</div>
+          </div>
+          <div class="expected-result"><b>Expected result:</b> the starter app runs. If Gradle sync or emulator launch fails, fix that first. Do not debug tutorial code inside a broken environment.</div>
+          <div class="callout">The app should remain runnable after every module. If a module breaks the build, fix it before moving ahead. That is the discipline this tutorial is trying to teach.</div>
+        </section>
+
+        <section class="lesson" id="kotlin">
+          <div class="eyebrow">Module 1</div>
+          <h2>Kotlin fundamentals for Android</h2>
+          <p>Start with the smallest data model. This teaches immutable values, data classes, sealed interfaces, and pure functions.</p>
+          <div class="code-split">
+            <pre class="code-card">data class FieldNote(
+    val id: Long,
+    val title: String,
+    val body: String,
+    val status: NoteStatus = NoteStatus.Open
+)
+
+sealed interface NoteStatus {
+    data object Open : NoteStatus
+    data object Done : NoteStatus
+    data class Blocked(val reason: String) : NoteStatus
+}
+
+fun FieldNote.isValid(): Boolean {
+    return title.trim().length &gt;= 3 && body.trim().isNotEmpty()
+}</pre>
+            <div class="mini-phone-screen"><div class="mini-status"></div><div class="mini-card"><div class="mini-bar"></div><div class="mini-bar short"></div></div><div class="mini-card warn"><div class="mini-bar"></div><div class="mini-bar short"></div></div></div>
+          </div>
+          <div class="checkpoint-box"><b>Checkpoint:</b> create three notes in a list, filter valid notes, and print their titles. No Android UI required yet.</div>
+        </section>
+
+        <section class="lesson" id="compose">
+          <div class="eyebrow">Module 2</div>
+          <h2>Jetpack Compose UI, state, and navigation</h2>
+          <p>Compose is declarative: state goes in, UI comes out. Build a list screen before adding architecture.</p>
+          <pre class="code-card">@Composable
+fun NotesScreen(
+    notes: List&lt;FieldNote&gt;,
+    title: String,
+    onTitleChange: (String) -&gt; Unit,
+    onAdd: () -&gt; Unit
+) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        OutlinedTextField(
+            value = title,
+            onValueChange = onTitleChange,
+            label = { Text("Note title") }
+        )
+        Button(enabled = title.trim().length &gt;= 3, onClick = onAdd) {
+            Text("Add note")
+        }
+        LazyColumn {
+            items(notes, key = { it.id }) { note -&gt;
+                Text(note.title)
+            }
+        }
+    }
+}</pre>
+          <div class="diagram-visual"><div class="diagram-node">State</div><div class="diagram-node hot">Composable</div><div class="diagram-node">Events</div><div class="diagram-node">New state</div></div>
+          <div class="checkpoint-box"><b>Checkpoint:</b> the screen must show input, disabled/enabled button, and a stable keyed list.</div>
+        </section>
+
+        <section class="lesson" id="coroutines">
+          <div class="eyebrow">Module 3</div>
+          <h2>Coroutines: async work without blocking UI</h2>
+          <p>Use suspending functions for work that may take time. Keep blocking work away from the main thread.</p>
+          <pre class="code-card">interface NotesRepository {
+    suspend fun loadNotes(): List&lt;FieldNote&gt;
+    suspend fun saveNote(note: FieldNote)
+}
+
+class FakeNotesRepository : NotesRepository {
+    private val notes = mutableListOf&lt;FieldNote&gt;()
+
+    override suspend fun loadNotes(): List&lt;FieldNote&gt; {
+        delay(300)
+        return notes.toList()
+    }
+
+    override suspend fun saveNote(note: FieldNote) {
+        delay(100)
+        notes += note
+    }
+}</pre>
+          <div class="expected-result">The app can simulate slow work while the UI remains responsive.</div>
+        </section>
+
+        <section class="lesson" id="flow">
+          <div class="eyebrow">Module 4</div>
+          <h2>Flow and StateFlow: reactive app data</h2>
+          <p>Use <b>Flow</b> for streams of values and <b>StateFlow</b> for current UI state. A ViewModel can collect repository changes and expose a stable state object.</p>
+          <pre class="code-card">class ReactiveNotesRepository {
+    private val notes = MutableStateFlow&lt;List&lt;FieldNote&gt;&gt;(emptyList())
+
+    fun observeNotes(): StateFlow&lt;List&lt;FieldNote&gt;&gt; = notes.asStateFlow()
+
+    suspend fun add(note: FieldNote) {
+        notes.update { current -&gt; current + note }
+    }
+}
+
+class NotesViewModel(
+    private val repository: ReactiveNotesRepository
+) : ViewModel() {
+    val notes: StateFlow&lt;List&lt;FieldNote&gt;&gt; = repository.observeNotes()
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> adding a note updates every active collector without manually refreshing the screen.</div>
+        </section>
+
+        <section class="lesson" id="livedata">
+          <div class="eyebrow">Module 5</div>
+          <h2>LiveData: lifecycle-aware observable state</h2>
+          <p>Modern Compose apps usually prefer StateFlow, but LiveData still appears in many Android codebases. Learn it so you can work with existing apps.</p>
+          <pre class="code-card">class LegacyNotesViewModel : ViewModel() {
+    private val _title = MutableLiveData("")
+    val title: LiveData&lt;String&gt; = _title
+
+    fun updateTitle(value: String) {
+        _title.value = value
+    }
+}
+
+@Composable
+fun LegacyTitle(viewModel: LegacyNotesViewModel) {
+    val title by viewModel.title.observeAsState("")
+    Text("Current title: $title")
+}</pre>
+          <div class="callout">Use LiveData when maintaining lifecycle-aware existing architecture. Prefer StateFlow for new coroutine-first Compose code unless project constraints say otherwise.</div>
+        </section>
+
+        <section class="lesson" id="mvvm">
+          <div class="eyebrow">Module 6</div>
+          <h2>MVVM: screen state with ViewModel</h2>
+          <p>MVVM keeps UI rendering separate from data decisions. The screen emits events; the ViewModel changes state.</p>
+          <pre class="code-card">data class NotesUiState(
+    val title: String = "",
+    val notes: List&lt;FieldNote&gt; = emptyList(),
+    val isLoading: Boolean = false,
+    val error: String? = null
+)
+
+class NotesViewModel(
+    private val repository: ReactiveNotesRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(NotesUiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun onTitleChange(value: String) {
+        _uiState.update { it.copy(title = value) }
+    }
+}</pre>
+          <div class="diagram-visual"><div class="diagram-node">Screen</div><div class="diagram-node hot">ViewModel</div><div class="diagram-node">Repository</div><div class="diagram-node">StateFlow</div></div>
+        </section>
+
+        <section class="lesson" id="mvi">
+          <div class="eyebrow">Module 7</div>
+          <h2>MVI: intents, reducer, and one-way state</h2>
+          <p>MVI is useful when screen behavior becomes complex. Define user intents, reduce them into state, and keep side effects explicit.</p>
+          <pre class="code-card">sealed interface NotesIntent {
+    data class TitleChanged(val value: String) : NotesIntent
+    data object AddClicked : NotesIntent
+    data class NoteClicked(val id: Long) : NotesIntent
+}
+
+fun reduce(state: NotesUiState, intent: NotesIntent): NotesUiState {
+    return when (intent) {
+        is NotesIntent.TitleChanged -&gt; state.copy(title = intent.value)
+        NotesIntent.AddClicked -&gt; state.copy(isLoading = true)
+        is NotesIntent.NoteClicked -&gt; state
+    }
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> every UI event is represented as an intent. State changes are traceable.</div>
+        </section>
+
+        <section class="lesson" id="di">
+          <div class="eyebrow">Module 8</div>
+          <h2>Dagger 2 and Hilt: dependency injection</h2>
+          <p>Dagger 2 teaches the underlying dependency graph. Hilt is the recommended Android integration for most apps because it reduces manual component wiring.</p>
+          <div class="code-split">
+            <pre class="code-card">// Dagger-style concept
+@Module
+class RepositoryModule {
+    @Provides
+    fun provideRepository(): NotesRepository {
+        return FakeNotesRepository()
+    }
+}
+
+@Component(modules = [RepositoryModule::class])
+interface AppComponent {
+    fun repository(): NotesRepository
+}</pre>
+            <pre class="code-card">// Hilt-style Android implementation
+@HiltAndroidApp
+class FieldNotesApp : Application()
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    @Provides
+    fun provideRepository(): NotesRepository = FakeNotesRepository()
+}
+
+@HiltViewModel
+class NotesViewModel @Inject constructor(
+    private val repository: NotesRepository
+) : ViewModel()</pre>
+          </div>
+          <div class="checkpoint-box"><b>Checkpoint:</b> ViewModel no longer creates its repository. The graph provides it.</div>
+        </section>
+
+        <section class="lesson" id="testing">
+          <div class="eyebrow">Module 9</div>
+          <h2>Testing: Kotlin, coroutines, ViewModel, Compose, DI</h2>
+          <p>Test the behavior that can break product flows. Do not test every line mechanically.</p>
+          <pre class="code-card">@Test
+fun titleChangeUpdatesUiState() = runTest {
+    val viewModel = NotesViewModel(FakeNotesRepository())
+
+    viewModel.onTitleChange("Visit clinic")
+
+    assertEquals("Visit clinic", viewModel.uiState.value.title)
+}
+
+@Test
+fun invalidShortTitleIsRejected() {
+    val note = FieldNote(1, "No", "Body")
+
+    assertFalse(note.isValid())
+}</pre>
+          <pre class="code-card">@Test
+fun addButtonIsDisabledForShortTitle() {
+    composeTestRule.setContent {
+        NotesScreen(notes = emptyList(), title = "No", onTitleChange = {}, onAdd = {})
+    }
+
+    composeTestRule.onNodeWithText("Add note").assertIsNotEnabled()
+}</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> you have one pure Kotlin test, one coroutine/ViewModel test, one Compose UI test, and one DI replacement/fake test.</div>
+        </section>
+
+        <section class="lesson" id="kmp">
+          <div class="eyebrow">Module 10</div>
+          <h2>KMP: share business rules, not Android UI</h2>
+          <p>Kotlin Multiplatform is strongest when shared code is stable business logic. Do not start by sharing Compose UI unless the product and team are ready for that complexity.</p>
+          <pre class="code-card">// shared/src/commonMain/kotlin/NoteRules.kt
+object NoteRules {
+    fun validateTitle(value: String): ValidationResult {
+        return when {
+            value.trim().isEmpty() -&gt; ValidationResult.Invalid("Title is required")
+            value.trim().length &lt; 3 -&gt; ValidationResult.Invalid("Use at least 3 characters")
+            else -&gt; ValidationResult.Valid
+        }
+    }
+}
+
+sealed interface ValidationResult {
+    data object Valid : ValidationResult
+    data class Invalid(val reason: String) : ValidationResult
+}</pre>
+          <div class="expected-result">Android, iOS, and tests can reuse note validation without duplicating business rules.</div>
+        </section>
+
+        <section class="lesson" id="ml">
+          <div class="eyebrow">Module 11</div>
+          <h2>TensorFlow / LiteRT: on-device note classification</h2>
+          <p>For Android apps, TensorFlow Lite is now presented through Google AI Edge LiteRT docs. Keep ML behind an interface so the rest of the app does not depend on model runtime details.</p>
+          <pre class="code-card">interface NoteClassifier {
+    suspend fun classify(text: String): NoteLabel
+}
+
+enum class NoteLabel { Health, Education, Finance, General }
+
+class FakeNoteClassifier : NoteClassifier {
+    override suspend fun classify(text: String): NoteLabel {
+        return when {
+            "clinic" in text.lowercase() -&gt; NoteLabel.Health
+            "school" in text.lowercase() -&gt; NoteLabel.Education
+            "tax" in text.lowercase() -&gt; NoteLabel.Finance
+            else -&gt; NoteLabel.General
+        }
+    }
+}</pre>
+          <div class="callout">First build the seam with a fake classifier. Add the real LiteRT model only after the app behavior and tests are stable.</div>
+        </section>
+
+        <section class="lesson" id="cicd">
+          <div class="eyebrow">Module 12</div>
+          <h2>CI/CD: build and test every change</h2>
+          <p>A basic CI pipeline should compile, run unit tests, and upload reports. Release signing and Play deployment come later after the quality gate is stable.</p>
+          <pre class="code-card">name: Android CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew testDebugUnitTest
+      - run: ./gradlew assembleDebug</pre>
+          <div class="checkpoint-box"><b>Checkpoint:</b> a bad ViewModel test fails CI before code merges.</div>
+        </section>
+
+        <section class="lesson" id="labs">
+          <div class="eyebrow">Interactive labs</div>
+          <h2>Quizzes and drag-and-drop code ordering</h2>
+          <div class="quiz-shell">
+            <div class="quiz-card" data-zero-quiz="stack">
+              <p><b>Multi-select:</b> Which choices are correct for this modern Android path?</p>
+              <label class="quiz-option"><input type="checkbox" value="correct"> Compose UI should render state and emit events.</label>
+              <label class="quiz-option"><input type="checkbox" value="correct"> Coroutines should do long-running work without blocking the main thread.</label>
+              <label class="quiz-option"><input type="checkbox" value="wrong"> A ViewModel should directly create Retrofit, database, and classifier instances.</label>
+              <label class="quiz-option"><input type="checkbox" value="correct"> Hilt can provide dependencies into Android classes and ViewModels.</label>
+              <div class="quiz-actions"><button class="button primary" type="button" data-zero-check="stack">Check</button></div>
+              <div class="quiz-feedback" id="zero-stack-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-card">
+              <p><b>Drag order:</b> Arrange the MVVM data flow.</p>
+              <div class="code-order" id="zero-order-zone">
+                <div class="drag-item" draggable="true" data-order="3">Repository returns Result&lt;List&lt;FieldNote&gt;&gt;</div>
+                <div class="drag-item" draggable="true" data-order="1">User taps Add note</div>
+                <div class="drag-item" draggable="true" data-order="4">ViewModel updates NotesUiState</div>
+                <div class="drag-item" draggable="true" data-order="2">ViewModel calls repository.saveNote()</div>
+                <div class="drag-item" draggable="true" data-order="5">Compose recomposes from new state</div>
+              </div>
+              <div class="quiz-actions"><button class="button" type="button" data-zero-move="up">Move selected up</button><button class="button" type="button" data-zero-move="down">Move selected down</button><button class="button primary" type="button" data-zero-check="order">Check order</button><button class="button" type="button" data-zero-reset="order">Reset</button></div>
+              <div class="quiz-feedback" id="zero-order-feedback" aria-live="polite"></div>
+            </div>
+
+            <div class="quiz-card">
+              <p><b>Matching:</b> Pick the right tool for the job.</p>
+              <div class="match-grid">
+                <label>Current screen state<select data-zero-match="state"><option value="">Choose</option><option value="stateflow">StateFlow</option><option value="dagger">Dagger component</option><option value="ci">CI workflow</option></select></label>
+                <label>Legacy lifecycle-aware observer<select data-zero-match="legacy"><option value="">Choose</option><option value="livedata">LiveData</option><option value="kmp">KMP</option><option value="mvi">Reducer</option></select></label>
+                <label>Shared validation rules<select data-zero-match="shared"><option value="">Choose</option><option value="kmp">KMP commonMain</option><option value="compose">Composable</option><option value="ml">LiteRT model</option></select></label>
+                <label>On-device classification<select data-zero-match="ml"><option value="">Choose</option><option value="ci">GitHub Actions</option><option value="ml">LiteRT/TensorFlow</option><option value="livedata">LiveData</option></select></label>
+              </div>
+              <div class="quiz-actions"><button class="button primary" type="button" data-zero-check="match">Check matches</button></div>
+              <div class="quiz-feedback" id="zero-match-feedback" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson">
+          <div class="eyebrow">References</div>
+          <h2>Primary sources used for factual grounding</h2>
+          <div class="reference-list">
+            <a href="https://developer.android.com/develop/ui/compose/documentation">Jetpack Compose documentation</a>
+            <a href="https://developer.android.com/kotlin/coroutines">Android coroutines guide</a>
+            <a href="https://kotlinlang.org/docs/coroutines-overview.html">Kotlin coroutines overview</a>
+            <a href="https://developer.android.com/topic/libraries/architecture/viewmodel">ViewModel overview</a>
+            <a href="https://developer.android.com/topic/libraries/architecture/livedata">LiveData overview</a>
+            <a href="https://developer.android.com/training/dependency-injection/hilt-android">Hilt dependency injection</a>
+            <a href="https://dagger.dev/dev-guide/">Dagger developer guide</a>
+            <a href="https://developer.android.com/kotlin/multiplatform">Kotlin Multiplatform for Android</a>
+            <a href="https://developers.google.com/edge/litert/android">LiteRT for Android</a>
+            <a href="https://developer.android.com/training/testing">Android testing guide</a>
+            <a href="https://docs.github.com/en/actions/tutorials/build-and-test-code/java-with-gradle">GitHub Actions Java/Gradle CI guide</a>
+          </div>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <span>Modern Android 0 to 1 - SortedQueue</span>
+      <div><a href="index.html">Android reference</a><a href="../index.html">Home</a><a href="mailto:sortedqueue@gmail.com">Email</a></div>
+    </div>
+  </footer>
+  <script src="android-zero-to-one-modern.js"></script>
+</body>
+</html>
