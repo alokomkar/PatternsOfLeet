@@ -260,4 +260,56 @@
     <loc>https://sortedqueue.com/android-complete-reference/phase-6-step-by-step.html</loc>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/index.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/01-llm-fundamentals.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/02-prompt-engineering.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/03-structured-outputs.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/04-embeddings-vector-search.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/05-rag-systems.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/06-postgres-pgvector.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/07-tool-calling.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/08-agentic-langgraph.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/09-fastapi-cloud-run.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/10-evals-observability.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/11-edge-ai-android.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sortedqueue.com/ai-fundamentals/12-ai-system-design.html</loc>
+    <priority>0.7</priority>
+  </url>
 </urlset>
