@@ -570,6 +570,7 @@
 <li class="toc-section"><a href="#architecture" class="toc-section-link"><span class="toc-icon">🏛️</span><span class="toc-title">MVVM & Clean Architecture</span></a></li>
 <li class="toc-sub"><a href="#clean-architecture" class="toc-sub-link">Clean Architecture — Three Layers</a></li>
 <li class="toc-sub"><a href="#mvi" class="toc-sub-link">MVI Pattern</a></li>
+<li class="toc-sub"><a href="#mvp-pattern" class="toc-sub-link">MVP Pattern — Contracts & Legacy Java</a></li>
 <li class="toc-section"><a href="#compose-basics" class="toc-section-link"><span class="toc-icon">🎨</span><span class="toc-title">Jetpack Compose Basics</span></a></li>
 <li class="toc-sub"><a href="#declarative-vs-imperative" class="toc-sub-link">Declarative vs Imperative</a></li>
 <li class="toc-sub"><a href="#state-in-compose" class="toc-sub-link">State, Stability & Recomposition</a></li>
@@ -620,9 +621,15 @@
 <li class="toc-section"><a href="#security" class="toc-section-link"><span class="toc-icon">🛡️</span><span class="toc-title">Security</span></a></li>
 <li class="toc-sub"><a href="#security-overview" class="toc-sub-link">Android Security — What You Need to Protect</a></li>
 <li class="toc-sub"><a href="#security-impl" class="toc-sub-link">Certificate Pinning, Biometric & Encrypted Storage</a></li>
+<li class="toc-section"><a href="#monitoring-observability" class="toc-section-link"><span class="toc-icon">📊</span><span class="toc-title">Monitoring, Telemetry & Observability</span></a></li>
+<li class="toc-sub"><a href="#observability-why" class="toc-sub-link">Why Observability Matters — RUM & APM</a></li>
+<li class="toc-sub"><a href="#observability-rum" class="toc-sub-link">Implementing RUM & Network Instrumentation</a></li>
+<li class="toc-sub"><a href="#observability-crash-reporting" class="toc-sub-link">Crashlytics, Breadcrumbs & Non-Fatal Logging</a></li>
 <li class="toc-section"><a href="#ci-cd" class="toc-section-link"><span class="toc-icon">🔄</span><span class="toc-title">CI/CD for Android</span></a></li>
 <li class="toc-sub"><a href="#cicd-what" class="toc-sub-link">What is CI/CD and Why Android Needs It</a></li>
 <li class="toc-sub"><a href="#github-actions" class="toc-sub-link">GitHub Actions — Complete Android Pipeline</a></li>
+<li class="toc-sub"><a href="#branching-strategies" class="toc-sub-link">GitFlow vs Trunk-Based Development</a></li>
+<li class="toc-sub"><a href="#security-scanning-pipeline" class="toc-sub-link">Detekt, SonarQube & Snyk Scanning</a></li>
 <li class="toc-section"><a href="#exoplayer" class="toc-section-link"><span class="toc-icon">🎬</span><span class="toc-title">ExoPlayer & Media</span></a></li>
 <li class="toc-sub"><a href="#exoplayer-basics" class="toc-sub-link">What is ExoPlayer and When to Use It</a></li>
 <li class="toc-sub"><a href="#exoplayer-impl" class="toc-sub-link">ExoPlayer — Complete Implementation</a></li>
@@ -633,6 +640,7 @@
 <li class="toc-sub"><a href="#kmp-di-concurrency" class="toc-sub-link">Dependency Injection & Concurrency Across Platforms</a></li>
 <li class="toc-sub"><a href="#kmp-persistence-testing" class="toc-sub-link">Persistence & Testing in Shared Code</a></li>
 <li class="toc-sub"><a href="#kmp-ios-interop" class="toc-sub-link">Publishing to iOS — XCFrameworks & Swift Interop</a></li>
+<li class="toc-sub"><a href="#ios-fundamentals" class="toc-sub-link">iOS Fundamentals for Android Engineers</a></li>
 <li class="toc-sub"><a href="#kmp-adoption" class="toc-sub-link">Adopting KMP in an Existing App — Migration Strategy</a></li>
 <li class="toc-section"><a href="#ml-on-device" class="toc-section-link"><span class="toc-icon">🤖</span><span class="toc-title">On-Device ML: TFLite & ML Kit</span></a></li>
 <li class="toc-sub"><a href="#ml-why" class="toc-sub-link">Why On-Device ML? Cloud vs On-Device</a></li>
@@ -643,6 +651,10 @@
 <li class="toc-sub"><a href="#ai-workflows" class="toc-sub-link">AI-Assisted Development Workflows</a></li>
 <li class="toc-sub"><a href="#sdk-design" class="toc-sub-link">Internal SDK Design Principles</a></li>
 <li class="toc-sub"><a href="#app-bundle" class="toc-sub-link">App Bundle & Dynamic Delivery</a></li>
+<li class="toc-section"><a href="#staff-leadership-governance" class="toc-section-link"><span class="toc-icon">🧭</span><span class="toc-title">Staff/AVP Leadership & Governance</span></a></li>
+<li class="toc-sub"><a href="#lead-framework" class="toc-sub-link">The LEAD Framework</a></li>
+<li class="toc-sub"><a href="#operational-risk-controls" class="toc-sub-link">Operational Risk — Three Lines of Defense</a></li>
+<li class="toc-sub"><a href="#cross-functional-leadership" class="toc-sub-link">Cross-Functional Leadership</a></li>
 <li class="toc-section"><a href="#payment-sdk" class="toc-section-link"><span class="toc-icon">💳</span><span class="toc-title">Building a Payment SDK</span></a></li>
 <li class="toc-sub"><a href="#sdk-module-basics" class="toc-sub-link">Library Modules vs App Modules — The Basics</a></li>
 <li class="toc-sub"><a href="#payment-sdk-anatomy" class="toc-sub-link">Anatomy of a Payment SDK — Module Breakdown</a></li>
@@ -652,9 +664,9 @@
     </ul>
   </div>
   <div class="sidebar-stats">
-    <div class="stat"><div class="stat-value">33</div><div class="stat-label">Topics</div></div>
-    <div class="stat"><div class="stat-value">77</div><div class="stat-label">Sections</div></div>
-    <div class="stat"><div class="stat-value">175+</div><div class="stat-label">Examples</div></div>
+    <div class="stat"><div class="stat-value">35</div><div class="stat-label">Topics</div></div>
+    <div class="stat"><div class="stat-value">87</div><div class="stat-label">Sections</div></div>
+    <div class="stat"><div class="stat-value">185+</div><div class="stat-label">Examples</div></div>
   </div>
 </nav>
 
@@ -678,9 +690,9 @@
       <h1 class="hero-title">Android Engineering<br>Reference Guide</h1>
       <p class="hero-subtitle">A comprehensive reference covering Android fundamentals through Staff and Architect level concepts — with diagrams, code examples, and Staff interview Q&amp;A.</p>
       <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-value">32</div><div class="hero-stat-label">Major Topics</div></div>
-        <div class="hero-stat"><div class="hero-stat-value">67</div><div class="hero-stat-label">Deep Sections</div></div>
-        <div class="hero-stat"><div class="hero-stat-value">146+</div><div class="hero-stat-label">Code Examples</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">34</div><div class="hero-stat-label">Major Topics</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">77</div><div class="hero-stat-label">Deep Sections</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">156+</div><div class="hero-stat-label">Code Examples</div></div>
       </div>
     </div>
 
@@ -3557,6 +3569,199 @@ class UserRepositoryTest {
 <li>A Use Case doing ONE thing is easily testable, easily named, and clearly responsible for one behavior.</li>
 <li>The cost is verbosity — GetUsersUseCase.kt, GetUserByIdUseCase.kt, etc.</li>
 <li>Some teams group related use cases into a single class with multiple methods — acceptable if each method remains simple and focused. The key is that business logic never lives in ViewModel or Repository.</li>
+</ul>
+</div>
+</div>
+
+</div>
+<div id="mvp-pattern" class="subsection">
+<h3 class="subsection-title">MVP Pattern — Contracts, Passive View & Legacy Java Interop</h3>
+
+<p><strong>Model-View-Presenter</strong> predates MVVM on Android and is still the architecture you'll find in large, long-lived codebases — banking, insurance, telecom — that started before Architecture Components existed in 2017. A staff engineer joining such a team needs to read and safely modify MVP without trying to rewrite it on day one.</p>
+
+<div class="diagram">
+<pre>
+MVP — the View holds a reference to the Presenter, and vice versa:
+
+   Activity/Fragment (View)         Presenter                  Model
+   implements LoginContract.View    implements Contract.Presenter
+        │                                │                        │
+        │──user taps "Login"───────────► │                        │
+        │   presenter.onLoginClicked()   │                        │
+        │                                │────[repository.login()]──►
+        │                                │◄───[Result]──────────────│
+        │◄──view.showLoading(false)───── │                        │
+        │◄──view.navigateToHome()─────── │                        │
+        │                                │                        │
+
+Key difference from MVVM: Presenter holds a DIRECT reference to the View
+(through a thin interface) and calls imperative methods on it — showError(),
+showLoading(), navigateToHome(). MVVM's ViewModel never holds a reference to
+the View at all; it only exposes observable state the View chooses to read.
+That direct reference is exactly why MVP needs manual attach/detach discipline.
+</pre>
+</div>
+
+<h4>Contract Interfaces — BaseView &amp; BasePresenter</h4>
+<p>Every MVP screen is defined by a <strong>contract</strong> — a pair of interfaces that decouple the Presenter from any concrete Android class, which is what makes the Presenter unit-testable with plain JUnit/Mockito and no Android dependency at all.</p>
+
+<pre><code class="language-kotlin">// BaseView / BasePresenter — the shared contract every screen implements
+interface BaseView {
+    fun showLoading(isLoading: Boolean)
+    fun showError(message: String)
+}
+
+interface BasePresenter&lt;V : BaseView&gt; {
+    fun attachView(view: V)
+    fun detachView()
+}
+
+// Per-screen contract — one interface pair per feature
+interface LoginContract {
+    interface View : BaseView {
+        fun navigateToHome()
+        fun showInvalidCredentials()
+    }
+    interface Presenter : BasePresenter&lt;View&gt; {
+        fun onLoginClicked(username: String, password: String)
+    }
+}
+
+// Presenter implementation — ZERO Android imports, fully unit-testable
+class LoginPresenter(
+    private val authRepository: AuthRepository
+) : LoginContract.Presenter {
+
+    private var view: LoginContract.View? = null   // nullable — the whole point
+
+    override fun attachView(view: LoginContract.View) { this.view = view }
+    override fun detachView() { this.view = null }
+
+    override fun onLoginClicked(username: String, password: String) {
+        view?.showLoading(true)
+        authRepository.login(username, password, object : AuthCallback {
+            override fun onSuccess() {
+                // Guard required: this callback can fire AFTER the Activity is gone
+                view?.showLoading(false)
+                view?.navigateToHome()
+            }
+            override fun onFailure(error: Throwable) {
+                view?.showLoading(false)
+                view?.showInvalidCredentials()
+            }
+        })
+    }
+}
+</code></pre>
+
+<div class="callout callout-danger">
+<strong>The classic MVP memory-leak / crash bug:</strong> a Presenter kicks off an async call (network, DB, legacy AsyncTask), the user rotates the screen or backs out, the Activity is destroyed — but the callback still fires later and calls a method on a View that no longer exists on screen. Without a null check, this is a crash (NPE on a torn-down Activity) or, worse, a full Activity leak because the Presenter's callback closure keeps a strong reference to the old View alive past its lifecycle. The fix is always explicit: <code>detachView()</code> in <code>onDestroy()</code>/<code>onDestroyView()</code>, and every single callback into the View guarded with <code>view?.something()</code> — never a bare <code>view!!.something()</code>.
+</div>
+
+<h4>Manual Lifecycle Attachment — Activity &amp; Fragment</h4>
+<pre><code class="language-kotlin">class LoginActivity : AppCompatActivity(), LoginContract.View {
+
+    // In legacy codebases this is usually hand-rolled, not injected
+    private val presenter: LoginContract.Presenter = LoginPresenter(AuthRepositoryImpl())
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+        presenter.attachView(this)          // attach AFTER view hierarchy exists
+
+        loginButton.setOnClickListener {
+            presenter.onLoginClicked(usernameField.text.toString(), passwordField.text.toString())
+        }
+    }
+
+    override fun onDestroy() {
+        presenter.detachView()              // MUST run before super in most house styles
+        super.onDestroy()
+    }
+
+    override fun showLoading(isLoading: Boolean) { progressBar.isVisible = isLoading }
+    override fun showError(message: String) { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+    override fun navigateToHome() { startActivity(Intent(this, HomeActivity::class.java)); finish() }
+    override fun showInvalidCredentials() { errorLabel.isVisible = true }
+}
+</code></pre>
+
+<p>The same contract, implemented from legacy Java — note the explicit generics and the lack of compiler-enforced null-safety, which is exactly why the <code>view != null</code> guard matters even more here than in the Kotlin version above.</p>
+<pre><code class="language-java">public class LoginPresenterImpl implements LoginContract.Presenter {
+    private LoginContract.View view;
+    private final AuthRepository authRepository;
+
+    public LoginPresenterImpl(AuthRepository authRepository) {
+        this.authRepository = authRepository;
+    }
+
+    @Override public void attachView(LoginContract.View view) { this.view = view; }
+    @Override public void detachView() { this.view = null; }
+
+    @Override public void onLoginClicked(String username, String password) {
+        if (view != null) view.showLoading(true);
+        authRepository.login(username, password, new AuthCallback() {
+            @Override public void onSuccess() {
+                if (view != null) {                 // guard — view may be null by the time this fires
+                    view.showLoading(false);
+                    view.navigateToHome();
+                }
+            }
+            @Override public void onFailure(Throwable error) {
+                if (view != null) view.showInvalidCredentials();
+            }
+        });
+    }
+}
+</code></pre>
+
+<h4>Passive View vs Supervising Presenter</h4>
+<div class="comparison-table">
+<table>
+<thead><tr><th>Variant</th><th>Who decides what's displayed</th><th>View's own logic</th><th>Testability</th></tr></thead>
+<tbody>
+<tr><td><strong>Passive View</strong></td><td>Presenter decides everything — the View exposes only dumb setters (<code>showError()</code>, <code>setTitle()</code>) and has no conditional logic of its own.</td><td>None — View is as "dumb" as an XML layout.</td><td>Highest — nearly 100% of behavior lives in the Presenter and is JUnit-testable.</td></tr>
+<tr><td><strong>Supervising Presenter / Controller</strong></td><td>Simple, mechanical bindings (text → TextView) happen via direct data-binding; the Presenter only steps in for non-trivial logic (validation, navigation, error states).</td><td>Some — trivial display logic lives in the View/binding layer.</td><td>Lower — some behavior is only exercisable via instrumented/UI tests.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>MVP vs MVVM vs MVI — Who Holds the Reference</h4>
+<div class="comparison-table">
+<table>
+<thead><tr><th></th><th>MVP</th><th>MVVM</th><th>MVI</th></tr></thead>
+<tbody>
+<tr><td>Reference direction</td><td>Presenter ↔ View, both directions, via interface</td><td>ViewModel has no reference to the View at all</td><td>ViewModel has no reference to the View at all</td></tr>
+<tr><td>How the View updates</td><td>Presenter calls imperative methods (<code>view.showError()</code>)</td><td>View observes a <code>StateFlow</code>/<code>LiveData</code> it pulls from</td><td>View collects a single immutable state object</td></tr>
+<tr><td>Lifecycle coupling</td><td>Manual — <code>attachView</code>/<code>detachView</code> you write and must remember</td><td>Automatic — <code>ViewModel</code> survives config changes via <code>ViewModelStore</code></td><td>Automatic, same as MVVM</td></tr>
+<tr><td>Where it's still used</td><td>Legacy enterprise Java/Kotlin modules not yet migrated</td><td>Default for new modern Android screens</td><td>Complex screens needing a single source of truth</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: Why did Google's own architecture guidance move away from recommending MVP toward MVVM/Architecture Components?</div>
+<div class="qa-a">
+<ul>
+<li>MVP's attach/detach lifecycle is entirely hand-written — every Presenter needs it, and forgetting it, or forgetting a single <code>view?.</code> guard, is a very common source of leaks and crashes on rotation.</li>
+<li><code>ViewModel</code> + <code>SavedStateHandle</code> solves configuration-change survival and process-death restoration for free, at the framework level — MVP solves neither out of the box; you build survival logic yourself (e.g. retaining the Presenter instance across rotation).</li>
+<li>MVVM's data-binding/observable-state model composes far better with declarative UI (Compose, and even XML + Data Binding) than MVP's imperative "call a method on the view" model.</li>
+</ul>
+</div>
+<div class="qa-q">Q: You've inherited a large MVP module in a legacy Java codebase. How do you migrate it to MVVM incrementally, without a rewrite?</div>
+<div class="qa-a">
+<ul>
+<li>Don't touch the Presenter/Contract interfaces first — wrap the existing Presenter's output in a <code>ViewModel</code> that exposes it as <code>StateFlow</code>, so the rest of the app can start consuming it the modern way while the Presenter's internals stay untouched.</li>
+<li>Migrate screen-by-screen, not class-by-class within a screen — a half-migrated single screen (some logic in Presenter, some in ViewModel) is harder to reason about than a fully-MVP screen sitting next to a fully-MVVM one.</li>
+<li>Prioritize screens with the worst leak/crash history or heaviest future feature load — the ROI of migration is in screens that will be touched again, not in stable, rarely-changed legacy screens.</li>
+</ul>
+</div>
+<div class="qa-q">Q: How do you unit test an MVP Presenter?</div>
+<div class="qa-a">
+<ul>
+<li>Mock the View interface (Mockito/MockK) and the repository/model dependency, call <code>attachView(mockView)</code>, invoke the Presenter method under test, then <code>verify()</code> the expected View method was called with the expected argument — e.g. <code>verify(view).navigateToHome()</code>.</li>
+<li>Always add a test that calls <code>detachView()</code> before the async callback resolves, then asserts <strong>no</strong> interaction was made on the mock View — this is the regression test for the exact leak/crash bug above, and it's the one most legacy test suites are missing.</li>
 </ul>
 </div>
 </div>
@@ -7108,6 +7313,192 @@ if (BuildConfig.DEBUG) { Timber.d("Request sent") }  // message only, never the 
 
 </div>
 </section>
+<section id="monitoring-observability" class="main-section">
+<h2 class="section-title"><span class="section-icon">📊</span>Monitoring, Telemetry & Observability</h2>
+<div id="observability-why" class="subsection">
+<h3 class="subsection-title">Why Observability Matters — RUM, APM & the Production Blind Spot</h3>
+
+<p>Crash-free rate alone doesn't tell you the app is healthy. A screen that never crashes but takes 8 seconds to load, or an API call that silently times out and gets swallowed by a <code>catch {}</code>, is invisible to a crash reporter but very visible to the user. <strong>Observability platforms</strong> — Datadog RUM, Firebase Performance/Crashlytics, New Relic — exist to close that blind spot by capturing three correlated signals in production, not just in a debugger.</p>
+
+<div class="diagram">
+<pre>
+The three pillars, as they apply to a mobile client:
+
+┌───────────────────────────┬───────────────────────────┬───────────────────────────┐
+│          LOGS              │          METRICS           │          TRACES            │
+│  Structured breadcrumbs    │  App start time, frame     │  A single user action      │
+│  leading up to a crash or  │  rate, memory, ANR rate,   │  end-to-end: tap → VM →    │
+│  a failed request          │  network error rate         │  network call → render     │
+├───────────────────────────┴───────────────────────────┴───────────────────────────┤
+│  RUM (Real User Monitoring) ties all three together per real device, per real      │
+│  session — this is what separates it from the QA/staging metrics you already have │
+│  from your own test devices. The whole point is: you see what the 1% of users on   │
+│  old devices, flaky networks, and low-RAM phones actually experience.              │
+└──────────────────────────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
+<div class="callout callout-info">
+<strong>The question every staff interview asks:</strong> "Crashlytics already tells us when we crash — why add Datadog/RUM too?" Because a crash reporter only fires on a crash. RUM and APM fire continuously — they catch the ANR that didn't technically crash, the API that degraded from 200ms to 4s for users on one carrier, and the screen that renders but is unusable because of jank. They're complementary tools, not substitutes for each other.
+</div>
+
+</div>
+<div id="observability-rum" class="subsection">
+<h3 class="subsection-title">Implementing RUM & Network Instrumentation</h3>
+
+<p>RUM SDKs hook into the app's lifecycle and networking stack automatically, then let you add custom spans for anything business-specific (checkout flow, video start time).</p>
+
+<pre><code class="language-kotlin">// Application class — one-time RUM + APM SDK bootstrap
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        val configuration = Configuration.Builder(
+            clientToken = BuildConfig.DATADOG_CLIENT_TOKEN,
+            env = if (BuildConfig.DEBUG) "staging" else "production",
+            variant = BuildConfig.FLAVOR
+        ).build()
+        Datadog.initialize(this, configuration, TrackingConsent.GRANTED)
+
+        RumFeature.Builder(BuildConfig.DATADOG_RUM_APP_ID)
+            .trackUserInteractions()      // auto-captures tap targets, scroll, navigation
+            .trackLongTasks(250)          // flags any main-thread work over 250ms
+            .build()
+            .let { Datadog.registerFeature(it) }
+
+        GlobalRumMonitor.get().apply {
+            // custom attributes attach to every event — crucial for triage
+            addAttribute("build_variant", BuildConfig.FLAVOR)
+        }
+    }
+}
+</code></pre>
+
+<h4>Network Instrumentation — An OkHttp Interceptor for Tracing/APM</h4>
+<p>This is the piece every JD that mentions "monitoring and observability platforms" is really probing: can you wire network timing into a tracing system yourself, not just drop in a vendor SDK.</p>
+
+<pre><code class="language-kotlin">class ApmTracingInterceptor(
+    private val telemetry: TelemetryClient   // your abstraction over Datadog/Firebase/etc.
+) : Interceptor {
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val span = telemetry.startSpan(
+            name = "http.request",
+            attributes = mapOf(
+                "http.method" to request.method,
+                "http.url" to request.url.toString().substringBefore('?'), // strip query — avoid leaking PII
+                "http.host" to request.url.host
+            )
+        )
+        val startNanos = System.nanoTime()
+
+        return try {
+            val response = chain.proceed(request)
+            span.setAttribute("http.status_code", response.code)
+            span.setAttribute("http.duration_ms", (System.nanoTime() - startNanos) / 1_000_000)
+            if (response.code &gt;= 400) span.setError("HTTP ${response.code}")
+            response
+        } catch (e: IOException) {
+            span.setError(e.javaClass.simpleName)   // timeouts, DNS failures, SSL errors — all visible
+            throw e
+        } finally {
+            span.finish()
+        }
+    }
+}
+
+val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(ApmTracingInterceptor(telemetry))
+    .build()
+</code></pre>
+
+<div class="comparison-table">
+<table>
+<thead><tr><th>Platform</th><th>Best for</th><th>Mobile-specific strength</th></tr></thead>
+<tbody>
+<tr><td>Firebase Crashlytics</td><td>Crash/ANR reporting</td><td>Free, deeply integrated with Play Console vitals, zero-config stack deobfuscation with R8 mapping upload</td></tr>
+<tr><td>Firebase Performance Monitoring</td><td>App start, screen rendering, network traces</td><td>Automatic traces out of the box; cheap entry point before adopting a full RUM vendor</td></tr>
+<tr><td>Datadog RUM / APM</td><td>Cross-platform (mobile + backend) correlated tracing</td><td>Ties a single user session's mobile trace to the exact backend service/trace ID that served it — the enterprise differentiator</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div id="observability-crash-reporting" class="subsection">
+<h3 class="subsection-title">Crashlytics, Datadog Breadcrumbs & Non-Fatal Error Logging Strategy</h3>
+
+<p>The most common staff-level mistake isn't missing a crash reporter — it's logging every caught exception as a fatal-looking error, which buries the signal that actually matters under noise. A deliberate strategy distinguishes <strong>fatals</strong> (uncaught, app is in an undefined state), <strong>non-fatals</strong> (caught, handled, but still a bug worth knowing about), and <strong>breadcrumbs</strong> (no error at all, just context for when something nearby does go wrong).</p>
+
+<pre><code class="language-kotlin">// A thin wrapper so the app never calls Crashlytics/Datadog directly —
+// swapping or adding a second telemetry backend later touches one file
+object ErrorReporter {
+
+    fun breadcrumb(message: String, extras: Map&lt;String, String&gt; = emptyMap()) {
+        FirebaseCrashlytics.getInstance().log(message)
+        extras.forEach { (k, v) -&gt; FirebaseCrashlytics.getInstance().setCustomKey(k, v) }
+        GlobalRumMonitor.get().addAction(RumActionType.CUSTOM, message, extras)
+    }
+
+    // Caught-but-reportable — the app recovered, but you want to know it happened
+    fun nonFatal(throwable: Throwable, context: Map&lt;String, String&gt; = emptyMap()) {
+        context.forEach { (k, v) -&gt; FirebaseCrashlytics.getInstance().setCustomKey(k, v) }
+        FirebaseCrashlytics.getInstance().recordException(throwable)
+        GlobalRumMonitor.get().addError(
+            message = throwable.message ?: throwable.javaClass.simpleName,
+            source = RumErrorSource.SOURCE,
+            throwable = throwable,
+            attributes = context
+        )
+    }
+
+    fun setUserContext(userId: String, accountTier: String) {
+        // Never pass raw PII (name, email, card number) — use an internal/hashed ID only
+        FirebaseCrashlytics.getInstance().setUserId(userId)
+        FirebaseCrashlytics.getInstance().setCustomKey("account_tier", accountTier)
+    }
+}
+
+// Usage in a repository — a non-fatal, not a silent swallow
+class PaymentRepository(private val api: PaymentApi) {
+    suspend fun retryFailedPayment(paymentId: String): Result&lt;Unit&gt; = try {
+        ErrorReporter.breadcrumb("retry_payment_started", mapOf("payment_id" to paymentId))
+        api.retry(paymentId)
+        Result.success(Unit)
+    } catch (e: HttpException) {
+        // Recovered with a fallback, but still worth seeing the trend in the dashboard
+        ErrorReporter.nonFatal(e, mapOf("payment_id" to paymentId, "http_code" to e.code().toString()))
+        Result.failure(e)
+    }
+}
+</code></pre>
+
+<div class="callout callout-warning">
+<strong>Breadcrumb discipline matters more than volume.</strong> Logging every button tap as a breadcrumb drowns out the 5 breadcrumbs that actually explain a crash. Convention that scales: log state transitions (screen entered, network call started/finished, feature flag evaluated) — not raw UI events — and always attach the identifiers (order ID, screen name) a triage engineer would search for first.
+</div>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: Your crash-free rate is 99.8% but users are complaining the app "feels slow." What do you look at?</div>
+<div class="qa-a">
+<ul>
+<li>ANR rate in Play Console / Crashlytics — an ANR isn't a crash but is tracked separately and is a huge perceived-slowness signal.</li>
+<li>RUM/Performance Monitoring traces for app start time (cold vs warm) and slow/frozen frame percentage by device tier — "slow" is very often bottom-quartile devices, not the median device the team tests on.</li>
+<li>Network APM for p95/p99 latency, not just the average — a 200ms average can hide a p99 of 6 seconds on one specific endpoint or carrier.</li>
+</ul>
+</div>
+<div class="qa-q">Q: How would you design alerting so the on-call engineer isn't paged for noise?</div>
+<div class="qa-a">
+<ul>
+<li>Alert on rate-of-change and statistically significant deltas (e.g. "non-fatal error rate up 3x over 1-hour baseline"), not on raw counts — raw counts scale with DAU and are meaningless without a baseline.</li>
+<li>Segment alerts by release version/build number, so a regression introduced by today's rollout pages immediately, separately from the long tail of old-version noise.</li>
+<li>Route fatal-crash-rate breaches and payment-flow non-fatals to a page; route everything else to a dashboard reviewed daily — not every signal deserves a page.</li>
+</ul>
+</div>
+</div>
+
+</div>
+</section>
 <section id="ci-cd" class="main-section">
 <h2 class="section-title"><span class="section-icon">🔄</span>CI/CD for Android</h2>
 <div id="cicd-what" class="subsection">
@@ -7278,6 +7669,136 @@ android {
 <li><strong>Firebase App Distribution</strong> — share APKs with testers without going through Play Store review. Testers download and install directly. Fast feedback loop, no review delay. Best for early builds and internal QA.</li>
 <li><strong>Play Store internal track</strong> — publish to a small group of testers through Play Store infrastructure. Requires the app to be set up on Play Console. Slower (Play Store processes the AAB) but tests the actual Play Store delivery mechanism, including app bundle splits.</li>
 <li>Typical pipeline: Firebase App Distribution for daily builds → Play Store internal track for release candidates → Play Store alpha/beta for wider testing → Play Store production for release.</li>
+</ul>
+</div>
+</div>
+
+</div>
+<div id="branching-strategies" class="subsection">
+<h3 class="subsection-title">Branching Strategies — GitFlow vs Trunk-Based Development</h3>
+
+<p>Your CI/CD pipeline is only as good as the branching model feeding it. Enterprise mobile teams split roughly into two camps, and the choice has direct consequences for how often you can ship and how painful merges are.</p>
+
+<div class="diagram">
+<pre>
+GitFlow — long-lived branches, explicit release gates:
+
+main      ──●───────────────────●───────────────●──  (tagged releases only)
+             \                 /                 \
+develop   ────●───●───●───●───●───●───●───●───●───●──
+                \     /         \         /
+feature/x        ●───●           ●───●
+release/2.4.0                         ●──[QA hardening]──● → merge to main
+
+Trunk-Based Development — one shared branch, feature flags instead of branches:
+
+main/trunk ──●──●──●──●──●──●──●──●──●──●──●──●──●──●──  (always releasable)
+               \   \     \         \
+                ●   ●     ●         ●   short-lived branches, &lt; 1-2 days each,
+               (ff)  (ff)  (ff)       merged behind a feature flag, flag flipped
+                                      on later without a new deploy
+</pre>
+</div>
+
+<div class="comparison-table">
+<table>
+<thead><tr><th></th><th>GitFlow</th><th>Trunk-Based Development</th></tr></thead>
+<tbody>
+<tr><td>Branch lifetime</td><td>Feature branches can live for weeks; <code>release/*</code> branches hold a hardening period</td><td>Hours to a couple of days — merged to trunk fast, behind a flag if incomplete</td></tr>
+<tr><td>How half-built features are hidden</td><td>Kept off <code>develop</code>/<code>main</code> on their own branch until done</td><td>Merged to trunk immediately, hidden behind a feature flag/toggle</td></tr>
+<tr><td>Merge conflict risk</td><td>Higher — branches diverge from <code>develop</code> for a long time</td><td>Lower — everyone integrates against trunk constantly</td></tr>
+<tr><td>Release cadence</td><td>Scheduled release trains, good fit for app-store review cycles with hard version gates</td><td>Continuous delivery, good fit for backend-paired mobile features and fast iteration</td></tr>
+<tr><td>Where it fits a mobile app specifically</td><td>Regulated releases needing a formal QA/UAT sign-off window before each store submission</td><td>Teams with mature CI (fast builds, strong automated test coverage) that want to ship daily internal builds and gate store releases separately via a release branch cut only at ship time</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout callout-info">
+<strong>In practice, most large mobile orgs run a hybrid:</strong> trunk-based day-to-day development with feature flags for anything risky, plus a short-lived <code>release/x.y.z</code> branch cut only at submission time for store-specific hotfix cherry-picks — getting trunk-based development's low-conflict velocity without losing GitFlow's clean release-gate semantics for app store submissions, which (unlike a backend deploy) can't be rolled back instantly.
+</div>
+
+<pre><code class="language-kotlin">// A feature flag gate is what makes trunk-based development safe for incomplete work —
+// this is the piece interviewers probe for: how do you merge unfinished code to main safely?
+class CheckoutFeatureFlags @Inject constructor(
+    private val remoteConfig: FirebaseRemoteConfig
+) {
+    val isNewCheckoutFlowEnabled: Boolean
+        get() = remoteConfig.getBoolean("new_checkout_flow_enabled")
+}
+
+@Composable
+fun CheckoutScreen(flags: CheckoutFeatureFlags = hiltViewModel&lt;CheckoutViewModel&gt;().flags) {
+    if (flags.isNewCheckoutFlowEnabled) NewCheckoutFlow() else LegacyCheckoutFlow()
+    // Both code paths ship to production together; the flag — not a branch — decides
+    // what the user sees, and it can be flipped off instantly without a new build.
+}
+</code></pre>
+
+</div>
+<div id="security-scanning-pipeline" class="subsection">
+<h3 class="subsection-title">Static Analysis & Dependency Scanning — Detekt, SonarQube & Snyk</h3>
+
+<p>"Shift security left" for a mobile pipeline means three different tools catching three different classes of problem, all running on every PR before a human reviewer looks at the diff.</p>
+
+<div class="comparison-table">
+<table>
+<thead><tr><th>Tool</th><th>What it catches</th><th>Runs on</th></tr></thead>
+<tbody>
+<tr><td><strong>Detekt</strong></td><td>Kotlin code-smell and style violations — complexity, naming, unsafe casts, magic numbers</td><td>Your own source code</td></tr>
+<tr><td><strong>SonarQube/SonarCloud</strong></td><td>Code quality + security hotspots (hardcoded secrets, SQL-injection-style patterns, duplicated code), coverage-on-new-code gating</td><td>Your own source code, aggregated with coverage reports</td></tr>
+<tr><td><strong>Snyk</strong></td><td>Known CVEs in your <em>dependencies</em> — a vulnerable transitive version of OkHttp or a Gradle plugin, not your own code</td><td>Your dependency graph (<code>build.gradle.kts</code> + lockfile)</td></tr>
+</tbody>
+</table>
+</div>
+
+<pre><code class="language-xml">&lt;!-- .github/workflows/pr-quality-gate.yml — the security/quality slice of the pipeline --&gt;
+name: PR Quality Gate
+on: pull_request
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: 'temurin', java-version: '17' }
+
+      - name: Detekt — Kotlin static analysis
+        run: ./gradlew detekt --continue   # --continue: collect ALL violations, don't fail-fast
+
+      - name: SonarCloud scan
+        run: ./gradlew sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Snyk — dependency vulnerability scan
+        uses: snyk/actions/gradle@master
+        with:
+          args: --severity-threshold=high   # fail the PR only on high/critical CVEs
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+</code></pre>
+
+<div class="callout callout-warning">
+<strong>A security pipeline that blocks on every finding gets disabled by the first team under deadline pressure.</strong> The sustainable pattern: block merges on new high/critical findings only (Snyk's <code>--severity-threshold</code>, SonarQube's "quality gate on new code"), and track medium/low findings on a dashboard reviewed on a cadence (sprint/monthly) rather than failing the build. This is also exactly how you avoid a legacy codebase's pre-existing debt blocking every unrelated PR forever.
+</div>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: A Snyk scan flags a critical CVE in a transitive dependency you don't control directly. How do you fix it?</div>
+<div class="qa-a">
+<ul>
+<li>First check if a newer version of the direct dependency already bumps the vulnerable transitive one — often the simplest fix is just a version bump of something you already depend on.</li>
+<li>If not, force the resolved version explicitly: a <code>resolutionStrategy.force(...)</code> / version catalog override in Gradle, pinning the transitive dependency to a patched version while you wait for the upstream library to update its own dependency.</li>
+<li>If genuinely unfixable short-term (no patched version exists yet), document a time-boxed Snyk ignore/exception with a review date — never a silent, permanent suppression.</li>
+</ul>
+</div>
+<div class="qa-q">Q: Why pick trunk-based development with feature flags over GitFlow for a mobile app that has to go through app store review anyway?</div>
+<div class="qa-a">
+<ul>
+<li>App store review adds latency regardless of branching model — the branching model controls how painful INTEGRATION is before you even get to that review, and long-lived GitFlow feature branches are where most integration pain happens.</li>
+<li>Feature flags let you decouple "merged to main" from "visible to users" — you can submit a build to review with a risky feature dark-launched (flag off), then flip it on remotely post-approval without a new binary, which a branch-based release gate can't do.</li>
+<li>The tradeoff is real: trunk-based development needs a genuinely fast, reliable CI (fast test suite, reliable builds) or it just becomes "everyone breaks main." If the team's CI isn't there yet, GitFlow's isolation is the safer interim choice.</li>
 </ul>
 </div>
 </div>
@@ -7850,6 +8371,113 @@ kotlin {
 </div>
 
 <p>Third-party compiler plugins close most of this gap: <strong>SKIE</strong> regenerates the Kotlin framework's Swift-facing API to expose real <code>async</code>/<code>await</code>, exhaustive enums, and default arguments; <strong>KMP-NativeCoroutines</strong> specifically wraps Flows and suspend functions into Combine/async-await-friendly Swift equivalents. Most production KMP apps with a real iOS team adopt one of these rather than asking Swift engineers to write completion-handler code by hand.</p>
+
+</div>
+<div id="ios-fundamentals" class="subsection">
+<h3 class="subsection-title">iOS Fundamentals for Android Engineers</h3>
+
+<p>Supporting cross-platform initiatives doesn't require Swift fluency — it requires knowing enough of iOS's mental model to review a shared-module PR, reason about a Swift-side bug report, or have an informed architecture conversation with the iOS team. These are the three areas that map least directly onto Android intuition.</p>
+
+<h4>App Lifecycle — Mapping iOS States to Android Equivalents</h4>
+<div class="comparison-table">
+<table>
+<thead><tr><th>iOS app state</th><th>Meaning</th><th>Closest Android equivalent</th></tr></thead>
+<tbody>
+<tr><td>Not running</td><td>Never launched, or terminated by the user/system</td><td>Process not started / process killed, no back stack entry</td></tr>
+<tr><td>Inactive</td><td>In the foreground but not receiving events — e.g. a system alert or incoming call is on top</td><td><code>onPause()</code> — partially visible, still running</td></tr>
+<tr><td>Active</td><td>In the foreground and receiving events — the normal running state</td><td><code>onResume()</code>/<code>STARTED</code>+<code>RESUMED</code></td></tr>
+<tr><td>Background</td><td>Not visible, still executing — but only for a short, OS-granted window (or a registered background task/mode)</td><td><code>onStop()</code> + a <code>Service</code>/<code>WorkManager</code> job for anything beyond that window</td></tr>
+<tr><td>Suspended</td><td>In memory, not executing at all — the OS can purge it with no notice, no callback</td><td>Cached process the LMK (Low Memory Killer) can kill at any time — same "can die with zero warning" contract as <code>onStop()</code> on Android</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout callout-info">
+<strong>The one idea that transfers directly:</strong> both platforms enforce the same rule Android engineers already live by — "the OS can reclaim your process/screen without warning, design for it." iOS just slices the states slightly differently (an explicit Inactive state Android doesn't really have, and Suspended vs Background as two distinct phases instead of one).
+</div>
+
+<h4>Swift Memory Model — ARC vs the JVM Garbage Collector</h4>
+<div class="diagram">
+<pre>
+JVM/ART Garbage Collector (Android):           Swift ARC (Automatic Reference Counting):
+
+Objects live until a GC pass determines        Every object carries a live retain count.
+nothing reachable points to them (tracing,     retain() increments it, release() decrements
+generational, runs periodically, pauses         it; the INSTANT it hits zero, deinit runs —
+are usually invisible to the app).              synchronously, deterministically, no pause.
+
+You leak by holding a reference too long        You leak by creating a RETAIN CYCLE — two
+(static field, listener never unregistered,     objects strongly holding each other, so
+Presenter holding a destroyed View).            neither's count ever reaches zero.
+
+Fix: null the reference, unregister, scope      Fix: break the cycle with `weak` or
+it to a lifecycle.                              `unowned` on one side of the relationship.
+</pre>
+</div>
+
+<pre><code class="language-swift">// The Swift equivalent of a Presenter-leaks-the-View bug: a closure captures
+// `self` strongly, and the object it's stored on is held by the thing it captured.
+class CheckoutViewController: UIViewController {
+    var onCompletion: (() -&gt; Void)?
+
+    func startPayment(service: PaymentService) {
+        // BUG: closure captures `self` strongly. If `service` outlives this
+        // view controller, `self` can never be deallocated — a retain cycle,
+        // the direct Swift analogue of an Android Activity leak.
+        service.process { result in
+            self.updateUI(result)
+        }
+    }
+
+    // Fix: [weak self] — exactly like guarding `view?.something()` after
+    // detachView() in MVP. `self` becomes Optional; deallocation is allowed
+    // to proceed even while the closure is still alive.
+    func startPaymentFixed(service: PaymentService) {
+        service.process { [weak self] result in
+            guard let self else { return }
+            self.updateUI(result)
+        }
+    }
+}
+</code></pre>
+
+<h4>CocoaPods vs Swift Package Manager — Dependency Management Basics</h4>
+<div class="comparison-table">
+<table>
+<thead><tr><th></th><th>CocoaPods</th><th>Swift Package Manager (SPM)</th></tr></thead>
+<tbody>
+<tr><td>Config file</td><td><code>Podfile</code> — a Ruby DSL, resolved by the <code>pod</code> CLI into a generated Xcode workspace</td><td><code>Package.swift</code> — Swift itself, resolved natively by Xcode/<code>swift build</code>, no separate CLI or workspace step needed</td></tr>
+<tr><td>Closest Gradle analogue</td><td><code>build.gradle.kts</code> dependency block + a separate resolution step, conceptually</td><td>Version catalog-style, first-party, built into the toolchain — closer to how Gradle itself is bundled with Android Studio</td></tr>
+<tr><td>Where it still matters for KMP</td><td>Many existing iOS apps still consume the KMP-produced XCFramework via a generated podspec (the <code>native.cocoapods</code> Gradle plugin)</td><td>Newer projects and the XCFramework-as-binary-target path both increasingly prefer SPM; Apple's own tooling direction favors it</td></tr>
+</tbody>
+</table>
+</div>
+
+<pre><code class="language-bash"># Podfile — consuming a KMP-produced framework via CocoaPods
+# pod 'Shared', :path => '../shared'
+pod install          # resolves + generates MyApp.xcworkspace — always open the workspace, not the .xcodeproj
+
+# Package.swift — the SPM equivalent, resolved natively by Xcode
+# .binaryTarget(name: "Shared", path: "Shared.xcframework")
+</code></pre>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: You're reviewing a PR for a shared KMP module written by an engineer coming from iOS. What's the one Android-specific thing you'd check they didn't get wrong?</div>
+<div class="qa-a">
+<ul>
+<li>Lifecycle-scoped coroutines/callbacks — an iOS engineer used to ARC deterministically tearing down an object on scope exit may not instinctively think about an Android <code>Activity</code> surviving configuration changes, or a callback firing after the screen is gone. The MVP-style <code>view?.</code> guard and structured-concurrency scoping (<code>viewModelScope</code>, not a raw global scope) are the Android-specific habits to check for.</li>
+</ul>
+</div>
+<div class="qa-q">Q: Why doesn't ARC just use a tracing garbage collector like the JVM?</div>
+<div class="qa-a">
+<ul>
+<li>Deterministic, immediate deallocation — <code>deinit</code> runs the instant the retain count hits zero, which matters for Swift's value-type-heavy, deterministic-resource-cleanup idioms (closing a file handle, stopping a sensor) without needing a <code>finalize()</code>/explicit <code>close()</code> discipline.</li>
+<li>No GC pause — a tracing collector periodically stops the world (even briefly); ARC's cost is spread out as small increment/decrement operations instead, which fits a historically more memory- and battery-constrained mobile platform.</li>
+<li>The tradeoff: ARC can't collect cycles on its own — a tracing GC on Android correctly reclaims a cycle of mutually-referencing objects with no external reference, which ARC never can without manual `weak`/`unowned` intervention.</li>
+</ul>
+</div>
+</div>
 
 </div>
 <div id="kmp-adoption" class="subsection">
@@ -8629,6 +9257,159 @@ splitInstallManager.startInstall(request)
 
 </div>
 </section>
+<section id="staff-leadership-governance" class="main-section">
+<h2 class="section-title"><span class="section-icon">🧭</span>Staff/AVP Leadership & Governance</h2>
+<div id="lead-framework" class="subsection">
+<h3 class="subsection-title">The LEAD Framework — Listen, Energise, Align, Develop</h3>
+
+<p>Large regulated enterprises (Barclays among them) hire for Staff/AVP-level engineering roles against an explicit leadership rubric, not just a technical bar. Barclays frames this as <strong>LEAD</strong> — <em>Listen and be authentic, Energise and inspire, Align across the enterprise, Develop others</em> — and expects a candidate at this level to answer behavioral questions with concrete engineering examples that map onto each pillar, not generic management platitudes.</p>
+
+<div class="diagram">
+<pre>
+LEAD, translated into day-to-day staff-engineer behavior:
+
+┌─────────────┬───────────────────────────────────────────────────────────────┐
+│ Listen &      │ Surfacing a junior engineer's concern about a migration risk  │
+│ be authentic  │ in a design review instead of overriding it with seniority;   │
+│               │ admitting in an incident retro when YOUR architecture choice  │
+│               │ contributed to the outage.                                    │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ Energise &    │ Making a tedious but necessary migration (MVP→MVVM, Java→     │
+│ inspire       │ Kotlin) feel like a career-growth opportunity for the team,   │
+│               │ not an imposed chore — pairing it with skill-building, not    │
+│               │ just a deadline.                                              │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ Align across  │ Getting Product, Security, QA, and another engineering pod   │
+│ the enterprise│ to agree on a shared release gate or architecture decision   │
+│               │ BEFORE it becomes a cross-team blocker — see the Cross-       │
+│               │ Functional Leadership section below.                         │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ Develop       │ Deliberately giving a mid-level engineer the design-review   │
+│ others        │ lead on a feature you could have owned yourself, then        │
+│               │ coaching through the gaps rather than taking it back.        │
+└─────────────┴───────────────────────────────────────────────────────────────┘
+</pre>
+</div>
+
+<div class="callout callout-info">
+<strong>How this differs from a pure IC technical interview:</strong> a Staff/AVP loop expects you to narrate the <em>people and process</em> side of a technical decision, not just the decision itself — who you convinced, who pushed back and why they were right to, and what you changed about your own approach afterward. Answers with zero friction or zero disagreement read as inauthentic at this level.
+</div>
+
+<h4>Staff Q&amp;A — Behavioral</h4>
+<div class="qa-block">
+<div class="qa-q">Q: Tell me about a time you had to deliver difficult feedback to a peer engineer or push back on a senior stakeholder's technical decision.</div>
+<div class="qa-a">
+<ul>
+<li>Structure it as STAR (Situation, Task, Action, Result), but weight it toward <strong>Action</strong> — specifically what you said, in what forum (1:1 vs design review vs written RFC comment), and why you chose that forum.</li>
+<li>Show "Listen and be authentic" by including a moment where the other person's pushback changed your position, even partially — a one-sided story where you were simply right the whole time is a weaker signal than one showing real engagement.</li>
+<li>Close with the measurable result (the bug that didn't ship, the migration that landed on time, the on-call load that dropped) — Staff-level answers quantify impact, not just "and then it was fine."</li>
+</ul>
+</div>
+<div class="qa-q">Q: Describe how you've grown a more junior engineer on your team.</div>
+<div class="qa-a">
+<ul>
+<li>Pick a concrete ownership handoff (a module, a migration, an on-call rotation lead) rather than "I mentored them in general" — specificity is what distinguishes a real example from a rehearsed one.</li>
+<li>Name the gap you coached through (design review confidence, estimating complexity, writing an ADR) and the mechanism (pairing, a reading list, shadowing a stakeholder conversation) — not just the outcome.</li>
+</ul>
+</div>
+</div>
+
+</div>
+<div id="operational-risk-controls" class="subsection">
+<h3 class="subsection-title">Operational Risk Controls — Three Lines of Defense in Mobile Engineering</h3>
+
+<p>Regulated financial institutions govern engineering risk through the <strong>Three Lines of Defense</strong> model. A Staff/AVP engineer is expected to understand which line they sit in and to design controls — not just features — accordingly.</p>
+
+<div class="diagram">
+<pre>
+Three Lines of Defense, mapped onto a mobile engineering org:
+
+1st line — Engineering teams themselves
+   Owns risk day-to-day: code review, PR approval gates, release checklists,
+   on-call/incident response, segregation of duties (the engineer who writes
+   the code is not the sole approver who merges AND deploys it to production).
+
+2nd line — Risk, Compliance & Security functions
+   Sets the policy engineering must operate within: mobile app security
+   standards, PCI-DSS scope rules, data-classification/retention policy,
+   mandatory threat modeling before a new data flow ships, dependency/
+   vulnerability scanning thresholds (Snyk severity gates).
+
+3rd line — Internal Audit
+   Independently verifies 1st and 2nd lines are actually operating as
+   designed — e.g. sampling merged PRs to confirm the "no self-approval"
+   rule was genuinely enforced, not just documented.
+</pre>
+</div>
+
+<div class="comparison-table">
+<table>
+<thead><tr><th>Control</th><th>What it prevents</th><th>Typical mobile-specific implementation</th></tr></thead>
+<tbody>
+<tr><td>Segregation of duties</td><td>A single engineer unilaterally shipping an unreviewed change to production</td><td>Branch protection requiring ≥1 independent approval; release pipeline requiring a different role to trigger a Play Store rollout than the one who merged</td></tr>
+<tr><td>Change management / release gate</td><td>An unapproved or untested change reaching users</td><td>A CI quality gate (tests, Detekt, SonarQube, Snyk — see <a href="#security-scanning-pipeline">CI/CD section</a>) that blocks merge, plus a staged rollout (1% → 10% → 100%) with an automatic halt on crash-rate regression</td></tr>
+<tr><td>Incident management / RCA</td><td>The same root cause recurring because it was never formally diagnosed</td><td>A blameless post-incident review producing concrete, tracked action items — not just a Slack thread that gets forgotten</td></tr>
+<tr><td>Data classification & handling</td><td>Sensitive data (PCI cardholder data, PII) being logged, cached, or transmitted outside policy</td><td>Static-analysis rules and PR review checklists specifically for logging/analytics calls near payment or identity flows — see the <a href="#payment-sdk-security">Payment SDK security</a> section</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout callout-warning">
+<strong>A common staff-level trap:</strong> treating operational risk controls as something Compliance imposes on engineering from outside. The stronger framing — and the one that signals AVP-level maturity in an interview — is that the engineering team designs its own 1st-line controls (its branch protection rules, its release gates, its on-call runbooks) because it understands the risk, and treats 2nd-line policy as a floor to build on, not a checklist to satisfy minimally.
+</div>
+
+</div>
+<div id="cross-functional-leadership" class="subsection">
+<h3 class="subsection-title">Cross-Functional Leadership — Aligning Product, Security & QA</h3>
+
+<p>A Staff/AVP engineer's influence extends past their own team. The hardest part of a large architectural change (an MVP→MVVM migration, adopting KMP, a payment-flow redesign) is rarely the code — it's getting Product, Security, and QA to commit to it on a shared timeline, each for their own reasons.</p>
+
+<div class="diagram">
+<pre>
+Aligning a cross-functional change — e.g. migrating a legacy MVP checkout
+module to MVVM ahead of a KMP rollout:
+
+   Product            Security              QA                 Engineering
+   ───────            ────────              ──                 ───────────
+   Needs: no           Needs: a threat      Needs: a           Needs: a
+   feature freeze,     model sign-off       regression test    realistic
+   predictable          on the new data      plan covering      timeline that
+   ship dates           flow before          both old and new   survives
+                        it ships             code paths          scope creep
+
+        │                   │                    │                    │
+        └─────────── Staff engineer's job: a SINGLE shared plan ──────┘
+                      (a one-page RFC/ADR) that each group can review
+                      against their own concern, surfaced BEFORE the
+                      first line of migration code is written — not
+                      negotiated piecemeal, team by team, after the fact.
+</pre>
+</div>
+
+<p>In practice this runs through recurring governance forums most enterprises already have — an Architecture Review Board for sign-off on cross-team technical direction, and a Change Advisory Board (or equivalent release-risk review) for anything touching production data or payment flows. Knowing these forums exist, and bringing a decision to the right one at the right time, is itself a staff-level skill — showing up unprepared, or skipping the forum because "it'll slow us down," is the most common way a technically sound migration stalls politically.</p>
+
+<h4>Staff Q&amp;A</h4>
+<div class="qa-block">
+<div class="qa-q">Q: Product wants to ship a feature on a date that conflicts with a security review you know is mandatory. How do you handle it?</div>
+<div class="qa-a">
+<ul>
+<li>Don't silently slip the security review, and don't silently slip the date without telling Product why — surface the conflict explicitly and early, with the specific risk named (what could go wrong, not just "policy says so").</li>
+<li>Bring options, not just a blocker: can the review be scoped to the highest-risk part of the feature first (partial sign-off), can the feature ship behind a flag to a limited audience while the review completes, or does the date genuinely need to move.</li>
+<li>Escalate to the right governance forum (not just a hallway conversation) when the teams can't agree themselves — this is what Change Advisory Boards and architecture review forums exist for, and using them correctly is itself a signal of staff-level maturity, not a failure to resolve it peer-to-peer.</li>
+</ul>
+</div>
+<div class="qa-q">Q: How do you get QA to commit to testing a major architecture migration (e.g. MVP to MVVM) without expanding their workload unsustainably?</div>
+<div class="qa-a">
+<ul>
+<li>Scope the regression test plan to behavior, not implementation — QA should be testing that the screen still does the same thing for the user, which lets much of the existing test plan for the legacy MVP screen carry over unchanged.</li>
+<li>Migrate and test screen-by-screen (see the MVP→MVVM migration Q&amp;A in the Architecture section) so QA's testing load is spread across the migration timeline instead of landing as one enormous regression pass at the end.</li>
+<li>Where possible, shift some of the regression burden left with automated tests written by engineering as part of the migration itself (ViewModel unit tests replacing what used to be a manual QA pass on Presenter logic) — this is a concrete way a staff engineer reduces cross-functional cost, not just asks for more of another team's time.</li>
+</ul>
+</div>
+</div>
+
+</div>
+</section>
 <section id="payment-sdk" class="main-section">
 <h2 class="section-title"><span class="section-icon">💳</span>Building a Payment SDK — Library Module Deep Dive</h2>
 <div id="sdk-module-basics" class="subsection">
@@ -9021,6 +9802,8 @@ publishing {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml-doc.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-swift.min.js"></script>
 <script>
 // ── COPY BUTTONS ──
 document.querySelectorAll('pre').forEach(pre => {
