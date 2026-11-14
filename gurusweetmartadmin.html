@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff Admin (Demo) — Guru Sweet Mart</title>
+<meta name="description" content="Demo admin panel — orders, status and packing handoff for Guru Sweet Mart staff.">
+<link rel="canonical" href="https://sortedqueue.com/gurusweetmartadmin.html">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Guru Sweet Mart — Staff Admin (Demo)">
+<meta property="og:description" content="An unlisted client-review concept: the staff-facing admin mock for orders, packing status and the WhatsApp handoff preview.">
+<meta property="og:url" content="https://sortedqueue.com/gurusweetmartadmin.html">
+<meta property="og:image" content="https://sortedqueue.com/gurusweetmart/images/heritage/guru-sweet-mart-storefront-illustrated-v1.webp">
+<meta name="theme-color" content="#56163a">
+<link rel="icon" href="gurusweetmart/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="gurusweetmart/icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gurusweetmart/css/style.css?v=7">
+<link rel="stylesheet" href="gurusweetmart/css/shop-flow.css?v=1">
+<style>
+  body { background: var(--sandal-100); }
+  .admin-topbar {
+    background: var(--maroon-950); color: var(--gold-100);
+    padding: 14px 0;
+  }
+  .admin-topbar .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .admin-topbar .brand-line { display: flex; align-items: center; gap: 10px; }
+  .admin-topbar .brand-line strong { font-family: var(--font-accent); letter-spacing: 0.04em; }
+  .admin-topbar .tag { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-400); border: 1px solid rgba(212,175,55,0.4); border-radius: 999px; padding: 3px 10px; }
+  .admin-wrap { padding: 36px 0 60px; }
+  .mobile-note { background: #fff3cf; border: 1px solid #e6c766; color: #6b4e00; border-radius: var(--radius-md); padding: 12px 16px; font-size: 0.82rem; margin-bottom: 26px; }
+</style>
+</head>
+<body>
+
+<div class="admin-topbar">
+  <div class="container">
+    <div class="brand-line">
+      <strong>Guru Sweet Mart</strong>
+      <span class="tag">Staff admin · Demo</span>
+    </div>
+    <div style="display:flex; gap:14px; align-items:center;">
+      <a href="gurusweetmart/index.html" style="color:var(--gold-100); font-size:0.82rem;">← Back to website</a>
+      <button type="button" class="btn btn-outline btn-sm" data-reset-demo>Reset demo data</button>
+    </div>
+  </div>
+</div>
+
+<main class="admin-wrap">
+  <div class="container" data-admin-page>
+
+    <div class="section-head" style="text-align:left; margin-bottom:22px;">
+      <p class="eyebrow">Orders · Packing · Dispatch</p>
+      <h2 style="margin-top:6px;">Today's queue</h2>
+    </div>
+
+    <div class="mobile-note">
+      This is a desktop/web admin mock only (medium priority). Native mobile apps for staff are a separate medium-priority item and aren't part of this HTML demo — they'd follow once the backend is built.
+    </div>
+
+    <div class="admin-stats" data-admin-stats></div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Amount</th>
+            <th>Courier</th>
+            <th>Status</th>
+            <th>Packing</th>
+          </tr>
+        </thead>
+        <tbody data-admin-rows></tbody>
+      </table>
+    </div>
+
+    <div class="panel" style="margin-top:28px;">
+      <h3>What this demo shows</h3>
+      <p style="font-size:0.88rem;">Orders placed through the Shop → Cart → Checkout → Razorpay-placeholder flow on this device land here automatically, with the courier chosen at checkout and a packing estimate based on time of day. Changing an order's status here is also reflected on its public tracking page (<a href="gurusweetmart/order-confirmation.html">Track your order</a>) — this is how a real admin panel and customer tracking page would stay in sync once the backend exists.</p>
+      <p style="font-size:0.88rem; margin-bottom:0;">Sales and delivery reports, staff logins, and role permissions are not part of this mock — they come with the backend build in the next phase.</p>
+    </div>
+
+  </div>
+</main>
+
+<script src="gurusweetmart/js/shop-flow.js?v=3"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll('[data-admin-page] a[href="shop.html"]').forEach(function (a) {
+    a.setAttribute("href", "gurusweetmart/shop.html");
+  });
+});
+</script>
+</body>
+</html>
