@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your Cart — Guru Sweet Mart</title>
+<meta name="description" content="Review your Guru Sweet Mart order before checkout.">
+<meta name="theme-color" content="#56163a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guru Sweet Mart">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/shop-flow.css?v=1">
+<style>
+  .flow-hero { padding: 36px 0 26px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); text-align: center; }
+  .flow-hero h1 { color: var(--sandal-50); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sym-cart" viewBox="0 0 24 24">
+      <path d="M3 4 h2.4 l1.9 11.4 a2 2 0 0 0 2 1.6 h7.6 a2 2 0 0 0 2 -1.6 L20.5 8 H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="sym-empty-cart" viewBox="0 0 24 24">
+      <path d="M3 4 h2.4 l1.9 11.4 a2 2 0 0 0 2 1.6 h7.6 a2 2 0 0 0 2 -1.6 L20.5 8 H7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.3" fill="currentColor"/>
+      <circle cx="17" cy="20" r="1.3" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-info">
+      <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
+      <span>Devaraja Market, Mysuru</span>
+      <span>Open 8:00 AM – 9:30 PM</span>
+      <a href="order-confirmation.html">Track Order</a>
+      <a href="visit.html#help">Help</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+      <span class="brand-text">
+        <strong>Guru Sweet Mart</strong>
+        <small>Mysuru · Est. Palace Kitchen</small>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="shop.html#gifts">Gifts</a>
+      <a href="story.html">Our Story</a>
+      <a href="order.html">Order at Store</a>
+      <a href="visit.html">Visit Us</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="icon-btn" href="cart.html" aria-label="View cart">
+        <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
+        <span class="cart-count" aria-hidden="true">0</span>
+      </a>
+      <a class="btn btn-gold btn-sm" href="shop.html">Shop sweets</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="flow-hero">
+    <div class="container">
+      <p class="eyebrow" style="color:var(--gold-200); justify-content:center;">Step 1 of 3</p>
+      <h1 style="font-size:clamp(1.8rem,3.4vw + 1rem,2.6rem)">Your cart</h1>
+      <p style="color:rgba(253,249,239,0.8);">Review your sweets before checkout.</p>
+    </div>
+  </section>
+
+  <section class="bg-sandal">
+    <div class="container" data-cart-page style="max-width:760px;">
+
+      <div class="empty-state" data-cart-empty hidden>
+        <svg aria-hidden="true"><use href="#sym-empty-cart"/></svg>
+        <h3>Your cart is empty</h3>
+        <p>Browse the full menu and add something sweet.</p>
+        <a class="btn btn-gold" href="shop.html">Browse the shop</a>
+      </div>
+
+      <div data-cart-filled>
+        <div class="panel">
+          <h3>Items</h3>
+          <div data-cart-lines></div>
+        </div>
+
+        <div class="panel">
+          <div class="summary-row"><span>Subtotal</span><span data-cart-subtotal>₹0</span></div>
+          <div class="summary-row muted"><span>Shipping</span><span>Calculated at checkout</span></div>
+          <div class="summary-row total"><span>Total</span><span data-cart-total>₹0</span></div>
+          <a class="btn btn-gold btn-block" href="checkout.html" data-go-checkout style="margin-top:16px;">Proceed to checkout →</a>
+          <div class="demo-note">Demo mockup — prices, weights and the itemized cart come from what you've added on the Shop page in this browser. No real order exists yet.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-mark sm"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+          <strong>Guru Sweet Mart</strong>
+        </div>
+        <p>The original Mysore Pak from Mysuru's palace-kitchen heritage — shipped nationwide, and ready ahead at our stores.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All sweets</a></li>
+          <li><a href="cart.html">Your cart</a></li>
+          <li><a href="order.html">Order at store</a></li>
+          <li><a href="order-confirmation.html">Track order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="visit.html">Visit us</a></li>
+          <li><a href="visit.html#help">Help &amp; support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Team</h4>
+        <ul>
+          <li><a href="admin.html">Staff admin (demo)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Guru Sweet Mart, Mysuru. Design mockup for review — not a live store.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="install-banner" data-install-banner>
+  <span class="ic"><img src="images/logo-mark.png" alt="Guru Sweet Mart"></span>
+  <div class="txt"><strong>Install Guru Sweet Mart</strong>Add to your home screen for quick, app-like ordering.</div>
+  <button class="btn btn-gold btn-sm" data-install-action>Install</button>
+  <button class="close-install" data-install-close aria-label="Dismiss">✕</button>
+</div>
+<div class="offline-pill" data-offline-pill></div>
+
+<script src="js/app.js?v=4"></script>
+<script src="js/shop-flow.js?v=3"></script>
+</body>
+</html>

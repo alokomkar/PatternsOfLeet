@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/theme-variants.css?v=1">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -115,7 +116,10 @@
       <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
       <span>Devaraja Market, Mysuru</span>
       <span>Open 8:00 AM – 9:30 PM</span>
-      <a href="visit.html">Track Order</a>
+      <span class="pincode-chip" data-style-for="mahalakshmi">
+        <svg aria-hidden="true"><use href="#sym-pin"/></svg> Delivering to <strong>570001</strong>
+      </span>
+      <a href="visit.html" data-track-link>Track Order</a>
       <a href="visit.html#help">Help</a>
     </div>
     <div class="lang-switch" role="group" aria-label="Language">
@@ -144,7 +148,7 @@
       <a href="visit.html">Visit Us</a>
     </nav>
     <div class="nav-cta">
-      <a class="icon-btn" href="shop.html" aria-label="View cart">
+      <a class="icon-btn" href="cart.html" aria-label="View cart">
         <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
         <span class="cart-count" aria-hidden="true">0</span>
       </a>
@@ -180,6 +184,7 @@
         </div>
       </div>
       <div class="hero-art">
+        <div class="heritage-seal" data-style-for="mahalakshmi">Est. tradition · Generations of sweetness</div>
         <div class="hero-ring" aria-hidden="true"></div>
         <div class="hero-medallion">
           <img
@@ -190,6 +195,18 @@
             fetchpriority="high">
           <span class="hero-product-label">Signature · Special Ghee Mysore Pak</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANAND-STYLE STAT STRIP (style preview only) -->
+  <section class="bg-sandal" data-style-for="anand" style="padding:34px 0;">
+    <div class="container">
+      <div class="trust-strip" data-style-for="anand">
+        <div class="trust-item"><h4>5 lakh+</h4><p>Happy customers</p></div>
+        <div class="trust-item"><h4>Handmade</h4><p>Every piece, by hand</p></div>
+        <div class="trust-item"><h4>5–7 days</h4><p>Nationwide shipping</p></div>
+        <div class="trust-item"><h4>No preservatives</h4><p>Pure taste, naturally fresh</p></div>
       </div>
     </div>
   </section>
@@ -215,6 +232,14 @@
         <h2>Straight from the palace kitchen</h2>
         <p>Every batch is hand-cut in small quantities so it reaches you fresh — never mass-produced, never compromised on ghee.</p>
       </div>
+      <div class="category-row" data-style-for="kanti">
+        <a href="shop.html">Sweets</a>
+        <a href="shop.html">Namkeen</a>
+        <a href="shop.html">Snacks</a>
+        <a href="shop.html">Bakery</a>
+        <a href="shop.html#gifts">Gifting</a>
+        <a href="shop.html">Dry Fruits</a>
+      </div>
       <div class="grid">
 
         <article class="product-card">
@@ -225,12 +250,18 @@
           </div>
           <div class="product-body">
             <h4>Special Ghee Mysore Pak</h4>
+            <p class="stars" data-style-for="anand">★★★★★ <span class="count">225 reviews</span></p>
             <p class="desc">The original melt-in-your-mouth Mysore Pak, made generously with pure ghee.</p>
             <div class="weight-pills" role="group" aria-label="Select weight for Special Ghee Mysore Pak">
               <button type="button" aria-pressed="true" data-price="200">250 g</button>
               <button type="button" aria-pressed="false" data-price="400">500 g</button>
               <button type="button" aria-pressed="false" data-price="800">1 kg</button>
             </div>
+            <select class="weight-select" data-style-for="kanti" data-weight-select aria-label="Select weight for Special Ghee Mysore Pak">
+              <option value="250 g">250 g — ₹200</option>
+              <option value="500 g">500 g — ₹400</option>
+              <option value="1 kg">1 kg — ₹800</option>
+            </select>
             <div class="product-meta">
               <span class="price" data-card-price>₹200 <small>/ 250 g</small></span>
               <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
@@ -245,12 +276,18 @@
           </div>
           <div class="product-body">
             <h4>Ghee and Milk Mysore Pak</h4>
+            <p class="stars" data-style-for="anand">★★★★★ <span class="count">162 reviews</span></p>
             <p class="desc">A creamy Mysore Pak made with premium ghee and whole milk.</p>
             <div class="weight-pills" role="group" aria-label="Select weight for Ghee and Milk Mysore Pak">
               <button type="button" aria-pressed="true" data-price="200">250 g</button>
               <button type="button" aria-pressed="false" data-price="400">500 g</button>
               <button type="button" aria-pressed="false" data-price="800">1 kg</button>
             </div>
+            <select class="weight-select" data-style-for="kanti" data-weight-select aria-label="Select weight for Ghee and Milk Mysore Pak">
+              <option value="250 g">250 g — ₹200</option>
+              <option value="500 g">500 g — ₹400</option>
+              <option value="1 kg">1 kg — ₹800</option>
+            </select>
             <div class="product-meta">
               <span class="price" data-card-price>₹200 <small>/ 250 g</small></span>
               <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
@@ -265,12 +302,18 @@
           </div>
           <div class="product-body">
             <h4>Ghee and Jaggery Mysore Pak</h4>
+            <p class="stars" data-style-for="anand">★★★★☆ <span class="count">98 reviews</span></p>
             <p class="desc">A rich variation of the classic, combining pure ghee with jaggery.</p>
             <div class="weight-pills" role="group" aria-label="Select weight for Ghee and Jaggery Mysore Pak">
               <button type="button" aria-pressed="true" data-price="250">250 g</button>
               <button type="button" aria-pressed="false" data-price="500">500 g</button>
               <button type="button" aria-pressed="false" data-price="1000">1 kg</button>
             </div>
+            <select class="weight-select" data-style-for="kanti" data-weight-select aria-label="Select weight for Ghee and Jaggery Mysore Pak">
+              <option value="250 g">250 g — ₹250</option>
+              <option value="500 g">500 g — ₹500</option>
+              <option value="1 kg">1 kg — ₹1,000</option>
+            </select>
             <div class="product-meta">
               <span class="price" data-card-price>₹250 <small>/ 250 g</small></span>
               <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
@@ -286,12 +329,18 @@
           </div>
           <div class="product-body">
             <h4>Assorted Ghee Mysore Pak</h4>
+            <p class="stars" data-style-for="anand">★★★★★ <span class="count">140 reviews</span></p>
             <p class="desc">A colourful selection of ghee Mysore Pak varieties for sharing and gifting.</p>
             <div class="weight-pills" role="group" aria-label="Select weight for Assorted Ghee Mysore Pak">
               <button type="button" aria-pressed="true" data-price="250">250 g</button>
               <button type="button" aria-pressed="false" data-price="500">500 g</button>
               <button type="button" aria-pressed="false" data-price="1000">1 kg</button>
             </div>
+            <select class="weight-select" data-style-for="kanti" data-weight-select aria-label="Select weight for Assorted Ghee Mysore Pak">
+              <option value="250 g">250 g — ₹250</option>
+              <option value="500 g">500 g — ₹500</option>
+              <option value="1 kg">1 kg — ₹1,000</option>
+            </select>
             <div class="product-meta">
               <span class="price" data-card-price>₹250 <small>/ 250 g</small></span>
               <button class="btn btn-teal btn-sm" data-add-to-cart>Add</button>
@@ -485,6 +534,19 @@
 </div>
 <div class="offline-pill" data-offline-pill></div>
 
-<script src="js/app.js?v=2"></script>
+<div class="style-switcher" data-style-switcher>
+  <button type="button" class="style-switcher-toggle" data-style-toggle aria-expanded="false">
+    <span class="dot" aria-hidden="true"></span> Demo: Palace style ▾
+  </button>
+  <div class="style-swatches" role="group" aria-label="Choose a design style to preview" hidden>
+    <button type="button" data-style-option="palace" aria-pressed="true">Palace (current)</button>
+    <button type="button" data-style-option="anand" aria-pressed="false">Anand-style</button>
+    <button type="button" data-style-option="mahalakshmi" aria-pressed="false">Mahalakshmi-style</button>
+    <button type="button" data-style-option="kanti" aria-pressed="false">Kanti-style</button>
+  </div>
+</div>
+
+<script src="js/app.js?v=4"></script>
+<script src="js/theme-switcher.js?v=2"></script>
 </body>
 </html>

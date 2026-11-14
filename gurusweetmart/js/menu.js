@@ -18,7 +18,7 @@
   }
 
   function weightLabel(weight) {
-    return weight.replace("kg", " kg").replace("g", " g");
+    return weight.indexOf("kg") > -1 ? weight.replace("kg", " kg") : weight.replace("g", " g");
   }
 
   function weightOrder(weight) {
@@ -31,12 +31,25 @@
     return "images/products/" + item.category + "/" + filename;
   }
 
+  /* Deterministic pseudo rating for the Anand-style preview — same item
+     always shows the same stars/review count, no real review data exists. */
+  function reviewMeta(name) {
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+    var filled = 4 + (hash % 2);
+    return { stars: "★".repeat(filled) + "☆".repeat(5 - filled), count: 40 + (hash % 260) };
+  }
+
   function card(item) {
     var weights = Object.keys(item.prices_inr).sort(function (a, b) { return weightOrder(a) - weightOrder(b); });
     var selected = weights[0];
     var buttons = weights.map(function (weight, index) {
       return '<button type="button" aria-pressed="' + (index === 0 ? "true" : "false") + '" data-weight="' + escapeHtml(weight) + '" data-price="' + item.prices_inr[weight] + '">' + escapeHtml(weightLabel(weight)) + "</button>";
     }).join("");
+    var options = weights.map(function (weight) {
+      return '<option value="' + escapeHtml(weightLabel(weight)) + '">' + escapeHtml(weightLabel(weight)) + ' — ₹' + item.prices_inr[weight].toLocaleString("en-IN") + '</option>';
+    }).join("");
+    var rating = reviewMeta(item.name);
     var signature = item.name === "Special Ghee Mysore Pak" ? '<span class="badge">Signature</span>' : "";
     return '<article class="product-card sweet-card" data-cat="' + escapeHtml(item.category) + '" data-name="' + escapeHtml(item.name.toLowerCase()) + '">' +
       '<div class="product-media">' + signature +
@@ -46,7 +59,9 @@
       '<div class="product-body">' +
         '<p class="product-category">' + escapeHtml(item.category.replace(/-/g, " ")) + '</p>' +
         '<h4>' + escapeHtml(item.name) + '</h4>' +
+        '<p class="stars" data-style-for="anand">' + rating.stars + ' <span class="count">' + rating.count + ' reviews</span></p>' +
         '<div class="weight-pills" role="group" aria-label="Select weight for ' + escapeHtml(item.name) + '">' + buttons + '</div>' +
+        '<select class="weight-select" data-style-for="kanti" data-weight-select aria-label="Select weight for ' + escapeHtml(item.name) + '">' + options + '</select>' +
         '<div class="product-meta"><span class="price" data-card-price>₹' + item.prices_inr[selected].toLocaleString("en-IN") + ' <small>/ ' + escapeHtml(weightLabel(selected)) + '</small></span>' +
         '<button class="btn btn-teal btn-sm" data-add-to-cart>Add</button></div>' +
       '</div></article>';

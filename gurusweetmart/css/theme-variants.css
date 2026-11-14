@@ -1,0 +1,209 @@
+/* =========================================================
+   Guru Sweet Mart — Alternate design-style previews (DEMO ONLY)
+   Scoped entirely under :root[data-style="…"]; the default
+   (no attribute) is the existing "Palace" design, untouched.
+   Additive to style.css — nothing here is loaded by other pages.
+   ========================================================= */
+
+/* ---------- Anand Sweets-inspired: warm amber, lighter, retail-grid feel ---------- */
+:root[data-style="anand"] {
+  --maroon-950: #4a1510;
+  --maroon-900: #6b2318;
+  --maroon-800: #8a3220;
+  --maroon-700: #a8442c;
+  --maroon-600: #c25a3e;
+  --gold-100: #fff3dc;
+  --gold-200: #ffe4ad;
+  --gold-400: #e8b84b;
+  --gold-500: #d9a73c;
+  --gold-600: #c4932e;
+  --sandal-50: #fff8ef;
+  --sandal-100: #fcefdc;
+  --sandal-200: #f7e3c4;
+  --ink: #3a2318;
+  --ink-soft: #6b4f3f;
+}
+
+/* ---------- Mahalakshmi-inspired: rose/gold, heritage-retail feel ---------- */
+:root[data-style="mahalakshmi"] {
+  --maroon-950: #4a1030;
+  --maroon-900: #6b1a45;
+  --maroon-800: #8f2459;
+  --maroon-700: #ad2f6c;
+  --maroon-600: #c93f80;
+  --gold-100: #fff0dd;
+  --gold-200: #ffdfae;
+  --gold-400: #f3c667;
+  --gold-500: #e0ac3f;
+  --gold-600: #c99530;
+  --sandal-50: #fff5f8;
+  --sandal-100: #fde9ef;
+  --sandal-200: #fad9e3;
+  --ink: #3a1a28;
+  --ink-soft: #6b4454;
+}
+
+/* ---------- Kanti-inspired: purple/violet, cooler retail-chain feel ---------- */
+:root[data-style="kanti"] {
+  --maroon-950: #2a0f4a;
+  --maroon-900: #3f1768;
+  --maroon-800: #562086;
+  --maroon-700: #6d2ba3;
+  --maroon-600: #8740c2;
+  --gold-100: #f5edff;
+  --gold-200: #e4d2fb;
+  --gold-400: #c9a6f0;
+  --gold-500: #b98ee0;
+  --gold-600: #a476cf;
+  --sandal-50: #ffffff;
+  --sandal-100: #f5f1fb;
+  --sandal-200: #ece4f7;
+  --ink: #241433;
+  --ink-soft: #5c4d72;
+  --teal-700: #6d2ba3;
+  --teal-500: #8740c2;
+}
+
+/* ---------- Style-specific blocks: hidden unless their style is active ---------- */
+[data-style-for] { display: none; }
+:root[data-style="anand"] section[data-style-for="anand"] { display: block; }
+:root[data-style="anand"] .trust-strip[data-style-for="anand"] { display: flex; }
+:root[data-style="anand"] .stars[data-style-for="anand"] { display: block; }
+:root[data-style="mahalakshmi"] .pincode-chip[data-style-for="mahalakshmi"] { display: inline-flex; }
+:root[data-style="mahalakshmi"] .heritage-seal[data-style-for="mahalakshmi"] { display: flex; }
+:root[data-style="kanti"] .category-row[data-style-for="kanti"] { display: flex; }
+:root[data-style="kanti"] select.weight-select[data-style-for="kanti"] { display: block; }
+
+/* Kanti shows a weight dropdown on each card instead of pill buttons */
+:root[data-style="kanti"] .weight-pills { display: none; }
+
+/* ---------- Added elements' own look ---------- */
+.stars { color: var(--gold-500); font-size: 0.8rem; font-weight: 700; margin: 0; }
+.stars .count { color: var(--ink-soft); font-weight: 600; margin-left: 4px; }
+
+.pincode-chip {
+  align-items: center;
+  gap: 6px;
+  background: rgba(250, 240, 210, 0.14);
+  border: 1px solid rgba(250, 240, 210, 0.3);
+  border-radius: 999px;
+  padding: 3px 11px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.pincode-chip svg { width: 13px; height: 13px; }
+
+:root[data-style="mahalakshmi"] .topbar-info [data-track-link] {
+  background: var(--gold-400);
+  color: var(--maroon-950);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-weight: 800;
+}
+
+.heritage-seal {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  top: 8%;
+  right: 4%;
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  background: var(--maroon-950);
+  border: 2px solid var(--gold-400);
+  color: var(--gold-100);
+  text-align: center;
+  font-family: var(--font-accent);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  z-index: 3;
+  padding: 6px;
+}
+
+.category-row {
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 26px auto 0;
+}
+.category-row a {
+  border: 1px solid rgba(41,8,26,0.18);
+  background: var(--sandal-50);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.category-row a:hover { background: var(--maroon-800); color: var(--gold-100); border-color: var(--maroon-800); }
+
+select.weight-select {
+  border: 1px solid rgba(41,8,26,0.2);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  background: var(--sandal-50);
+  color: var(--ink);
+}
+
+/* ---------- The switcher widget itself (demo tooling, not site chrome) ---------- */
+.style-switcher {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 95;
+  max-width: 260px;
+  font-family: var(--font-body, sans-serif);
+}
+.style-switcher-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #111;
+  color: #ffce5c;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+  font-family: inherit;
+}
+.style-switcher-toggle .dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #ffce5c; display: inline-block;
+}
+.style-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #111;
+  border-radius: 14px;
+  padding: 10px;
+  margin-top: 8px;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+}
+.style-swatches[hidden] { display: none; }
+.style-swatches button {
+  border: 1px solid rgba(255,255,255,0.25);
+  background: transparent;
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.style-swatches button[aria-pressed="true"] {
+  background: #ffce5c;
+  color: #1a1200;
+  border-color: #ffce5c;
+}
+@media (max-width: 560px) {
+  .style-switcher { left: 8px; right: 8px; bottom: 8px; max-width: none; }
+}

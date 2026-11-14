@@ -49,6 +49,47 @@
     var n = readCart();
     cartCountEls.forEach(function (el) { el.textContent = n; });
   }
+
+  /* Itemized cart (mockup only) — kept alongside the simple counter above so
+     the new cart/checkout pages can show real line items. Dedupes by
+     name + weight so re-adding the same item bumps its quantity. */
+  function readCartItems() {
+    try {
+      return JSON.parse(localStorage.getItem("gsm_demo_cart_items") || "[]");
+    } catch (e) {
+      return [];
+    }
+  }
+  function writeCartItems(items) {
+    localStorage.setItem("gsm_demo_cart_items", JSON.stringify(items));
+    localStorage.setItem(
+      "gsm_demo_cart_count",
+      String(items.reduce(function (sum, it) { return sum + it.qty; }, 0))
+    );
+    paintCart();
+  }
+  function addCartItemFromCard(card, weightLabel, price) {
+    if (!card) return;
+    var nameEl = card.querySelector("h4");
+    var name = nameEl ? nameEl.textContent.trim() : "Item";
+    var imgEl = card.querySelector(".product-media img");
+    var items = readCartItems();
+    var existing = items.filter(function (it) { return it.name === name && it.weight === weightLabel; })[0];
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      items.push({
+        name: name,
+        category: card.dataset.cat || "",
+        weight: weightLabel || "",
+        price: Number(price) || 0,
+        qty: 1,
+        image: imgEl ? imgEl.getAttribute("src") : ""
+      });
+    }
+    writeCartItems(items);
+  }
+
   document.addEventListener("click", function (event) {
     var weightButton = event.target.closest(".weight-pills button");
     if (weightButton) {
@@ -65,9 +106,9 @@
 
     var btn = event.target.closest("[data-add-to-cart]");
     if (btn) {
-      var n = readCart() + 1;
-      localStorage.setItem("gsm_demo_cart_count", String(n));
-      paintCart();
+      var productCard = btn.closest(".product-card");
+      var pressedWeight = productCard && productCard.querySelector(".weight-pills button[aria-pressed='true']");
+      addCartItemFromCard(productCard, pressedWeight ? pressedWeight.textContent.trim() : "", pressedWeight ? pressedWeight.dataset.price : "");
       var original = btn.textContent;
       btn.textContent = "Added ✓";
       setTimeout(function () { btn.textContent = original; }, 1200);
@@ -161,7 +202,7 @@
   /* Register service worker (only on http/https, not file://) */
   if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register("/gurusweetmart/service-worker.js", { scope: "/gurusweetmart/" }).catch(function () {
+      navigator.serviceWorker.register("service-worker.js").catch(function () {
         /* mockup: silently ignore in environments without SW support */
       });
     });

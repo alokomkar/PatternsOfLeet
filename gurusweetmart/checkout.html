@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checkout — Guru Sweet Mart</title>
+<meta name="description" content="Delivery details, courier choice and payment for your Guru Sweet Mart order.">
+<meta name="theme-color" content="#56163a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guru Sweet Mart">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/shop-flow.css?v=1">
+<style>
+  .flow-hero { padding: 36px 0 26px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); text-align: center; }
+  .flow-hero h1 { color: var(--sandal-50); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sym-cart" viewBox="0 0 24 24">
+      <path d="M3 4 h2.4 l1.9 11.4 a2 2 0 0 0 2 1.6 h7.6 a2 2 0 0 0 2 -1.6 L20.5 8 H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="sym-check" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M7 12.5 L10.5 16 L17 8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="sym-cross" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M8.5 8.5 L15.5 15.5 M15.5 8.5 L8.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-info">
+      <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
+      <span>Devaraja Market, Mysuru</span>
+      <span>Open 8:00 AM – 9:30 PM</span>
+      <a href="order-confirmation.html">Track Order</a>
+      <a href="visit.html#help">Help</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+      <span class="brand-text">
+        <strong>Guru Sweet Mart</strong>
+        <small>Mysuru · Est. Palace Kitchen</small>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="shop.html#gifts">Gifts</a>
+      <a href="story.html">Our Story</a>
+      <a href="order.html">Order at Store</a>
+      <a href="visit.html">Visit Us</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="icon-btn" href="cart.html" aria-label="View cart">
+        <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
+        <span class="cart-count" aria-hidden="true">0</span>
+      </a>
+      <a class="btn btn-gold btn-sm" href="shop.html">Shop sweets</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="flow-hero">
+    <div class="container">
+      <p class="eyebrow" style="color:var(--gold-200); justify-content:center;">Step 2 of 3</p>
+      <h1 style="font-size:clamp(1.8rem,3.4vw + 1rem,2.6rem)">Checkout</h1>
+      <p style="color:rgba(253,249,239,0.8);">Delivery details, courier and payment.</p>
+    </div>
+  </section>
+
+  <section class="bg-sandal">
+    <div class="container" data-checkout-page>
+
+      <div class="flow-layout">
+        <div>
+          <div class="panel">
+            <h3>Delivery details</h3>
+            <div class="field">
+              <label for="f-name">Full name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" placeholder="As on your delivery address">
+            </div>
+            <div class="field-error">Please enter your name.</div>
+
+            <div class="field">
+              <label for="f-phone">Mobile number</label>
+              <input id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile number">
+              <p class="hint">Used for order updates and courier delivery calls.</p>
+            </div>
+            <div class="field-error">Please enter a valid 10-digit mobile number.</div>
+
+            <div class="field">
+              <label for="f-address">Delivery address</label>
+              <textarea id="f-address" name="address" autocomplete="street-address" placeholder="House/flat, street, locality, city"></textarea>
+            </div>
+            <div class="field-error">Please enter your delivery address.</div>
+
+            <div class="field" style="max-width:220px;">
+              <label for="f-pincode">Pincode</label>
+              <input id="f-pincode" name="pincode" type="text" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="6-digit pincode">
+              <p class="hint" data-pack-estimate></p>
+            </div>
+            <div class="field-error">Please enter a valid 6-digit pincode.</div>
+          </div>
+
+          <div class="panel">
+            <h3>Choose a courier</h3>
+            <div data-courier-list></div>
+            <div class="demo-note">Demo routing — couriers are shown eligible or not based only on the pincode's first digit, as an illustration. Final courier rules, Shiprocket's fit, and exact packing cut-off times need to be confirmed operationally (see the open questions in the Phase 1 requirements doc).</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Order summary</h3>
+          <div data-checkout-items></div>
+          <div class="summary-row"><span>Subtotal</span><span data-checkout-subtotal>₹0</span></div>
+          <div class="summary-row muted"><span>Shipping</span><span>Set by courier (demo)</span></div>
+          <div class="summary-row total"><span>Total</span><span data-checkout-total>₹0</span></div>
+          <button type="button" class="btn btn-gold btn-block" data-open-pay style="margin-top:16px;">Pay with Razorpay →</button>
+          <div class="demo-note">This is a placeholder payment screen — no real Razorpay integration or charge happens in this mockup.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- Razorpay placeholder modal -->
+<div class="modal-overlay" data-pay-modal>
+  <div class="modal-card">
+    <div data-pay-view>
+      <div class="pay-head">
+        <strong>Guru Sweet Mart</strong>
+        <button type="button" class="close-modal" data-close-modal aria-label="Close">✕</button>
+      </div>
+      <div class="pay-demo-flag" style="margin-top:10px;">Demo placeholder — not a real Razorpay checkout</div>
+      <div class="pay-amount">
+        <div class="amt" data-pay-amount>₹0</div>
+        <div class="to">Payable to Guru Sweet Mart</div>
+      </div>
+      <div class="pay-methods">
+        <span class="active">UPI</span><span>Card</span><span>Netbanking</span>
+      </div>
+      <div class="pay-fake-field">your-upi@okbank</div>
+      <div class="pay-actions">
+        <button type="button" class="btn btn-gold btn-block" data-sim-success>Simulate successful payment</button>
+        <button type="button" class="btn btn-outline on-light btn-block" data-sim-fail>Simulate failed payment</button>
+      </div>
+    </div>
+
+    <div class="pay-result success" data-pay-success>
+      <svg class="ic" aria-hidden="true"><use href="#sym-check"/></svg>
+      <h4>Payment verified</h4>
+      <p>Order <strong data-success-order-id></strong> is confirmed. Your packing team has been notified.</p>
+      <div class="pay-result-actions">
+        <a class="btn btn-gold" data-success-link href="#">View order →</a>
+      </div>
+    </div>
+
+    <div class="pay-result fail" data-pay-fail>
+      <svg class="ic" aria-hidden="true"><use href="#sym-cross"/></svg>
+      <h4>Payment failed</h4>
+      <p>No order was created. You have not been charged — please retry or choose another method.</p>
+      <div class="pay-result-actions">
+        <button type="button" class="btn btn-gold" data-retry-pay>Retry payment</button>
+        <button type="button" class="btn btn-outline on-light" data-close-modal>Back to checkout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-mark sm"><img src="images/logo-mark.png" alt="Guru Sweet Mart emblem"></span>
+          <strong>Guru Sweet Mart</strong>
+        </div>
+        <p>The original Mysore Pak from Mysuru's palace-kitchen heritage — shipped nationwide, and ready ahead at our stores.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All sweets</a></li>
+          <li><a href="cart.html">Your cart</a></li>
+          <li><a href="order.html">Order at store</a></li>
+          <li><a href="order-confirmation.html">Track order</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="visit.html">Visit us</a></li>
+          <li><a href="visit.html#help">Help &amp; support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Team</h4>
+        <ul>
+          <li><a href="admin.html">Staff admin (demo)</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Guru Sweet Mart, Mysuru. Design mockup for review — not a live store.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js?v=4"></script>
+<script src="js/shop-flow.js?v=3"></script>
+</body>
+</html>

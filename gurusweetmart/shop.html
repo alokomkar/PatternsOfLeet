@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/theme-variants.css?v=1">
 <style>
   .shop-hero { padding: 40px 0 30px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); }
   .shop-hero h1 { color: var(--sandal-50); }
@@ -94,6 +95,10 @@
       <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
       <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
     </symbol>
+    <symbol id="sym-pin" viewBox="0 0 24 24">
+      <path d="M12 22 C12 22 5 14.5 5 9.5 A7 7 0 0 1 19 9.5 C19 14.5 12 22 12 22 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="12" cy="9.5" r="2.6" fill="currentColor"/>
+    </symbol>
   </defs>
 </svg>
 
@@ -103,7 +108,10 @@
       <span class="kn">ಗುರು ಸ್ವೀಟ್ ಮಾರ್ಟ್ · ಮೈಸೂರು</span>
       <span>Devaraja Market, Mysuru</span>
       <span>Open 8:00 AM – 9:30 PM</span>
-      <a href="visit.html">Track Order</a>
+      <span class="pincode-chip" data-style-for="mahalakshmi">
+        <svg aria-hidden="true"><use href="#sym-pin"/></svg> Delivering to <strong>570001</strong>
+      </span>
+      <a href="visit.html" data-track-link>Track Order</a>
       <a href="visit.html#help">Help</a>
     </div>
     <div class="lang-switch" role="group" aria-label="Language">
@@ -132,7 +140,7 @@
       <a href="visit.html">Visit Us</a>
     </nav>
     <div class="nav-cta">
-      <a class="icon-btn" href="shop.html" aria-label="View cart">
+      <a class="icon-btn" href="cart.html" aria-label="View cart">
         <svg width="20" height="20" aria-hidden="true"><use href="#sym-cart"/></svg>
         <span class="cart-count" aria-hidden="true">0</span>
       </a>
@@ -151,6 +159,17 @@
       <p class="eyebrow" style="color:var(--gold-200)">The full menu</p>
       <h1 style="font-size:clamp(2rem,4vw + 1rem,3rem)">Every sweet, hand-cut in Mysuru</h1>
       <p style="color:rgba(253,249,239,0.8); max-width:60ch; margin:0 auto;">Browse all 66 confirmed menu items. Choose a weight to see its price; ordering remains a mockup until checkout and inventory are connected.</p>
+    </div>
+  </section>
+
+  <section class="bg-sandal" data-style-for="anand" style="padding:34px 0 0;">
+    <div class="container">
+      <div class="trust-strip" data-style-for="anand">
+        <div class="trust-item"><h4>5 lakh+</h4><p>Happy customers</p></div>
+        <div class="trust-item"><h4>Handmade</h4><p>Every piece, by hand</p></div>
+        <div class="trust-item"><h4>5–7 days</h4><p>Nationwide shipping</p></div>
+        <div class="trust-item"><h4>No preservatives</h4><p>Pure taste, naturally fresh</p></div>
+      </div>
     </div>
   </section>
 
@@ -246,7 +265,20 @@
 </div>
 <div class="offline-pill" data-offline-pill></div>
 
-<script src="js/app.js?v=3"></script>
-<script src="js/menu.js?v=1"></script>
+<div class="style-switcher" data-style-switcher>
+  <button type="button" class="style-switcher-toggle" data-style-toggle aria-expanded="false">
+    <span class="dot" aria-hidden="true"></span> Demo: Palace style ▾
+  </button>
+  <div class="style-swatches" role="group" aria-label="Choose a design style to preview" hidden>
+    <button type="button" data-style-option="palace" aria-pressed="true">Palace (current)</button>
+    <button type="button" data-style-option="anand" aria-pressed="false">Anand-style</button>
+    <button type="button" data-style-option="mahalakshmi" aria-pressed="false">Mahalakshmi-style</button>
+    <button type="button" data-style-option="kanti" aria-pressed="false">Kanti-style</button>
+  </div>
+</div>
+
+<script src="js/app.js?v=4"></script>
+<script src="js/menu.js?v=3"></script>
+<script src="js/theme-switcher.js?v=2"></script>
 </body>
 </html>
