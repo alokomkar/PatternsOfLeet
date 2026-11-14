@@ -33,6 +33,10 @@
       <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
       <circle cx="17" cy="20" r="1.4" fill="currentColor"/>
     </symbol>
+    <symbol id="sym-bell" viewBox="0 0 24 24">
+      <path d="M6 10.5 A6 6 0 0 1 18 10.5 V14.5 L20 17.5 H4 L6 14.5 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M10 20 a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
     <symbol id="sym-search" viewBox="0 0 24 24">
       <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/>
       <path d="M15 15 L21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
@@ -100,6 +104,15 @@
   <section class="bg-sandal">
     <div class="container" data-confirm-page style="max-width:640px;">
 
+      <div class="panel notif-banner" data-notif-banner hidden style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <svg aria-hidden="true" style="width:28px;height:28px;color:var(--gold-500);flex-shrink:0;"><use href="#sym-bell"/></svg>
+        <div style="flex:1; min-width:200px;">
+          <strong data-notif-title style="display:block; color:var(--maroon-900);">Get notified here when your order status changes</strong>
+          <span data-notif-sub style="font-size:0.8rem; color:var(--ink-soft);">Demo — a local notification shown by this device, not a real server push.</span>
+        </div>
+        <button type="button" class="btn btn-teal btn-sm" data-enable-notifs>Enable order updates</button>
+      </div>
+
       <div data-order-lookup>
         <div class="panel" style="text-align:center;">
           <svg aria-hidden="true" style="width:40px;height:40px;color:var(--gold-500);margin:0 auto 12px;"><use href="#sym-search"/></svg>
@@ -162,6 +175,6 @@
 </footer>
 
 <script src="js/app.js?v=4"></script>
-<script src="js/shop-flow.js?v=3"></script>
+<script src="js/shop-flow.js?v=5"></script>
 </body>
 </html>

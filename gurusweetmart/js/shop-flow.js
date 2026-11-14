@@ -14,6 +14,70 @@
     delivered: "Delivered"
   };
 
+  /* ---------- Simulated local notifications (demo only — no push server) ---------- */
+  var STATUS_NOTIF = {
+    paid: { title: "Order confirmed", body: "We've received your payment and notified our packing team." },
+    packed: { title: "Order packed", body: "Your order has been packed and is ready for dispatch." },
+    shipped: { title: "Order shipped", body: "Your order is on its way." },
+    "out-for-delivery": { title: "Out for delivery", body: "Your order is out for delivery — it should arrive soon." },
+    delivered: { title: "Order delivered", body: "Enjoy! Your order has been delivered." }
+  };
+  function notifyStatus(order) {
+    if (!order || !("Notification" in window) || Notification.permission !== "granted") return;
+    var info = STATUS_NOTIF[order.status];
+    if (!info) return;
+    var body = info.body + " (Order " + order.id + ")";
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      navigator.serviceWorker.ready.then(function (reg) {
+        reg.showNotification(info.title, { body: body, icon: "icons/icon-192.png", badge: "icons/icon-192.png", tag: "gsm-order-" + order.id });
+      }).catch(function () {
+        try { new Notification(info.title, { body: body }); } catch (e) { /* ignore */ }
+      });
+    } else {
+      try { new Notification(info.title, { body: body }); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function initNotifBanner() {
+    var banner = document.querySelector("[data-notif-banner]");
+    if (!banner || !("Notification" in window)) return;
+    var btn = banner.querySelector("[data-enable-notifs]");
+    var titleEl = banner.querySelector("[data-notif-title]");
+    var subEl = banner.querySelector("[data-notif-sub]");
+
+    function render() {
+      banner.hidden = false;
+      if (Notification.permission === "granted") {
+        titleEl.textContent = "Order updates enabled";
+        subEl.textContent = "You'll see a local notification here when your order status changes (demo only).";
+        if (btn) btn.style.display = "none";
+      } else if (Notification.permission === "denied") {
+        titleEl.textContent = "Notifications are blocked";
+        subEl.textContent = "Allow notifications for this site in your browser settings to try this demo.";
+        if (btn) btn.style.display = "none";
+      } else {
+        if (btn) btn.style.display = "";
+      }
+    }
+
+    if (btn) {
+      btn.addEventListener("click", function () {
+        Notification.requestPermission().then(function (permission) {
+          render();
+          if (permission === "granted") {
+            if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+              navigator.serviceWorker.ready.then(function (reg) {
+                reg.showNotification("Order updates enabled", { body: "We'll show updates here as your order moves — this is a demo notification, not a real push.", icon: "icons/icon-192.png", tag: "gsm-welcome" });
+              });
+            }
+          }
+        });
+      });
+    }
+
+    render();
+  }
+
   /* ---------- storage helpers ---------- */
   function readJSON(key, fallback) {
     try {
@@ -303,6 +367,7 @@
       orders.unshift(order);
       writeOrders(orders);
       writeCartItems([]);
+      notifyStatus(order);
 
       payView.style.display = "none";
       successView.classList.add("show");
@@ -395,6 +460,7 @@
           var idx = STAGES.indexOf(current.status);
           if (idx < STAGES.length - 1) current.status = STAGES[idx + 1];
           writeOrders(orders);
+          notifyStatus(current);
           renderOrder(current);
         });
       }
@@ -484,6 +550,7 @@
       var orders = readOrders();
       orders[+sel.dataset.statusSelect].status = sel.value;
       writeOrders(orders);
+      notifyStatus(orders[+sel.dataset.statusSelect]);
       render();
     });
 
@@ -513,5 +580,6 @@
     initCheckoutPage();
     initConfirmationPage();
     initAdminPage();
+    initNotifBanner();
   });
 })();
