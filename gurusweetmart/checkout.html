@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&family=Noto+Sans+Kannada:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=7">
-<link rel="stylesheet" href="css/shop-flow.css?v=1">
+<link rel="stylesheet" href="css/shop-flow.css?v=2">
 <style>
   .flow-hero { padding: 36px 0 26px; background: linear-gradient(180deg, var(--maroon-900), var(--maroon-950)); color: var(--sandal-100); text-align: center; }
   .flow-hero h1 { color: var(--sandal-50); }
@@ -135,7 +135,13 @@
             <div class="field-error">Please enter a valid 6-digit pincode.</div>
           </div>
 
-          <div class="panel">
+          <div class="panel" data-delivery-method-panel hidden>
+            <h3>How would you like to get it?</h3>
+            <div class="delivery-method-row" data-delivery-method-row></div>
+            <div data-delivery-method-note></div>
+          </div>
+
+          <div class="panel" data-courier-panel>
             <h3>Choose a courier</h3>
             <div data-courier-list></div>
             <div class="demo-note">Demo routing — couriers are shown eligible or not based only on the pincode's first digit, as an illustration. Final courier rules, Shiprocket's fit, and exact packing cut-off times need to be confirmed operationally (see the open questions in the Phase 1 requirements doc).</div>
@@ -242,7 +248,8 @@
   </div>
 </footer>
 
-<script src="js/app.js?v=4"></script>
+<script src="js/app.js?v=5"></script>
 <script src="js/shop-flow.js?v=5"></script>
+<script src="js/inventory.js?v=1"></script>
 </body>
 </html>

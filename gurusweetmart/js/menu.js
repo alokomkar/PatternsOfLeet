@@ -101,9 +101,11 @@
     })
     .then(function (catalog) {
       items = catalog.items || [];
+      window.GSM_CATALOG_ITEMS = items;
       grid.innerHTML = items.map(card).join("");
       grid.setAttribute("aria-busy", "false");
       applyFilters();
+      document.dispatchEvent(new Event("gsm:catalog-rendered"));
     })
     .catch(function () {
       grid.setAttribute("aria-busy", "false");

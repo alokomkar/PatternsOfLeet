@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Cinzel:wght@500;600&family=Karla:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="gurusweetmart/css/style.css?v=7">
-<link rel="stylesheet" href="gurusweetmart/css/shop-flow.css?v=1">
+<link rel="stylesheet" href="gurusweetmart/css/shop-flow.css?v=2">
 <style>
   body { background: var(--sandal-100); }
   .admin-topbar {
@@ -50,46 +50,140 @@
 </div>
 
 <main class="admin-wrap">
-  <div class="container" data-admin-page>
+  <div class="container">
 
-    <div class="section-head" style="text-align:left; margin-bottom:22px;">
-      <p class="eyebrow">Orders · Packing · Dispatch</p>
-      <h2 style="margin-top:6px;">Today's queue</h2>
+    <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+      <button type="button" data-admin-tab="orders" aria-pressed="true">Orders</button>
+      <button type="button" data-admin-tab="catalogue" aria-pressed="false">Catalogue</button>
+      <button type="button" data-admin-tab="settings" aria-pressed="false">Settings</button>
+      <button type="button" data-admin-tab="bulk" aria-pressed="false">New Bulk Order</button>
     </div>
 
-    <div class="mobile-note">
-      This is a desktop/web admin mock only (medium priority). Native mobile apps for staff are a separate medium-priority item and aren't part of this HTML demo — they'd follow once the backend is built.
+    <div class="admin-panel-view" data-admin-view="orders">
+      <div data-admin-page>
+
+        <div class="section-head" style="text-align:left; margin-bottom:22px;">
+          <p class="eyebrow">Orders · Packing · Dispatch</p>
+          <h2 style="margin-top:6px;">Today's queue</h2>
+        </div>
+
+        <div class="mobile-note">
+          This is a desktop/web admin mock only (medium priority). Native mobile apps for staff are a separate medium-priority item and aren't part of this HTML demo — they'd follow once the backend is built.
+        </div>
+
+        <div class="admin-stats" data-admin-stats></div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Amount</th>
+                <th>Courier</th>
+                <th>Status</th>
+                <th>Packing</th>
+              </tr>
+            </thead>
+            <tbody data-admin-rows></tbody>
+          </table>
+        </div>
+
+        <div class="panel" style="margin-top:28px;">
+          <h3>What this demo shows</h3>
+          <p style="font-size:0.88rem;">Orders placed through the Shop → Cart → Checkout → Razorpay-placeholder flow on this device land here automatically, with the courier chosen at checkout and a packing estimate based on time of day. Changing an order's status here is also reflected on its public tracking page (<a href="gurusweetmart/order-confirmation.html">Track your order</a>) — this is how a real admin panel and customer tracking page would stay in sync once the backend exists.</p>
+          <p style="font-size:0.88rem; margin-bottom:0;">Sales and delivery reports, staff logins, and role permissions are not part of this mock — they come with the backend build in the next phase.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="admin-stats" data-admin-stats></div>
-
-    <div class="admin-table-wrap">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Order</th>
-            <th>Customer</th>
-            <th>Items</th>
-            <th>Amount</th>
-            <th>Courier</th>
-            <th>Status</th>
-            <th>Packing</th>
-          </tr>
-        </thead>
-        <tbody data-admin-rows></tbody>
-      </table>
+    <div class="admin-panel-view" data-admin-view="catalogue" hidden>
+      <div class="section-head" style="text-align:left; margin-bottom:22px;">
+        <p class="eyebrow">Prices · Stock</p>
+        <h2 style="margin-top:6px;">Catalogue</h2>
+      </div>
+      <div class="demo-note" style="margin-bottom:16px;">Price shown/edited here is the item's first (smallest) weight tier, for this demo. Changes apply instantly on Shop and Home in this browser.</div>
+      <div class="catalog-tools" style="margin-bottom:16px;">
+        <label><span class="sr-only">Search catalogue</span>
+          <input class="catalog-search" type="search" data-admin-catalog-search placeholder="Search items…" autocomplete="off">
+        </label>
+        <p class="catalog-count" data-admin-catalog-count></p>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Item</th><th>Category</th><th>Price (₹)</th><th>Stock</th></tr>
+          </thead>
+          <tbody data-admin-catalog-rows><tr><td colspan="4" style="text-align:center;padding:30px;">Loading catalogue…</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="panel" style="margin-top:28px;">
-      <h3>What this demo shows</h3>
-      <p style="font-size:0.88rem;">Orders placed through the Shop → Cart → Checkout → Razorpay-placeholder flow on this device land here automatically, with the courier chosen at checkout and a packing estimate based on time of day. Changing an order's status here is also reflected on its public tracking page (<a href="gurusweetmart/order-confirmation.html">Track your order</a>) — this is how a real admin panel and customer tracking page would stay in sync once the backend exists.</p>
-      <p style="font-size:0.88rem; margin-bottom:0;">Sales and delivery reports, staff logins, and role permissions are not part of this mock — they come with the backend build in the next phase.</p>
+    <div class="admin-panel-view" data-admin-view="settings" hidden>
+      <div class="section-head" style="text-align:left; margin-bottom:22px;">
+        <p class="eyebrow">Ordering · Messaging · Delivery</p>
+        <h2 style="margin-top:6px;">Settings</h2>
+      </div>
+
+      <div class="panel">
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Online ordering</div>
+            <div class="hint">Turn off to pause all new online orders site-wide — for peak hours or festival days.</div>
+          </div>
+          <label class="switch"><input type="checkbox" data-setting="onlineOrderingOn"><span class="track"></span></label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Show stock-availability messages</div>
+            <div class="hint">When on, out-of-stock items show a message and suggested alternatives instead of just being disabled.</div>
+          </div>
+          <label class="switch"><input type="checkbox" data-setting="stockMessagingOn"><span class="track"></span></label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Auto-renew stock daily at</div>
+            <div class="hint">Items marked out of stock automatically become available again each day from this time (needs confirming with the client).</div>
+          </div>
+          <input type="time" class="setting-time" data-setting="stockRenewTime">
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Delivery partners (within Mysuru)</h3>
+        <p class="hint" style="margin-top:-6px;">Shown as delivery choices at checkout for Mysuru pincodes, alongside courier shipping and store pickup.</p>
+        <div data-partner-chips></div>
+        <div class="partner-add-row">
+          <input type="text" data-partner-input placeholder="Add a delivery partner (e.g. Dunzo)">
+          <button type="button" class="btn btn-teal btn-sm" data-partner-add>Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-panel-view" data-admin-view="bulk" hidden>
+      <div class="section-head" style="text-align:left; margin-bottom:22px;">
+        <p class="eyebrow">Staff-entered</p>
+        <h2 style="margin-top:6px;">New bulk order</h2>
+      </div>
+      <div class="panel" style="max-width:560px;">
+        <div class="field"><label for="b-name">Customer name</label><input id="b-name" type="text" data-bulk-field="name"></div>
+        <div class="field"><label for="b-phone">Phone</label><input id="b-phone" type="tel" data-bulk-field="phone"></div>
+        <div class="field"><label for="b-address">Delivery address</label><textarea id="b-address" data-bulk-field="address"></textarea></div>
+        <div class="field" style="max-width:220px;"><label for="b-pincode">Pincode</label><input id="b-pincode" type="text" inputmode="numeric" maxlength="6" data-bulk-field="pincode"></div>
+        <div class="field"><label for="b-items">Items (free text)</label><textarea id="b-items" data-bulk-field="items" placeholder="e.g. 5kg Special Ghee Mysore Pak, 3kg Kaju Katli"></textarea></div>
+        <div class="field" style="max-width:220px;"><label for="b-amount">Agreed amount (₹)</label><input id="b-amount" type="number" min="0" data-bulk-field="amount"></div>
+        <button type="button" class="btn btn-gold btn-block" data-bulk-submit>Create bulk order</button>
+        <div class="demo-note">Creates an order directly in the queue, marked as a staff-entered bulk order — no payment step, matching how a phoned-in bulk order would be handled for now.</div>
+      </div>
     </div>
 
   </div>
 </main>
 
+<script src="gurusweetmart/js/inventory.js?v=1"></script>
 <script src="gurusweetmart/js/shop-flow.js?v=5"></script>
+<script src="gurusweetmart/js/admin-inventory.js?v=3"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('[data-admin-page] a[href="shop.html"]').forEach(function (a) {

@@ -2,6 +2,15 @@
 (function () {
   "use strict";
 
+  /* document.currentScript is only valid during this synchronous run, so it
+     must be captured now — by the time the "load" handler below fires (for
+     the service worker registration) it would already be null. Resolving
+     against the script's own URL, not the page's, is what lets the same
+     file work whether this mockup is served at a domain root, nested under
+     a nested gurusweetmart/, or loaded from a root-level duplicate page
+     that references "gurusweetmart/js/app.js". */
+  var thisScriptUrl = document.currentScript ? document.currentScript.src : null;
+
   /* Header scroll shadow */
   var header = document.querySelector(".site-header");
   if (header) {
@@ -200,9 +209,10 @@
   paintOnlineStatus();
 
   /* Register service worker (only on http/https, not file://) */
-  if ("serviceWorker" in navigator && window.location.protocol.startsWith("http")) {
+  if ("serviceWorker" in navigator && window.location.protocol.startsWith("http") && thisScriptUrl) {
+    var swUrl = new URL("../service-worker.js", thisScriptUrl).href;
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register("service-worker.js").catch(function () {
+      navigator.serviceWorker.register(swUrl).catch(function () {
         /* mockup: silently ignore in environments without SW support */
       });
     });

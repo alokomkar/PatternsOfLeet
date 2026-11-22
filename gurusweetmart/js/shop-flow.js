@@ -198,6 +198,8 @@
     var subtotalEl = root.querySelector("[data-cart-subtotal]");
     var totalEl = root.querySelector("[data-cart-total]");
     var checkoutBtn = root.querySelector("[data-go-checkout]");
+    var bulkNote = root.querySelector("[data-bulk-note]");
+    var BULK_THRESHOLD = 10;
 
     function render() {
       var items = readCartItems();
@@ -228,6 +230,10 @@
       var subtotal = cartSubtotal(items);
       if (subtotalEl) subtotalEl.textContent = formatINR(subtotal);
       if (totalEl) totalEl.textContent = formatINR(subtotal);
+      if (bulkNote) {
+        var totalQty = items.reduce(function (s, it) { return s + it.qty; }, 0);
+        bulkNote.hidden = totalQty < BULK_THRESHOLD;
+      }
     }
 
     root.addEventListener("click", function (event) {
@@ -266,6 +272,11 @@
     var subtotalEl = root.querySelector("[data-checkout-subtotal]");
     var totalEl = root.querySelector("[data-checkout-total]");
     var courierList = root.querySelector("[data-courier-list]");
+    var courierPanel = root.querySelector("[data-courier-panel]");
+    var deliveryMethodPanel = root.querySelector("[data-delivery-method-panel]");
+    var deliveryMethodRow = root.querySelector("[data-delivery-method-row]");
+    var deliveryMethodNote = root.querySelector("[data-delivery-method-note]");
+    var deliveryMethod = "courier";
     var pincodeInput = root.querySelector("[name=pincode]");
     var packEstimateEl = root.querySelector("[data-pack-estimate]");
     var payBtn = root.querySelector("[data-open-pay]");
@@ -300,7 +311,54 @@
       }).join("");
     }
     renderCouriers();
-    if (pincodeInput) pincodeInput.addEventListener("input", renderCouriers);
+
+    /* Within-Mysuru delivery choice: courier vs Swiggy/Zomato/store pickup.
+       Only offered for Mysuru pincodes (570xxx); partners come from the
+       admin-managed list so adding one there shows up here immediately. */
+    function updateDeliveryMethodView() {
+      if (courierPanel) courierPanel.hidden = deliveryMethod !== "courier";
+      if (!deliveryMethodNote) return;
+      if (deliveryMethod === "courier") {
+        deliveryMethodNote.innerHTML = "";
+      } else if (deliveryMethod === "Store Pickup") {
+        deliveryMethodNote.innerHTML = '<div class="demo-note">Pick up at Devaraja Market, Mysuru — no delivery charge. We will notify you here when it is ready.</div>';
+      } else {
+        deliveryMethodNote.innerHTML = '<div class="demo-note">Prices may vary on ' + escapeHtml(deliveryMethod) + '. In the real build this would hand off to the ' + escapeHtml(deliveryMethod) + ' app to complete the order there — this demo just records the choice.</div>';
+      }
+    }
+    function renderDeliveryMethods() {
+      var pin = pincodeInput ? pincodeInput.value.trim() : "";
+      var isMysuru = /^570\d{3}$/.test(pin);
+      if (!deliveryMethodPanel) return;
+      if (!isMysuru) {
+        deliveryMethodPanel.hidden = true;
+        deliveryMethod = "courier";
+        updateDeliveryMethodView();
+        return;
+      }
+      deliveryMethodPanel.hidden = false;
+      var partners = (window.GSMInventory ? window.GSMInventory.getPartners() : ["Swiggy", "Zomato"]);
+      var methods = ["Courier"].concat(partners, ["Store Pickup"]);
+      deliveryMethodRow.innerHTML = methods.map(function (m) {
+        var value = m === "Courier" ? "courier" : m;
+        var pressed = deliveryMethod === value;
+        return '<button type="button" data-method="' + escapeHtml(value) + '" aria-pressed="' + pressed + '">' + escapeHtml(m) + '</button>';
+      }).join("");
+      updateDeliveryMethodView();
+    }
+    if (deliveryMethodRow) {
+      deliveryMethodRow.addEventListener("click", function (event) {
+        var btn = event.target.closest("[data-method]");
+        if (!btn) return;
+        deliveryMethod = btn.dataset.method;
+        deliveryMethodRow.querySelectorAll("button").forEach(function (b) {
+          b.setAttribute("aria-pressed", String(b === btn));
+        });
+        updateDeliveryMethodView();
+      });
+    }
+    renderDeliveryMethods();
+    if (pincodeInput) pincodeInput.addEventListener("input", function () { renderCouriers(); renderDeliveryMethods(); });
 
     /* ---- validation + open Razorpay placeholder ---- */
     var modal = document.querySelector("[data-pay-modal]");
@@ -332,7 +390,7 @@
       payBtn.addEventListener("click", function () {
         var fields = ["name", "phone", "address", "pincode"];
         var allOk = fields.map(fieldValid).every(Boolean);
-        var courierChosen = root.querySelector('input[name="courier"]:checked');
+        var courierChosen = deliveryMethod !== "courier" || root.querySelector('input[name="courier"]:checked');
         if (!allOk || !courierChosen) {
           if (!courierChosen) alert("Please choose a courier for your pincode.");
           return;
@@ -346,8 +404,16 @@
     });
 
     modal.querySelector("[data-sim-success]").addEventListener("click", function () {
-      var courierChosen = root.querySelector('input[name="courier"]:checked');
-      var courierOpt = courierOptionsForPincode(pincodeInput.value).filter(function (o) { return o.key === courierChosen.value; })[0];
+      var courierInfo;
+      if (deliveryMethod === "courier") {
+        var courierChosen = root.querySelector('input[name="courier"]:checked');
+        var courierOpt = courierOptionsForPincode(pincodeInput.value).filter(function (o) { return o.key === courierChosen.value; })[0];
+        courierInfo = { name: courierOpt.name, note: courierOpt.note };
+      } else if (deliveryMethod === "Store Pickup") {
+        courierInfo = { name: "Store Pickup", note: "Collect at Devaraja Market, Mysuru" };
+      } else {
+        courierInfo = { name: deliveryMethod + " (within Mysuru)", note: "Completed via the " + deliveryMethod + " app — prices may vary" };
+      }
       var order = {
         id: newOrderId(),
         placedAt: new Date().toISOString(),
@@ -359,7 +425,7 @@
         },
         items: cart,
         subtotal: subtotal,
-        courier: { name: courierOpt.name, note: courierOpt.note },
+        courier: courierInfo,
         status: "paid",
         packBy: packingEstimate()
       };
