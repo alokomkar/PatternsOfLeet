@@ -219,7 +219,7 @@
           '<p style="font-size:0.92rem; margin-bottom:8px;">“' + escapeHtml(s.text) + '”</p>' +
           '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">' +
           '<span class="hint">From ' + escapeHtml(s.page || "shop.html") + ' · ' + escapeHtml(timeAgo(s.submittedAt)) + '</span>' +
-          '<button type="button" class="btn btn-outline btn-sm" data-suggestion-dismiss>Dismiss</button>' +
+          '<button type="button" class="btn btn-outline on-light btn-sm" data-suggestion-dismiss>Dismiss</button>' +
           '</div></div>';
       }).join("");
     }
