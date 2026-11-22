@@ -193,10 +193,54 @@
     });
   }
 
+  /* ---------- Suggestions ---------- */
+  function timeAgo(iso) {
+    var mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (mins < 1) return "just now";
+    if (mins < 60) return mins + (mins === 1 ? " minute ago" : " minutes ago");
+    var hours = Math.round(mins / 60);
+    if (hours < 24) return hours + (hours === 1 ? " hour ago" : " hours ago");
+    var days = Math.round(hours / 24);
+    return days + (days === 1 ? " day ago" : " days ago");
+  }
+
+  function initSuggestionsTab() {
+    var list = document.querySelector("[data-suggestions-list]");
+    if (!list || !window.GSMSuggestions) return;
+
+    function render() {
+      var items = window.GSMSuggestions.readAll();
+      if (!items.length) {
+        list.innerHTML = '<div class="demo-note">No suggestions yet.</div>';
+        return;
+      }
+      list.innerHTML = items.map(function (s) {
+        return '<div class="panel" data-suggestion-id="' + escapeHtml(s.id) + '" style="margin-bottom:14px;">' +
+          '<p style="font-size:0.92rem; margin-bottom:8px;">“' + escapeHtml(s.text) + '”</p>' +
+          '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">' +
+          '<span class="hint">From ' + escapeHtml(s.page || "shop.html") + ' · ' + escapeHtml(timeAgo(s.submittedAt)) + '</span>' +
+          '<button type="button" class="btn btn-outline btn-sm" data-suggestion-dismiss>Dismiss</button>' +
+          '</div></div>';
+      }).join("");
+    }
+
+    list.addEventListener("click", function (event) {
+      var btn = event.target.closest("[data-suggestion-dismiss]");
+      if (!btn) return;
+      var id = btn.closest("[data-suggestion-id]").dataset.suggestionId;
+      var remaining = window.GSMSuggestions.readAll().filter(function (s) { return s.id !== id; });
+      window.GSMSuggestions.writeAll(remaining);
+      render();
+    });
+
+    render();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTabs();
     initCatalogueTab();
     initSettingsTab();
     initBulkTab();
+    initSuggestionsTab();
   });
 })();

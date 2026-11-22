@@ -50,6 +50,7 @@
       <button type="button" data-admin-tab="catalogue" aria-pressed="false">Catalogue</button>
       <button type="button" data-admin-tab="settings" aria-pressed="false">Settings</button>
       <button type="button" data-admin-tab="bulk" aria-pressed="false">New Bulk Order</button>
+      <button type="button" data-admin-tab="suggestions" aria-pressed="false">Suggestions</button>
     </div>
 
     <div class="admin-panel-view" data-admin-view="orders">
@@ -171,11 +172,21 @@
       </div>
     </div>
 
+    <div class="admin-panel-view" data-admin-view="suggestions" hidden>
+      <div class="section-head" style="text-align:left; margin-bottom:22px;">
+        <p class="eyebrow">Customer input</p>
+        <h2 style="margin-top:6px;">Suggestions</h2>
+      </div>
+      <div class="demo-note" style="margin-bottom:16px;">Notes customers leave in the "Suggestions for orders &amp; pickups" box on the Shop page land here, newest first. This demo stores them in this browser only — on the real site they'd be saved centrally for all staff to see.</div>
+      <div data-suggestions-list></div>
+    </div>
+
   </div>
 </main>
 
 <script src="js/inventory.js?v=1"></script>
 <script src="js/shop-flow.js?v=5"></script>
-<script src="js/admin-inventory.js?v=3"></script>
+<script src="js/suggestions.js?v=1"></script>
+<script src="js/admin-inventory.js?v=4"></script>
 </body>
 </html>

@@ -211,9 +211,10 @@
       <div class="suggestion-box">
         <span class="badge-soon">Coming soon</span>
         <h3 style="color:var(--sandal-50);">Suggestions for orders &amp; pickups</h3>
-        <p style="color:rgba(253,249,239,0.78);">Have an idea for a flavour, a pack size, or something that would make ordering or pickup easier? We're building a place to tell us — for now, drop a note below and we'll read it once this goes live.</p>
-        <textarea placeholder="Your suggestion…" disabled></textarea>
-        <button class="btn btn-gold" disabled>Coming soon</button>
+        <p style="color:rgba(253,249,239,0.78);">Have an idea for a flavour, a pack size, or something that would make ordering or pickup easier? A full feedback flow is coming soon — for now, drop a note below and our team will see it in the admin panel.</p>
+        <textarea placeholder="Your suggestion…" data-suggestion-input maxlength="500"></textarea>
+        <button type="button" class="btn btn-gold" data-suggestion-submit>Send suggestion</button>
+        <p class="demo-note" data-suggestion-confirm hidden style="margin-top:12px;"></p>
       </div>
     </div>
   </section>
@@ -294,5 +295,6 @@
 <script src="js/menu.js?v=3"></script>
 <script src="js/theme-switcher.js?v=2"></script>
 <script src="js/inventory.js?v=1"></script>
+<script src="js/suggestions.js?v=1"></script>
 </body>
 </html>
