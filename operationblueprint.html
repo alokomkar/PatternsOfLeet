@@ -136,6 +136,15 @@
     footer a{text-decoration:none}
     footer a:hover{color:var(--ink)}
     .fine{margin:18px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:11.5px;line-height:1.6;max-width:900px}
+    .fine p{margin:0}
+    .linkish{appearance:none;background:none;border:0;padding:0;margin:0 0 6px;font:inherit;color:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+    .linkish:hover{color:var(--ink)}
+    .linkish:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:2px}
+    dialog.disclosure{max-width:560px;width:calc(100% - 32px);padding:26px 26px 20px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);box-shadow:0 18px 60px rgba(0,0,0,.28)}
+    dialog.disclosure::backdrop{background:rgba(10,12,18,.55)}
+    dialog.disclosure h2{margin:0 0 12px;font-size:18px;line-height:1.3}
+    dialog.disclosure p{margin:0 0 12px;font-size:14px;line-height:1.6;color:var(--muted)}
+    dialog.disclosure .close-row{display:flex;justify-content:flex-end;margin-top:6px}
 
     @media(max-width:980px){
       .hero{grid-template-columns:1fr;gap:44px}
@@ -368,7 +377,28 @@
       <span>Operation Blueprint · Created and directed by Alok Gudikote, SortedQueue Games</span>
       <div><a href="founder.html">Founder</a><a href="mailto:sortedqueue@gmail.com?subject=Operation%20Blueprint">Contact</a></div>
     </div>
-    <p class="fine">Parts of the artwork (textures, decals, character skins, comic panels and many of the 3D models) were made with AI assistance. The music and most sound effects were composed with AI assistance. The dialogue and on-screen text were written with AI assistance from the game director’s own story, the translations are AI-assisted, and the few spoken lines use AI text-to-speech voices. No AI is used while the game runs.<br>© 2026 Alok Gudikote. All rights reserved. Published by SortedQueue Games.</p>
+    <div class="fine">
+      <button type="button" class="linkish" id="work-disclosure-open" aria-haspopup="dialog" aria-controls="work-disclosure">Work disclosure</button>
+      <p>© 2026 Alok Gudikote. All rights reserved. Published by SortedQueue Games.</p>
+    </div>
+    <dialog class="disclosure" id="work-disclosure" aria-labelledby="work-disclosure-title">
+      <h2 id="work-disclosure-title">Work disclosure</h2>
+      <p>Parts of the artwork (textures, decals, character skins, comic panels and many of the 3D models) were made with AI assistance. The music and most sound effects were composed with AI assistance.</p>
+      <p>The dialogue and on-screen text were written with AI assistance from the game director’s own story, the translations are AI-assisted, and the few spoken lines use AI text-to-speech voices.</p>
+      <p>No AI is used while the game runs.</p>
+      <form method="dialog" class="close-row"><button class="button" value="close">Close</button></form>
+    </dialog>
+    <script>
+      (function () {
+        var dlg = document.getElementById('work-disclosure');
+        var open = document.getElementById('work-disclosure-open');
+        if (!dlg || !open) return;
+        open.addEventListener('click', function () {
+          if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+        });
+        dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+      })();
+    </script>
   </footer>
 </body>
 </html>
